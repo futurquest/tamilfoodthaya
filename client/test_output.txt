@@ -1,0 +1,15 @@
+﻿
+> client@0.0.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90mC:/Users/abith/Documents/Thanujan/tamilfoodthaya/client[39m
+
+ [32mΓ£ô[39m src/context/CartContext.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32mΓ£ô[39m src/components/ui/Button.spec.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 00:42:50
+[2m   Duration [22m 1.89s[2m (transform 173ms, setup 341ms, import 610ms, tests 89ms, environment 1.68s)[22m
+

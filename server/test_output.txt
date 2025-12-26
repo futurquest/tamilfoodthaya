@@ -1,0 +1,56 @@
+﻿
+> server@0.0.1 test
+> jest --verbose
+
+node.exe : PASS src/m
+enu/menu.service.spec
+.ts
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (PASS sr   
+ c/menu/menu.serv    
+ice.spec.ts:Stri    
+ng) [], RemoteEx    
+ception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+  MenuService
+    ΓêÜ should be 
+defined (18 ms)
+    ΓêÜ should 
+return all 
+categories (7 ms)
+    ΓêÜ should 
+return all menu 
+items (4 ms)
+
+PASS src/auth/auth.se
+rvice.spec.ts
+  AuthService
+    ΓêÜ should 
+validate user 
+correctly (153 ms)
+    ΓêÜ should 
+return null for 
+invalid password 
+(123 ms)
+
+Test Suites: 2 
+passed, 2 total
+Tests:       5 
+passed, 5 total
+Snapshots:   0 total
+Time:        2.582 s
+Ran all test suites.

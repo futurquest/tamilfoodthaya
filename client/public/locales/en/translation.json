@@ -1,0 +1,194 @@
+{
+    "nav": {
+        "home": "Home",
+        "menu": "Menu",
+        "catering": "Catering",
+        "contact": "Contact",
+        "cart": "Basket",
+        "login": "Login",
+        "logout": "Logout",
+        "admin": "Admin"
+    },
+    "hero": {
+        "title": "Authentic Tamil Flavors,",
+        "titleHighlight": "Dutch Quality.",
+        "subtitle": "From delicious Kottu Roti to exclusive wedding catering. Tamil Food Thaya brings the warmth of Sri Lanka to Rotterdam and Leiden.",
+        "pButton": "Order Now",
+        "sButton": "Catering Quote",
+        "rotterdam": "Restaurant & Catering",
+        "leiden": "Exclusive Catering"
+    },
+    "footer": {
+        "description": "Bringing authentic Tamil and Sri Lankan cuisine to the Netherlands. Quality, tradition, and hospitality in every bite.",
+        "locations": "Locations",
+        "contact": "Contact",
+        "rights": "All rights reserved."
+    },
+    "home": {
+        "whyTitle": "Why Tamil Food Thaya?",
+        "feature1": {
+            "title": "Authentic Recipes",
+            "desc": "Our chefs prepare dishes with spices directly from Sri Lanka for that true Tamil taste."
+        },
+        "feature2": {
+            "title": "Fresh & Local",
+            "desc": "We combine traditional flavors with fresh, local ingredients from the Rotterdam and Leiden region."
+        },
+        "feature3": {
+            "title": "Passion for Hospitality",
+            "desc": "At Tamil Food Thaya, warmth and hospitality are central, whether you dine with us or we cater for you."
+        },
+        "highlightsTitle": "Our Highlights",
+        "highlightsDesc": "Taste the most popular dishes our customers order time and time again.",
+        "viewMenu": "View Full Menu",
+        "add": "Add +"
+    },
+    "menu": {
+        "title": "Our Menu",
+        "subtitle": "Discover the authentic flavors of Sri Lanka and Tamil cuisine.",
+        "all": "All",
+        "addToCart": "Add to Cart",
+        "addedToCart": "added to cart"
+    },
+    "contact": {
+        "phone": "Phone",
+        "email": "Email",
+        "sendMessage": "Send us a message"
+    },
+    "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message",
+        "send": "Send Message",
+        "sending": "Sending...",
+        "success": "Message sent!",
+        "error": "Failed to send.",
+        "required": "Required",
+        "invalidEmail": "Invalid email"
+    },
+    "catering": {
+        "hero": {
+            "title": "Make every event a",
+            "titleHighlight": "Party",
+            "desc": "From intimate dinners to large-scale weddings. We bring the taste and atmosphere to any desired location in the Netherlands.",
+            "button": "Request Quote"
+        },
+        "packages": {
+            "title": "Our Packages",
+            "subtitle": "Choose a package that suits your wishes and budget.",
+            "silver": {
+                "name": "Silver",
+                "desc": "Ideal for birthdays and informal gatherings."
+            },
+            "gold": {
+                "name": "Gold",
+                "desc": "Our most popular package for weddings and anniversaries.",
+                "badge": "Most Popular"
+            },
+            "platinum": {
+                "name": "Platinum",
+                "desc": "The ultimate culinary experience for your guests."
+            },
+            "selectButton": "Select Package"
+        },
+        "quote": {
+            "title": "Get a quote now?",
+            "capacity": {
+                "title": "Capacity",
+                "desc": "We cater for groups from 20 to 500+ people."
+            },
+            "location": {
+                "title": "Location",
+                "desc": "Service throughout the Netherlands, focus on South Holland."
+            },
+            "response": {
+                "title": "Fast Response",
+                "desc": "A proposal in your mailbox within 24 hours."
+            }
+        },
+        "form": {
+            "title": "Request a Quote",
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone Number",
+            "date": "Event Date",
+            "guests": "Guests",
+            "location": "Location",
+            "submit": "Request Quote",
+            "success": "Thank you! We will contact you within 24 hours.",
+            "error": "Something went wrong. Please try again later."
+        }
+    },
+    "admin": {
+        "layout": {
+            "title": "Admin Panel",
+            "loggedInAs": "Logged in as",
+            "logout": "Logout",
+            "overview": "Tamil Food Thaya Overview",
+            "dashboard": "Dashboard",
+            "orders": "Orders",
+            "leads": "Leads",
+            "menu": "Menu Management",
+            "categories": "Categories",
+            "settings": "Settings",
+            "messages": "Messages"
+        },
+        "common": {
+            "save": "Save",
+            "cancel": "Cancel",
+            "delete": "Delete",
+            "edit": "Edit",
+            "add": "Add",
+            "search": "Search",
+            "filter": "Filter",
+            "actions": "Actions",
+            "status": "Status",
+            "date": "Date",
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone",
+            "loading": "Loading...",
+            "noData": "No data available"
+        },
+        "leads": {
+            "title": "Catering Leads & Requests",
+            "requests": "Requests",
+            "viewDetails": "View Details",
+            "markFollowed": "Mark as Followed Up",
+            "statusUpdated": "Status updated",
+            "updateFailed": "Update failed",
+            "noRequests": "No requests found",
+            "package": "Package",
+            "noPackage": "No package",
+            "guests": "Guests",
+            "source": "Source"
+        },
+        "menu": {
+            "title": "Menu Management",
+            "addItem": "New Menu Item",
+            "editItem": "Edit Menu Item",
+            "itemName": "Item Name",
+            "description": "Description",
+            "price": "Price",
+            "category": "Category",
+            "spiceLevel": "Spice Level",
+            "image": "Image URL",
+            "available": "Available",
+            "manageCategories": "Manage Categories"
+        },
+        "categories": {
+            "title": "Category Management",
+            "addCategory": "New Category",
+            "categoryName": "Category Name",
+            "type": "Type",
+            "food": "Food",
+            "beverage": "Beverage"
+        },
+        "messages": {
+            "title": "Customer Messages",
+            "markRead": "Mark as Read",
+            "unread": "Unread"
+        }
+    }
+}

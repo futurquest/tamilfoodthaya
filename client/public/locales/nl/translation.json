@@ -1,0 +1,194 @@
+{
+    "nav": {
+        "home": "Home",
+        "menu": "Menu",
+        "catering": "Catering",
+        "contact": "Contact",
+        "cart": "Mandje",
+        "login": "Inloggen",
+        "logout": "Uitloggen",
+        "admin": "Admin"
+    },
+    "hero": {
+        "title": "Authentieke Tamil Smaak,",
+        "titleHighlight": "Nederlandse Kwaliteit.",
+        "subtitle": "Van heerlijke Kottu Roti tot exclusieve bruiloftscatering. Tamil Food Thaya brengt de warmte van Sri Lanka naar Rotterdam en Leiden.",
+        "pButton": "Direct Bestellen",
+        "sButton": "Catering Offerte",
+        "rotterdam": "Restaurant & Catering",
+        "leiden": "Exclusieve Catering"
+    },
+    "footer": {
+        "description": "Brengt de authentieke Tamil en Sri Lankaanse keuken naar Nederland. Kwaliteit, traditie en gastvrijheid in elke hap.",
+        "locations": "Locaties",
+        "contact": "Contact",
+        "rights": "Alle rechten voorbehouden."
+    },
+    "home": {
+        "whyTitle": "Waarom Tamil Food Thaya?",
+        "feature1": {
+            "title": "Authentieke Recepten",
+            "desc": "Onze koks bereiden gerechten met kruiden die rechtstreeks uit Sri Lanka komen voor de echte Tamil smaak."
+        },
+        "feature2": {
+            "title": "Vers & Lokaal",
+            "desc": "We combineren traditionele smaken met verse, lokale ingrediënten uit de regio Rotterdam en Leiden."
+        },
+        "feature3": {
+            "title": "Passie voor Gastvrijheid",
+            "desc": "Bij Tamil Food Thaya staat warmte en gastvrijheid centraal, of u nu bij ons dineert of wij bij u cateren."
+        },
+        "highlightsTitle": "Onze Highlights",
+        "highlightsDesc": "Proef de populairste gerechten die onze klanten keer op keer bestellen.",
+        "viewMenu": "Bekijk Volledig Menu",
+        "add": "Toevoegen +"
+    },
+    "menu": {
+        "title": "Ons Menu",
+        "subtitle": "Ontdek de authentieke smaken van Sri Lanka en de Tamil keuken.",
+        "all": "Allemaal",
+        "addToCart": "Toevoegen aan Mandje",
+        "addedToCart": "toegevoegd aan mandje"
+    },
+    "contact": {
+        "phone": "Telefoon",
+        "email": "E-mail",
+        "sendMessage": "Stuur ons een bericht"
+    },
+    "form": {
+        "name": "Naam",
+        "email": "E-mail",
+        "phone": "Telefoon",
+        "message": "Bericht",
+        "send": "Verstuur Bericht",
+        "sending": "Verzenden...",
+        "success": "Bericht verzonden!",
+        "error": "Verzenden mislukt.",
+        "required": "Verplicht",
+        "invalidEmail": "Ongeldig e-mailadres"
+    },
+    "catering": {
+        "hero": {
+            "title": "Maak van elk event een",
+            "titleHighlight": "Feest",
+            "desc": "Van intieme diners tot grootschalige bruiloften. Wij brengen de smaak en sfeer naar elke gewenste locatie in Nederland.",
+            "button": "Vraag Offerte Aan"
+        },
+        "packages": {
+            "title": "Onze Pakketten",
+            "subtitle": "Kies een pakket dat past bij uw wensen en budget.",
+            "silver": {
+                "name": "Silver",
+                "desc": "Ideaal voor verjaardagen en informele bijeenkomsten."
+            },
+            "gold": {
+                "name": "Gold",
+                "desc": "Ons populairste pakket voor bruiloften en jubilea.",
+                "badge": "Meest Gekozen"
+            },
+            "platinum": {
+                "name": "Platinum",
+                "desc": "De ultieme culinaire ervaring voor uw gasten."
+            },
+            "selectButton": "Pakket Kiezen"
+        },
+        "quote": {
+            "title": "Direct een offerte?",
+            "capacity": {
+                "title": "Capaciteit",
+                "desc": "Wij cateren voor groepen van 20 tot 500+ personen."
+            },
+            "location": {
+                "title": "Locatie",
+                "desc": "Service in heel Nederland, focus op Zuid-Holland."
+            },
+            "response": {
+                "title": "Snelle Reactie",
+                "desc": "Binnen 24 uur een voorstel in uw mailbox."
+            }
+        },
+        "form": {
+            "title": "Direct een offerte?",
+            "name": "Naam",
+            "email": "E-mail",
+            "phone": "Telefoonnummer",
+            "date": "Datum Event",
+            "guests": "Gasten",
+            "location": "Locatie",
+            "submit": "Offerte Aanvragen",
+            "success": "Bedankt! We nemen binnen 24 uur contact met u op.",
+            "error": "Er is iets misgegaan. Probeer het later opnieuw."
+        }
+    },
+    "admin": {
+        "layout": {
+            "title": "Admin Paneel",
+            "loggedInAs": "Ingelogd als",
+            "logout": "Uitloggen",
+            "overview": "Tamil Food Thaya Overzicht",
+            "dashboard": "Dashboard",
+            "orders": "Bestellingen",
+            "leads": "Leads",
+            "menu": "Menu Beheer",
+            "categories": "Categorieën",
+            "settings": "Instellingen",
+            "messages": "Berichten"
+        },
+        "common": {
+            "save": "Opslaan",
+            "cancel": "Annuleren",
+            "delete": "Verwijderen",
+            "edit": "Bewerken",
+            "add": "Toevoegen",
+            "search": "Zoeken",
+            "filter": "Filteren",
+            "actions": "Acties",
+            "status": "Status",
+            "date": "Datum",
+            "name": "Naam",
+            "email": "E-mail",
+            "phone": "Telefoon",
+            "loading": "Laden...",
+            "noData": "Geen gegevens beschikbaar"
+        },
+        "leads": {
+            "title": "Catering Leads & Aanvragen",
+            "requests": "Aanvragen",
+            "viewDetails": "Bekijk Details",
+            "markFollowed": "Markeer als Opgevolgd",
+            "statusUpdated": "Status bijgewerkt",
+            "updateFailed": "Update mislukt",
+            "noRequests": "Geen aanvragen gevonden",
+            "package": "Pakket",
+            "noPackage": "Geen pakket",
+            "guests": "Gasten",
+            "source": "Bron"
+        },
+        "menu": {
+            "title": "Menu Beheer",
+            "addItem": "Nieuw Menu Item",
+            "editItem": "Menu Item Bewerken",
+            "itemName": "Item Naam",
+            "description": "Beschrijving",
+            "price": "Prijs",
+            "category": "Categorie",
+            "spiceLevel": "Pittigheid",
+            "image": "Afbeelding URL",
+            "available": "Beschikbaar",
+            "manageCategories": "Categorieën beheren"
+        },
+        "categories": {
+            "title": "Categorieën Beheer",
+            "addCategory": "Nieuwe Categorie",
+            "categoryName": "Categorie Naam",
+            "type": "Type",
+            "food": "Eten",
+            "beverage": "Drank"
+        },
+        "messages": {
+            "title": "Klant Berichten",
+            "markRead": "Markeer als Gelezen",
+            "unread": "Ongelezen"
+        }
+    }
+}

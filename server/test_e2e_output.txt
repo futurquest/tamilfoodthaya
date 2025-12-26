@@ -1,0 +1,552 @@
+﻿
+> server@0.0.1 test:e2e
+> jest --config ./test/jest-e2e.json --verbose --forceExit
+
+node.exe : 
+[31m[Nest] 26156  - 
+[39m12/25/2025, 
+12:44:22 AM [31m  
+ERROR[39m [38;5;3m[
+ExceptionsHandler] [
+39mValidationError: 
+Lead validation 
+failed: phone: Path 
+`phone` is 
+required., name: 
+Path `name` is 
+required.
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([31m[N   
+ est] 261...e` is    
+ required.:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+    at model.Document
+.invalidate [90m(C:\
+Users\abith\Documents
+\Thanujan\tamilfoodth
+aya\server\[39mnode_
+modules\[4mmongoose
+[24m\lib\document.js:
+3377:32[90m)[39m
+    at validatePath 
+[90m(C:\Users\abith\D
+ocuments\Thanujan\tam
+ilfoodthaya\server\[
+39mnode_modules\[4mm
+ongoose[24m\lib\docu
+ment.js:3152:13[90m)
+[39m
+[90m    at processTi
+cksAndRejections (nod
+e:internal/process/ta
+sk_queues:105:5)[39m
+    at async 
+Promise.all (index 0)
+    at 
+model.$__validate [9
+0m(C:\Users\abith\Doc
+uments\Thanujan\tamil
+foodthaya\server\[39
+mnode_modules\[4mmon
+goose[24m\lib\docume
+nt.js:3093:3[90m)[3
+9m
+    at 
+model.validate [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mmongoo
+se[24m\lib\document.
+js:2670:5[90m)[39m
+    at model.validate
+BeforeSave [90m(C:\U
+sers\abith\Documents\
+Thanujan\tamilfoodtha
+ya\server\[39mnode_m
+odules\[4mmongoose[
+24m\lib\plugins\valid
+ateBeforeSave.js:34:7
+[90m)[39m
+    at 
+Kareem.execPre [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mkareem
+[24m\index.js:65:24
+[90m)[39m
+    at model.$__save 
+[90m(C:\Users\abith\
+Documents\Thanujan\ta
+milfoodthaya\server\
+[39mnode_modules\[4m
+mongoose[24m\lib\mod
+el.js:369:5[90m)[39
+m
+    at model.save [9
+0m(C:\Users\abith\Doc
+uments\Thanujan\tamil
+foodthaya\server\[39
+mnode_modules\[4mmon
+goose[24m\lib\model.
+js:609:5[90m)[39m
+    at [90mC:\Users\
+abith\Documents\Thanu
+jan\tamilfoodthaya\se
+rver\[39mnode_module
+s\[4m@nestjs[24m\co
+re\router\router-exec
+ution-context.js:46:2
+8
+    at [90mC:\Users\
+abith\Documents\Thanu
+jan\tamilfoodthaya\se
+rver\[39mnode_module
+s\[4m@nestjs[24m\co
+re\router\router-prox
+y.js:9:17 {
+  errors: {
+    phone: 
+ValidatorError: Path 
+`phone` is required.
+        at SchemaStri
+ng.doValidate [90m(C
+:\Users\abith\Documen
+ts\Thanujan\tamilfood
+thaya\server\[39mnod
+e_modules\[4mmongoos
+e[24m\lib\schemaType
+.js:1425:13[90m)[39
+m
+        at 
+validatePath [90m(C:
+\Users\abith\Document
+s\Thanujan\tamilfoodt
+haya\server\[39mnode
+_modules\[4mmongoose
+[24m\lib\document.js
+:3144:24[90m)[39m
+        at 
+model.$__validate [9
+0m(C:\Users\abith\Doc
+uments\Thanujan\tamil
+foodthaya\server\[39
+mnode_modules\[4mmon
+goose[24m\lib\docume
+nt.js:3090:21[90m)[
+39m
+    [90m    at proce
+ssTicksAndRejections 
+(node:internal/proces
+s/task_queues:105:5)
+[39m
+        at 
+model.validate [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mmongoo
+se[24m\lib\document.
+js:2670:5[90m)[39m
+        at model.vali
+dateBeforeSave [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mmongoo
+se[24m\lib\plugins\v
+alidateBeforeSave.js:
+34:7[90m)[39m
+        at 
+Kareem.execPre [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mkareem
+[24m\index.js:65:24
+[90m)[39m
+        at 
+model.$__save [90m(C
+:\Users\abith\Documen
+ts\Thanujan\tamilfood
+thaya\server\[39mnod
+e_modules\[4mmongoos
+e[24m\lib\model.js:3
+69:5[90m)[39m
+        at 
+model.save [90m(C:\U
+sers\abith\Documents\
+Thanujan\tamilfoodtha
+ya\server\[39mnode_m
+odules\[4mmongoose[
+24m\lib\model.js:609:
+5[90m)[39m
+        at [90mC:\Us
+ers\abith\Documents\T
+hanujan\tamilfoodthay
+a\server\[39mnode_mo
+dules\[4m@nestjs[24
+m\core\router\router-
+execution-context.js:
+46:28
+        at [90mC:\Us
+ers\abith\Documents\T
+hanujan\tamilfoodthay
+a\server\[39mnode_mo
+dules\[4m@nestjs[24
+m\core\router\router-
+proxy.js:9:17 {
+      properties: {
+        validator: 
+[36m[Function 
+(anonymous)][39m,
+        message: 
+[32m'Path `phone` 
+is required.'[39m,
+        type: 
+[32m'required'[39m,
+        path: 
+[32m'phone'[39m,
+        fullPath: 
+[90mundefined[39m,
+        value: 
+[90mundefined[39m
+      },
+      kind: 
+[32m'required'[39m,
+      path: 
+[32m'phone'[39m,
+      value: 
+[90mundefined[39m,
+      reason: 
+[90mundefined[39m,
+      [[32mSymbol(mo
+ngoose#validatorError
+)[39m]: 
+[33mtrue[39m
+    },
+    name: 
+ValidatorError: Path 
+`name` is required.
+        at SchemaStri
+ng.doValidate [90m(C
+:\Users\abith\Documen
+ts\Thanujan\tamilfood
+thaya\server\[39mnod
+e_modules\[4mmongoos
+e[24m\lib\schemaType
+.js:1425:13[90m)[39
+m
+        at 
+validatePath [90m(C:
+\Users\abith\Document
+s\Thanujan\tamilfoodt
+haya\server\[39mnode
+_modules\[4mmongoose
+[24m\lib\document.js
+:3144:24[90m)[39m
+        at 
+model.$__validate [9
+0m(C:\Users\abith\Doc
+uments\Thanujan\tamil
+foodthaya\server\[39
+mnode_modules\[4mmon
+goose[24m\lib\docume
+nt.js:3090:21[90m)[
+39m
+    [90m    at proce
+ssTicksAndRejections 
+(node:internal/proces
+s/task_queues:105:5)
+[39m
+        at 
+model.validate [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mmongoo
+se[24m\lib\document.
+js:2670:5[90m)[39m
+        at model.vali
+dateBeforeSave [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mmongoo
+se[24m\lib\plugins\v
+alidateBeforeSave.js:
+34:7[90m)[39m
+        at 
+Kareem.execPre [90m(
+C:\Users\abith\Docume
+nts\Thanujan\tamilfoo
+dthaya\server\[39mno
+de_modules\[4mkareem
+[24m\index.js:65:24
+[90m)[39m
+        at 
+model.$__save [90m(C
+:\Users\abith\Documen
+ts\Thanujan\tamilfood
+thaya\server\[39mnod
+e_modules\[4mmongoos
+e[24m\lib\model.js:3
+69:5[90m)[39m
+        at 
+model.save [90m(C:\U
+sers\abith\Documents\
+Thanujan\tamilfoodtha
+ya\server\[39mnode_m
+odules\[4mmongoose[
+24m\lib\model.js:609:
+5[90m)[39m
+        at [90mC:\Us
+ers\abith\Documents\T
+hanujan\tamilfoodthay
+a\server\[39mnode_mo
+dules\[4m@nestjs[24
+m\core\router\router-
+execution-context.js:
+46:28
+        at [90mC:\Us
+ers\abith\Documents\T
+hanujan\tamilfoodthay
+a\server\[39mnode_mo
+dules\[4m@nestjs[24
+m\core\router\router-
+proxy.js:9:17 {
+      properties: {
+        validator: 
+[36m[Function 
+(anonymous)][39m,
+        message: 
+[32m'Path `name` is 
+required.'[39m,
+        type: 
+[32m'required'[39m,
+        path: 
+[32m'name'[39m,
+        fullPath: 
+[90mundefined[39m,
+        value: 
+[32m''[39m,
+        length: 
+[33m0[39m
+      },
+      kind: 
+[32m'required'[39m,
+      path: 
+[32m'name'[39m,
+      value: 
+[32m''[39m,
+      reason: 
+[90mundefined[39m,
+      [[32mSymbol(mo
+ngoose#validatorError
+)[39m]: 
+[33mtrue[39m
+    }
+  },
+  _message: 
+[32m'Lead 
+validation 
+failed'[39m
+}
+PASS 
+test/menu.e2e-spec.ts
+  Menu API 
+(Integration)
+    ΓêÜ 
+/menu/categories 
+(GET) (147 ms)
+    ΓêÜ /menu/items 
+(GET) (17 ms)
+
+FAIL 
+test/lead.e2e-spec.ts
+  Lead API 
+(Integration)
+    ΓêÜ /leads 
+(POST) - should 
+create a lead (177 
+ms)
+    ├ù /leads (POST) 
+- should fail with 
+invalid data (20 ms)
+
+  ΓùÅ Lead API 
+(Integration) ΓÇ║ 
+/leads (POST) - 
+should fail with 
+invalid data
+
+    expected 400 
+"Bad Request", got 
+500 "Internal Server 
+Error"
+
+    [0m [90m 55 
+|[39m               
+  email[33m:[39m [
+32m'invalid-email'[3
+9m
+     [90m 56 |[39m 
+            })
+    [31m[1m>[22m[
+39m[90m 57 |[39m   
+          [33m.[39m
+expect([35m400[39m)
+[33m;[39m
+     [90m    |[39m 
+             
+[31m[1m^[22m[39m
+     [90m 58 |[39m 
+    })[33m;[39m
+     [90m 59 |[39m 
+})[33m;[39m
+     [90m 60 
+|[39m[0m
+
+      at 
+Object.<anonymous> (l
+ead.e2e-spec.ts:57:14
+)
+      ----
+      at 
+Test._assertStatus (.
+./node_modules/supert
+est/lib/test.js:309:1
+4)
+      at ../node_modu
+les/supertest/lib/tes
+t.js:365:13
+      at 
+Test._assertFunction 
+(../node_modules/supe
+rtest/lib/test.js:342
+:13)
+      at Test.assert 
+(../node_modules/supe
+rtest/lib/test.js:195
+:23)
+      at localAssert 
+(../node_modules/supe
+rtest/lib/test.js:138
+:14)
+      at 
+Server.<anonymous> (.
+./node_modules/supert
+est/lib/test.js:152:1
+1)
+
+FAIL 
+test/app.e2e-spec.ts 
+(7.444 s)
+  AppController (e2e)
+    ├ù / (GET) (5006 
+ms)
+
+  ΓùÅ AppController 
+(e2e) ΓÇ║ / (GET)
+
+    thrown: 
+"Exceeded timeout of 
+5000 ms for a hook.
+    Add a timeout 
+value to this test 
+to increase the 
+timeout, if this is 
+a long-running test. 
+See https://jestjs.io
+/docs/api#testname-fn
+-timeout."
+
+    [0m [90m  8 
+|[39m   
+[36mlet[39m 
+app[33m:[39m [33mI
+NestApplication[39m
+[33m<[39m[33mApp[3
+9m[33m>[39m[33m;[
+39m
+     [90m  9 |[39m
+    [31m[1m>[22m[
+39m[90m 10 |[39m   
+beforeEach([36masync
+[39m () 
+[33m=>[39m {
+     [90m    |[39m 
+  
+[31m[1m^[22m[39m
+     [90m 11 |[39m 
+    [36mconst[39m m
+oduleFixture[33m:[3
+9m [33mTestingModule
+[39m [33m=[39m 
+[36mawait[39m [33m
+Test[39m[33m.[39mc
+reateTestingModule({
+     [90m 12 |[39m 
+      
+imports[33m:[39m [
+[33mAppModule[39m][
+33m,[39m
+     [90m 13 |[39m 
+    })[33m.[39mcomp
+ile()[33m;[39m[0m
+
+      at 
+app.e2e-spec.ts:10:3
+      at 
+Object.<anonymous> 
+(app.e2e-spec.ts:7:1)
+
+A worker process has 
+failed to exit 
+gracefully and has 
+been force exited. 
+This is likely 
+caused by tests 
+leaking due to 
+improper teardown. 
+Try running with 
+--detectOpenHandles 
+to find leaks. 
+Active timers can 
+also cause this, 
+ensure that .unref() 
+was called on them.
+Test Suites: 2 
+failed, 1 passed, 3 
+total
+Tests:       2 
+failed, 3 passed, 5 
+total
+Snapshots:   0 total
+Time:        8.736 s
+Ran all test suites.
+Force exiting Jest: 
+Have you considered 
+using `--detectOpenHa
+ndles` to detect 
+async operations 
+that kept running 
+after all tests 
+finished?
