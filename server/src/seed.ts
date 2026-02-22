@@ -46,7 +46,7 @@ async function bootstrap() {
         { name: 'Chicken', priceModifier: 0 }
     ]);
     const vadai = await createItem(catStarters, 'Vadai', 1.5, 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&q=80&w=600');
-    const softCake = await createItem(catStarters, 'Soft cake', 2, 'https://images.unsplash.com/photo-1551024506-0baa27542c81?auto=format&fit=crop&q=80&w=600');
+    const softCake = await createItem(catStarters, 'Soft cake', 2, 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=600');
 
     // Hoofdgerechten
     const kottu = await createItem(catHoofdgerechten, 'Kotthu Rotti', 12, 'https://images.unsplash.com/photo-1630409351241-e90e7f5e434d?auto=format&fit=crop&q=80&w=600', [
@@ -77,7 +77,7 @@ async function bootstrap() {
 
     // Currys Veg
     const aubergineCurry = await createItem(catCurrysVeg, 'Aubergine curry', 6, 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&q=80&w=600');
-    const paneerCurry = await createItem(catCurrysVeg, 'Paneer curry', 7, 'https://images.unsplash.com/photo-1631452180519-c014fe946bc0?auto=format&fit=crop&q=80&w=600');
+    const paneerCurry = await createItem(catCurrysVeg, 'Paneer curry', 7, 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&q=80&w=600');
     const daalCurry = await createItem(catCurrysVeg, 'Daal curry', 5, 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=600');
     const uienSalade = await createItem(catCurrysVeg, 'Uien salade', 3, 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=600');
     const aardappelCurry = await createItem(catCurrysVeg, 'Aardappelcurry', 5, 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=600');
@@ -96,7 +96,7 @@ async function bootstrap() {
     const rosemilk = await createItem(catDrinken, 'Rosemilk', 3.5, 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=600');
     const cola = await createItem(catDrinken, 'Cola (zero)', 2.5, 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600');
     const fanta = await createItem(catDrinken, 'Fanta', 2.5, 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?auto=format&fit=crop&q=80&w=600');
-    const water = await createItem(catDrinken, 'Water', 2, 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&q=80&w=600');
+    const water = await createItem(catDrinken, 'Water', 2, 'https://images.unsplash.com/photo-1616118132534-381148898bb4?auto=format&fit=crop&q=80&w=600');
 
     console.log('Inserting Catering Packages...');
 
