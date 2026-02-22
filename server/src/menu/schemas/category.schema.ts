@@ -17,6 +17,9 @@ export class Category extends Document {
 
     @Prop({ default: 0 })
     order: number;
+
+    @Prop({ default: true })
+    isActive: boolean;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

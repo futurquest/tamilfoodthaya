@@ -42,6 +42,9 @@ describe('Lead API (Integration)', () => {
                 name: 'Test Lead',
                 email: 'test@example.com',
                 phone: '0612345678',
+                eventDate: '2026-10-10',
+                guests: '50',
+                location: 'Amsterdam',
                 message: 'Hello'
             })
             .expect(201);

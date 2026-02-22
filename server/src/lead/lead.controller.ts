@@ -1,5 +1,6 @@
-import { Controller, Post, Body, Get, UseGuards, Patch, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Patch, Param, Query } from '@nestjs/common';
 import { LeadService } from './lead.service';
+import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -18,8 +19,8 @@ export class LeadController {
     @Get()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.ADMIN)
-    async getLeads() {
-        return this.leadService.findAllLeads();
+    async getLeads(@Query() query: PaginationFilterDto) {
+        return this.leadService.findAllLeads(query);
     }
 
     @Patch(':id/status')

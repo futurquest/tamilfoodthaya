@@ -43,6 +43,9 @@ export class Order extends Document {
 
     @Prop()
     couponCode: string;
+
+    @Prop({ default: true })
+    isActive: boolean;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

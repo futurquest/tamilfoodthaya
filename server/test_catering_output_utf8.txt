@@ -1,0 +1,64 @@
+﻿node.exe : FAIL src/c
+atering/catering.serv
+ice.spec.ts
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (FAIL sr   
+ c/cateri...servi    
+ce.spec.ts:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+  ΓùÅ Test suite 
+failed to run
+
+    TypeError: Jest: 
+a transform must 
+export a `process` 
+function.
+
+      at ScriptTransf
+ormer._getTransformer
+ (../node_modules/@je
+st/transform/build/Sc
+riptTransformer.js:36
+8:15)
+      at ScriptTransf
+ormer.transformSource
+ (../node_modules/@je
+st/transform/build/Sc
+riptTransformer.js:44
+4:28)
+      at ScriptTransf
+ormer._transformAndBu
+ildScript (../node_mo
+dules/@jest/transform
+/build/ScriptTransfor
+mer.js:586:40)
+      at ScriptTransf
+ormer.transform (../n
+ode_modules/@jest/tra
+nsform/build/ScriptTr
+ansformer.js:624:25)
+
+Test Suites: 1 
+failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.371s
+Ran all test suites 
+matching /catering.se
+rvice.spec/i.

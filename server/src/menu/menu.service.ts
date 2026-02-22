@@ -13,7 +13,7 @@ export class MenuService {
 
     // Cateogry Methods
     async findAllCategories(): Promise<Category[]> {
-        return this.categoryModel.find().sort({ order: 1 }).exec();
+        return this.categoryModel.find({ isActive: true }).sort({ order: 1 }).exec();
     }
 
     async createCategory(data: any): Promise<Category> {
@@ -23,12 +23,12 @@ export class MenuService {
 
     async updateCategory(id: string, data: any): Promise<Category> {
         const updated = await this.categoryModel.findByIdAndUpdate(id, data, { new: true }).exec();
-        if (!updated) throw new NotFoundException('Category not found');
+        if (!updated || !updated.isActive) throw new NotFoundException('Category not found');
         return updated;
     }
 
     async deleteCategory(id: string): Promise<any> {
-        const result = await this.categoryModel.findByIdAndDelete(id).exec();
+        const result = await this.categoryModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
         if (!result) throw new NotFoundException('Category not found');
         return result;
     }
@@ -37,11 +37,11 @@ export class MenuService {
 
     // MenuItem Methods
     async findAllMenuItems(): Promise<MenuItem[]> {
-        return this.menuItemModel.find().populate('categoryId').exec();
+        return this.menuItemModel.find({ isActive: true }).populate('categoryId').exec();
     }
 
     async findByCategoryId(categoryId: string): Promise<MenuItem[]> {
-        return this.menuItemModel.find({ categoryId: new Types.ObjectId(categoryId) }).exec();
+        return this.menuItemModel.find({ categoryId: new Types.ObjectId(categoryId), isActive: true }).exec();
     }
 
     async createMenuItem(data: any): Promise<MenuItem> {
@@ -51,12 +51,12 @@ export class MenuService {
 
     async updateMenuItem(id: string, data: any): Promise<MenuItem> {
         const updated = await this.menuItemModel.findByIdAndUpdate(id, data, { new: true }).exec();
-        if (!updated) throw new NotFoundException('Menu item not found');
+        if (!updated || !updated.isActive) throw new NotFoundException('Menu item not found');
         return updated;
     }
 
     async deleteMenuItem(id: string): Promise<any> {
-        const result = await this.menuItemModel.findByIdAndDelete(id).exec();
+        const result = await this.menuItemModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
         if (!result) throw new NotFoundException('Menu item not found');
         return result;
     }

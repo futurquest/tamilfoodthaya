@@ -12,13 +12,13 @@ export class Lead extends Document {
     @Prop({ required: true })
     phone: string;
 
-    @Prop({ required: true })
+    @Prop()
     eventDate: string;
 
-    @Prop({ required: true })
+    @Prop()
     guests: number;
 
-    @Prop({ required: true })
+    @Prop()
     location: string;
 
     @Prop()
@@ -35,6 +35,9 @@ export class Lead extends Document {
 
     @Prop({ default: 'OPEN' })
     status: string;
+
+    @Prop({ default: true })
+    isActive: boolean;
 }
 
 export const LeadSchema = SchemaFactory.createForClass(Lead);

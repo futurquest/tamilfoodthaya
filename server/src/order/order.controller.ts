@@ -1,5 +1,6 @@
-import { Controller, Post, Body, Get, Query, Headers, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Headers, Req, BadRequestException, Param } from '@nestjs/common';
 import { OrderService } from './order.service';
+import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
 
 @Controller('orders')
 export class OrderController {
@@ -10,20 +11,22 @@ export class OrderController {
         return this.orderService.createCheckoutSession(orderData);
     }
 
-    @Post('webhook')
+    @Post('webhook/:method')
     async webhook(
-        @Headers('stripe-signature') sig: string,
+        @Param('method') method: string,
         @Req() req: any,
     ) {
-        if (!sig) {
-            throw new BadRequestException('Missing stripe-signature header');
-        }
-        // Stripe webhooks require the raw body
-        return this.orderService.handleWebhook(sig, req.body);
+        const sig = req.headers['stripe-signature'] || req.headers['x-signature']; // Support various signatures
+        return this.orderService.handleWebhook(method, sig as string, req.body);
+    }
+
+    @Get(':id')
+    async getOrderById(@Param('id') id: string) {
+        return this.orderService.getOrderById(id);
     }
 
     @Get()
-    async getOrders(@Query() query: any) {
+    async getOrders(@Query() query: PaginationFilterDto) {
         return this.orderService.getOrders(query);
     }
 }

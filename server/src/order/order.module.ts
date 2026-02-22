@@ -7,6 +7,8 @@ import { Order, OrderSchema } from './schemas/order.schema';
 import { MenuItem, MenuItemSchema } from '../menu/schemas/menu-item.schema';
 import { PaymentGateway } from './payment/payment.interface';
 
+import { PaymentGatewayFactory } from './payment/payment.factory';
+
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -18,6 +20,7 @@ import { PaymentGateway } from './payment/payment.interface';
   providers: [
     OrderService,
     StripePaymentStrategy,
+    PaymentGatewayFactory,
     {
       provide: PaymentGateway,
       useClass: StripePaymentStrategy,

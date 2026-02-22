@@ -13,8 +13,29 @@ export class MessageService {
         return newMessage.save();
     }
 
-    async findAll(): Promise<Message[]> {
-        return this.messageModel.find().sort({ createdAt: -1 }).exec();
+    async findAll(filters: any = {}): Promise<any> {
+        const query: any = { isActive: true };
+
+        if (filters.read !== undefined) {
+            query.read = filters.read === 'true';
+        }
+
+        if (filters.from || filters.to) {
+            query.createdAt = {};
+            if (filters.from) query.createdAt.$gte = new Date(filters.from);
+            if (filters.to) query.createdAt.$lte = new Date(filters.to);
+        }
+
+        const page = filters.page ? parseInt(filters.page, 10) : 1;
+        const limit = filters.limit ? parseInt(filters.limit, 10) : 20;
+        const skip = (page - 1) * limit;
+
+        const [data, total] = await Promise.all([
+            this.messageModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+            this.messageModel.countDocuments(query).exec(),
+        ]);
+
+        return { data, total, page, limit };
     }
 
     async markAsRead(id: string): Promise<Message | null> {
@@ -22,6 +43,6 @@ export class MessageService {
     }
 
     async remove(id: string): Promise<any> {
-        return this.messageModel.findByIdAndDelete(id).exec();
+        return this.messageModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
     }
 }

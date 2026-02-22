@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { MessageService } from './message.service';
+import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -18,8 +19,8 @@ export class MessageController {
     @Get()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.ADMIN)
-    findAll() {
-        return this.messageService.findAll();
+    findAll(@Query() query: PaginationFilterDto) {
+        return this.messageService.findAll(query);
     }
 
     @Patch(':id/read')

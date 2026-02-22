@@ -16,20 +16,20 @@ export class CreateLeadDto {
     @IsNotEmpty({ message: 'Telefoonnummer is verplicht' })
     phone: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
-    @IsNotEmpty({ message: 'Datum is verplicht' })
-    eventDate: string;
+    @IsOptional()
+    eventDate?: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
-    @IsNotEmpty({ message: 'Aantal gasten is verplicht' })
-    guests: string; // FormData often sends numbers as strings, logic layer might need to parse or we use @Type(() => Number) if JSON
+    @IsOptional()
+    guests?: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
-    @IsNotEmpty({ message: 'Locatie is verplicht' })
-    location: string;
+    @IsOptional()
+    location?: string;
 
     @ApiProperty({ required: false })
     @IsString()

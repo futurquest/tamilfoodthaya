@@ -30,6 +30,9 @@ async function bootstrap() {
   // Use Winston Logger
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
+  // Set Global API Prefix
+  app.setGlobalPrefix('api/v1');
+
   // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('Tamil Food Thaya API')
@@ -38,7 +41,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
 
   // Enable Global Validation
   app.useGlobalPipes(new ValidationPipe({

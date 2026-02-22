@@ -29,6 +29,9 @@ export class MenuItem extends Document {
 
     @Prop({ default: true })
     dailyAvailability: boolean;
+
+    @Prop({ default: true })
+    isActive: boolean;
 }
 
 export const MenuItemSchema = SchemaFactory.createForClass(MenuItem);
