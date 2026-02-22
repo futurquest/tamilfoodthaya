@@ -1,9 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { useMenu } from '../../hooks/useApi';
 import { Button } from '../ui/Button';
-import { X, ExternalLink } from 'lucide-react';
+import { X, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 interface MenuFormProps {
     onClose: () => void;
@@ -22,6 +23,8 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
         }
     });
 
+    const [choices, setChoices] = useState<{ name: string, priceModifier: number }[]>(initialData?.choices || []);
+
     const handleFormSubmit = async (data: any) => {
         const formData = new FormData();
         formData.append('name', data.name);
@@ -31,6 +34,7 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
         formData.append('stockCount', data.stockCount);
         formData.append('spiceLevel', data.spiceLevel);
         formData.append('available', data.available);
+        formData.append('choices', JSON.stringify(choices));
 
         if (data.image && data.image[0]) {
             formData.append('image', data.image[0]);
@@ -95,6 +99,55 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                     <div>
                         <label className="block text-sm font-bold mb-1">{t('admin.menu.image')}</label>
                         <input type="file" {...register('image')} accept="image/*" className="w-full p-2 border rounded" />
+                    </div>
+
+                    <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                            <label className="block text-sm font-bold">Keuzes / Variaties (Optioneel)</label>
+                            <Button type="button" variant="outline" size="sm" onClick={() => setChoices([...choices, { name: '', priceModifier: 0 }])} className="gap-2">
+                                <Plus size={14} /> Keuze toevoegen
+                            </Button>
+                        </div>
+                        {choices.length > 0 && (
+                            <div className="space-y-2 bg-gray-50 p-4 rounded-md border">
+                                {choices.map((choice, idx) => (
+                                    <div key={idx} className="flex gap-2 items-center">
+                                        <input
+                                            type="text"
+                                            value={choice.name}
+                                            onChange={e => {
+                                                const newChoices = [...choices];
+                                                newChoices[idx].name = e.target.value;
+                                                setChoices(newChoices);
+                                            }}
+                                            placeholder="Naam (bijv. Kip, Lam)"
+                                            className="w-full p-2 border rounded text-sm"
+                                        />
+                                        <div className="flex items-center gap-1">
+                                            <span className="text-sm font-bold">+€</span>
+                                            <input
+                                                type="number"
+                                                step="0.50"
+                                                value={choice.priceModifier}
+                                                onChange={e => {
+                                                    const newChoices = [...choices];
+                                                    newChoices[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                                    setChoices(newChoices);
+                                                }}
+                                                className="w-24 p-2 border rounded text-sm"
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setChoices(choices.filter((_, i) => i !== idx))}
+                                            className="p-2 text-red-500 hover:bg-red-50 rounded"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2">

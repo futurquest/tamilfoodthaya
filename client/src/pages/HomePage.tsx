@@ -4,7 +4,6 @@ import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 export const HomePage = () => {
@@ -57,25 +56,21 @@ export const HomePage = () => {
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         <HighlightCard
-                            id="highlight-1"
                             name="Mutton Kottu Roti"
                             price="€ 14,50"
                             img="https://images.unsplash.com/photo-1630409351241-e90e7f5e434d?auto=format&fit=crop&q=80&w=400"
                         />
                         <HighlightCard
-                            id="highlight-2"
                             name="Chicken 65"
                             price="€ 8,50"
                             img="https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&q=80&w=400"
                         />
                         <HighlightCard
-                            id="highlight-3"
                             name="Masala Dosa"
                             price="€ 11,00"
                             img="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&q=80&w=400"
                         />
                         <HighlightCard
-                            id="highlight-4"
                             name="Egg Hoppers (3 st)"
                             price="€ 9,50"
                             img="https://images.unsplash.com/photo-1610057099431-d746e19d4001?auto=format&fit=crop&q=80&w=400"
@@ -98,24 +93,7 @@ const FeatureItem = ({ title, desc, icon }: { title: string; desc: string; icon:
     </motion.div>
 );
 
-import { useCart } from '../context/CartContext';
-
-const HighlightCard = ({ name, price, img, id }: { name: string; price: string; img: string, id: string }) => {
-    const { t } = useTranslation();
-    const { addToCart } = useCart();
-
-    const handleAdd = () => {
-        const priceNum = parseFloat(price.replace('€', '').replace(',', '.').trim());
-        addToCart({
-            menuItemId: id,
-            name,
-            price: priceNum,
-            quantity: 1,
-            spiceLevel: 0
-        });
-        toast.success(`added ${name}`);
-    };
-
+const HighlightCard = ({ name, price, img }: { name: string; price: string; img: string }) => {
     return (
         <Card className="group cursor-pointer">
             <div className="h-48 relative overflow-hidden">
@@ -126,13 +104,6 @@ const HighlightCard = ({ name, price, img, id }: { name: string; price: string; 
             </div>
             <CardContent>
                 <h3 className="font-bold text-lg text-tamil-charcoal">{name}</h3>
-                <Button
-                    variant="ghost"
-                    className="p-0 mt-4 hover:bg-transparent text-tamil-maroon group-hover:translate-x-2 transition-transform"
-                    onClick={handleAdd}
-                >
-                    {t('home.add')}
-                </Button>
             </CardContent>
         </Card>
     );

@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Header, Footer } from './components/Header';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
-import { CheckoutPage } from './pages/CheckoutPage';
 import { CateringPage } from './pages/CateringPage';
 import { ContactPage } from './pages/ContactPage';
 import { LoginPage } from './pages/auth/LoginPage';
@@ -13,7 +12,6 @@ import { AdminLayout } from './components/AdminLayout';
 import { Dashboard } from './pages/admin/Dashboard';
 import { ManageMenu } from './pages/admin/ManageMenu';
 import { ManageCategories } from './pages/admin/ManageCategories';
-import { ManageOrders } from './pages/admin/ManageOrders';
 import { ManageLeads } from './pages/admin/ManageLeads';
 import { ViewMessages } from './pages/admin/ViewMessages';
 import { SettingsPage } from './pages/admin/SettingsPage';
@@ -35,7 +33,6 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
             <Route path="/menu" element={<PublicLayout><MenuPage /></PublicLayout>} />
-            <Route path="/checkout" element={<PublicLayout><CheckoutPage /></PublicLayout>} />
             <Route path="/catering" element={<PublicLayout><CateringPage /></PublicLayout>} />
             <Route path="/catering/checkout/:packageId" element={<PublicLayout><CateringCheckoutPage /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
@@ -50,7 +47,6 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<AdminLayout />}>
                 <Route path="/admin/dashboard" element={<Dashboard />} />
-                <Route path="/admin/orders" element={<ManageOrders />} />
                 <Route path="/admin/leads" element={<ManageLeads />} />
                 <Route path="/admin/menu" element={<ManageMenu />} />
                 <Route path="/admin/categories" element={<ManageCategories />} />

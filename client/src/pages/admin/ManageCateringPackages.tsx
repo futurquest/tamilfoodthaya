@@ -5,16 +5,8 @@ import { Plus, Trash2, Edit2, ChevronDown, ChevronUp, Save, X } from 'lucide-rea
 import { getCateringPackages, createCateringPackage, updateCateringPackage, deleteCateringPackage } from '../../hooks/useApi';
 import { toast } from 'react-hot-toast';
 
-interface Choice {
-    name: string;
-    priceModifier: number;
-}
-
 interface Item {
-    name: string;
-    description: string;
-    basePrice: number;
-    choices: Choice[];
+    menuItem: any; // ID or populated object
 }
 
 interface Category {
@@ -37,15 +29,17 @@ interface Package {
     sortOrder: number;
 }
 
-const emptyChoice: Choice = { name: '', priceModifier: 0 };
-const emptyItem: Item = { name: '', description: '', basePrice: 0, choices: [] };
+const emptyItem: Item = { menuItem: '' };
 const emptyCategory: Category = { name: '', description: '', minSelect: 1, maxSelect: 1, items: [{ ...emptyItem }] };
 const emptyPackage: Package = {
     name: '', description: '', basePrice: 0, minGuests: 20, maxGuests: 500,
     categories: [], available: true, sortOrder: 0,
 };
 
+import { useMenu } from '../../hooks/useApi';
+
 export const ManageCateringPackages = () => {
+    const { menuItems } = useMenu();
     const [packages, setPackages] = useState<Package[]>([]);
     const [editing, setEditing] = useState<Package | null>(null);
     const [loading, setLoading] = useState(true);
@@ -132,35 +126,6 @@ export const ManageCateringPackages = () => {
         if (!editing) return;
         const cats = [...editing.categories];
         cats[catIdx] = { ...cats[catIdx], items: cats[catIdx].items.filter((_, i) => i !== itemIdx) };
-        setEditing({ ...editing, categories: cats });
-    };
-
-    const addChoice = (catIdx: number, itemIdx: number) => {
-        if (!editing) return;
-        const cats = [...editing.categories];
-        const items = [...cats[catIdx].items];
-        items[itemIdx] = { ...items[itemIdx], choices: [...items[itemIdx].choices, { ...emptyChoice }] };
-        cats[catIdx] = { ...cats[catIdx], items };
-        setEditing({ ...editing, categories: cats });
-    };
-
-    const updateChoice = (catIdx: number, itemIdx: number, choiceIdx: number, field: string, value: any) => {
-        if (!editing) return;
-        const cats = [...editing.categories];
-        const items = [...cats[catIdx].items];
-        const choices = [...items[itemIdx].choices];
-        choices[choiceIdx] = { ...choices[choiceIdx], [field]: value };
-        items[itemIdx] = { ...items[itemIdx], choices };
-        cats[catIdx] = { ...cats[catIdx], items };
-        setEditing({ ...editing, categories: cats });
-    };
-
-    const removeChoice = (catIdx: number, itemIdx: number, choiceIdx: number) => {
-        if (!editing) return;
-        const cats = [...editing.categories];
-        const items = [...cats[catIdx].items];
-        items[itemIdx] = { ...items[itemIdx], choices: items[itemIdx].choices.filter((_, i) => i !== choiceIdx) };
-        cats[catIdx] = { ...cats[catIdx], items };
         setEditing({ ...editing, categories: cats });
     };
 
@@ -279,36 +244,19 @@ export const ManageCateringPackages = () => {
                                             {cat.items.map((item, itemIdx) => (
                                                 <div key={itemIdx} className="bg-gray-50 rounded-md p-3 space-y-2">
                                                     <div className="flex gap-2 items-start">
-                                                        <div className="flex-grow grid md:grid-cols-3 gap-2">
-                                                            <input value={item.name} onChange={e => updateItem(catIdx, itemIdx, 'name', e.target.value)}
-                                                                className="px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-tamil-maroon outline-none" placeholder="Item name" />
-                                                            <input value={item.description} onChange={e => updateItem(catIdx, itemIdx, 'description', e.target.value)}
-                                                                className="px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-tamil-maroon outline-none" placeholder="Description (optional)" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <span className="text-xs text-gray-500 whitespace-nowrap">€ p.p.</span>
-                                                                <input type="number" step="0.50" value={item.basePrice} onChange={e => updateItem(catIdx, itemIdx, 'basePrice', parseFloat(e.target.value) || 0)}
-                                                                    className="w-full px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-tamil-maroon outline-none" />
-                                                            </div>
+                                                        <div className="flex-grow">
+                                                            <select
+                                                                value={typeof item.menuItem === 'object' && item.menuItem ? item.menuItem._id : item.menuItem || ''}
+                                                                onChange={e => updateItem(catIdx, itemIdx, 'menuItem', e.target.value)}
+                                                                className="w-full px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-tamil-maroon outline-none"
+                                                            >
+                                                                <option value="">Select Menu Item</option>
+                                                                {menuItems.data?.map((mi: any) => (
+                                                                    <option key={mi._id} value={mi._id}>{mi.name} - €{mi.price?.toFixed(2)}</option>
+                                                                ))}
+                                                            </select>
                                                         </div>
                                                         <button onClick={() => removeItem(catIdx, itemIdx)} className="text-red-400 hover:text-red-600 mt-1"><Trash2 size={14} /></button>
-                                                    </div>
-
-                                                    {/* Choices */}
-                                                    <div className="pl-4">
-                                                        {item.choices.map((choice, choiceIdx) => (
-                                                            <div key={choiceIdx} className="flex gap-2 items-center mb-1">
-                                                                <span className="text-[10px] text-gray-400 uppercase font-bold w-12">Choice</span>
-                                                                <input value={choice.name} onChange={e => updateChoice(catIdx, itemIdx, choiceIdx, 'name', e.target.value)}
-                                                                    className="px-2 py-1 border rounded text-xs flex-grow focus:ring-1 focus:ring-tamil-maroon outline-none" placeholder="Choice name" />
-                                                                <span className="text-xs text-gray-400">+€</span>
-                                                                <input type="number" step="0.50" value={choice.priceModifier} onChange={e => updateChoice(catIdx, itemIdx, choiceIdx, 'priceModifier', parseFloat(e.target.value) || 0)}
-                                                                    className="px-2 py-1 border rounded text-xs w-20 focus:ring-1 focus:ring-tamil-maroon outline-none" />
-                                                                <button onClick={() => removeChoice(catIdx, itemIdx, choiceIdx)} className="text-red-400 hover:text-red-600"><X size={12} /></button>
-                                                            </div>
-                                                        ))}
-                                                        <button onClick={() => addChoice(catIdx, itemIdx)} className="text-tamil-maroon text-[10px] font-bold flex items-center gap-1 hover:underline mt-1">
-                                                            <Plus size={10} />Add Choice
-                                                        </button>
                                                     </div>
                                                 </div>
                                             ))}

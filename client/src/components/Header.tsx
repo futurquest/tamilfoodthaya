@@ -11,8 +11,6 @@ import { SiInstagram, SiFacebook } from '@icons-pack/react-simple-icons';
 
 
 import { NavLink } from 'react-router-dom';
-import { CartDrawer } from './CartDrawer';
-import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -26,8 +24,6 @@ import { useLocation } from 'react-router-dom';
 
 export const Header = () => {
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isCartOpen, setIsCartOpen] = useState(false);
-    const { cart } = useCart();
     const { user, logout, isAdmin } = useAuth();
     const { t } = useTranslation();
     const location = useLocation();
@@ -37,8 +33,6 @@ export const Header = () => {
 
     // Header should be dark (scrolled style) if not home, or if home and scrolled
     const isDarkHeader = !isHome || isScrolled;
-
-    const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
     const navLinks = [
         { name: t('nav.home'), path: '/' },
@@ -106,27 +100,11 @@ export const Header = () => {
                                 <Button variant="ghost" className={isDarkHeader ? 'text-tamil-charcoal' : 'text-white'}>{t('nav.login')}</Button>
                             </NavLink>
                         )}
-
-                        <Button
-                            variant="primary"
-                            size="sm"
-                            className="flex gap-2 relative"
-                            onClick={() => setIsCartOpen(true)}
-                        >
-                            <ShoppingBag size={18} />
-                            <span>{t('nav.cart')}</span>
-                            {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-tamil-gold text-tamil-charcoal text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </Button>
                     </nav>
 
                     {/* TODO: Add mobile nav toggle & cart button */}
                 </Container>
             </header>
-            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </>
     );
 };

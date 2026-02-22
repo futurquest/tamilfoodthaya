@@ -3,17 +3,13 @@ import { Container } from '../components/ui/Container';
 import { useMenu } from '../hooks/useApi';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardFooter } from '../components/ui/Card';
-import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from '../components/ui/Spinner';
-import { toast } from 'react-hot-toast';
-import { Plus, Minus } from 'lucide-react';
 
 export const MenuPage = () => {
     const { categories, menuItems } = useMenu();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const { addToCart } = useCart();
     const { t } = useTranslation();
 
     if (categories.isLoading || menuItems.isLoading) {
@@ -60,7 +56,7 @@ export const MenuPage = () => {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence mode="popLayout">
                         {filteredItems?.map((item: any) => (
-                            <MenuItemCard key={item._id} item={item} addToCart={addToCart} />
+                            <MenuItemCard key={item._id} item={item} />
                         ))}
                     </AnimatePresence>
                 </div>
@@ -69,25 +65,7 @@ export const MenuPage = () => {
     );
 };
 
-const MenuItemCard = ({ item, addToCart }: { item: any; addToCart: any }) => {
-    const { t } = useTranslation();
-    const [quantity, setQuantity] = useState(1);
-
-    const handleAddToCart = () => {
-        addToCart({
-            menuItemId: item._id,
-            name: item.name,
-            price: item.price,
-            quantity: quantity,
-            spiceLevel: 0
-        });
-        toast.success(`${quantity}x ${item.name} ${t('menu.addedToCart')}`, {
-            icon: '🛒',
-            duration: 2000,
-        });
-        setQuantity(1); // Reset quantity after adding
-    };
-
+const MenuItemCard = ({ item }: { item: any }) => {
     return (
         <motion.div
             layout
@@ -117,33 +95,6 @@ const MenuItemCard = ({ item, addToCart }: { item: any; addToCart: any }) => {
                     </div>
                     <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
                 </CardContent>
-                <CardFooter className="flex-col gap-3">
-                    <div className="flex items-center justify-center gap-4 w-full">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                            className="w-10 h-10 p-0"
-                        >
-                            <Minus size={16} />
-                        </Button>
-                        <span className="font-bold text-lg w-8 text-center">{quantity}</span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setQuantity(quantity + 1)}
-                            className="w-10 h-10 p-0"
-                        >
-                            <Plus size={16} />
-                        </Button>
-                    </div>
-                    <Button
-                        className="w-full"
-                        onClick={handleAddToCart}
-                    >
-                        {t('menu.addToCart')}
-                    </Button>
-                </CardFooter>
             </Card>
         </motion.div>
     );

@@ -47,13 +47,17 @@ tamilfoodthaya/
 1. `cd server`
 2. `npm install`
 3. Create `.env` file (see [Environment Variables](#environment-variables))
-4. `npm run start:dev`
+4. Run the database seeder to initialize the menu and catering packages: 
+   `npx ts-node src/seed.ts`
+5. Start the backend server:
+   `npm run start:dev`
 
 ### Frontend (Client)
-1. `cd client`
+1. Open a new terminal and `cd client`
 2. `npm install`
-3. Create `.env` file
-4. `npm run dev`
+3. Create `.env` file (see [Environment Variables](#environment-variables))
+4. Start the frontend server:
+   `npm run dev`
 
 ## 🔐 Environment Variables
 

@@ -10,7 +10,8 @@ import { CheckCircle, ChevronRight, ChevronLeft, Users, Calendar, MapPin, ArrowR
 import { SEO } from '../components/SEO';
 
 interface Choice { name: string; priceModifier: number; }
-interface Item { name: string; description: string; basePrice: number; choices: Choice[]; }
+interface MenuItem { _id: string; name: string; description: string; price: number; choices: Choice[]; image?: string; }
+interface Item { menuItem: MenuItem; }
 interface Category { name: string; description: string; minSelect: number; maxSelect: number; items: Item[]; }
 interface Package {
     _id: string; name: string; description: string; basePrice: number;
@@ -18,6 +19,7 @@ interface Package {
 }
 
 interface SelectedItemState {
+    itemId: string;
     itemName: string;
     choiceName?: string;
     price: number;
@@ -57,19 +59,23 @@ export const CateringCheckoutPage = () => {
     }, [packageId, navigate]);
 
     // Toggle item selection
-    const toggleItem = (cat: Category, item: Item, choiceName?: string) => {
+    const toggleItem = (cat: Category, itemObj: Item, choiceName?: string) => {
+        const menuItem = itemObj.menuItem;
+        if (!menuItem) return;
+
         const catSels = selections[cat.name] || [];
-        const existingIdx = catSels.findIndex(s => s.itemName === item.name);
+        const existingIdx = catSels.findIndex(s => s.itemName === menuItem.name);
 
         if (existingIdx >= 0) {
             // Check if just changing choice
             if (choiceName !== undefined && catSels[existingIdx].choiceName !== choiceName) {
-                const choice = item.choices.find(c => c.name === choiceName);
+                const choice = menuItem.choices?.find(c => c.name === choiceName);
                 const updated = [...catSels];
                 updated[existingIdx] = {
-                    itemName: item.name,
+                    itemId: menuItem._id,
+                    itemName: menuItem.name,
                     choiceName,
-                    price: item.basePrice + (choice?.priceModifier || 0),
+                    price: menuItem.price + (choice?.priceModifier || 0),
                 };
                 setSelections({ ...selections, [cat.name]: updated });
             } else {
@@ -82,13 +88,14 @@ export const CateringCheckoutPage = () => {
                 toast.error(`Maximum ${cat.maxSelect} item(s) allowed for "${cat.name}"`);
                 return;
             }
-            const choice = choiceName ? item.choices.find(c => c.name === choiceName) : undefined;
+            const choice = choiceName ? menuItem.choices?.find(c => c.name === choiceName) : undefined;
             setSelections({
                 ...selections,
                 [cat.name]: [...catSels, {
-                    itemName: item.name,
+                    itemId: menuItem._id,
+                    itemName: menuItem.name,
                     choiceName,
-                    price: item.basePrice + (choice?.priceModifier || 0),
+                    price: menuItem.price + (choice?.priceModifier || 0),
                 }],
             });
         }
@@ -229,30 +236,45 @@ export const CateringCheckoutPage = () => {
                                                 </div>
 
                                                 <div className="grid gap-3">
-                                                    {cat.items.map((item, iIdx) => {
+                                                    {cat.items.map((itemObj, iIdx) => {
+                                                        const item = itemObj.menuItem;
+                                                        if (!item) return null;
                                                         const selected = isItemSelected(cat.name, item.name);
                                                         const selectedChoice = getSelectedChoice(cat.name, item.name);
                                                         return (
                                                             <Card key={iIdx} className={`cursor-pointer transition-all ${selected ? 'ring-2 ring-tamil-maroon shadow-md' : 'hover:shadow-sm'}`}>
                                                                 <CardContent className="p-4">
-                                                                    <div className="flex justify-between items-start" onClick={() => item.choices.length === 0 ? toggleItem(cat, item) : undefined}>
+                                                                    <div className="flex justify-between items-start" onClick={() => !item.choices || item.choices.length === 0 ? toggleItem(cat, itemObj) : undefined}>
                                                                         <div className="flex items-start gap-3 flex-grow">
                                                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all
                                                                                 ${selected ? 'border-tamil-maroon bg-tamil-maroon' : 'border-gray-300'}`}
-                                                                                onClick={(e) => { e.stopPropagation(); if (item.choices.length === 0) toggleItem(cat, item); }}>
+                                                                                onClick={(e) => { e.stopPropagation(); if (!item.choices || item.choices.length === 0) toggleItem(cat, itemObj); }}>
                                                                                 {selected && <CheckCircle size={14} className="text-white" />}
                                                                             </div>
+                                                                            {item.image && (
+                                                                                <div className="relative group">
+                                                                                    <div className="w-12 h-12 rounded overflow-hidden shrink-0">
+                                                                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                                                                                    </div>
+                                                                                    {/* Hover Popout Image */}
+                                                                                    <div className="absolute top-1/2 -translate-y-1/2 left-full ml-4 z-50 pointer-events-none opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition-all duration-200">
+                                                                                        <div className="bg-white p-2 rounded-lg shadow-xl border border-gray-100">
+                                                                                            <img src={item.image} alt={item.name} className="w-48 h-48 rounded object-cover" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            )}
                                                                             <div>
                                                                                 <h3 className="font-bold">{item.name}</h3>
                                                                                 {item.description && <p className="text-gray-500 text-sm mt-0.5">{item.description}</p>}
                                                                             </div>
                                                                         </div>
-                                                                        {item.basePrice > 0 && (
+                                                                        {item.price > 0 && (
                                                                             <span className="text-tamil-maroon font-bold text-sm whitespace-nowrap ml-4">
-                                                                                +€{item.basePrice.toFixed(2)} p.p.
+                                                                                +€{item.price.toFixed(2)} p.p.
                                                                             </span>
                                                                         )}
-                                                                        {item.basePrice === 0 && (
+                                                                        {item.price === 0 && (
                                                                             <span className="text-green-600 font-bold text-xs whitespace-nowrap ml-4">
                                                                                 Included
                                                                             </span>
@@ -260,11 +282,11 @@ export const CateringCheckoutPage = () => {
                                                                     </div>
 
                                                                     {/* Choice options */}
-                                                                    {item.choices.length > 0 && (
+                                                                    {item.choices && item.choices.length > 0 && (
                                                                         <div className="mt-3 pl-9 flex flex-wrap gap-2">
                                                                             {item.choices.map((choice, cIdx) => (
                                                                                 <button key={cIdx}
-                                                                                    onClick={() => toggleItem(cat, item, choice.name)}
+                                                                                    onClick={() => toggleItem(cat, itemObj, choice.name)}
                                                                                     className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all
                                                                                         ${selected && selectedChoice === choice.name
                                                                                             ? 'bg-tamil-maroon text-white'
