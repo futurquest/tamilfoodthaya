@@ -62,6 +62,9 @@ export class MenuController {
     }))
     async createItem(@Body() data: any, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
+        if (itemData.choices && typeof itemData.choices === 'string') {
+            try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }
+        }
         if (file) {
             // Construct the full URL
             const protocol = req.protocol;
@@ -85,6 +88,9 @@ export class MenuController {
     }))
     async updateItem(@Param('id') id: string, @Body() data: any, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
+        if (itemData.choices && typeof itemData.choices === 'string') {
+            try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }
+        }
         if (file) {
             const protocol = req.protocol;
             const host = req.get('host');

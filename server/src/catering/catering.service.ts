@@ -36,11 +36,11 @@ export class CateringService {
         if (!user || user.role !== 'admin') {
             query.available = true;
         }
-        return this.packageModel.find(query).sort({ sortOrder: 1 }).exec();
+        return this.packageModel.find(query).sort({ sortOrder: 1 }).populate('categories.items.menuItem').exec();
     }
 
     async findPackageById(id: string): Promise<CateringPackage> {
-        const pkg = await this.packageModel.findById(id).exec();
+        const pkg = await this.packageModel.findById(id).populate('categories.items.menuItem').exec();
         if (!pkg || !pkg.isActive) {
             throw new NotFoundException(`Package not found: ${id}`);
         }
@@ -67,7 +67,7 @@ export class CateringService {
 
     async createCateringOrder(data: any): Promise<CateringOrder> {
         // Validate that the package exists
-        const pkg = await this.packageModel.findById(data.packageId).exec();
+        const pkg = await this.packageModel.findById(data.packageId).populate('categories.items.menuItem').exec();
         if (!pkg) {
             throw new NotFoundException(`Package not found: ${data.packageId}`);
         }
@@ -118,20 +118,29 @@ export class CateringService {
 
             // Validate each selected item exists in the category and calculate price
             for (const selected of selection.selectedItems) {
-                const item = category.items.find((i) => i.name === selected.itemName);
-                if (!item) {
+                const itemEntry = category.items.find(
+                    (i: any) =>
+                        (selected.itemId && i.menuItem._id.toString() === selected.itemId) ||
+                        i.menuItem.name === selected.itemName
+                );
+
+                if (!itemEntry) {
                     throw new BadRequestException(
-                        `Item "${selected.itemName}" not found in category "${category.name}"`,
+                        `Item "${selected.itemName || selected.itemId}" not found in category "${category.name}"`,
                     );
                 }
 
-                let itemPrice = item.basePrice;
+                const menuItem = itemEntry.menuItem as any;
+                let itemPrice = menuItem.price;
+
+                // Ensure the order snapshot has the correct name
+                selected.itemName = menuItem.name;
 
                 if (selected.choiceName) {
-                    const choice = item.choices.find((c) => c.name === selected.choiceName);
+                    const choice = menuItem.choices?.find((c: any) => c.name === selected.choiceName);
                     if (!choice) {
                         throw new BadRequestException(
-                            `Choice "${selected.choiceName}" not found for item "${selected.itemName}"`,
+                            `Choice "${selected.choiceName}" not found for item "${menuItem.name}"`,
                         );
                     }
                     itemPrice += choice.priceModifier;

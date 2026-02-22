@@ -5,6 +5,8 @@ export enum CategoryType {
     VEG = 'Veg',
     NON_VEG = 'Non-Veg',
     DRINKS = 'Drinks',
+    FOOD = 'food',
+    BEVERAGE = 'beverage',
 }
 
 @Schema({ timestamps: true })

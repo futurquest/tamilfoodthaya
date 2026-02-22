@@ -3,29 +3,12 @@ import { Document } from 'mongoose';
 
 // --- Embedded Sub-Schemas ---
 
-@Schema({ _id: false })
-export class CateringChoice {
-    @Prop({ required: true })
-    name: string;
-
-    @Prop({ type: Number, default: 0 })
-    priceModifier: number; // additional cost per person, e.g. +€2
-}
-export const CateringChoiceSchema = SchemaFactory.createForClass(CateringChoice);
+import { Types } from 'mongoose';
 
 @Schema({ _id: false })
 export class CateringItem {
-    @Prop({ required: true })
-    name: string;
-
-    @Prop()
-    description: string;
-
-    @Prop({ type: Number, default: 0 })
-    basePrice: number; // per-person contribution
-
-    @Prop({ type: [CateringChoiceSchema], default: [] })
-    choices: CateringChoice[];
+    @Prop({ type: Types.ObjectId, ref: 'MenuItem', required: true })
+    menuItem: Types.ObjectId;
 }
 export const CateringItemSchema = SchemaFactory.createForClass(CateringItem);
 
