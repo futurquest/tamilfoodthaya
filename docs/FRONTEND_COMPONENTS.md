@@ -20,7 +20,9 @@ App
 │   │   └── InputField
 │   └── Admin/Dashboard
 │       ├── StatCard
-│       └── TableRow
+│       ├── TableRow
+│       ├── ManageLeads (Kanban Board UI)
+│       └── ManageCateringOrders (Data Table UI)
 └── Footer
 ```
 
@@ -58,6 +60,10 @@ App
 ### `AuthContext`
 - Manages JWT tokens and user roles for the Admin panel.
 - Exports `isAdmin` helper.
+
+### `Data Fetching` (React Query)
+- Handled largely by `@tanstack/react-query` with centralized Axios endpoints in `useApi.ts`.
+- **Note**: Paginated backend responses return structured objects e.g., `{ data, total, page, limit }`. React Query components explicitly map to `response.data` internally to avoid array mapping crashes.
 
 ## 🎨 Styles
 - **Tailwind CSS**: Used for all styling.

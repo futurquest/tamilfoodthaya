@@ -31,15 +31,18 @@ Built with MongoDB & Mongoose.
 - `paymentStatus` (String): `unpaid`, `paid`.
 - `stripeSessionId` (String): For tracking.
 - `utmSource` (String): Attribution.
+> [!NOTE] 
+> Modifying Stock and Order statuses concurrently via webhooks uses MongoDB `ClientSession` wrapped in `session.withTransaction()` to ensure stock integrity and prevent race conditions.
 
 ## 🍱 Catering Module
 
-### CateringQuote
+### Lead (Unified from CateringQuote & Contacts)
 - `name`, `email`, `phone` (Strings).
-- `eventDate` (Date).
-- `guests` (Number).
-- `location` (String).
-- `budgetRange`, `eventType`, `notes` (Strings).
+- `message` (String).
+- `eventDate` (Date - Optional).
+- `guests` (Number - Optional).
+- `location` (String - Optional).
+- `status` (Enum: `OPEN`, `IN_PROGRESS`, `COMPLETED`).
 - `utmSource`, `campaign` (Strings).
 
 ### CateringPackage

@@ -21,9 +21,15 @@ Navigate to **Bestellingen** to view all customer orders.
 - **Exporting**: Click "CSV Export" to download order data for accounting.
 
 ## 🍱 Managing Leads
-Navigate to **Leads** to view catering quote requests and contact form submissions.
-- **Status**: Mark leads as "Opgevolgd" (Followed up) or "In Behandeling" (In progress).
-- **Attribution**: View the source (Meta Ads, Google, etc.) to evaluate marketing performance.
+Navigate to **Leads** to view all incoming messages, catering quote requests, and contact form submissions in a unified view.
+- **Kanban Board**: The dashboard is structured into three clear columns: `Nieuw (Open)`, `In Behandeling`, and `Afgerond`.
+- **Classification Tags**: Leads explicitly label their `utmSource` attributing them to generic website forms, Meta Ad Campaigns, or explicit Catering Quote requests.
+- **Actions**: Utilize the responsive inline action buttons to quickly shift a lead into the `In Behandeling` (In Progress) or `COMPLETED` phases.
+
+## 🥂 Managing Catering Orders
+Navigate to **Catering Orders** to manage explicit multi-tier catering selections.
+- **Responsive Tracking**: Utilize the status permutations (`Pending`, `Confirmed`, `Preparing`, `Completed`) and search text to instantly query large datasets. 
+- **Pagination**: Catering orders are returned paginated natively to ensure dashboard speeds remain optimal.
 
 ## 🍽 Menu Management
 Navigate to **Menu Beheer** to update the restaurant offerings.
