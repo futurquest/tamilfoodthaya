@@ -1,5 +1,4 @@
-
-import { createMessage, getSettings } from '../hooks/useApi';
+import { createLead, getSettings } from '../hooks/useApi';
 import { Container } from '../components/ui/Container';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
@@ -20,7 +19,7 @@ export const ContactPage = () => {
 
     const onSubmit = async (data: any) => {
         try {
-            await createMessage(data);
+            await createLead(data);
             toast.success('Bedankt! Uw bericht is verzonden.');
             reset();
         } catch (error) {

@@ -17,6 +17,9 @@ import { ManageOrders } from './pages/admin/ManageOrders';
 import { ManageLeads } from './pages/admin/ManageLeads';
 import { ViewMessages } from './pages/admin/ViewMessages';
 import { SettingsPage } from './pages/admin/SettingsPage';
+import { ManageCateringPackages } from './pages/admin/ManageCateringPackages';
+import { ManageCateringOrders } from './pages/admin/ManageCateringOrders';
+import { CateringCheckoutPage } from './pages/CateringCheckoutPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -34,6 +37,7 @@ function App() {
             <Route path="/menu" element={<PublicLayout><MenuPage /></PublicLayout>} />
             <Route path="/checkout" element={<PublicLayout><CheckoutPage /></PublicLayout>} />
             <Route path="/catering" element={<PublicLayout><CateringPage /></PublicLayout>} />
+            <Route path="/catering/checkout/:packageId" element={<PublicLayout><CateringCheckoutPage /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
 
             {/* Auth Routes */}
@@ -52,6 +56,8 @@ function App() {
                 <Route path="/admin/categories" element={<ManageCategories />} />
                 <Route path="/admin/messages" element={<ViewMessages />} />
                 <Route path="/admin/settings" element={<SettingsPage />} />
+                <Route path="/admin/catering-packages" element={<ManageCateringPackages />} />
+                <Route path="/admin/catering-orders" element={<ManageCateringOrders />} />
               </Route>
             </Route>
           </Routes>

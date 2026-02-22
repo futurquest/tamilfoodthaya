@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, ShoppingCart, Users, BookOpen, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Users, BookOpen, Settings, LogOut, UtensilsCrossed, ClipboardList } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +20,8 @@ export const AdminLayout = () => {
         { name: t('admin.layout.leads'), path: '/admin/leads', icon: <Users size={20} /> },
         { name: t('admin.layout.menu'), path: '/admin/menu', icon: <BookOpen size={20} /> },
         { name: t('admin.layout.categories'), path: '/admin/categories', icon: <BookOpen size={20} /> },
+        { name: 'Catering Packages', path: '/admin/catering-packages', icon: <UtensilsCrossed size={20} /> },
+        { name: 'Catering Orders', path: '/admin/catering-orders', icon: <ClipboardList size={20} /> },
         { name: t('admin.layout.settings'), path: '/admin/settings', icon: <Settings size={20} /> },
     ];
 

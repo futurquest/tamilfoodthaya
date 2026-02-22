@@ -1,12 +1,15 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { createLead } from '../hooks/useApi';
+import { createLead, getCateringPackages } from '../hooks/useApi';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Container } from '../components/ui/Container';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Users, MapPin } from 'lucide-react';
+import { CheckCircle, Clock, Users, MapPin, ArrowRight, Loader2 } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 const quoteSchema = z.object({
     name: z.string().min(2, 'Naam is verplicht'),
@@ -22,16 +25,43 @@ const quoteSchema = z.object({
 type QuoteForm = z.infer<typeof quoteSchema>;
 
 import { toast } from 'react-hot-toast';
-
 import { useTranslation } from 'react-i18next';
+
+interface CateringPackageData {
+    _id: string;
+    name: string;
+    description: string;
+    basePrice: number;
+    minGuests: number;
+    maxGuests?: number;
+    categories: { name: string; items: any[] }[];
+    available: boolean;
+}
 
 export const CateringPage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const [packages, setPackages] = useState<CateringPackageData[]>([]);
+    const [loadingPackages, setLoadingPackages] = useState(true);
     const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } = useForm<QuoteForm>({
         resolver: zodResolver(quoteSchema)
     });
 
     const selectedPackage = watch('package');
+
+    useEffect(() => {
+        const loadPackages = async () => {
+            try {
+                const data = await getCateringPackages();
+                setPackages(data);
+            } catch {
+                // Silently fail - packages section will show empty state
+            } finally {
+                setLoadingPackages(false);
+            }
+        };
+        loadPackages();
+    }, []);
 
     const onSubmit = async (data: QuoteForm) => {
         try {
@@ -44,14 +74,23 @@ export const CateringPage = () => {
         }
     };
 
-    const handlePackageSelect = (packageName: string) => {
+    const handlePackageSelect = (pkg: CateringPackageData) => {
+        navigate(`/catering/checkout/${pkg._id}`);
+    };
+
+    const handleQuotePackageSelect = (packageName: string) => {
         setValue('package', packageName);
         document.getElementById('quote-form')?.scrollIntoView({ behavior: 'smooth' });
         toast.success(`Pakket ${packageName} geselecteerd`);
     };
 
+    // Featured package is the middle one (or the most expensive if odd count)
+    const featuredIdx = packages.length > 2 ? 1 : -1;
+
     return (
         <div className="pt-24 pb-24">
+            <SEO title="Catering" description="Premium Tamil catering packages for your events." />
+
             {/* Hero Section */}
             <section className="bg-tamil-charcoal text-white py-24 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center" />
@@ -62,48 +101,43 @@ export const CateringPage = () => {
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10">
                         {t('catering.hero.desc')}
                     </p>
-                    <Button size="lg" onClick={() => document.getElementById('quote-form')?.scrollIntoView({ behavior: 'smooth' })}>
+                    <Button size="lg" onClick={() => document.getElementById('packages-section')?.scrollIntoView({ behavior: 'smooth' })}>
                         {t('catering.hero.button')}
                     </Button>
                 </Container>
             </section>
 
             {/* Packages Section */}
-            <section className="py-24 bg-white">
+            <section id="packages-section" className="py-24 bg-white">
                 <Container>
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-tamil-charcoal mb-4">{t('catering.packages.title')}</h2>
                         <p className="text-gray-500">{t('catering.packages.subtitle')}</p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <PackageCard
-                            name={t('catering.packages.silver.name')}
-                            price="€ 22,50 p.p."
-                            desc={t('catering.packages.silver.desc')}
-                            features={['3 Hoofdgerechten', '2 Bijgerechten', 'Witte Rijst', 'Salade & Achar']}
-                            btnText={t('catering.packages.selectButton')}
-                            onSelect={() => handlePackageSelect('Silver')}
-                        />
-                        <PackageCard
-                            name={t('catering.packages.gold.name')}
-                            price="€ 29,50 p.p."
-                            featured
-                            badge={t('catering.packages.gold.badge')}
-                            desc={t('catering.packages.gold.desc')}
-                            features={['5 Hoofdgerechten', '4 Bijgerechten', 'Biryani & Rijst', 'Hoppers Live Cooking', '2 Desserts']}
-                            btnText={t('catering.packages.selectButton')}
-                            onSelect={() => handlePackageSelect('Gold')}
-                        />
-                        <PackageCard
-                            name={t('catering.packages.platinum.name')}
-                            price="€ 38,50 p.p."
-                            desc={t('catering.packages.platinum.desc')}
-                            features={['Full Menu Selection', 'Live Seafood Station', 'Signature Drinks', 'Full Staff Service', 'Traditionele Decoratie']}
-                            btnText={t('catering.packages.selectButton')}
-                            onSelect={() => handlePackageSelect('Platinum')}
-                        />
-                    </div>
+                    {loadingPackages ? (
+                        <div className="flex justify-center py-12">
+                            <Loader2 className="animate-spin text-tamil-maroon" size={32} />
+                        </div>
+                    ) : packages.length === 0 ? (
+                        <div className="text-center py-12 text-gray-400">
+                            <p className="text-lg font-bold mb-2">Packages coming soon</p>
+                            <p className="text-sm">Contact us below for a custom quote.</p>
+                        </div>
+                    ) : (
+                        <div className={`grid gap-8 ${packages.length === 1 ? 'max-w-md mx-auto' : packages.length === 2 ? 'md:grid-cols-2 max-w-3xl mx-auto' : 'md:grid-cols-3'}`}>
+                            {packages.map((pkg, idx) => (
+                                <PackageCard
+                                    key={pkg._id}
+                                    pkg={pkg}
+                                    featured={idx === featuredIdx}
+                                    badge={idx === featuredIdx ? 'Meest Gekozen' : undefined}
+                                    onSelect={() => handlePackageSelect(pkg)}
+                                    onQuote={() => handleQuotePackageSelect(pkg.name)}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </Container>
             </section>
 
@@ -160,29 +194,53 @@ export const CateringPage = () => {
     );
 };
 
-const PackageCard = ({ name, price, desc, features, featured, onSelect, badge, btnText }: any) => (
-    <Card className={featured ? 'border-tamil-maroon border-2 scale-105 shadow-xl relative z-10' : ''}>
-        {featured && (
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-tamil-maroon text-white text-xs font-bold px-4 py-1 rounded-full uppercase">
-                {badge || 'Meest Gekozen'}
-            </div>
-        )}
-        <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-2">{name}</h3>
-            <div className="text-3xl font-bold text-tamil-maroon mb-4">{price}</div>
-            <p className="text-gray-500 text-sm mb-8">{desc}</p>
-            <ul className="text-left space-y-4 mb-8">
-                {features.map((f: string, i: number) => (
-                    <li key={i} className="flex gap-2 text-sm font-medium items-center">
-                        <CheckCircle size={18} className="text-green-500 shrink-0" />
-                        <span>{f}</span>
-                    </li>
-                ))}
-            </ul>
-            <Button variant={featured ? 'primary' : 'outline'} className="w-full" onClick={onSelect}>{btnText || 'Pakket Kiezen'}</Button>
-        </CardContent>
-    </Card>
-);
+const PackageCard = ({ pkg, featured, onSelect, onQuote, badge }: {
+    pkg: CateringPackageData; featured?: boolean; onSelect: () => void; onQuote: () => void; badge?: string;
+}) => {
+    const totalItems = pkg.categories.reduce((acc, c) => acc + c.items.length, 0);
+
+    return (
+        <Card className={featured ? 'border-tamil-maroon border-2 scale-105 shadow-xl relative z-10' : ''}>
+            {featured && badge && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-tamil-maroon text-white text-xs font-bold px-4 py-1 rounded-full uppercase">
+                    {badge}
+                </div>
+            )}
+            <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+                <div className="text-3xl font-bold text-tamil-maroon mb-2">
+                    €{pkg.basePrice.toFixed(2)} <span className="text-base font-normal text-gray-400">p.p.</span>
+                </div>
+                <p className="text-gray-500 text-sm mb-6">{pkg.description}</p>
+
+                <div className="text-left space-y-3 mb-6">
+                    {pkg.categories.map((cat, i) => (
+                        <div key={i} className="flex gap-2 text-sm items-start">
+                            <CheckCircle size={16} className="text-green-500 shrink-0 mt-0.5" />
+                            <span>
+                                <strong>{cat.name}</strong>
+                                <span className="text-gray-400 ml-1">({cat.items.length} options)</span>
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="text-xs text-gray-400 mb-6">
+                    {totalItems} items · {pkg.minGuests}–{pkg.maxGuests || '∞'} guests
+                </div>
+
+                <div className="space-y-2">
+                    <Button variant={featured ? 'primary' : 'outline'} className="w-full gap-2" onClick={onSelect}>
+                        Customize & Order <ArrowRight size={16} />
+                    </Button>
+                    <button onClick={onQuote} className="w-full text-xs text-gray-400 hover:text-tamil-maroon underline transition-colors">
+                        Or request a custom quote
+                    </button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
 
 const BenefitItem = ({ icon, title, desc }: any) => (
     <div className="flex gap-4">

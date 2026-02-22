@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+    baseURL: import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/api/v1` : 'http://localhost:3000/api/v1',
 });
 
 api.interceptors.request.use((config) => {
@@ -49,3 +49,15 @@ export const deleteCategory = (id: string) => api.delete(`/menu/categories/${id}
 export const createMenuItem = (data: FormData) => api.post('/menu/items', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => res.data);
 export const updateMenuItem = (id: string, data: FormData) => api.patch(`/menu/items/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => res.data);
 export const deleteMenuItem = (id: string) => api.delete(`/menu/items/${id}`).then((res) => res.data);
+
+// Catering Packages API
+export const getCateringPackages = () => api.get('/catering/packages').then((res) => res.data);
+export const getCateringPackage = (id: string) => api.get(`/catering/packages/${id}`).then((res) => res.data);
+export const createCateringPackage = (data: any) => api.post('/catering/packages', data).then((res) => res.data);
+export const updateCateringPackage = (id: string, data: any) => api.patch(`/catering/packages/${id}`, data).then((res) => res.data);
+export const deleteCateringPackage = (id: string) => api.delete(`/catering/packages/${id}`).then((res) => res.data);
+
+// Catering Orders API
+export const createCateringOrder = (data: any) => api.post('/catering/orders', data).then((res) => res.data);
+export const getCateringOrders = () => api.get('/catering/orders').then((res) => res.data);
+export const updateCateringOrderStatus = (id: string, status: string) => api.patch(`/catering/orders/${id}/status`, { status }).then((res) => res.data);

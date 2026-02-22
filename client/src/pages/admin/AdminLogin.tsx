@@ -5,8 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+import { loginUser } from '../../hooks/useApi';
 const loginSchema = z.object({
     username: z.string().min(1, 'Gebruikersnaam is verplicht'),
     password: z.string().min(1, 'Wachtwoord is verplicht'),
@@ -23,8 +22,8 @@ export const AdminLogin = () => {
 
     const onSubmit = async (data: LoginForm) => {
         try {
-            const response = await axios.post('http://localhost:3000/auth/login', data);
-            login(response.data.access_token, response.data.user);
+            const response = await loginUser(data);
+            login(response.access_token, response.user);
             navigate('/admin/dashboard');
         } catch (error) {
             alert('Ongeldige inloggegevens.');

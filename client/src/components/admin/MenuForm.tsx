@@ -14,7 +14,7 @@ interface MenuFormProps {
 export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     const { t } = useTranslation();
     const { categories } = useMenu();
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm({
         defaultValues: initialData || {
             available: true,
             stockCount: 0,
