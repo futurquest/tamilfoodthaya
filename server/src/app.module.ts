@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WinstonModule } from 'nest-winston';
 import { loggerConfig } from './logger.config';
 import { AppController } from './app.controller';
@@ -16,10 +17,12 @@ import { MessageModule } from './message/message.module';
 import { SettingsModule } from './settings/settings.module';
 import { AddonModule } from './addon/addon.module';
 import { CouponModule } from './coupon/coupon.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
     WinstonModule.forRoot(loggerConfig),
     ThrottlerModule.forRoot([{
       ttl: 60000, // 60 seconds
@@ -42,6 +45,7 @@ import { CouponModule } from './coupon/coupon.module';
     SettingsModule,
     AddonModule,
     CouponModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

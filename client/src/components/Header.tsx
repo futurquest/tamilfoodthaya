@@ -72,9 +72,9 @@ export const Header = () => {
 
                         {user ? (
                             <div className="flex items-center gap-3">
-                                <span className={`text-sm font-semibold ${isDarkHeader ? 'text-dark-700' : 'text-white'}`}>
-                                    Hi, {user.username}
-                                </span>
+                                <NavLink to="/dashboard" className={`text-sm font-semibold transition-colors ${isDarkHeader ? 'text-dark-700 hover:text-primary-600' : 'text-white hover:text-white/80'}`}>
+                                    {t('nav.my_dashboard', 'My Dashboard')}
+                                </NavLink>
                                 <button
                                     onClick={logout}
                                     className="btn-secondary text-sm py-2 px-4"
@@ -130,7 +130,9 @@ export const Header = () => {
                         ))}
                         {user ? (
                             <>
-                                <div className="px-4 py-2 text-sm text-dark-500 font-medium">Hi, {user.username}</div>
+                                <NavLink to="/dashboard" className="block px-4 py-2.5 rounded-xl font-semibold text-sm text-dark-700 hover:bg-dark-50">
+                                    {t('nav.my_dashboard', 'My Dashboard')}
+                                </NavLink>
                                 <button onClick={logout} className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-dark-700 hover:bg-dark-50 font-semibold">{t('nav.logout')}</button>
                                 {isAdmin && <NavLink to="/admin/dashboard" className="block px-4 py-2.5 rounded-xl text-sm text-primary-600 font-bold">{t('nav.admin')}</NavLink>}
                             </>

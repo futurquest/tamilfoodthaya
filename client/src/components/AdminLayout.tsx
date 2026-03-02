@@ -47,6 +47,7 @@ export const AdminLayout = () => {
         {
             label: 'System',
             items: [
+                { name: 'Users', path: '/admin/users', icon: <Users size={18} /> },
                 { name: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
             ]
         },

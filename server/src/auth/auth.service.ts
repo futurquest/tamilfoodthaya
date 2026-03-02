@@ -1,15 +1,17 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole } from './schemas/user.schema';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
         private jwtService: JwtService,
+        private notificationService: NotificationService,
     ) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -28,18 +30,21 @@ export class AuthService {
             user: {
                 id: user._id,
                 username: user.username,
+                email: user.email,
+                name: user.name,
+                phone: user.phone,
                 role: user.role,
             },
         };
     }
 
     async register(registerDto: any) {
-        const { username, email, password, role } = registerDto;
+        const { username, email, password, role, name, phone, address, eventPreferences } = registerDto;
 
         // Check if user exists
         const existingUser = await this.userModel.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
-            throw new UnauthorizedException('Username or Email already exists');
+            throw new ConflictException('Username or Email already exists');
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,6 +56,10 @@ export class AuthService {
             username,
             email,
             password: hashedPassword,
+            name,
+            phone,
+            address,
+            eventPreferences,
             role: role || UserRole.USER,
             verificationPin: pin,
             verificationPinExpires: pinExpires,
@@ -59,8 +68,7 @@ export class AuthService {
 
         await user.save();
 
-        // MOCK EMAIL SERVICE
-        console.log(`[MOCK EMAIL] Verification PIN for ${email}: ${pin}`);
+        await this.notificationService.sendVerificationPin(email, pin);
 
         const { password: _, verificationPin: __, ...result } = user.toObject();
         return result;
@@ -130,6 +138,8 @@ export class AuthService {
             const admin = new this.userModel({
                 username: 'admin',
                 email: 'admin@tamilfoodthaya.com',
+                name: 'System Admin',
+                phone: '+0000000000',
                 password: hashedPassword,
                 role: UserRole.ADMIN,
             });

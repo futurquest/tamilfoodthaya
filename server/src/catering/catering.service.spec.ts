@@ -1,16 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { CateringService } from './catering.service';
 import { CateringQuote } from './schemas/catering-quote.schema';
 import { CateringPackage } from './schemas/catering-package.schema';
 import { CateringOrder } from './schemas/catering-order.schema';
+import { ChangeRequest } from './schemas/change-request.schema';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { CouponService } from '../coupon/coupon.service';
 
 describe('CateringService', () => {
     let service: CateringService;
     let packageModel: any;
     let orderModel: any;
     let quoteModel: any;
+    let changeRequestModel: any;
+    let eventEmitter: any;
 
     const mockPackage = {
         _id: 'pkg1',
@@ -24,8 +29,8 @@ describe('CateringService', () => {
                 minSelect: 1,
                 maxSelect: 3,
                 items: [
-                    { name: 'Biryani', basePrice: 5, choices: [{ name: 'Extra Spicy', priceModifier: 2 }] },
-                    { name: 'Kottu', basePrice: 0, choices: [] },
+                    { menuItem: { _id: 'm1', name: 'Biryani' }, basePrice: 5, choices: [{ name: 'Extra Spicy', priceModifier: 2 }] },
+                    { menuItem: { _id: 'm2', name: 'Kottu' }, basePrice: 0, choices: [] },
                 ],
             },
             {
@@ -33,7 +38,7 @@ describe('CateringService', () => {
                 minSelect: 1,
                 maxSelect: 1,
                 items: [
-                    { name: 'Watalappam', basePrice: 3, choices: [] },
+                    { menuItem: { _id: 'm3', name: 'Watalappam' }, basePrice: 3, choices: [] },
                 ],
             },
         ],
@@ -45,16 +50,20 @@ describe('CateringService', () => {
     const createMockModel = (mockData?: any) => {
         const model: any = jest.fn().mockImplementation((dto) => ({
             ...dto,
+            _id: 'new-id',
             save: jest.fn().mockResolvedValue({ ...dto, _id: 'new-id' }),
         }));
         model.find = jest.fn().mockReturnValue({
             sort: jest.fn().mockReturnThis(),
+            populate: jest.fn().mockReturnThis(),
             exec: jest.fn().mockResolvedValue(mockData ? [mockData] : []),
         });
         model.findById = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(),
             exec: jest.fn().mockResolvedValue(mockData || null),
         });
         model.findByIdAndUpdate = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(),
             exec: jest.fn().mockResolvedValue(mockData || null),
         });
         model.findByIdAndDelete = jest.fn().mockReturnValue({
@@ -67,6 +76,10 @@ describe('CateringService', () => {
         packageModel = createMockModel(mockPackage);
         orderModel = createMockModel();
         quoteModel = createMockModel();
+        changeRequestModel = createMockModel();
+        eventEmitter = {
+            emit: jest.fn(),
+        };
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -74,6 +87,12 @@ describe('CateringService', () => {
                 { provide: getModelToken(CateringPackage.name), useValue: packageModel },
                 { provide: getModelToken(CateringOrder.name), useValue: orderModel },
                 { provide: getModelToken(CateringQuote.name), useValue: quoteModel },
+                { provide: getModelToken(ChangeRequest.name), useValue: changeRequestModel },
+                { provide: EventEmitter2, useValue: eventEmitter },
+                {
+                    provide: CouponService,
+                    useValue: { incrementUsage: jest.fn() },
+                }
             ],
         }).compile();
 
@@ -99,7 +118,10 @@ describe('CateringService', () => {
         });
 
         it('should throw NotFoundException for missing package', async () => {
-            packageModel.findById.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+            packageModel.findById.mockReturnValue({
+                populate: jest.fn().mockReturnThis(),
+                exec: jest.fn().mockResolvedValue(null)
+            });
             await expect(service.findPackageById('nonexistent')).rejects.toThrow(NotFoundException);
         });
     });
@@ -172,6 +194,39 @@ describe('CateringService', () => {
                 customerInfo: { name: 'Test', email: 'test@test.com', phone: '0612345678' },
             };
 
+            // Fix the mock since choice price Modifier logic requires full subdoc
+            const customMockPackage = {
+                ...mockPackage,
+                categories: [
+                    {
+                        name: 'Main Course',
+                        minSelect: 1,
+                        maxSelect: 3,
+                        items: [
+                            {
+                                menuItem: {
+                                    _id: 'm1',
+                                    name: 'Biryani',
+                                    price: 5,
+                                    choices: [{ name: 'Extra Spicy', priceModifier: 2 }]
+                                },
+                                basePrice: 5,
+                                choices: [{ name: 'Extra Spicy', priceModifier: 2 }]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Dessert',
+                        minSelect: 1,
+                        maxSelect: 1,
+                        items: [
+                            { menuItem: { _id: 'm3', name: 'Watalappam', price: 3 }, basePrice: 3, choices: [] }
+                        ]
+                    }
+                ]
+            };
+            packageModel.findById.mockReturnValue({ populate: jest.fn().mockReturnThis(), exec: jest.fn().mockResolvedValue(customMockPackage) });
+
             await service.createCateringOrder(orderData);
 
             // Verify: basePrice(25) + Biryani(5) + ExtraSpicy(+2) + Watalappam(3) = 35 per person
@@ -185,7 +240,7 @@ describe('CateringService', () => {
 
     describe('updateCateringOrderStatus', () => {
         it('should throw NotFoundException for missing order', async () => {
-            orderModel.findByIdAndUpdate.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+            orderModel.findById.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
             await expect(service.updateCateringOrderStatus('nonexistent', 'confirmed' as any)).rejects.toThrow(NotFoundException);
         });
     });

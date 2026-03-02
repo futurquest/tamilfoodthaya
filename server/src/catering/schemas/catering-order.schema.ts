@@ -7,6 +7,7 @@ export enum CateringOrderStatus {
     QUOTED = 'quoted',
     CONFIRMED = 'confirmed',
     PAID = 'paid',
+    PREPARING = 'preparing',
     COMPLETED = 'completed',
     CANCELLED = 'cancelled',
 }
@@ -38,6 +39,9 @@ export const CategorySelectionSchema = SchemaFactory.createForClass(CategorySele
 
 @Schema({ timestamps: true })
 export class CateringOrder extends Document {
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    userId?: Types.ObjectId;
+
     @Prop({ type: Types.ObjectId, ref: 'CateringPackage', required: true })
     packageId: Types.ObjectId;
 

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
 import { OrderService } from './order.service';
 import { Order } from './schemas/order.schema';
@@ -13,6 +14,7 @@ describe('OrderService', () => {
     let mockMenuItemModel: any;
     let mockConnection: any;
     let mockGateway: any;
+    let mockEventEmitter: any;
 
     beforeEach(async () => {
         mockOrderModel = {
@@ -43,6 +45,10 @@ describe('OrderService', () => {
             getStrategy: jest.fn().mockReturnValue(mockGateway),
         };
 
+        mockEventEmitter = {
+            emit: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 OrderService,
@@ -51,6 +57,7 @@ describe('OrderService', () => {
                 { provide: getConnectionToken(), useValue: mockConnection },
                 { provide: PaymentGatewayFactory, useValue: mockPaymentFactory },
                 { provide: ConfigService, useValue: {} },
+                { provide: EventEmitter2, useValue: mockEventEmitter },
             ],
         }).compile();
 
@@ -99,6 +106,8 @@ describe('OrderService', () => {
 
             mockOrderModel.findByIdAndUpdate.mockResolvedValue({
                 _id: '123',
+                userId: 'user1',
+                customerInfo: { email: 'test@t.com', phone: '1234567890', name: 'Test' },
                 items: [{ menuItemId: 'abc', quantity: 2 }]
             });
 

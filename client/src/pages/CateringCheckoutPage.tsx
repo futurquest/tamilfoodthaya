@@ -1,9 +1,11 @@
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container } from '../components/ui/Container';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { getCateringPackage, createCateringOrder, api } from '../hooks/useApi';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, ChevronRight, ChevronLeft, Users, Calendar, MapPin, ArrowRight, Music, Flower2, Wine, Baby, Camera, Tag, X } from 'lucide-react';
@@ -42,7 +44,7 @@ type Selections = Record<string, SelectedItemState[]>;
 export const CateringCheckoutPage = () => {
     const { packageId } = useParams<{ packageId: string }>();
     const navigate = useNavigate();
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const currentLang = i18n.language?.split('-')[0] || 'nl';
     const getLabel = (translations: any, fallback: string | undefined) => translations?.[currentLang] || translations?.nl || fallback || '';
 
@@ -54,6 +56,7 @@ export const CateringCheckoutPage = () => {
     const [eventDate, setEventDate] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', notes: '' });
+    const { user } = useAuth();
     const [submitting, setSubmitting] = useState(false);
     const [activeCatIdx, setActiveCatIdx] = useState(0);
     // Add-ons
@@ -84,6 +87,18 @@ export const CateringCheckoutPage = () => {
             setAvailableAddons(data);
         }).catch(() => { });
     }, [packageId, navigate]);
+
+    // Pre-fill user info if logged in
+    useEffect(() => {
+        if (user) {
+            setCustomerInfo(prev => ({
+                ...prev,
+                name: prev.name || user.name || '',
+                email: prev.email || user.email || '',
+                phone: prev.phone || user.phone || '',
+            }));
+        }
+    }, [user]);
 
     // Toggle item selection
     const toggleItem = (cat: Category, itemObj: Item, choiceName?: string) => {
@@ -200,8 +215,8 @@ export const CateringCheckoutPage = () => {
 
     const canProceedFromSelections = selectionErrors.length === 0;
 
-    const canSubmit = customerInfo.name.length >= 2 && customerInfo.email.includes('@') &&
-        customerInfo.phone.length >= 10 && eventDate && guests > 0;
+    const canSubmit = (user || (customerInfo.name.length >= 2 && customerInfo.email.includes('@') && customerInfo.phone.length >= 10)) &&
+        eventDate && guests > 0;
 
     const handleSubmit = async () => {
         if (!pkg || !canSubmit) return;
@@ -459,11 +474,13 @@ export const CateringCheckoutPage = () => {
                                                 <div>
                                                     <label className="block text-xs font-bold text-dark-500 mb-1 uppercase tracking-wider">Full Name *</label>
                                                     <input value={customerInfo.name} onChange={e => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                                                        placeholder={user?.name || ''}
                                                         className="w-full px-4 py-2.5 bg-dark-900 border border-dark-700 text-white rounded-md focus:ring-2 focus:ring-primary-500 outline-none" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-bold text-dark-500 mb-1 uppercase tracking-wider">Email *</label>
                                                     <input type="email" value={customerInfo.email} onChange={e => setCustomerInfo({ ...customerInfo, email: e.target.value })}
+                                                        placeholder={user?.email || ''}
                                                         className="w-full px-4 py-2.5 bg-dark-900 border border-dark-700 text-white rounded-md focus:ring-2 focus:ring-primary-500 outline-none" />
                                                 </div>
                                             </div>
@@ -471,6 +488,7 @@ export const CateringCheckoutPage = () => {
                                                 <div>
                                                     <label className="block text-xs font-bold text-dark-500 mb-1 uppercase tracking-wider">Phone *</label>
                                                     <input type="tel" value={customerInfo.phone} onChange={e => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+                                                        placeholder={user?.phone || ''}
                                                         className="w-full px-4 py-2.5 bg-dark-900 border border-dark-700 text-white rounded-md focus:ring-2 focus:ring-primary-500 outline-none" />
                                                 </div>
                                                 <div>
@@ -481,6 +499,7 @@ export const CateringCheckoutPage = () => {
                                                     <span className="text-[10px] text-dark-400 mt-1">Min {pkg.minGuests}{pkg.maxGuests ? `, max ${pkg.maxGuests}` : ''}</span>
                                                 </div>
                                             </div>
+
                                             <div className="grid md:grid-cols-2 gap-5">
                                                 <div>
                                                     <label className="block text-xs font-bold text-dark-500 mb-1 uppercase tracking-wider flex items-center gap-1"><Calendar size={14} />Event Date *</label>
@@ -546,9 +565,9 @@ export const CateringCheckoutPage = () => {
                                         <CardContent className="p-6">
                                             <h3 className="font-bold text-lg mb-4 text-white">Event Details</h3>
                                             <div className="grid grid-cols-2 gap-4 text-sm text-dark-400">
-                                                <div><span className="text-dark-600">Name:</span> <strong className="text-white">{customerInfo.name}</strong></div>
-                                                <div><span className="text-dark-600">Email:</span> <strong className="text-white">{customerInfo.email}</strong></div>
-                                                <div><span className="text-dark-600">Phone:</span> <strong className="text-white">{customerInfo.phone}</strong></div>
+                                                <div><span className="text-dark-600">Name:</span> <strong className="text-white">{customerInfo.name || user?.name || ''}</strong></div>
+                                                <div><span className="text-dark-600">Email:</span> <strong className="text-white">{customerInfo.email || user?.email || ''}</strong></div>
+                                                <div><span className="text-dark-600">Phone:</span> <strong className="text-white">{customerInfo.phone || user?.phone || ''}</strong></div>
                                                 <div><span className="text-dark-600">Guests:</span> <strong className="text-white">{guests}</strong></div>
                                                 <div><span className="text-dark-600">Date:</span> <strong className="text-white">{eventDate}</strong></div>
                                                 {eventLocation && <div><span className="text-dark-600">Location:</span> <strong className="text-white">{eventLocation}</strong></div>}
@@ -663,7 +682,7 @@ export const CateringCheckoutPage = () => {
                         </Card>
                     </div>
                 </div>
-            </Container>
-        </div>
+            </Container >
+        </div >
     );
 };

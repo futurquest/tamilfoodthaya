@@ -6,6 +6,12 @@ export class RegisterDto {
     @MinLength(4)
     username: string;
 
+    @IsString()
+    name: string;
+
+    @IsString()
+    phone: string;
+
     @IsEmail()
     email: string;
 
@@ -16,6 +22,13 @@ export class RegisterDto {
     @IsEnum(UserRole)
     @IsOptional()
     role?: UserRole;
+
+    @IsString()
+    @IsOptional()
+    address?: string;
+
+    @IsOptional()
+    eventPreferences?: string[];
 }
 
 export class LoginDto {

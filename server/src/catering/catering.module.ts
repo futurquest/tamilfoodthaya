@@ -5,6 +5,7 @@ import { CateringService } from './catering.service';
 import { CateringQuote, CateringQuoteSchema } from './schemas/catering-quote.schema';
 import { CateringPackage, CateringPackageSchema } from './schemas/catering-package.schema';
 import { CateringOrder, CateringOrderSchema } from './schemas/catering-order.schema';
+import { ChangeRequest, ChangeRequestSchema } from './schemas/change-request.schema';
 import { CouponModule } from '../coupon/coupon.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { CouponModule } from '../coupon/coupon.module';
       { name: CateringQuote.name, schema: CateringQuoteSchema },
       { name: CateringPackage.name, schema: CateringPackageSchema },
       { name: CateringOrder.name, schema: CateringOrderSchema },
+      { name: ChangeRequest.name, schema: ChangeRequestSchema },
     ]),
     CouponModule,
   ],

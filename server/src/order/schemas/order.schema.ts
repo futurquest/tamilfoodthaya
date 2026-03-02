@@ -12,6 +12,8 @@ export enum OrderStatus {
 
 @Schema({ timestamps: true })
 export class Order extends Document {
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    userId?: Types.ObjectId;
     @Prop({ required: true, type: [{ menuItemId: Types.ObjectId, name: String, quantity: Number, price: Number, spiceLevel: Number }] })
     items: any[];
 

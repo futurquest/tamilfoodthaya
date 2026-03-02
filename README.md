@@ -2,19 +2,32 @@
 
 A production-ready restaurant and catering web platform for a Netherlands-based Tamil / Sri Lankan cuisine business.
 
-## 🚀 Overview
-Tamil Food Thaya provides an end-to-end solution for:
-- **Online Food Ordering**: Pickup/Pre-order for restaurant locations.
-- **Catering Management**: Event packages (Silver, Gold, Platinum) and custom quote requests.
-- **Admin Dashboard**: Real-time order tracking, lead management, and menu inventory control.
-- **Mobile-First Experience**: Optimized for Dutch UX standards with subtle Tamil cultural accents.
+## 🚀 Key Features
+
+### 🌍 Multilingual Support
+- **Dynamic Content**: Seamlessly switch between **English, Dutch, and Tamil** for all menu items, packages, and UI elements.
+- **Localized UX**: Addresses Dutch administrative standards while honoring Tamil cultural roots.
+
+### 🍱 Premium Catering system
+- **Package Selection**: Tiered packages (Silver, Gold, Platinum) with customizable item selections.
+- **Change Request System**: Professional-grade request flow for modifying guests, date, or menu after booking.
+- **Robust Quotation**: Automated and manual quote management for large-scale events.
+
+### 💳 Optimized Checkout
+- **Smart Pre-fill**: Automatically populates contact info for logged-in users.
+- **Override Flexibility**: Allows editing of phone/email during checkout for specific order needs.
+- **iDEAL Integration**: Specialized for the Netherlands market via Stripe.
+
+### 📊 Advanced User Dashboard
+- **Granular Status Tracking**: Color-coded badges for all order states (Quoted, Paid, Preparing, Ready, etc.).
+- **Dynamic Filtering**: Instant status-based filtering (All, Pending, In Progress, Completed).
+- **Notification Management**: Dismissible real-time updates (Email/WhatsApp) for order progress.
 
 ## 🛠 Tech Stack
-- **Frontend**: React (TypeScript), Tailwind CSS, React Query, Vite, Framer Motion.
-- **Backend**: NestJS (TypeScript), Mongoose, JWT Authentication, Passport.
+- **Frontend**: React (TypeScript), Tailwind CSS, React Query, Vite, Framer Motion, i18next.
+- **Backend**: NestJS (TypeScript), Mongoose, JWT Authentication, Passport, Nodemailer.
 - **Database**: MongoDB (Atlas).
 - **Payments**: Stripe (iDEAL integration).
-- **Testing**: Vitest (Frontend), Jest (Backend), Playwright (E2E).
 
 ## 📂 Project Structure
 ```text
@@ -38,7 +51,13 @@ tamilfoodthaya/
 
 ## ⚙️ Installation & Setup
 
-### Prerequisites
+### 1. Clone the Repository
+```bash
+git clone https://github.com/futurquest/tamilfoodthaya.git
+cd tamilfoodthaya
+```
+
+### 2. Prerequisites
 - Node.js (v18+)
 - MongoDB Atlas account
 - Stripe account (Secret key & Webhook secret)
@@ -69,6 +88,13 @@ JWT_SECRET=your_jwt_secret
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_webhook_secret
 CLIENT_URL=http://localhost:5173
+
+# Email (SMTP)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your_username
+SMTP_PASS=your_password
+SMTP_FROM="Tamil Food Thaya" <noreply@yourdomain.com>
 ```
 
 ### Frontend (.env)

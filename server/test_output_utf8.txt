@@ -1,0 +1,117 @@
+﻿
+> server@0.0.1 test
+> jest
+
+node.exe : PASS src/me
+nu/menu.service.spec.t
+s
+At line:1 char:1
++ & "C:\Program Files\
+nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (PASS src/m   
+ enu/menu.service.    
+spec.ts:String) [    
+], RemoteExceptio    n
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+FAIL src/catering/cate
+ring.service.spec.ts
+  ΓùÅ CateringService 
+ΓÇ║ 
+createCateringOrder 
+ΓÇ║ should calculate 
+price correctly for 
+valid order
+
+    expect(received).t
+oBe(expected) // 
+Object.is equality
+
+    Expected: 35
+    Received: NaN
+
+    [0m [90m 232 
+|[39m             
+[90m// Total = 35 * 
+50 = 1750[39m
+     [90m 233 |[39m 
+            
+[36mconst[39m 
+constructorCall 
+[33m=[39m orderModel
+[33m.[39mmock[33m.
+[39mcalls[[35m0[39m]
+[[35m0[39m][33m;[3
+9m
+    [31m[1m>[22m[3
+9m[90m 234 |[39m    
+         expect(constr
+uctorCall[33m.[39mpr
+icePerPerson)[33m.[3
+9mtoBe([35m35[39m)[
+33m;[39m
+     [90m     |[39m 
+                      
+                      
+       
+[31m[1m^[22m[39m
+     [90m 235 |[39m 
+            expect(con
+structorCall[33m.[39
+mtotalPrice)[33m.[39
+mtoBe([35m1750[39m)
+[33m;[39m
+     [90m 236 |[39m 
+            expect(con
+structorCall[33m.[39
+mpackageName)[33m.[3
+9mtoBe([32m'Gold Pack
+age'[39m)[33m;[39m
+     [90m 237 |[39m 
+        
+})[33m;[39m[0m
+
+      at 
+Object.<anonymous> (ca
+tering/catering.servic
+e.spec.ts:234:52)
+
+PASS src/order/order.s
+ervice.spec.ts
+  ΓùÅ Console
+
+    console.log
+      Order 123 
+confirmed and stock 
+updated.
+
+      at OrderService.
+handleWebhook (order/o
+rder.service.ts:104:25
+)
+
+PASS src/auth/auth.ser
+vice.spec.ts
+PASS src/order/order.c
+ontroller.spec.ts
+
+Test Suites: 1 
+failed, 4 passed, 5 
+total
+Tests:       1 
+failed, 22 passed, 23 
+total
+Snapshots:   0 total
+Time:        2.952 s
+Ran all test suites.

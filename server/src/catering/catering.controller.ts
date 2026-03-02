@@ -5,6 +5,7 @@ import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt.guard';
 import { CateringService } from './catering.service';
 import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
 import { UpdateCateringStatusDto } from './dto/update-catering-status.dto';
+import { ChangeRequestStatus } from './schemas/change-request.schema';
 
 @Controller('catering')
 export class CateringController {
@@ -57,7 +58,11 @@ export class CateringController {
     // ── Catering Order Endpoints ──
 
     @Post('orders')
-    async createCateringOrder(@Body() body: any) {
+    @UseGuards(OptionalJwtAuthGuard)
+    async createCateringOrder(@Req() req: any, @Body() body: any) {
+        if (req.user) {
+            body.userId = req.user._id;
+        }
         return this.cateringService.createCateringOrder(body);
     }
 
@@ -79,5 +84,39 @@ export class CateringController {
         @Body() body: UpdateCateringStatusDto,
     ) {
         return this.cateringService.updateCateringOrderStatus(id, body.status);
+    }
+
+    // ── Change Request Endpoints ──
+
+    @Post('orders/:id/change-requests')
+    @UseGuards(AuthGuard('jwt'))
+    async requestChange(
+        @Req() req: any,
+        @Param('id') orderId: string,
+        @Body('requestedChanges') requestedChanges: string,
+    ) {
+        return this.cateringService.requestChange(req.user._id.toString(), orderId, requestedChanges);
+    }
+
+    @Get('change-requests/me')
+    @UseGuards(AuthGuard('jwt'))
+    async getMyChangeRequests(@Req() req: any) {
+        return this.cateringService.getUserChangeRequests(req.user._id.toString());
+    }
+
+    @Get('change-requests')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    async getAllChangeRequests() {
+        return this.cateringService.getAllChangeRequests();
+    }
+
+    @Patch('change-requests/:id/status')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    async updateChangeRequestStatus(
+        @Param('id') id: string,
+        @Body('status') status: string,
+        @Body('adminNotes') adminNotes?: string,
+    ) {
+        return this.cateringService.updateChangeRequestStatus(id, status as ChangeRequestStatus, adminNotes);
     }
 }

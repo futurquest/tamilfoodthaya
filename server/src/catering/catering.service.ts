@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CateringQuote } from './schemas/catering-quote.schema';
 import { CateringPackage } from './schemas/catering-package.schema';
 import { CateringOrder, CateringOrderStatus } from './schemas/catering-order.schema';
+import { ChangeRequest, ChangeRequestStatus } from './schemas/change-request.schema';
 import { CouponService } from '../coupon/coupon.service';
 
 @Injectable()
@@ -12,7 +14,9 @@ export class CateringService {
         @InjectModel(CateringQuote.name) private quoteModel: Model<CateringQuote>,
         @InjectModel(CateringPackage.name) private packageModel: Model<CateringPackage>,
         @InjectModel(CateringOrder.name) private cateringOrderModel: Model<CateringOrder>,
+        @InjectModel(ChangeRequest.name) private changeRequestModel: Model<ChangeRequest>,
         private couponService: CouponService,
+        private eventEmitter: EventEmitter2,
     ) { }
 
     // ── Quote Methods (existing) ──
@@ -156,6 +160,7 @@ export class CateringService {
         const totalPrice = totalPerPerson * data.guests;
 
         const order = new this.cateringOrderModel({
+            userId: data.userId,
             packageId: data.packageId,
             packageName: pkg.name,
             selections: data.selections,
@@ -170,6 +175,17 @@ export class CateringService {
         });
 
         await order.save();
+
+        this.eventEmitter.emit('order.status.changed', {
+            orderId: order._id.toString(),
+            userId: order.userId?.toString(),
+            customerEmail: order.customerInfo.email,
+            customerPhone: order.customerInfo.phone,
+            customerName: order.customerInfo.name,
+            oldStatus: 'none',
+            newStatus: order.status,
+            orderType: 'catering',
+        });
 
         if (data.couponCode) {
             try {
@@ -217,14 +233,77 @@ export class CateringService {
 
     async updateCateringOrderStatus(
         id: string,
-        status: CateringOrderStatus,
+        newStatus: CateringOrderStatus,
     ): Promise<CateringOrder> {
-        const order = await this.cateringOrderModel
-            .findByIdAndUpdate(id, { status }, { new: true })
-            .exec();
+        const order = await this.cateringOrderModel.findById(id).exec();
         if (!order) {
             throw new NotFoundException(`Catering order not found: ${id}`);
         }
+
+        const oldStatus = order.status;
+        order.status = newStatus;
+        await order.save();
+
+        this.eventEmitter.emit('order.status.changed', {
+            orderId: order._id.toString(),
+            userId: order.userId?.toString(),
+            customerEmail: order.customerInfo.email,
+            customerPhone: order.customerInfo.phone,
+            customerName: order.customerInfo.name,
+            oldStatus: oldStatus,
+            newStatus: order.status,
+            orderType: 'catering',
+        });
+
         return order;
+    }
+
+    // ── Change Requests ──
+    async requestChange(userId: string, orderId: string, requestedChanges: string): Promise<ChangeRequest> {
+        const order = await this.cateringOrderModel.findById(orderId);
+        if (!order) {
+            throw new NotFoundException('Order not found');
+        }
+
+        if (order.userId?.toString() !== userId) {
+            throw new BadRequestException('Unauthorized to modify this order');
+        }
+
+        // 10-day prior validation
+        const eventDate = new Date(order.eventDate);
+        const today = new Date();
+        const diffDays = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+
+        if (diffDays <= 10) {
+            throw new BadRequestException(`Changes cannot be requested less than 10 days before the event (Event date: ${order.eventDate.toISOString().split('T')[0]}).`);
+        }
+
+        const request = new this.changeRequestModel({
+            userId,
+            orderId,
+            requestedChanges,
+        });
+
+        return request.save();
+    }
+
+    async getUserChangeRequests(userId: string): Promise<ChangeRequest[]> {
+        return this.changeRequestModel.find({ userId }).populate('orderId', 'packageName eventDate status').sort({ createdAt: -1 }).exec();
+    }
+
+    async getAllChangeRequests(): Promise<ChangeRequest[]> {
+        return this.changeRequestModel.find().populate('userId', 'name email').populate('orderId', 'packageName eventDate status').sort({ createdAt: -1 }).exec();
+    }
+
+    async updateChangeRequestStatus(requestId: string, status: ChangeRequestStatus, adminNotes?: string): Promise<ChangeRequest> {
+        const req = await this.changeRequestModel.findByIdAndUpdate(
+            requestId,
+            { status, adminNotes },
+            { new: true }
+        ).exec();
+        if (!req) {
+            throw new NotFoundException('Change request not found');
+        }
+        return req;
     }
 }

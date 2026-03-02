@@ -20,13 +20,16 @@ interface CateringOrder {
     createdAt: string;
 }
 
-const STATUS_OPTIONS = ['pending', 'confirmed', 'preparing', 'completed', 'cancelled'];
+const STATUS_OPTIONS = ['pending', 'reviewing', 'quoted', 'confirmed', 'paid', 'preparing', 'completed', 'cancelled'];
 
 const statusColors: Record<string, string> = {
     pending: 'text-yellow-700 bg-yellow-50',
-    confirmed: 'text-blue-700 bg-blue-50',
+    reviewing: 'text-blue-700 bg-blue-50',
+    quoted: 'text-indigo-700 bg-indigo-50',
+    confirmed: 'text-green-700 bg-green-50',
+    paid: 'text-emerald-700 bg-emerald-50',
     preparing: 'text-purple-700 bg-purple-50',
-    completed: 'text-green-700 bg-green-50',
+    completed: 'text-gray-700 bg-gray-50',
     cancelled: 'text-red-700 bg-red-50',
 };
 

@@ -61,3 +61,17 @@ export const deleteCateringPackage = (id: string) => api.delete(`/catering/packa
 export const createCateringOrder = (data: any) => api.post('/catering/orders', data).then((res) => res.data);
 export const getCateringOrders = () => api.get('/catering/orders').then((res) => res.data);
 export const updateCateringOrderStatus = (id: string, status: string) => api.patch(`/catering/orders/${id}/status`, { status }).then((res) => res.data);
+
+// User Dashboard APIs
+export const getUserDashboard = () => api.get('/users/dashboard').then((res) => res.data);
+export const requestCateringChange = (orderId: string, requestedChanges: string) => api.post(`/catering/orders/${orderId}/change-requests`, { requestedChanges }).then((res) => res.data);
+export const clearNotification = (id: string) => api.patch(`/notifications/${id}/clear`).then((res) => res.data);
+
+// Regular Orders API
+export const getOrders = (params?: any) => api.get('/orders', { params }).then((res) => res.data);
+export const updateOrderStatus = (id: string, status: string) => api.patch(`/orders/${id}/status`, { status }).then((res) => res.data);
+
+// Admin User Management
+export const getAdminUsers = () => api.get('/users').then((res) => res.data);
+export const updateAdminUser = (id: string, data: any) => api.patch(`/users/${id}`, data).then((res) => res.data);
+export const deleteAdminUser = (id: string) => api.delete(`/users/${id}`).then((res) => res.data);

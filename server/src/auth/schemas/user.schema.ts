@@ -12,6 +12,18 @@ export class User extends Document {
     @Prop({ required: true, unique: true })
     username: string;
 
+    @Prop({ required: true })
+    name: string;
+
+    @Prop({ required: true })
+    phone: string;
+
+    @Prop()
+    address?: string;
+
+    @Prop({ type: [String] })
+    eventPreferences?: string[];
+
     @Prop({ required: true, unique: true })
     email: string;
 
@@ -33,7 +45,7 @@ export class User extends Document {
     @Prop()
     verificationPin?: string;
 
-    @Prop()
+    @Prop({ index: { expires: 0 } })
     verificationPinExpires?: Date;
 }
 

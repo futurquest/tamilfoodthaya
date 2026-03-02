@@ -19,8 +19,11 @@ import { ManageCateringPackages } from './pages/admin/ManageCateringPackages';
 import { ManageCateringOrders } from './pages/admin/ManageCateringOrders';
 import { ManageAddons } from './pages/admin/ManageAddons';
 import { ManageCoupons } from './pages/admin/ManageCoupons';
+import { ManageUsers } from './pages/admin/ManageUsers';
 import { CateringCheckoutPage } from './pages/CateringCheckoutPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { UserProtectedRoute } from './components/UserProtectedRoute';
+import { UserDashboard } from './pages/user/UserDashboard';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
@@ -44,12 +47,18 @@ function App() {
             <Route path="/register" element={<PublicLayout><RegisterPage /></PublicLayout>} />
             <Route path="/verify-email" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
 
+            {/* User Dashboard */}
+            <Route element={<UserProtectedRoute />}>
+              <Route path="/dashboard" element={<PublicLayout><UserDashboard /></PublicLayout>} />
+            </Route>
+
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<AdminLayout />}>
                 <Route path="/admin/dashboard" element={<Dashboard />} />
                 <Route path="/admin/leads" element={<ManageLeads />} />
+                <Route path="/admin/users" element={<ManageUsers />} />
                 <Route path="/admin/menu" element={<ManageMenu />} />
                 <Route path="/admin/categories" element={<ManageCategories />} />
                 <Route path="/admin/messages" element={<ViewMessages />} />

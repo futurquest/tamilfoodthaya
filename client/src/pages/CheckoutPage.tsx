@@ -7,6 +7,7 @@ import { Card, CardContent } from '../components/ui/Card';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { createOrder } from '../hooks/useApi';
+import { useAuth } from '../context/AuthContext';
 import { SEO } from '../components/SEO';
 
 const checkoutSchema = z.object({
@@ -21,9 +22,15 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 export const CheckoutPage = () => {
     const { cart, total, clearCart } = useCart();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CheckoutForm>({
-        resolver: zodResolver(checkoutSchema)
+        resolver: zodResolver(checkoutSchema),
+        defaultValues: {
+            name: user?.name || '',
+            email: user?.email || '',
+            phone: user?.phone || '',
+        }
     });
 
     const onSubmit = async (data: CheckoutForm) => {

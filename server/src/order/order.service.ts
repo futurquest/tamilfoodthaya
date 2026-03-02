@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, Inject, BadRequestException } from '@nes
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Order, OrderStatus } from './schemas/order.schema';
 import { MenuItem } from '../menu/schemas/menu-item.schema';
 import { PaymentGatewayFactory } from './payment/payment.factory';
@@ -14,6 +15,7 @@ export class OrderService {
         @InjectConnection() private connection: Connection,
         private paymentGatewayFactory: PaymentGatewayFactory,
         private configService: ConfigService,
+        private eventEmitter: EventEmitter2,
     ) { }
 
     async createCheckoutSession(orderData: any) {
@@ -85,6 +87,17 @@ export class OrderService {
                                 $inc: { stockCount: -item.quantity }
                             }, { session });
                         }
+
+                        this.eventEmitter.emit('order.status.changed', {
+                            orderId: order._id.toString(),
+                            userId: order.userId?.toString(),
+                            customerEmail: order.customerInfo.email,
+                            customerPhone: order.customerInfo.phone,
+                            customerName: order.customerInfo.name,
+                            oldStatus: OrderStatus.PENDING,
+                            newStatus: OrderStatus.PAID,
+                            orderType: 'regular',
+                        });
                     }
                 });
                 session.endSession();
@@ -128,5 +141,29 @@ export class OrderService {
         ]);
 
         return { data, total, page, limit };
+    }
+
+    async updateOrderStatus(id: string, newStatus: OrderStatus): Promise<Order> {
+        const order = await this.orderModel.findById(id).exec();
+        if (!order) {
+            throw new NotFoundException(`Order not found: ${id}`);
+        }
+
+        const oldStatus = order.status;
+        order.status = newStatus;
+        await order.save();
+
+        this.eventEmitter.emit('order.status.changed', {
+            orderId: order._id.toString(),
+            userId: order.userId?.toString(),
+            customerEmail: order.customerInfo.email,
+            customerPhone: order.customerInfo.phone,
+            customerName: order.customerInfo.name,
+            oldStatus: oldStatus,
+            newStatus: order.status,
+            orderType: 'regular',
+        });
+
+        return order;
     }
 }
