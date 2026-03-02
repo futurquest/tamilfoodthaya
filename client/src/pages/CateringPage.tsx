@@ -53,9 +53,12 @@ export const CateringPage = () => {
         const loadPackages = async () => {
             try {
                 const data = await getCateringPackages();
-                setPackages(data);
+                // Normalise response shape
+                if (Array.isArray(data)) setPackages(data);
+                else if (Array.isArray(data?.packages)) setPackages(data.packages);
+                else if (Array.isArray(data?.data)) setPackages(data.data);
             } catch {
-                // Silently fail - packages section will show empty state
+                // Silently fail – packages section shows empty state
             } finally {
                 setLoadingPackages(false);
             }
@@ -92,11 +95,12 @@ export const CateringPage = () => {
             <SEO title="Catering" description="Premium Tamil catering packages for your events." />
 
             {/* Hero Section */}
-            <section className="bg-tamil-charcoal text-white py-24 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center" />
+            <section className="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-950 text-white py-24 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-15 bg-[url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
                 <Container className="relative z-10 text-center">
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-5xl md:text-6xl font-bold mb-6">
-                        {t('catering.hero.title')} <span className="text-tamil-gold">{t('catering.hero.titleHighlight')}</span>
+                        {t('catering.hero.title')} <span className="text-primary-400">{t('catering.hero.titleHighlight')}</span>
                     </motion.h1>
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10">
                         {t('catering.hero.desc')}
@@ -197,6 +201,10 @@ export const CateringPage = () => {
 const PackageCard = ({ pkg, featured, onSelect, onQuote, badge }: {
     pkg: CateringPackageData; featured?: boolean; onSelect: () => void; onQuote: () => void; badge?: string;
 }) => {
+    const { i18n } = useTranslation();
+    const currentLang = i18n.language?.split('-')[0] || 'nl';
+    const getLabel = (translations: any, fallback: string) => translations?.[currentLang] || translations?.nl || fallback;
+
     const totalItems = pkg.categories.reduce((acc, c) => acc + c.items.length, 0);
 
     return (
@@ -207,18 +215,18 @@ const PackageCard = ({ pkg, featured, onSelect, onQuote, badge }: {
                 </div>
             )}
             <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+                <h3 className="text-2xl font-bold mb-2">{getLabel((pkg as any).nameTranslations, pkg.name)}</h3>
                 <div className="text-3xl font-bold text-tamil-maroon mb-2">
                     €{pkg.basePrice.toFixed(2)} <span className="text-base font-normal text-gray-400">p.p.</span>
                 </div>
-                <p className="text-gray-500 text-sm mb-6">{pkg.description}</p>
+                <p className="text-gray-500 text-sm mb-6">{getLabel((pkg as any).descriptionTranslations, pkg.description)}</p>
 
                 <div className="text-left space-y-3 mb-6">
                     {pkg.categories.map((cat, i) => (
                         <div key={i} className="flex gap-2 text-sm items-start">
                             <CheckCircle size={16} className="text-green-500 shrink-0 mt-0.5" />
                             <span>
-                                <strong>{cat.name}</strong>
+                                <strong>{getLabel((cat as any).nameTranslations, cat.name)}</strong>
                                 <span className="text-gray-400 ml-1">({cat.items.length} options)</span>
                             </span>
                         </div>

@@ -1,12 +1,10 @@
 import { createLead, getSettings } from '../hooks/useApi';
-import { Container } from '../components/ui/Container';
-import { Button } from '../components/ui/Button';
-import { Card, CardContent } from '../components/ui/Card';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { PageHeader } from '../components/Header';
 
 export const ContactPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
@@ -23,117 +21,67 @@ export const ContactPage = () => {
             toast.success('Bedankt! Uw bericht is verzonden.');
             reset();
         } catch (error) {
-            console.error('Failed to send message:', error);
             toast.error('Verzenden mislukt. Probeer het later opnieuw.');
         }
     };
 
     return (
-        <div className="pt-24 pb-24 bg-gray-50 min-h-screen">
-            <Container>
-                <div className="text-center mb-16">
-                    <h1 className="text-4xl font-bold text-tamil-charcoal mb-4">{t('nav.contact')}</h1>
-                    <div className="w-24 h-1 bg-tamil-maroon mx-auto" />
-                </div>
+        <div className="min-h-screen bg-dark-50 pb-24">
+            <PageHeader title={t('nav.contact', 'Contact Us')} subtitle="We'd love to hear from you. Reach out for catering enquiries or reservations." />
 
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="grid md:grid-cols-2 gap-12">
                     {/* Contact Info */}
-                    <div className="space-y-8">
-                        <Card>
-                            <CardContent className="p-8 flex items-start gap-4">
-                                <div className="w-12 h-12 bg-tamil-maroon/10 rounded-full flex items-center justify-center text-tamil-maroon shrink-0">
-                                    <MapPin size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg mb-1">{t('footer.locations')}</h3>
-                                    <p className="text-gray-600">{settings?.address || 'Hofplein 20, Rotterdam'}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardContent className="p-8 flex items-start gap-4">
-                                <div className="w-12 h-12 bg-tamil-maroon/10 rounded-full flex items-center justify-center text-tamil-maroon shrink-0">
-                                    <Phone size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg mb-1">{t('contact.phone')}</h3>
-                                    <p className="text-gray-600">{settings?.phone || '+31 (0) 6 1234 5678'}</p>
-                                    <p className="text-sm text-gray-500">
-                                        {settings?.businessHours ?
-                                            `Vandaag: ${settings.businessHours[new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()]}`
-                                            : 'Ma - Zo: 12:00 - 22:00'}
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardContent className="p-8 flex items-start gap-4">
-                                <div className="w-12 h-12 bg-tamil-maroon/10 rounded-full flex items-center justify-center text-tamil-maroon shrink-0">
-                                    <Mail size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg mb-1">{t('contact.email')}</h3>
-                                    <p className="text-gray-600">{settings?.email || 'info@tamilfoodthaya.nl'}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                    <div className="space-y-6">
+                        <ContactInfoCard icon={<MapPin size={22} />} title={t('footer.locations', 'Location')} value={settings?.address || 'Hofplein 20, Rotterdam'} />
+                        <ContactInfoCard icon={<Phone size={22} />} title={t('contact.phone', 'Phone')} value={settings?.phone || '+31 (0) 6 1234 5678'} sub={settings?.businessHours ? `Today: ${settings.businessHours[new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()]}` : 'Mon – Sun: 12:00 – 22:00'} />
+                        <ContactInfoCard icon={<Mail size={22} />} title={t('contact.email', 'Email')} value={settings?.email || 'info@tamilfoodthaya.nl'} />
                     </div>
 
                     {/* Contact Form */}
-                    <Card>
-                        <CardContent className="p-8">
-                            <h2 className="text-2xl font-bold mb-6">{t('contact.sendMessage')}</h2>
-
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">{t('form.name')}</label>
-                                    <input
-                                        {...register('name', { required: t('form.required') })}
-                                        className="w-full p-2 border rounded focus:ring-2 focus:ring-tamil-maroon outline-none"
-                                    />
-                                    {errors.name && <p className="text-red-500 text-xs mt-1">{String(errors.name.message)}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">{t('form.email')}</label>
-                                    <input
-                                        type="email"
-                                        {...register('email', {
-                                            required: t('form.required'),
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: t('form.invalidEmail')
-                                            }
-                                        })}
-                                        className="w-full p-2 border rounded focus:ring-2 focus:ring-tamil-maroon outline-none"
-                                    />
-                                    {errors.email && <p className="text-red-500 text-xs mt-1">{String(errors.email.message)}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">{t('form.phone')}</label>
-                                    <input
-                                        {...register('phone', { required: t('form.required') })}
-                                        className="w-full p-2 border rounded focus:ring-2 focus:ring-tamil-maroon outline-none"
-                                    />
-                                    {errors.phone && <p className="text-red-500 text-xs mt-1">{String(errors.phone.message)}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">{t('form.message')}</label>
-                                    <textarea
-                                        {...register('message', { required: t('form.required') })}
-                                        className="w-full p-2 border rounded h-32 focus:ring-2 focus:ring-tamil-maroon outline-none"
-                                    />
-                                    {errors.message && <p className="text-red-500 text-xs mt-1">{String(errors.message.message)}</p>}
-                                </div>
-                                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                                    {isSubmitting ? t('form.sending') : t('form.send')}
-                                </Button>
-                            </form>
-                        </CardContent>
-                    </Card>
+                    <div className="bg-white rounded-2xl border border-dark-200 shadow-sm p-8">
+                        <h2 className="text-2xl font-bold text-dark-800 mb-6">{t('contact.sendMessage', 'Send a Message')}</h2>
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                            <FormField label={t('form.name', 'Name')} error={errors.name}>
+                                <input {...register('name', { required: t('form.required', 'Required') })} className="input-field" placeholder="Your name" />
+                            </FormField>
+                            <FormField label={t('form.email', 'Email')} error={errors.email}>
+                                <input type="email" {...register('email', { required: t('form.required', 'Required'), pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: t('form.invalidEmail', 'Invalid email') } })} className="input-field" placeholder="your@email.com" />
+                            </FormField>
+                            <FormField label={t('form.phone', 'Phone')} error={errors.phone}>
+                                <input {...register('phone', { required: t('form.required', 'Required') })} className="input-field" placeholder="+31 6 1234 5678" />
+                            </FormField>
+                            <FormField label={t('form.message', 'Message')} error={errors.message}>
+                                <textarea {...register('message', { required: t('form.required', 'Required') })} className="input-field h-32 resize-none" placeholder="How can we help you?" />
+                            </FormField>
+                            <button type="submit" className="btn-primary w-full" disabled={isSubmitting}>
+                                {isSubmitting ? t('form.sending', 'Sending...') : t('form.send', 'Send Message')}
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </Container>
+            </div>
         </div>
     );
 };
+
+const ContactInfoCard = ({ icon, title, value, sub }: { icon: React.ReactNode; title: string; value: string; sub?: string }) => (
+    <div className="bg-white rounded-2xl border border-dark-200 p-6 flex items-start gap-4 shadow-sm hover:border-primary-200 hover:shadow-md transition-all duration-300">
+        <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-primary-600 shrink-0">
+            {icon}
+        </div>
+        <div>
+            <h3 className="font-bold text-dark-800 mb-0.5">{title}</h3>
+            <p className="text-dark-600 text-sm">{value}</p>
+            {sub && <p className="text-dark-400 text-xs mt-0.5">{sub}</p>}
+        </div>
+    </div>
+);
+
+const FormField = ({ label, error, children }: { label: string; error?: any; children: React.ReactNode }) => (
+    <div>
+        <label className="label-text">{label}</label>
+        {children}
+        {error && <p className="text-red-500 text-xs mt-1">{String(error.message)}</p>}
+    </div>
+);

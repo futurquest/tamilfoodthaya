@@ -11,7 +11,9 @@ interface Item {
 
 interface Category {
     name: string;
+    nameTranslations?: { nl: string; en: string; ta: string; };
     description: string;
+    descriptionTranslations?: { nl: string; en: string; ta: string; };
     minSelect: number;
     maxSelect: number;
     items: Item[];
@@ -20,7 +22,9 @@ interface Category {
 interface Package {
     _id?: string;
     name: string;
+    nameTranslations?: { nl: string; en: string; ta: string; };
     description: string;
+    descriptionTranslations?: { nl: string; en: string; ta: string; };
     basePrice: number;
     minGuests: number;
     maxGuests: number;
@@ -30,9 +34,15 @@ interface Package {
 }
 
 const emptyItem: Item = { menuItem: '' };
-const emptyCategory: Category = { name: '', description: '', minSelect: 1, maxSelect: 1, items: [{ ...emptyItem }] };
+const emptyCategory: Category = {
+    name: '', nameTranslations: { nl: '', en: '', ta: '' },
+    description: '', descriptionTranslations: { nl: '', en: '', ta: '' },
+    minSelect: 1, maxSelect: 1, items: [{ ...emptyItem }]
+};
 const emptyPackage: Package = {
-    name: '', description: '', basePrice: 0, minGuests: 20, maxGuests: 500,
+    name: '', nameTranslations: { nl: '', en: '', ta: '' },
+    description: '', descriptionTranslations: { nl: '', en: '', ta: '' },
+    basePrice: 0, minGuests: 20, maxGuests: 500,
     categories: [], available: true, sortOrder: 0,
 };
 
@@ -144,22 +154,44 @@ export const ManageCateringPackages = () => {
                 <Card>
                     <CardContent className="p-6 space-y-4">
                         <h3 className="font-bold text-lg border-b pb-2">Package Info</h3>
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid md:grid-cols-3 gap-2">
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Name</label>
-                                <input value={editing.name} onChange={e => updateField('name', e.target.value)}
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Name (NL)</label>
+                                <input value={editing.nameTranslations?.nl || ''} onChange={e => updateField('nameTranslations', { ...editing.nameTranslations, nl: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none" placeholder="e.g. Goud Pakket" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Name (EN)</label>
+                                <input value={editing.nameTranslations?.en || ''} onChange={e => updateField('nameTranslations', { ...editing.nameTranslations, en: e.target.value })}
                                     className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none" placeholder="e.g. Gold Package" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Base Price (€ p.p.)</label>
-                                <input type="number" step="0.50" value={editing.basePrice} onChange={e => updateField('basePrice', parseFloat(e.target.value) || 0)}
-                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none" />
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Name (TA)</label>
+                                <input value={editing.nameTranslations?.ta || ''} onChange={e => updateField('nameTranslations', { ...editing.nameTranslations, ta: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none" placeholder="e.g. தங்க தொகுப்பு" />
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description</label>
-                            <textarea value={editing.description} onChange={e => updateField('description', e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none min-h-[80px]" />
+                        <div className="grid md:grid-cols-3 gap-2">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (NL)</label>
+                                <textarea value={editing.descriptionTranslations?.nl || ''} onChange={e => updateField('descriptionTranslations', { ...editing.descriptionTranslations, nl: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none min-h-[60px]" placeholder="Dutch description" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (EN)</label>
+                                <textarea value={editing.descriptionTranslations?.en || ''} onChange={e => updateField('descriptionTranslations', { ...editing.descriptionTranslations, en: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none min-h-[60px]" placeholder="English description" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (TA)</label>
+                                <textarea value={editing.descriptionTranslations?.ta || ''} onChange={e => updateField('descriptionTranslations', { ...editing.descriptionTranslations, ta: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none min-h-[60px]" placeholder="Tamil description" />
+                            </div>
+                        </div>
+                        <div className="md:w-1/3">
+                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Base Price (€ p.p.)</label>
+                            <input type="number" step="0.50" value={editing.basePrice} onChange={e => updateField('basePrice', parseFloat(e.target.value) || 0)}
+                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none" />
                         </div>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div>
@@ -199,7 +231,7 @@ export const ManageCateringPackages = () => {
                                 <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleCat(catIdx)}>
                                     <div className="flex items-center gap-3">
                                         {expandedCats[catIdx] ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                                        <span className="font-bold">{cat.name || `Category ${catIdx + 1}`}</span>
+                                        <span className="font-bold">{cat.nameTranslations?.nl || cat.name || `Category ${catIdx + 1}`}</span>
                                         <span className="text-xs text-gray-400">{cat.items.length} item(s) · select {cat.minSelect}-{cat.maxSelect}</span>
                                     </div>
                                     <button onClick={(e) => { e.stopPropagation(); removeCategory(catIdx); }} className="text-red-500 hover:text-red-700"><Trash2 size={16} /></button>
@@ -207,12 +239,41 @@ export const ManageCateringPackages = () => {
 
                                 {expandedCats[catIdx] && (
                                     <div className="mt-4 space-y-4 pl-4 border-l-2 border-tamil-gold/30">
-                                        <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="grid md:grid-cols-3 gap-2">
                                             <div>
-                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Category Name</label>
-                                                <input value={cat.name} onChange={e => updateCategory(catIdx, 'name', e.target.value)}
-                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="e.g. Main Course" />
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Cat Name (NL)</label>
+                                                <input value={cat.nameTranslations?.nl || ''} onChange={e => updateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, nl: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="Dutch name" />
                                             </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Cat Name (EN)</label>
+                                                <input value={cat.nameTranslations?.en || ''} onChange={e => updateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, en: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="English name" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Cat Name (TA)</label>
+                                                <input value={cat.nameTranslations?.ta || ''} onChange={e => updateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, ta: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="Tamil name" />
+                                            </div>
+                                        </div>
+                                        <div className="grid md:grid-cols-3 gap-2">
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (NL)</label>
+                                                <input value={cat.descriptionTranslations?.nl || ''} onChange={e => updateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, nl: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="Dutch description" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (EN)</label>
+                                                <input value={cat.descriptionTranslations?.en || ''} onChange={e => updateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, en: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="English description" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description (TA)</label>
+                                                <input value={cat.descriptionTranslations?.ta || ''} onChange={e => updateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, ta: e.target.value })}
+                                                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" placeholder="Tamil description" />
+                                            </div>
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-4">
                                             <div className="grid grid-cols-2 gap-2">
                                                 <div>
                                                     <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Min Select</label>
@@ -225,11 +286,6 @@ export const ManageCateringPackages = () => {
                                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" />
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Description</label>
-                                            <input value={cat.description} onChange={e => updateCategory(catIdx, 'description', e.target.value)}
-                                                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none text-sm" />
                                         </div>
 
                                         {/* Items in this category */}
@@ -311,7 +367,20 @@ export const ManageCateringPackages = () => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button variant="outline" onClick={() => { setEditing({ ...pkg }); setExpandedCats({}); }} className="gap-2"><Edit2 size={16} />Edit</Button>
+                                        <Button variant="outline" onClick={() => {
+                                            const normalizedPkg = {
+                                                ...pkg,
+                                                nameTranslations: { nl: pkg.nameTranslations?.nl || pkg.name || '', en: pkg.nameTranslations?.en || '', ta: pkg.nameTranslations?.ta || '' },
+                                                descriptionTranslations: { nl: pkg.descriptionTranslations?.nl || pkg.description || '', en: pkg.descriptionTranslations?.en || '', ta: pkg.descriptionTranslations?.ta || '' },
+                                                categories: pkg.categories.map((c: any) => ({
+                                                    ...c,
+                                                    nameTranslations: { nl: c.nameTranslations?.nl || c.name || '', en: c.nameTranslations?.en || '', ta: c.nameTranslations?.ta || '' },
+                                                    descriptionTranslations: { nl: c.descriptionTranslations?.nl || c.description || '', en: c.descriptionTranslations?.en || '', ta: c.descriptionTranslations?.ta || '' }
+                                                }))
+                                            };
+                                            setEditing(normalizedPkg);
+                                            setExpandedCats({});
+                                        }} className="gap-2"><Edit2 size={16} />Edit</Button>
                                         <Button variant="outline" onClick={() => handleDelete(pkg._id!)} className="gap-2 text-red-500 border-red-200 hover:bg-red-50"><Trash2 size={16} /></Button>
                                     </div>
                                 </div>

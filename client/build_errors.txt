@@ -1,0 +1,7 @@
+﻿src/components/AddonsSection.tsx(61,72): error TS2322: Type '{ children: Element; key: string; variant: "fadeUp"; delay: number; }' is not assignable to type 'IntrinsicAttributes & ScrollRevealProps'.
+  Property 'delay' does not exist on type 'IntrinsicAttributes & ScrollRevealProps'.
+src/components/EventTypesSection.tsx(4,1): error TS6133: 'React' is declared but its value is never read.
+src/components/Footer.tsx(3,1): error TS6133: 'React' is declared but its value is never read.
+src/components/HeroSection.tsx(4,1): error TS6133: 'React' is declared but its value is never read.
+src/components/Icons.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/Icons.tsx(3,36): error TS6133: 'size' is declared but its value is never read.

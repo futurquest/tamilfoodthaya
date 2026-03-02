@@ -11,6 +11,11 @@ import { useTranslation } from 'react-i18next';
 
 type CategoryForm = {
     name: string;
+    nameTranslations?: {
+        nl: string;
+        en: string;
+        ta: string;
+    };
     order?: number;
     type?: string;
 };
@@ -22,19 +27,31 @@ export const ManageCategories = () => {
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const queryClient = useQueryClient();
 
-    const { register, handleSubmit, reset, setValue } = useForm<CategoryForm>();
+    const { register, handleSubmit, reset } = useForm<CategoryForm>();
 
     const handleCreate = () => {
         setEditingCategory(null);
-        reset({ name: '', order: 0, type: 'food' });
+        reset({
+            name: '',
+            nameTranslations: { nl: '', en: '', ta: '' },
+            order: 0,
+            type: 'food'
+        });
         setIsEditing(true);
     };
 
     const handleEdit = (category: any) => {
         setEditingCategory(category);
-        setValue('name', category.name);
-        setValue('order', category.order);
-        setValue('type', category.type || 'food');
+        reset({
+            name: category.name,
+            nameTranslations: {
+                nl: category.nameTranslations?.nl || category.name || '',
+                en: category.nameTranslations?.en || '',
+                ta: category.nameTranslations?.ta || ''
+            },
+            order: category.order,
+            type: category.type || 'food'
+        });
         setIsEditing(true);
     };
 
@@ -86,13 +103,34 @@ export const ManageCategories = () => {
                                 <Button variant="ghost" onClick={() => setIsEditing(false)}><X size={20} /></Button>
                             </div>
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">{t('admin.categories.categoryName')}</label>
-                                    <input
-                                        {...register('name', { required: true })}
-                                        className="w-full border p-2 rounded"
-                                        placeholder={t('admin.categories.categoryName')}
-                                    />
+                                <div className="space-y-3">
+                                    <label className="block text-sm font-medium mb-1">{t('admin.categories.categoryName')} (Translations)</label>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-1">Dutch (NL)</label>
+                                        <input
+                                            {...register('nameTranslations.nl', { required: true })}
+                                            className="w-full border p-2 rounded"
+                                            placeholder="Dutch name"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-1">English (EN)</label>
+                                        <input
+                                            {...register('nameTranslations.en')}
+                                            className="w-full border p-2 rounded"
+                                            placeholder="English name"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-1">Tamil (TA)</label>
+                                        <input
+                                            {...register('nameTranslations.ta')}
+                                            className="w-full border p-2 rounded"
+                                            placeholder="Tamil name"
+                                        />
+                                    </div>
+                                    {/* Hidden fallback name field for legacy requirements */}
+                                    <input type="hidden" {...register('name')} value="Will Be Replaced by Backend or Legacy" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1">{t('admin.common.status')}</label>
@@ -130,7 +168,7 @@ export const ManageCategories = () => {
                     categories.data?.map((category: any) => (
                         <Card key={category._id} className="flex justify-between items-center p-4">
                             <div>
-                                <h3 className="font-bold text-lg">{category.name}</h3>
+                                <h3 className="font-bold text-lg">{category.nameTranslations?.nl || category.name}</h3>
                                 <p className="text-sm text-gray-500">Order: {category.order} | {t('admin.categories.type')}: {category.type}</p>
                             </div>
                             <div className="flex gap-2">

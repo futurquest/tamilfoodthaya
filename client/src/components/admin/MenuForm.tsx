@@ -15,12 +15,26 @@ interface MenuFormProps {
 export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     const { t } = useTranslation();
     const { categories } = useMenu();
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm({
-        defaultValues: initialData || {
-            available: true,
-            stockCount: 0,
-            spiceLevel: 0
+    const defaultValues = initialData ? {
+        ...initialData,
+        nameTranslations: {
+            nl: initialData.nameTranslations?.nl || initialData.name || '',
+            en: initialData.nameTranslations?.en || '',
+            ta: initialData.nameTranslations?.ta || ''
+        },
+        descriptionTranslations: {
+            nl: initialData.descriptionTranslations?.nl || initialData.description || '',
+            en: initialData.descriptionTranslations?.en || '',
+            ta: initialData.descriptionTranslations?.ta || ''
         }
+    } : {
+        available: true,
+        stockCount: 0,
+        spiceLevel: 0
+    };
+
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+        defaultValues
     });
 
     const [choices, setChoices] = useState<{ name: string, priceModifier: number }[]>(initialData?.choices || []);
@@ -35,6 +49,8 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
         formData.append('spiceLevel', data.spiceLevel);
         formData.append('available', data.available);
         formData.append('choices', JSON.stringify(choices));
+        formData.append('nameTranslations', JSON.stringify(data.nameTranslations));
+        formData.append('descriptionTranslations', JSON.stringify(data.descriptionTranslations));
 
         if (data.image && data.image[0]) {
             formData.append('image', data.image[0]);
@@ -53,9 +69,21 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
 
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-bold mb-1">{t('admin.menu.itemName')}</label>
-                            <input {...register('name', { required: true })} className="w-full p-2 border rounded" />
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-sm font-bold mb-1">{t('admin.menu.itemName')} (NL)</label>
+                                <input {...register('nameTranslations.nl', { required: true })} className="w-full p-2 border rounded" placeholder="Dutch name" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">{t('admin.menu.itemName')} (EN)</label>
+                                <input {...register('nameTranslations.en')} className="w-full p-2 border rounded" placeholder="English name" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">{t('admin.menu.itemName')} (TA)</label>
+                                <input {...register('nameTranslations.ta')} className="w-full p-2 border rounded" placeholder="Tamil name" />
+                            </div>
+                            {/* Fallback original Name field - hidden or kept for legacy if needed. We'll reuse nl as main name for DB required constraint */}
+                            <input type="hidden" {...register('name')} value="Will Be Replaced by Backend or Legacy" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">{t('admin.menu.category')}</label>
@@ -71,9 +99,22 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-bold mb-1">{t('admin.menu.description')}</label>
-                        <textarea {...register('description')} className="w-full p-2 border rounded h-24" />
+                    <div className="space-y-3">
+                        <label className="block text-sm font-bold mb-1">{t('admin.menu.description')} (Translations)</label>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold mb-1 text-gray-500">Dutch (NL)</label>
+                                <textarea {...register('descriptionTranslations.nl')} className="w-full p-2 border rounded h-24" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold mb-1 text-gray-500">English (EN)</label>
+                                <textarea {...register('descriptionTranslations.en')} className="w-full p-2 border rounded h-24" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold mb-1 text-gray-500">Tamil (TA)</label>
+                                <textarea {...register('descriptionTranslations.ta')} className="w-full p-2 border rounded h-24" />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6">

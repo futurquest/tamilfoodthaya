@@ -1,110 +1,100 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMessages, api } from '../../hooks/useApi';
-import { Card, CardContent } from '../../components/ui/Card';
-import { Mail, CheckCircle, Trash2 } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
+import { Mail, CheckCircle, Trash2, MessageSquare, Inbox } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Spinner } from '../../components/ui/Spinner';
 
-// Format helper
-const formatDateHelper = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-};
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export const ViewMessages = () => {
     const queryClient = useQueryClient();
 
-    const { data: messages, isLoading } = useQuery({
+    const { data: raw, isLoading } = useQuery({
         queryKey: ['messages'],
         queryFn: getMessages
     });
 
-    const markReadMutation = useMutation({
+    // API returns { data: [...], total, page, limit } — normalise
+    const messages: any[] = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+
+    const markRead = useMutation({
         mutationFn: (id: string) => api.patch(`/messages/${id}/read`),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['messages'] });
-            toast.success('Gemarkeerd als gelezen');
-        },
-        onError: () => toast.error('Actie mislukt')
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['messages'] }); toast.success('Marked as read'); },
+        onError: () => toast.error('Action failed'),
     });
 
-    const deleteMutation = useMutation({
+    const deleteMsg = useMutation({
         mutationFn: (id: string) => api.delete(`/messages/${id}`),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['messages'] });
-            toast.success('Bericht verwijderd');
-        },
-        onError: () => toast.error('Verwijderen mislukt')
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['messages'] }); toast.success('Deleted'); },
+        onError: () => toast.error('Delete failed'),
     });
-
-    if (isLoading) return <div className="flex justify-center py-12"><Spinner /></div>;
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold text-tamil-charcoal mb-6">Ingebonden Berichten</h1>
+        <div className="animate-fadeIn space-y-6">
+            <div>
+                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <Inbox size={22} className="text-primary-400" /> Messages
+                </h1>
+                <p className="text-dark-400 text-sm mt-1">Contact form submissions from your website.</p>
+            </div>
 
-            <div className="space-y-4">
-                {messages?.map((msg: any) => (
-                    <Card key={msg._id} className={msg.read ? 'opacity-70' : 'border-l-4 border-l-tamil-maroon'}>
-                        <CardContent className="p-6">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${msg.read ? 'bg-gray-200 text-gray-500' : 'bg-tamil-maroon/10 text-tamil-maroon'}`}>
-                                        <Mail size={16} />
+            {isLoading ? (
+                <div className="flex justify-center py-16"><Spinner /></div>
+            ) : messages.length === 0 ? (
+                <div className="admin-card text-center py-16 text-dark-500">
+                    <MessageSquare size={36} className="mx-auto mb-3 text-dark-700" />
+                    <p className="font-semibold">No messages yet.</p>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    {messages.map((msg: any) => (
+                        <div
+                            key={msg._id}
+                            className={`admin-card transition-all ${!msg.read ? 'border-l-4 border-l-primary-500' : 'opacity-75'}`}
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                {/* Avatar + info */}
+                                <div className="flex items-start gap-3">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${!msg.read ? 'bg-primary-500/15 text-primary-400' : 'bg-dark-700 text-dark-400'}`}>
+                                        <Mail size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold">{msg.name}</h3>
-                                        <p className="text-sm text-gray-500">{msg.email}</p>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="font-bold text-white text-sm">{msg.name}</h3>
+                                            {!msg.read && <span className="text-xs bg-primary-500/20 text-primary-400 px-2 py-0.5 rounded-full font-bold">New</span>}
+                                        </div>
+                                        <p className="text-xs text-dark-400">{msg.email}{msg.phone ? ` · ${msg.phone}` : ''}</p>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <span className="text-xs text-gray-400">{formatDateHelper(msg.createdAt)}</span>
-                                    {!msg.read && (
-                                        <div className="mt-1">
-                                            <span className="text-xs bg-tamil-gold/20 text-tamil-gold px-2 py-0.5 rounded-full font-bold">Nieuw</span>
-                                        </div>
-                                    )}
-                                </div>
+                                <span className="text-xs text-dark-500 flex-shrink-0">{fmt(msg.createdAt)}</span>
                             </div>
 
-                            <p className="text-gray-700 bg-gray-50 p-4 rounded mb-4">{msg.message}</p>
+                            <p className="mt-3 text-dark-300 text-sm leading-relaxed bg-dark-900/50 rounded-xl p-4">
+                                {msg.message}
+                            </p>
 
-                            <div className="flex justify-end gap-2">
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => deleteMutation.mutate(msg._id)}
-                                    disabled={deleteMutation.isPending}
-                                    className="text-red-500 hover:text-red-600"
+                            <div className="flex justify-end gap-2 mt-3">
+                                <button
+                                    onClick={() => deleteMsg.mutate(msg._id)}
+                                    disabled={deleteMsg.isPending}
+                                    className="flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-300 px-3 py-1.5 rounded-lg hover:bg-red-500/10 transition-all"
                                 >
-                                    <Trash2 size={16} />
-                                </Button>
+                                    <Trash2 size={13} /> Delete
+                                </button>
                                 {!msg.read && (
-                                    <Button
-                                        size="sm"
-                                        onClick={() => markReadMutation.mutate(msg._id)}
-                                        disabled={markReadMutation.isPending}
+                                    <button
+                                        onClick={() => markRead.mutate(msg._id)}
+                                        disabled={markRead.isPending}
+                                        className="flex items-center gap-1.5 text-xs font-semibold text-primary-400 hover:text-primary-300 px-3 py-1.5 rounded-lg hover:bg-primary-500/10 transition-all"
                                     >
-                                        <CheckCircle size={16} className="mr-2" /> Markeer als gelezen
-                                    </Button>
+                                        <CheckCircle size={13} /> Mark as read
+                                    </button>
                                 )}
                             </div>
-                        </CardContent>
-                    </Card>
-                ))}
-
-                {messages?.length === 0 && (
-                    <div className="text-center py-12 text-gray-500">
-                        Geen berichten gevonden.
-                    </div>
-                )}
-            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

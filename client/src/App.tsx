@@ -17,6 +17,8 @@ import { ViewMessages } from './pages/admin/ViewMessages';
 import { SettingsPage } from './pages/admin/SettingsPage';
 import { ManageCateringPackages } from './pages/admin/ManageCateringPackages';
 import { ManageCateringOrders } from './pages/admin/ManageCateringOrders';
+import { ManageAddons } from './pages/admin/ManageAddons';
+import { ManageCoupons } from './pages/admin/ManageCoupons';
 import { CateringCheckoutPage } from './pages/CateringCheckoutPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CartProvider } from './context/CartContext';
@@ -54,6 +56,8 @@ function App() {
                 <Route path="/admin/settings" element={<SettingsPage />} />
                 <Route path="/admin/catering-packages" element={<ManageCateringPackages />} />
                 <Route path="/admin/catering-orders" element={<ManageCateringOrders />} />
+                <Route path="/admin/addons" element={<ManageAddons />} />
+                <Route path="/admin/coupons" element={<ManageCoupons />} />
               </Route>
             </Route>
           </Routes>

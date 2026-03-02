@@ -34,7 +34,7 @@ export const AdminLogin = () => {
         <div className="min-h-screen bg-tamil-charcoal flex items-center justify-center p-6">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-tamil-maroon rounded-full flex items-center justify-center text-tamil-gold font-bold text-3xl mx-auto mb-4">T</div>
+                    <img src="/logo.png" alt="Tamil Food Thaya" className="h-20 w-auto object-contain mx-auto mb-4" />
                     <h1 className="text-2xl font-bold text-white uppercase tracking-widest">Tamil Food Thaya</h1>
                     <p className="text-gray-400 mt-2">Management Portal Login</p>
                 </div>
