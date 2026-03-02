@@ -65,6 +65,12 @@ export class MenuController {
         if (itemData.choices && typeof itemData.choices === 'string') {
             try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }
         }
+        if (itemData.nameTranslations && typeof itemData.nameTranslations === 'string') {
+            try { itemData.nameTranslations = JSON.parse(itemData.nameTranslations); } catch (e) { }
+        }
+        if (itemData.descriptionTranslations && typeof itemData.descriptionTranslations === 'string') {
+            try { itemData.descriptionTranslations = JSON.parse(itemData.descriptionTranslations); } catch (e) { }
+        }
         if (file) {
             // Construct the full URL
             const protocol = req.protocol;
@@ -90,6 +96,12 @@ export class MenuController {
         const itemData = { ...data };
         if (itemData.choices && typeof itemData.choices === 'string') {
             try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }
+        }
+        if (itemData.nameTranslations && typeof itemData.nameTranslations === 'string') {
+            try { itemData.nameTranslations = JSON.parse(itemData.nameTranslations); } catch (e) { }
+        }
+        if (itemData.descriptionTranslations && typeof itemData.descriptionTranslations === 'string') {
+            try { itemData.descriptionTranslations = JSON.parse(itemData.descriptionTranslations); } catch (e) { }
         }
         if (file) {
             const protocol = req.protocol;

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { TranslatedText, TranslatedTextSchema } from '../../common/schemas/translated-text.schema';
 
 // --- Embedded Sub-Schemas ---
 @Schema({ _id: false })
@@ -17,8 +18,14 @@ export class MenuItem extends Document {
     @Prop({ required: true })
     name: string;
 
+    @Prop({ type: TranslatedTextSchema })
+    nameTranslations?: TranslatedText;
+
     @Prop()
     description: string;
+
+    @Prop({ type: TranslatedTextSchema })
+    descriptionTranslations?: TranslatedText;
 
     @Prop({ required: true, type: Number })
     price: number;

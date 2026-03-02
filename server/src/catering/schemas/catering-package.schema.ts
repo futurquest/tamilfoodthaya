@@ -4,6 +4,7 @@ import { Document } from 'mongoose';
 // --- Embedded Sub-Schemas ---
 
 import { Types } from 'mongoose';
+import { TranslatedText, TranslatedTextSchema } from '../../common/schemas/translated-text.schema';
 
 @Schema({ _id: false })
 export class CateringItem {
@@ -17,8 +18,14 @@ export class CateringCategory {
     @Prop({ required: true })
     name: string;
 
+    @Prop({ type: TranslatedTextSchema })
+    nameTranslations?: TranslatedText;
+
     @Prop()
     description: string;
+
+    @Prop({ type: TranslatedTextSchema })
+    descriptionTranslations?: TranslatedText;
 
     @Prop({ type: Number, default: 1 })
     minSelect: number; // minimum items customer must select
@@ -38,8 +45,14 @@ export class CateringPackage extends Document {
     @Prop({ required: true })
     name: string;
 
+    @Prop({ type: TranslatedTextSchema })
+    nameTranslations?: TranslatedText;
+
     @Prop()
     description: string;
+
+    @Prop({ type: TranslatedTextSchema })
+    descriptionTranslations?: TranslatedText;
 
     @Prop({ required: true, type: Number })
     basePrice: number; // base price per person

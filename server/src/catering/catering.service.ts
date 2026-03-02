@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CateringQuote } from './schemas/catering-quote.schema';
 import { CateringPackage } from './schemas/catering-package.schema';
 import { CateringOrder, CateringOrderStatus } from './schemas/catering-order.schema';
+import { CouponService } from '../coupon/coupon.service';
 
 @Injectable()
 export class CateringService {
@@ -11,6 +12,7 @@ export class CateringService {
         @InjectModel(CateringQuote.name) private quoteModel: Model<CateringQuote>,
         @InjectModel(CateringPackage.name) private packageModel: Model<CateringPackage>,
         @InjectModel(CateringOrder.name) private cateringOrderModel: Model<CateringOrder>,
+        private couponService: CouponService,
     ) { }
 
     // ── Quote Methods (existing) ──
@@ -167,7 +169,17 @@ export class CateringService {
             paymentStatus: 'unpaid',
         });
 
-        return order.save();
+        await order.save();
+
+        if (data.couponCode) {
+            try {
+                await this.couponService.incrementUsage(data.couponCode);
+            } catch (err) {
+                console.error(`Error incrementing usage for coupon ${data.couponCode}`, err);
+            }
+        }
+
+        return order;
     }
 
     async findOrderById(id: string): Promise<CateringOrder> {

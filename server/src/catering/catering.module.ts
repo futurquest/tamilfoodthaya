@@ -5,6 +5,7 @@ import { CateringService } from './catering.service';
 import { CateringQuote, CateringQuoteSchema } from './schemas/catering-quote.schema';
 import { CateringPackage, CateringPackageSchema } from './schemas/catering-package.schema';
 import { CateringOrder, CateringOrderSchema } from './schemas/catering-order.schema';
+import { CouponModule } from '../coupon/coupon.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CateringOrder, CateringOrderSchema } from './schemas/catering-order.sch
       { name: CateringPackage.name, schema: CateringPackageSchema },
       { name: CateringOrder.name, schema: CateringOrderSchema },
     ]),
+    CouponModule,
   ],
   controllers: [CateringController],
   providers: [CateringService],

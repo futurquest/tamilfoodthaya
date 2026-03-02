@@ -14,6 +14,8 @@ import { CateringModule } from './catering/catering.module';
 import { HealthModule } from './health/health.module';
 import { MessageModule } from './message/message.module';
 import { SettingsModule } from './settings/settings.module';
+import { AddonModule } from './addon/addon.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { SettingsModule } from './settings/settings.module';
     CateringModule,
     MessageModule,
     SettingsModule,
+    AddonModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
