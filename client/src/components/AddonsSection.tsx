@@ -32,7 +32,7 @@ const FALLBACK_ADDONS: Addon[] = [
 ];
 
 export default function AddonsSection() {
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const currentLang = i18n.language?.split('-')[0] || 'nl';
     const getLabel = (translations: any, fallback: string | undefined) => translations?.[currentLang] || translations?.nl || fallback || '';
 

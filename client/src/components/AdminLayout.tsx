@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
     LayoutDashboard, Users, BookOpen, Settings, LogOut,
-    UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles, ChevronRight
+    UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -54,16 +54,27 @@ export const AdminLayout = () => {
     ];
 
     return (
-        <div className="flex h-screen bg-dark-950">
+        <div className="admin-panel-font flex h-screen bg-stone-100">
+            <style>{`
+                .admin-panel-font,
+                .admin-panel-font h1,
+                .admin-panel-font h2,
+                .admin-panel-font h3,
+                .admin-panel-font h4,
+                .admin-panel-font h5,
+                .admin-panel-font h6 {
+                    font-family: var(--font-sans) !important;
+                }
+            `}</style>
             {/* Sidebar */}
-            <aside className="w-64 bg-dark-900 border-r border-dark-800 flex flex-col flex-shrink-0">
+            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
                 {/* Logo */}
-                <div className="px-5 py-5 border-b border-dark-800">
+                <div className="px-5 py-5 border-b border-slate-200">
                     <NavLink to="/admin/dashboard" className="flex items-center gap-3 group">
                         <img src="/logo.png" alt="Tamil Food Thaya" className="h-10 w-auto object-contain" />
                         <div>
-                            <h2 className="text-sm font-bold text-white leading-tight">Admin Panel</h2>
-                            <p className="text-xs text-dark-500">Tamil Food Thaya</p>
+                            <h2 className="text-sm font-bold text-slate-900 leading-tight">Admin Panel</h2>
+                            <p className="text-xs text-slate-500">Tamil Food Thaya</p>
                         </div>
                     </NavLink>
                 </div>
@@ -72,15 +83,15 @@ export const AdminLayout = () => {
                 <nav className="flex-grow px-3 py-4 space-y-5 overflow-y-auto">
                     {navGroups.map(group => (
                         <div key={group.label}>
-                            <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest text-dark-600">{group.label}</p>
+                            <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">{group.label}</p>
                             {group.items.map(item => (
                                 <NavLink
                                     key={item.path}
                                     to={item.path}
                                     className={({ isActive }) =>
                                         `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 mb-0.5 ${isActive
-                                            ? 'bg-primary-500/15 text-primary-400 border border-primary-500/20'
-                                            : 'text-dark-400 hover:bg-dark-800 hover:text-dark-200'
+                                            ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                                         }`
                                     }
                                 >
@@ -94,19 +105,22 @@ export const AdminLayout = () => {
                 </nav>
 
                 {/* User / Logout */}
-                <div className="px-3 py-4 border-t border-dark-800">
-                    <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-dark-800 mb-2">
+                <div className="px-3 py-4 border-t border-slate-200">
+                    <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-100 mb-2">
                         <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                             {user?.username?.[0]?.toUpperCase() || 'A'}
                         </div>
                         <div className="min-w-0">
-                            <p className="text-xs font-semibold text-white truncate">{user?.username}</p>
-                            <p className="text-xs text-dark-500">Administrator</p>
+                            <p className="text-xs font-semibold text-slate-900 truncate">{user?.username}</p>
+                            <p className="text-xs text-slate-500">Administrator</p>
                         </div>
+                    </div>
+                    <div className="px-3 py-2 mb-1">
+                        <LanguageSwitcher />
                     </div>
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-dark-400 hover:bg-dark-800 hover:text-red-400 w-full transition-all duration-200"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-red-600 w-full transition-all duration-200"
                     >
                         <LogOut size={18} />
                         <span>{t('admin.layout.logout', 'Logout')}</span>
@@ -116,17 +130,6 @@ export const AdminLayout = () => {
 
             {/* Main Content */}
             <main className="flex-grow overflow-y-auto flex flex-col">
-                {/* Top bar */}
-                <header className="bg-dark-900/80 backdrop-blur-sm border-b border-dark-800 px-8 py-4 flex justify-between items-center flex-shrink-0 sticky top-0 z-10">
-                    <div className="flex items-center gap-2 text-dark-400 text-sm">
-                        <ChevronRight size={14} className="text-dark-600" />
-                        <span className="text-white font-semibold">{t('admin.layout.overview', 'Admin')}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <LanguageSwitcher />
-                    </div>
-                </header>
-
                 <div className="p-8 flex-grow">
                     <Outlet />
                 </div>

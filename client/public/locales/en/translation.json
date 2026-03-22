@@ -67,6 +67,38 @@
         "required": "Required",
         "invalidEmail": "Invalid email"
     },
+    "auth": {
+        "login": {
+            "welcome": "Welcome",
+            "back": "back",
+            "tagline": "We are happy to see you again at Tamil Food Thaya.",
+            "username": "Username",
+            "password": "Password",
+            "loginBtn": "Sign In",
+            "waiting": "Please wait...",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up now",
+            "loginSuccess": "Welcome back, {username}!",
+            "loginError": "Login failed. Please check your credentials."
+        },
+        "register": {
+            "welcome": "Get Started",
+            "with": "with Tamil Food Thaya",
+            "tagline": "Create an account to order and track your events.",
+            "username": "Username",
+            "email": "Email",
+            "password": "Password",
+            "confirmPassword": "Confirm Password",
+            "agreeTerms": "I agree to the",
+            "termsOfService": "Terms of Service",
+            "registerBtn": "Create Account",
+            "registering": "Creating...",
+            "haveAccount": "Already have an account?",
+            "signIn": "Sign in here",
+            "registerSuccess": "Account created successfully!",
+            "registerError": "Registration failed. Please try again."
+        }
+    },
     "catering": {
         "hero": {
             "title": "Make every event a",

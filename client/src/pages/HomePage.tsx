@@ -4,7 +4,6 @@ import HeroSection from '../components/HeroSection';
 import EventTypesSection from '../components/EventTypesSection';
 import MenuSection from '../components/MenuSection';
 import FeaturedPackagesSection from '../components/FeaturedPackagesSection';
-import AddonsSection from '../components/AddonsSection';
 
 interface Package {
     _id: string;
@@ -20,6 +19,7 @@ interface Package {
 
 export const HomePage = () => {
     const [packages, setPackages] = useState<Package[]>([]);
+    const [loadingPackages, setLoadingPackages] = useState(true);
 
     useEffect(() => {
         getCateringPackages()
@@ -34,15 +34,15 @@ export const HomePage = () => {
                 }
                 // If none match, leave as [] — FeaturedPackagesSection renders null when empty
             })
-            .catch(() => { });
+            .catch(() => { })
+            .finally(() => setLoadingPackages(false));
     }, []);
 
     return (
         <div className="animate-fadeIn">
             <HeroSection />
             <EventTypesSection />
-            <FeaturedPackagesSection packages={packages} />
-            <AddonsSection />
+            <FeaturedPackagesSection packages={packages} loading={loadingPackages} />
             <MenuSection />
         </div>
     );

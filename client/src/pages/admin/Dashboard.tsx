@@ -1,61 +1,244 @@
-import { Card, CardContent } from '../../components/ui/Card';
-import { Users, Euro, TrendingUp } from 'lucide-react';
+import {
+    Users,
+    Euro,
+    TrendingUp,
+    ArrowUpRight,
+    ChevronRight,
+    Calendar,
+    UserCheck,
+    Sparkles
+} from 'lucide-react';
+
+const stats = [
+    {
+        label: 'Totale Omzet',
+        value: '€ 4.250,00',
+        detail: '+12% t.o.v. vorige maand',
+        icon: Euro,
+        tone: 'amber'
+    },
+    {
+        label: 'Nieuwe Leads',
+        value: '28',
+        detail: '8 vandaag',
+        icon: Users,
+        tone: 'blue'
+    },
+    {
+        label: 'Conversie Rate',
+        value: '3.8%',
+        detail: '+0.5% deze week',
+        icon: TrendingUp,
+        tone: 'emerald'
+    }
+] as const;
+
+const leads = [
+    {
+        name: 'Sarah Miller',
+        event: 'Bruiloft',
+        date: '15 Aug 2026',
+        guests: '150',
+        status: 'Nieuw',
+        statusTone: 'amber'
+    },
+    {
+        name: 'Robert Janssen',
+        event: 'Bedrijfsfeest',
+        date: '12 Sep 2025',
+        guests: '60',
+        status: 'Nieuw',
+        statusTone: 'amber'
+    },
+    {
+        name: 'Anjali Kumar',
+        event: 'Verjaardag',
+        date: '28 Jan 2025',
+        guests: '25',
+        status: 'In Behandeling',
+        statusTone: 'blue'
+    }
+] as const;
 
 export const Dashboard = () => {
     return (
-        <div className="space-y-8">
-            <div className="grid md:grid-cols-4 gap-6">
-                <StatCard title="Totale Omzet" value="€ 4.250,00" icon={<Euro />} detail="+12% t.o.v. vorige maand" />
-                <StatCard title="Nieuwe Leads" value="28" icon={<Users />} detail="8 vandaag" />
-                <StatCard title="Conversie Rate" value="3.8%" icon={<TrendingUp />} detail="+0.5%" />
-            </div>
-
-            <div className="grid lg:grid-cols-1 gap-8">
-
-                <Card>
-                    <div className="p-6 border-b flex justify-between items-center">
-                        <h4 className="font-bold">Catering Leads (Nieuw)</h4>
-                        <button className="text-tamil-maroon text-sm font-bold">Bekijk alles</button>
-                    </div>
-                    <CardContent className="p-0">
-                        <div className="divide-y">
-                            <LeadRow name="Sarah Miller" event="Bruiloft" date="15 Aug 2026" guests="150" status="Nieuw" />
-                            <LeadRow name="Robert Janssen" event="Bedrijfsfeest" date="12 Sep 2025" guests="60" status="Nieuw" />
-                            <LeadRow name="Anjali Kumar" event="Verjaardag" date="28 Jan 2025" guests="25" status="In Behandeling" />
+        <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
+            <div className="mx-auto max-w-[1080px] space-y-5">
+                {/* Header */}
+                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                        <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                Dashboard
+                            </p>
+                            <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
+                                <Sparkles size={24} className="text-slate-900" />
+                                Overzicht
+                            </h1>
+                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+                                Een helder overzicht van omzet, leads en recente cateringaanvragen.
+                            </p>
                         </div>
-                    </CardContent>
-                </Card>
+
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            {stats.map((stat) => (
+                                <MetricCard
+                                    key={stat.label}
+                                    label={stat.label}
+                                    value={stat.value}
+                                    detail={stat.detail}
+                                    tone={stat.tone}
+                                    icon={stat.icon}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Leads */}
+                <div className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+                    <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+                        <div>
+                            <div className="mb-2 flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                    Leads
+                                </p>
+                            </div>
+
+                            <h2 className="text-lg font-semibold text-slate-900">
+                                Catering Leads <span className="text-slate-400">(Nieuw)</span>
+                            </h2>
+                        </div>
+
+                        <button className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-stone-50">
+                            Bekijk alles
+                            <ChevronRight size={15} />
+                        </button>
+                    </div>
+
+                    <div className="divide-y divide-slate-100">
+                        {leads.map((lead) => (
+                            <LeadRow key={`${lead.name}-${lead.date}`} lead={lead} />
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
 
-const StatCard = ({ title, value, icon, detail }: any) => (
-    <Card>
-        <CardContent className="p-6">
-            <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-tamil-maroon/10 text-tamil-maroon rounded-lg">{icon}</div>
-                <span className="text-sm font-medium text-gray-500">{title}</span>
+const MetricCard = ({
+    label,
+    value,
+    detail,
+    tone,
+    icon: Icon
+}: {
+    label: string;
+    value: string;
+    detail: string;
+    tone: 'amber' | 'blue' | 'emerald';
+    icon: React.ComponentType<{ size?: number; className?: string }>;
+}) => {
+    const toneMap = {
+        amber: {
+            iconWrap: 'bg-amber-50 text-amber-600',
+            accent: 'bg-amber-500',
+            detail: 'text-amber-700'
+        },
+        blue: {
+            iconWrap: 'bg-blue-50 text-blue-600',
+            accent: 'bg-blue-500',
+            detail: 'text-blue-700'
+        },
+        emerald: {
+            iconWrap: 'bg-emerald-50 text-emerald-600',
+            accent: 'bg-emerald-500',
+            detail: 'text-emerald-700'
+        }
+    };
+
+    const styles = toneMap[tone];
+
+    return (
+        <div className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+            <div className={`absolute left-0 right-0 top-0 h-[3px] ${styles.accent}`} />
+
+            <div className="mb-4 flex items-start justify-between gap-3">
+                <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${styles.iconWrap}`}>
+                    <Icon size={18} />
+                </div>
+
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-stone-50 text-slate-400">
+                    <ArrowUpRight size={14} />
+                </div>
             </div>
-            <div className="text-3xl font-bold text-tamil-charcoal mb-1">{value}</div>
-            <div className="text-[10px] font-bold text-green-600 uppercase tracking-wide">{detail}</div>
-        </CardContent>
-    </Card>
-);
 
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                {label}
+            </p>
+            <p className="mt-2 text-[30px] font-semibold leading-none tracking-tight text-slate-900">
+                {value}
+            </p>
 
-const LeadRow = ({ name, event, date, guests, status }: any) => (
-    <div className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
-        <div className="flex gap-4 items-center">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">{name[0]}</div>
-            <div>
-                <h5 className="font-bold text-sm">{name}</h5>
-                <p className="text-xs text-gray-400">{event} • {date}</p>
+            <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium ${styles.detail}`}>
+                <TrendingUp size={12} />
+                <span>{detail}</span>
             </div>
         </div>
-        <div className="text-right">
-            <div className="text-xs font-bold text-tamil-maroon">{guests} gasten</div>
-            <div className="text-[10px] uppercase text-gray-400 mt-1 font-bold">{status}</div>
+    );
+};
+
+const LeadRow = ({
+    lead
+}: {
+    lead: {
+        name: string;
+        event: string;
+        date: string;
+        guests: string;
+        status: string;
+        statusTone: 'amber' | 'blue';
+    };
+}) => {
+    const statusClass =
+        lead.statusTone === 'amber'
+            ? 'border-amber-200 bg-amber-50 text-amber-700'
+            : 'border-blue-200 bg-blue-50 text-blue-700';
+
+    return (
+        <div className="flex flex-col gap-3 px-5 py-4 transition hover:bg-stone-50/70 sm:flex-row sm:items-center sm:justify-between md:px-6">
+            <div className="flex min-w-0 items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 text-sm font-semibold text-amber-700">
+                    {lead.name.charAt(0)}
+                </div>
+
+                <div className="min-w-0">
+                    <p className="truncate text-[15px] font-semibold text-slate-900">
+                        {lead.name}
+                    </p>
+                    <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
+                        <Calendar size={12} className="text-slate-400" />
+                        <span>
+                            {lead.event} · {lead.date}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:items-end">
+                <div className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                    <UserCheck size={14} className="text-slate-400" />
+                    <span>{lead.guests} gasten</span>
+                </div>
+
+                <span
+                    className={`inline-flex w-fit rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusClass}`}
+                >
+                    {lead.status}
+                </span>
+            </div>
         </div>
-    </div>
-);
+    );
+};

@@ -1,6 +1,16 @@
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import {
+    User,
+    Mail,
+    Phone,
+    Calendar,
+    FileText,
+    ShoppingBag,
+    ShieldCheck
+} from 'lucide-react';
 import { Container } from '../components/ui/Container';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
@@ -15,7 +25,7 @@ const checkoutSchema = z.object({
     email: z.string().email('Ongeldig e-mailadres'),
     phone: z.string().min(10, 'Ongeldig telefoonnummer'),
     pickupTime: z.string().min(1, 'Selecteer een tijdstip'),
-    notes: z.string().optional(),
+    notes: z.string().optional()
 });
 
 type CheckoutForm = z.infer<typeof checkoutSchema>;
@@ -24,14 +34,35 @@ export const CheckoutPage = () => {
     const { cart, total, clearCart } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CheckoutForm>({
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm<CheckoutForm>({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
             name: user?.name || '',
             email: user?.email || '',
             phone: user?.phone || '',
+            pickupTime: '',
+            notes: ''
         }
     });
+
+    useEffect(() => {
+        if (cart.length === 0) {
+            navigate('/menu');
+        }
+    }, [cart.length, navigate]);
+
+    const minPickupTime = useMemo(() => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        return now.toISOString().slice(0, 16);
+    }, []);
+
+    const vatAmount = total * 0.09;
 
     const onSubmit = async (data: CheckoutForm) => {
         try {
@@ -39,14 +70,18 @@ export const CheckoutPage = () => {
                 items: cart,
                 total,
                 customerInfo: data,
-                pickupTime: new Date(data.pickupTime),
+                pickupTime: new Date(data.pickupTime)
             };
 
             const response = await createOrder(order);
-            if (response.url) {
+
+            if (response?.url) {
                 clearCart();
-                window.location.href = response.url; // Redirect to Stripe
+                window.location.href = response.url;
+                return;
             }
+
+            alert('Geen betaal-link ontvangen. Probeer het opnieuw.');
         } catch (error) {
             console.error('Checkout error:', error);
             alert('Er is een fout opgetreden bij het verwerken van uw bestelling.');
@@ -54,70 +89,205 @@ export const CheckoutPage = () => {
     };
 
     if (cart.length === 0) {
-        navigate('/menu');
         return null;
     }
 
     return (
-        <div className="pt-32 pb-24 bg-gray-50 min-h-screen">
-            <SEO title="Afrekenen" description="Voltooi uw bestelling bij Tamil Food Thaya." />
+        <div className="min-h-screen bg-white font-sans pt-28 pb-16">
+            <SEO
+                title="Afrekenen"
+                description="Voltooi uw bestelling bij Tamil Food Thaya."
+            />
+
             <Container>
-                <div className="grid lg:grid-cols-3 gap-12">
-                    {/* ... keeping the rest same ... */}
-                    <div className="lg:col-span-2">
-                        <h1 className="text-3xl font-bold mb-8">Gegevens & Ophalen</h1>
-                        <Card>
-                            <CardContent className="p-8">
-                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <InputField label="Volledige Naam" name="name" register={register} error={errors.name?.message} />
-                                        <InputField label="E-mailadres" name="email" type="email" register={register} error={errors.email?.message} />
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <InputField label="Telefoonnummer" name="phone" register={register} error={errors.phone?.message} />
-                                        <InputField label="Ophaaltijdstip" name="pickupTime" type="datetime-local" register={register} error={errors.pickupTime?.message} />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-tamil-charcoal mb-2 uppercase tracking-wide">Opmerkingen (optioneel)</label>
-                                        <textarea
-                                            {...register('notes')}
-                                            className="w-full px-4 py-3 rounded-md border border-gray-200 focus:ring-2 focus:ring-tamil-maroon outline-none min-h-[100px]"
+                <div className="mx-auto max-w-6xl space-y-6">
+                    <div className="border border-gray-200 bg-white rounded-2xl p-6">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Checkout
+                                </p>
+                                <h1 className="mt-2 text-3xl font-semibold text-gray-900">
+                                    Afrekenen
+                                </h1>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    Vul uw gegevens in en kies een ophaaltijdstip om uw bestelling af te ronden.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3">
+                                <SmallStat label="Items" value={cart.length} />
+                                <SmallStat label="Btw" value={`€${vatAmount.toFixed(2)}`} />
+                                <SmallStat label="Totaal" value={`€${total.toFixed(2)}`} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                        <Card className="border border-gray-200 rounded-2xl bg-white shadow-none">
+                            <CardContent className="p-6">
+                                <SectionTitle
+                                    title="Klantgegevens"
+                                    subtitle="Gebruik uw juiste gegevens voor bevestiging en afhalen."
+                                />
+
+                                <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5">
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <InputField
+                                            label="Volledige naam"
+                                            icon={<User size={16} />}
+                                            error={errors.name?.message}
+                                            registration={register('name')}
+                                            placeholder="Uw volledige naam"
+                                        />
+
+                                        <InputField
+                                            label="E-mailadres"
+                                            type="email"
+                                            icon={<Mail size={16} />}
+                                            error={errors.email?.message}
+                                            registration={register('email')}
+                                            placeholder="naam@email.com"
                                         />
                                     </div>
-                                    <Button type="submit" className="w-full py-4 text-lg" disabled={isSubmitting}>
-                                        {isSubmitting ? 'Bezig...' : 'Doorgaan naar Betalen (iDEAL)'}
+
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <InputField
+                                            label="Telefoonnummer"
+                                            icon={<Phone size={16} />}
+                                            error={errors.phone?.message}
+                                            registration={register('phone')}
+                                            placeholder="Uw telefoonnummer"
+                                        />
+
+                                        <InputField
+                                            label="Ophaaltijdstip"
+                                            type="datetime-local"
+                                            icon={<Calendar size={16} />}
+                                            error={errors.pickupTime?.message}
+                                            registration={register('pickupTime')}
+                                            min={minPickupTime}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                                            Opmerkingen
+                                        </label>
+
+                                        <div
+                                            className={`rounded-xl border bg-white px-4 py-3 ${
+                                                errors.notes
+                                                    ? 'border-red-300'
+                                                    : 'border-gray-300'
+                                            }`}
+                                        >
+                                            <div className="mb-2 flex items-center gap-2 text-gray-500">
+                                                <FileText size={16} />
+                                                <span className="text-xs uppercase tracking-wide">
+                                                    Extra info
+                                                </span>
+                                            </div>
+
+                                            <textarea
+                                                {...register('notes')}
+                                                placeholder="Bijvoorbeeld allergieën, extra wensen of opmerking voor afhalen..."
+                                                className="min-h-[120px] w-full resize-none bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600">
+                                                <ShieldCheck size={18} />
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-900">
+                                                    Veilige betaling
+                                                </p>
+                                                <p className="mt-1 text-sm text-gray-600">
+                                                    U wordt doorgestuurd naar de betaalpagina om uw bestelling af te ronden.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="h-11 w-full rounded-xl bg-black text-white hover:bg-gray-900 disabled:opacity-50"
+                                    >
+                                        {isSubmitting ? 'Bezig...' : 'Doorgaan naar betalen'}
                                     </Button>
                                 </form>
                             </CardContent>
                         </Card>
-                    </div>
 
-                    <div>
-                        <h2 className="text-2xl font-bold mb-8 text-tamil-charcoal">Besteloverzicht</h2>
-                        <Card className="sticky top-32">
+                        <Card className="border border-gray-200 rounded-2xl bg-white shadow-none">
                             <CardContent className="p-6">
-                                <div className="space-y-4 mb-6">
+                                <SectionTitle
+                                    title="Besteloverzicht"
+                                    subtitle="Controleer uw bestelling voordat u betaalt."
+                                />
+
+                                <div className="mt-6 space-y-3">
                                     {cart.map((item) => (
-                                        <div key={item.menuItemId} className="flex justify-between items-start text-sm">
-                                            <div className="flex-grow">
-                                                <span className="font-bold">{item.quantity}x</span> {item.name}
+                                        <div
+                                            key={item.menuItemId}
+                                            className="rounded-xl border border-gray-200 bg-white p-4"
+                                        >
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900">
+                                                        {item.quantity}x {item.name}
+                                                    </p>
+                                                </div>
+
+                                                <span className="shrink-0 text-sm font-semibold text-gray-900">
+                                                    €{(item.price * item.quantity).toFixed(2)}
+                                                </span>
                                             </div>
-                                            <span className="font-semibold ml-4">€{(item.price * item.quantity).toFixed(2)}</span>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="border-t pt-4 space-y-2">
-                                    <div className="flex justify-between text-gray-500">
-                                        <span>Subtotaal</span>
-                                        <span>€{total.toFixed(2)}</span>
+
+                                <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                                    <SummaryRow
+                                        label="Subtotaal"
+                                        value={`€${total.toFixed(2)}`}
+                                    />
+                                    <SummaryRow
+                                        label="Btw (9%, inbegrepen)"
+                                        value={`€${vatAmount.toFixed(2)}`}
+                                    />
+                                    <div className="mt-3 border-t border-gray-200 pt-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-base font-semibold text-gray-900">
+                                                Totaal
+                                            </span>
+                                            <span className="text-2xl font-semibold text-gray-900">
+                                                €{total.toFixed(2)}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between text-gray-500">
-                                        <span>Btw (9%)</span>
-                                        <span>€{(total * 0.09).toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-xl font-bold border-t pt-4 mt-4">
-                                        <span>Totaal</span>
-                                        <span>€{total.toFixed(2)}</span>
+                                </div>
+
+                                <div className="mt-6 rounded-xl border border-gray-200 bg-white p-4">
+                                    <div className="flex items-start gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-600">
+                                            <ShoppingBag size={18} />
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-900">
+                                                Afhaalbestelling
+                                            </p>
+                                            <p className="mt-1 text-sm text-gray-600">
+                                                Kies een tijdstip dat voor u past. Daarna gaat u verder naar betaling.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
@@ -129,14 +299,97 @@ export const CheckoutPage = () => {
     );
 };
 
-const InputField = ({ label, name, type = 'text', register, error }: any) => (
-    <div>
-        <label className="block text-sm font-bold text-tamil-charcoal mb-2 uppercase tracking-wide">{label}</label>
-        <input
-            type={type}
-            {...register(name)}
-            className={`w-full px-4 py-3 rounded-md border ${error ? 'border-red-500' : 'border-gray-200'} focus:ring-2 focus:ring-tamil-maroon outline-none transition-all`}
-        />
-        {error && <p className="text-red-500 text-xs mt-1 font-medium">{error}</p>}
-    </div>
-);
+const SmallStat = ({
+    label,
+    value
+}: {
+    label: string;
+    value: string | number;
+}) => {
+    return (
+        <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-center">
+            <p className="text-xs text-gray-500">{label}</p>
+            <p className="mt-1 text-lg font-semibold text-gray-900">{value}</p>
+        </div>
+    );
+};
+
+const SectionTitle = ({
+    title,
+    subtitle
+}: {
+    title: string;
+    subtitle: string;
+}) => {
+    return (
+        <div>
+            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+            <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
+        </div>
+    );
+};
+
+const SummaryRow = ({
+    label,
+    value
+}: {
+    label: string;
+    value: string;
+}) => {
+    return (
+        <div className="flex items-center justify-between py-1">
+            <span className="text-sm text-gray-600">{label}</span>
+            <span className="text-sm font-medium text-gray-900">{value}</span>
+        </div>
+    );
+};
+
+const InputField = ({
+    label,
+    type = 'text',
+    icon,
+    error,
+    registration,
+    placeholder,
+    min
+}: {
+    label: string;
+    type?: string;
+    icon?: ReactNode;
+    error?: string;
+    registration: any;
+    placeholder?: string;
+    min?: string;
+}) => {
+    return (
+        <div>
+            <label className="mb-2 block text-sm font-medium text-gray-700">
+                {label}
+            </label>
+
+            <div
+                className={`relative rounded-xl border bg-white ${
+                    error ? 'border-red-300' : 'border-gray-300'
+                }`}
+            >
+                {icon && (
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {icon}
+                    </span>
+                )}
+
+                <input
+                    type={type}
+                    min={min}
+                    placeholder={placeholder}
+                    {...registration}
+                    className={`h-11 w-full rounded-xl bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 ${
+                        icon ? 'pl-10 pr-4' : 'px-4'
+                    }`}
+                />
+            </div>
+
+            {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+        </div>
+    );
+};

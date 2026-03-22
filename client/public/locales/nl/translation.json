@@ -67,6 +67,38 @@
         "required": "Verplicht",
         "invalidEmail": "Ongeldig e-mailadres"
     },
+    "auth": {
+        "login": {
+            "welcome": "Welkom",
+            "back": "terug",
+            "tagline": "We zijn blij u weer te zien bij Tamil Food Thaya.",
+            "username": "Gebruikersnaam",
+            "password": "Wachtwoord",
+            "loginBtn": "Inloggen",
+            "waiting": "Even wachten...",
+            "noAccount": "Nog geen account?",
+            "signUp": "Nu registreren",
+            "loginSuccess": "Welkom terug, {username}!",
+            "loginError": "Login mislukt. Controleer uw gegevens."
+        },
+        "register": {
+            "welcome": "Aan de Slag",
+            "with": "met Tamil Food Thaya",
+            "tagline": "Maak een account aan om te bestellen en uw events bij te houden.",
+            "username": "Gebruikersnaam",
+            "email": "E-mail",
+            "password": "Wachtwoord",
+            "confirmPassword": "Bevestig Wachtwoord",
+            "agreeTerms": "Ik ga akkoord met de",
+            "termsOfService": "Servicevoorwaarden",
+            "registerBtn": "Account Aanmaken",
+            "registering": "Account aanmaken...",
+            "haveAccount": "Hebt u al een account?",
+            "signIn": "Inloggen hier",
+            "registerSuccess": "Account succesvol aangemaakt!",
+            "registerError": "Registratie mislukt. Probeer het opnieuw."
+        }
+    },
     "catering": {
         "hero": {
             "title": "Maak van elk event een",

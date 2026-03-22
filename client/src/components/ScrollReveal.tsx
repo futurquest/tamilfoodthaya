@@ -16,17 +16,19 @@ type ScrollRevealProps = {
     className?: string;
     style?: React.CSSProperties;
     as?: React.ElementType;
+    delay?: number;
 };
 
-export default function ScrollReveal({ children, variant = 'fadeUp', className = '', style = {}, as: Component = 'div' }: ScrollRevealProps) {
+export default function ScrollReveal({ children, variant = 'fadeUp', className = '', style = {}, as: Component = 'div', delay = 0 }: ScrollRevealProps) {
     const { ref, isInView } = useInView({ rootMargin: '0px 0px -80px 0px', threshold: 0.1, once: true });
     const variantClass = variants[variant] || variants.fadeUp;
+    const delayStyle = delay ? { ...style, animationDelay: `${delay}ms` } : style;
 
     return (
         <Component
             ref={ref}
             className={`scroll-reveal ${variantClass} ${isInView ? 'scroll-reveal-visible' : ''} ${className}`.trim()}
-            style={style}
+            style={delayStyle}
         >
             {children}
         </Component>
