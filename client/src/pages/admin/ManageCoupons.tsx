@@ -323,7 +323,7 @@ export const ManageCoupons = () => {
                             />
                         </label>
 
-                        <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_260px]">
+                        <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
                             <div className="grid min-w-0 gap-1.5">
                                 <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
                                     <Percent size={13} /> Discount type
@@ -422,14 +422,14 @@ export const ManageCoupons = () => {
 
                 {showForm && (
                     <div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]"
+                        className="fixed inset-0 z-[100] flex overflow-y-auto bg-black/35 p-4 backdrop-blur-[2px]"
                         onClick={closeForm}
                     >
                         <div
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="coupon-editor-title"
-                            className="w-full max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+                            className="m-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
@@ -646,8 +646,8 @@ const CouponResults = ({
     onDelete: (id: string) => void;
 }) => (
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="hidden overflow-x-auto lg:block">
-            <table className="w-full min-w-[1040px] text-sm">
+        <div className="hidden overflow-x-auto xl:block">
+            <table className="w-full min-w-[920px] text-sm">
                 <thead className="border-b border-slate-200 bg-[#fbf6ed]">
                     <tr>
                         <TableHeader>Code</TableHeader>
@@ -713,7 +713,7 @@ const CouponResults = ({
             </table>
         </div>
 
-        <div className="grid gap-3 p-3 lg:hidden">
+        <div className="grid gap-3 p-3 xl:hidden">
             {coupons.map((coupon) => (
                 <CouponCard
                     key={coupon._id}

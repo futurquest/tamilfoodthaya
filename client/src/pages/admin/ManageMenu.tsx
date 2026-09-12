@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
@@ -32,7 +32,7 @@ import {
     deleteMenuItem
 } from '../../hooks/useApi';
 import { Button } from '../../components/ui/Button';
-import { Spinner } from '../../components/ui/Spinner';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 
 type MenuFormValues = {
     name: string;
@@ -87,6 +87,8 @@ export const ManageMenu = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<MenuItem | null>(null);
+    const [deleting, setDeleting] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('ALL');
     const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('ALL');
@@ -154,6 +156,20 @@ export const ManageMenu = () => {
         setEditingItem(null);
     };
 
+    useEffect(() => {
+        if (!isEditing) return;
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsEditing(false);
+                setEditingItem(null);
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [isEditing]);
+
     const handleCreate = () => {
         setEditingItem(null);
         setIsEditing(true);
@@ -164,15 +180,24 @@ export const ManageMenu = () => {
         setIsEditing(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Delete this menu item? Customers will no longer see it.')) return;
+    const requestDelete = (id: string) => {
+        const target = menuList.find((item) => item._id === id) ?? null;
+        setDeleteTarget(target);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
 
         try {
-            await deleteMenuItem(id);
+            setDeleting(true);
+            await deleteMenuItem(deleteTarget._id);
             toast.success('Menu item deleted');
             queryClient.invalidateQueries({ queryKey: ['menu-items'] });
         } catch {
             toast.error('Could not delete menu item');
+        } finally {
+            setDeleting(false);
+            setDeleteTarget(null);
         }
     };
 
@@ -199,6 +224,9 @@ export const ManageMenu = () => {
                 <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                Menu items
+                            </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
                                     Menu Item Workspace
@@ -213,7 +241,7 @@ export const ManageMenu = () => {
                             </p>
                         </div>
 
-                        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:w-[720px]">
+                        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:max-w-[540px] 2xl:max-w-[720px]">
                             <MetricCard label="Total" value={stats.total} icon={<Package size={16} />} />
                             <MetricCard label="Visible" value={stats.available} icon={<Eye size={16} />} />
                             <MetricCard label="Hidden" value={stats.hidden} icon={<EyeOff size={16} />} />
@@ -240,6 +268,7 @@ export const ManageMenu = () => {
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 placeholder="Search dish name, description, category, price or stock..."
+                                aria-label="Search menu items"
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
@@ -315,20 +344,25 @@ export const ManageMenu = () => {
                         items={filteredItems}
                         categoryMap={categoryMap}
                         onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={requestDelete}
                     />
                 ) : (
                     <MenuList
                         items={filteredItems}
                         categoryMap={categoryMap}
                         onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={requestDelete}
                     />
                 )}
 
                 {isEditing && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]">
-                        <div className="w-full max-w-5xl">
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={editingItem ? 'Edit menu item' : 'Create menu item'}
+                        className="fixed inset-0 z-[100] flex overflow-y-auto bg-black/35 p-4 backdrop-blur-[2px]"
+                    >
+                        <div className="m-auto w-full max-w-5xl">
                             <MenuForm
                                 onClose={closeModal}
                                 onSubmit={handleSubmit}
@@ -337,6 +371,19 @@ export const ManageMenu = () => {
                         </div>
                     </div>
                 )}
+
+                <ConfirmDialog
+                    open={Boolean(deleteTarget)}
+                    title="Delete menu item"
+                    message={
+                        deleteTarget
+                            ? `Delete "${deleteTarget.name || 'this menu item'}"? Customers will no longer see it.`
+                            : ''
+                    }
+                    busy={deleting}
+                    onCancel={() => setDeleteTarget(null)}
+                    onConfirm={confirmDelete}
+                />
             </div>
         </div>
     );
@@ -351,12 +398,12 @@ const MetricCard = ({
     value: string | number;
     icon: ReactNode;
 }) => (
-    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-slate-400">
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-2 text-[#d8c7ad]">
             {icon}
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em]">{label}</p>
+            <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
         </div>
-        <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+        <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
     </div>
 );
 
@@ -527,7 +574,7 @@ const MenuGrid = ({
             text="Review dish photography, pricing, stock, dietary flags and visibility in a visual workspace."
             badge={`${items.length} ${items.length === 1 ? 'item' : 'items'}`}
         />
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
             {items.map((item) => (
                 <MenuCard
                     key={item._id}
@@ -769,6 +816,14 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     const { categories } = useMenu();
     const [preview, setPreview] = useState<string>(initialData?.image || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const firstField = panelRef.current?.querySelector<HTMLElement>(
+            'input, select, textarea, button'
+        );
+        firstField?.focus();
+    }, []);
 
     const categoryList: CategoryItem[] = useMemo(() => {
         if (Array.isArray(categories.data)) return categories.data;
@@ -867,7 +922,10 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     };
 
     return (
-        <div className="w-full overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl">
+        <div
+            ref={panelRef}
+            className="w-full overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl"
+        >
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                 <div>
                     <h2 className="text-2xl font-extrabold text-slate-900">
@@ -1235,9 +1293,27 @@ const StockBadge = ({ count }: { count: number }) => (
 );
 
 const LoadingPanel = () => (
-    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm">
-        <div className="flex justify-center">
-            <Spinner />
+    <div className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                    key={index}
+                    className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
+                >
+                    <div className="admin-skeleton aspect-[4/3] rounded-none" />
+                    <div className="p-4">
+                        <div className="space-y-2">
+                            <div className="admin-skeleton h-4 w-3/4" />
+                            <div className="admin-skeleton h-3 w-full" />
+                            <div className="admin-skeleton h-3 w-2/3" />
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                            <div className="admin-skeleton h-10" />
+                            <div className="admin-skeleton h-10" />
+                        </div>
+                    </div>
+                </div>
+            ))}
         </div>
     </div>
 );

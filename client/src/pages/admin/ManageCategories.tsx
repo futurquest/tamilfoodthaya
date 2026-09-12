@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useMenu, createCategory, updateCategory, deleteCategory } from '../../hooks/useApi';
 import { Button } from '../../components/ui/Button';
-import { Spinner } from '../../components/ui/Spinner';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 
 type CategoryType = 'food' | 'beverage';
 type TypeFilter = 'ALL' | CategoryType;
@@ -71,6 +71,8 @@ export const ManageCategories = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<CategoryItem | null>(null);
+    const [deleting, setDeleting] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -158,16 +160,25 @@ export const ManageCategories = () => {
         setIsEditing(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Delete this category? Menu items may still be linked to it.')) return;
+    const requestDelete = (id: string) => {
+        const target = categoryList.find((category) => category._id === id) ?? null;
+        setDeleteTarget(target);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
 
         try {
-            await deleteCategory(id);
+            setDeleting(true);
+            await deleteCategory(deleteTarget._id);
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Category deleted');
         } catch (error) {
             console.error('Failed to delete category:', error);
             toast.error('Could not delete category');
+        } finally {
+            setDeleting(false);
+            setDeleteTarget(null);
         }
     };
 
@@ -200,6 +211,9 @@ export const ManageCategories = () => {
                 <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                Categories
+                            </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
                                     Menu Category Workspace
@@ -214,7 +228,7 @@ export const ManageCategories = () => {
                             </p>
                         </div>
 
-                        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_auto] xl:w-[620px]">
+                        <div className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_auto] xl:w-[620px]">
                             <MetricCard label="Total" value={stats.total} icon={<LayoutGrid size={16} />} />
                             <MetricCard label="Food" value={stats.food} icon={<Soup size={16} />} />
                             <MetricCard label="Drinks" value={stats.beverage} icon={<Coffee size={16} />} />
@@ -240,6 +254,7 @@ export const ManageCategories = () => {
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 placeholder="Search category name, translation, type or display order..."
+                                aria-label="Search categories"
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
@@ -296,13 +311,13 @@ export const ManageCategories = () => {
                     <CategoryGrid
                         categories={filteredCategories}
                         onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={requestDelete}
                     />
                 ) : (
                     <CategoryList
                         categories={filteredCategories}
                         onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={requestDelete}
                     />
                 )}
 
@@ -314,6 +329,21 @@ export const ManageCategories = () => {
                         register={register}
                     />
                 )}
+
+                <ConfirmDialog
+                    open={Boolean(deleteTarget)}
+                    title="Delete category"
+                    message={
+                        deleteTarget
+                            ? `Delete "${getDisplayName(
+                                  deleteTarget
+                              )}"? Menu items may still be linked to it.`
+                            : ''
+                    }
+                    busy={deleting}
+                    onCancel={() => setDeleteTarget(null)}
+                    onConfirm={confirmDelete}
+                />
             </div>
         </div>
     );
@@ -329,14 +359,14 @@ const MetricCard = ({
     icon: ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+            <div className="flex items-center gap-2 text-[#d8c7ad]">
                 {icon}
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em]">
+                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
         </div>
     );
 };
@@ -451,7 +481,7 @@ const CategoryGrid = ({
                 text="Review each menu section, translations and display order in a visual workspace."
                 badge={`${categories.length} ${categories.length === 1 ? 'category' : 'categories'}`}
             />
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
                 {categories.map((category) => (
                     <CategoryCard
                         key={category._id}
@@ -691,9 +721,35 @@ const CategoryModal = ({
     onSubmit: () => void;
     register: (name: any, options?: any) => UseFormRegisterReturn;
 }) => {
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const original = document.activeElement as HTMLElement | null;
+        const firstField = panelRef.current?.querySelector<HTMLElement>(
+            'input, select, textarea, button'
+        );
+        firstField?.focus();
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onClose();
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            original?.focus();
+        };
+    }, [onClose]);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]">
-            <div className="w-full max-w-2xl overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl">
+        <div className="fixed inset-0 z-[100] flex overflow-y-auto bg-black/35 p-4 backdrop-blur-[2px]">
+            <div
+                ref={panelRef}
+                role="dialog"
+                aria-modal="true"
+                aria-label={title}
+                className="m-auto w-full max-w-2xl overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl"
+            >
                 <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                     <div>
                         <h2 className="text-2xl font-extrabold text-slate-900">
@@ -827,9 +883,31 @@ const InputBlock = ({
 
 const LoadingPanel = () => {
     return (
-        <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm">
-            <div className="flex justify-center">
-                <Spinner />
+        <div className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                        key={index}
+                        className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className="admin-skeleton h-11 w-11" />
+                            <div className="flex-1 space-y-2">
+                                <div className="admin-skeleton h-4 w-3/4" />
+                                <div className="admin-skeleton h-3 w-1/2" />
+                            </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                            <div className="admin-skeleton h-4 w-full" />
+                            <div className="admin-skeleton h-4 w-5/6" />
+                            <div className="admin-skeleton h-4 w-2/3" />
+                        </div>
+                        <div className="mt-4 flex items-center justify-between">
+                            <div className="admin-skeleton h-8 w-20" />
+                            <div className="admin-skeleton h-8 w-16" />
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

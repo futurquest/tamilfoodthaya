@@ -1,9 +1,10 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useEffect, useRef, useState } from 'react';
 import {
     LayoutDashboard, Users, BookOpen, Settings, LogOut,
     UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles,
-    ShieldCheck, CircleDot, ChevronRight
+    ShieldCheck, CircleDot, ChevronRight, PanelLeftOpen, PanelLeftClose, Menu, X, Package, UserCog
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,50 @@ import { useTranslation } from 'react-i18next';
 export const AdminLayout = () => {
     const { logout, user } = useAuth();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     const { t } = useTranslation();
+
+    const [collapsed, setCollapsed] = useState(() => {
+        try { return localStorage.getItem('tft-admin-sidebar-collapsed') === '1'; } catch { return false; }
+    });
+
+    useEffect(() => {
+        try { localStorage.setItem('tft-admin-sidebar-collapsed', collapsed ? '1' : '0'); } catch { /* noop */ }
+    }, [collapsed]);
+
+    const [isMobile, setIsMobile] = useState(() =>
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+    );
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const mainRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 767px)');
+        const onChange = () => {
+            setIsMobile(mq.matches);
+            if (!mq.matches) setMobileOpen(false);
+        };
+        mq.addEventListener('change', onChange);
+        return () => mq.removeEventListener('change', onChange);
+    }, []);
+
+    useEffect(() => {
+        if (!mobileOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false); };
+        const scroller = mainRef.current;
+        const prevOverflow = scroller?.style.overflow || '';
+        if (scroller) scroller.style.overflow = 'hidden';
+        window.addEventListener('keydown', onKey);
+        return () => {
+            if (scroller) scroller.style.overflow = prevOverflow;
+            window.removeEventListener('keydown', onKey);
+        };
+    }, [mobileOpen]);
+
+    const toggleSidebar = () => {
+        if (isMobile) setMobileOpen(o => !o);
+        else setCollapsed(c => !c);
+    };
 
     const handleLogout = () => { logout(); navigate('/admin/login'); };
 
@@ -25,8 +69,9 @@ export const AdminLayout = () => {
         },
         {
             label: 'Sales',
-            description: 'Inbox and leads',
+            description: 'Orders, leads and messages',
             items: [
+                { name: 'Orders', path: '/admin/catering-orders', icon: <ClipboardList size={18} /> },
                 { name: 'Leads', path: '/admin/leads', icon: <Users size={18} /> },
                 { name: 'Messages', path: '/admin/messages', icon: <MessageSquare size={18} /> },
             ]
@@ -43,8 +88,7 @@ export const AdminLayout = () => {
             label: 'Catering',
             description: 'Events and offers',
             items: [
-                { name: 'Packages', path: '/admin/catering-packages', icon: <UtensilsCrossed size={18} /> },
-                { name: 'Orders', path: '/admin/catering-orders', icon: <ClipboardList size={18} /> },
+                { name: 'Packages', path: '/admin/catering-packages', icon: <Package size={18} /> },
                 { name: 'Add-ons', path: '/admin/addons', icon: <Sparkles size={18} /> },
                 { name: 'Coupons', path: '/admin/coupons', icon: <Tag size={18} /> },
             ]
@@ -53,14 +97,18 @@ export const AdminLayout = () => {
             label: 'System',
             description: 'Access and setup',
             items: [
-                { name: 'Users', path: '/admin/users', icon: <Users size={18} /> },
+                { name: 'Users', path: '/admin/users', icon: <UserCog size={18} /> },
                 { name: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
             ]
         },
     ];
 
+const activePage = navGroups
+        .flatMap(group => group.items)
+        .find(item => pathname === item.path || pathname.startsWith(item.path + '/'))?.name;
+
     return (
-        <div className="admin-panel-font admin-shell flex h-screen">
+        <div className={`admin-panel-font admin-shell ${collapsed ? 'admin-sidebar-collapsed' : ''} flex h-screen`}>
             <style>{`
                 .admin-panel-font,
                 .admin-panel-font h1,
@@ -72,13 +120,18 @@ export const AdminLayout = () => {
                     font-family: var(--font-sans) !important;
                 }
             `}</style>
-            {/* Sidebar */}
-            <aside className="admin-sidebar-panel w-[17.5rem] flex flex-col flex-shrink-0">
+{/* Sidebar */}
+            <aside
+                id="admin-sidebar"
+                className={`admin-sidebar-panel w-[17.5rem] flex flex-col flex-shrink-0 ${mobileOpen ? 'admin-mobile-open' : ''}`}
+            >
                 {/* Logo */}
+                
                 <div className="admin-brand-block px-4 py-4">
                     <NavLink to="/admin/dashboard" className="admin-brand-link group">
+                 
                         <span className="admin-brand-seal">
-                            <img src="/logo.png" alt="Tamil Food Thaya" className="h-8 w-8 object-contain" />
+                            <img src="/logo-seal.png" alt="Tamil Food Thaya" className="h-8 w-8 object-contain" />
                         </span>
                         <div className="min-w-0">
                             <h2 className="truncate text-sm font-extrabold leading-tight">Tamil Food Thaya</h2>
@@ -108,9 +161,10 @@ export const AdminLayout = () => {
                                 <span>{group.description}</span>
                             </div>
                             {group.items.map(item => (
-                                <NavLink
+<NavLink
                                     key={item.path}
                                     to={item.path}
+                                    onClick={() => { if (isMobile) setMobileOpen(false); }}
                                     className={({ isActive }) =>
                                         `admin-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 mb-0.5 ${isActive
                                             ? 'admin-nav-link--active'
@@ -118,9 +172,9 @@ export const AdminLayout = () => {
                                         }`
                                     }
                                 >
-                                    <span className="admin-nav-icon">{item.icon}</span>
-                                    <span>{item.name}</span>
-                                    <ChevronRight size={15} className="admin-nav-chevron" />
+<span className="admin-nav-icon shrink-0">{item.icon}</span>
+                                    <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                                    <ChevronRight size={15} className="admin-nav-chevron shrink-0" />
                                 </NavLink>
                             ))}
                         </div>
@@ -140,7 +194,7 @@ export const AdminLayout = () => {
                         <ShieldCheck size={16} className="admin-user-shield" />
                     </div>
                     <div className="admin-language-slot px-3 py-2 mb-2">
-                        <LanguageSwitcher />
+                        <LanguageSwitcher dropUp />
                     </div>
                     <button
                         onClick={handleLogout}
@@ -150,10 +204,41 @@ export const AdminLayout = () => {
                         <span>{t('admin.layout.logout', 'Logout')}</span>
                     </button>
                 </div>
-            </aside>
+</aside>
 
-            {/* Main Content */}
-            <main className="admin-main flex-grow overflow-y-auto flex flex-col">
+            {isMobile && mobileOpen && (
+                <div
+                    className="admin-sidebar-backdrop"
+                    onClick={() => setMobileOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
+
+{/* Main Content */}
+            <main ref={mainRef} className="admin-main flex-grow overflow-y-auto flex flex-col">
+                <header className="admin-topbar">
+                    <button
+                        type="button"
+                        onClick={toggleSidebar}
+                        className="admin-sidebar-toggle"
+                        aria-controls="admin-sidebar"
+                        aria-expanded={isMobile ? mobileOpen : !collapsed}
+                        aria-label={isMobile
+                            ? (mobileOpen ? t('admin.layout.closeMenu', 'Close menu') : t('admin.layout.openMenu', 'Open menu'))
+                            : (collapsed ? t('admin.layout.expandSidebar', 'Expand sidebar') : t('admin.layout.collapseSidebar', 'Collapse sidebar'))}
+                        title={isMobile
+                            ? (mobileOpen ? t('admin.layout.closeMenu', 'Close menu') : t('admin.layout.openMenu', 'Open menu'))
+                            : (collapsed ? t('admin.layout.expandSidebar', 'Expand sidebar') : t('admin.layout.collapseSidebar', 'Collapse sidebar'))}
+                    >
+                        {isMobile
+                            ? (mobileOpen ? <X size={19} /> : <Menu size={19} />)
+                            : (collapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />)}
+                    </button>
+                    <span className="admin-topbar-logo">
+                        <img src="/logo-seal.png" alt="Tamil Food Thaya" />
+                    </span>
+                    {activePage && <p className="admin-topbar-page">{activePage}</p>}
+                </header>
                 <div className="admin-main-inner p-8 flex-grow">
                     <Outlet />
                 </div>

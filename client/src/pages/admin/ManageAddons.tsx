@@ -538,7 +538,7 @@ export const ManageAddons = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className={viewMode === 'grid' ? 'grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3' : 'grid min-w-0 gap-3'}>
+                    <div className={viewMode === 'grid' ? 'grid min-w-0 gap-4 lg:grid-cols-2 xl:grid-cols-3' : 'grid min-w-0 gap-3'}>
                         {filteredAddons.map((addon) => (
                             <div
                                 key={addon._id}
@@ -615,14 +615,14 @@ export const ManageAddons = () => {
 
                 {showForm && (
                     <div
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#160d0b]/60 p-3 backdrop-blur-[2px] sm:p-5"
+className="fixed inset-0 z-[100] flex overflow-y-auto bg-[#160d0b]/60 p-3 backdrop-blur-[2px] sm:p-5"
                         onClick={closeForm}
                     >
                         <div
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="addon-editor-title"
-                            className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_32px_90px_rgba(22,13,11,0.32)] sm:max-h-[calc(100dvh-2.5rem)]"
+                            className="m-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_32px_90px_rgba(22,13,11,0.32)] sm:max-h-[calc(100dvh-2.5rem)]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">

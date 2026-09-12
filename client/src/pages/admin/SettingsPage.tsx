@@ -173,28 +173,27 @@ export const SettingsPage = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container min-w-0 max-w-[1180px]">
-                <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
-                        <div className="min-w-0 max-w-2xl">
-                            <div className="flex items-center gap-3">
-                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
-                                    <SettingsIcon size={21} />
-                                </span>
-                                <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
-                                    Site Settings
-                                </h1>
-                            </div>
-                            <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
+                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
+                        <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                Settings
+                            </p>
+                            <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
+                                Site Settings
+                            </h1>
+                            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
                                 Control public restaurant details, contact channels, opening
                                 hours and online ordering availability.
                             </p>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
+                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#d8c7ad]">
+                                <SettingsIcon size={13} />
                                 Save status
                             </p>
-                            <p className="mt-1 text-sm font-extrabold text-slate-950">
+                            <p className="mt-1 truncate text-sm font-extrabold text-white">
                                 {mutation.isPending
                                     ? 'Saving changes'
                                     : isDirty
@@ -204,14 +203,14 @@ export const SettingsPage = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-5">
+                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 sm:grid-cols-5">
                         <MetricCard label="Brand" value={values.siteName ? 'Set' : 'Missing'} icon={<Store size={15} />} />
                         <MetricCard label="Contact" value={`${completedContactFields}/4`} icon={<Phone size={15} />} />
                         <MetricCard label="Hours" value={`${filledHours}/7`} icon={<Clock3 size={15} />} />
                         <MetricCard label="Social" value={hasSocialLinks ? 'Linked' : 'Empty'} icon={<Globe2 size={15} />} />
                         <MetricCard label="Orders" value={ordersEnabled ? 'Enabled' : 'Paused'} icon={<Power size={15} />} />
                     </div>
-                </div>
+                </section>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="grid min-w-0 gap-5 xl:grid-cols-[230px_minmax(0,1fr)_300px] xl:items-start">
                     <SettingsNav />
@@ -223,7 +222,7 @@ export const SettingsPage = () => {
                             title="Business Identity"
                             subtitle="The public-facing restaurant name and address shown across the website."
                         >
-                            <div className="grid min-w-0 gap-4 md:grid-cols-2">
+                            <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
                                 <InputBlock
                                     label="Site name"
                                     icon={<Store size={16} />}
@@ -246,7 +245,7 @@ export const SettingsPage = () => {
                             title="Contact Channels"
                             subtitle="Keep phone, email, WhatsApp and social links consistent for customer support."
                         >
-                            <div className="grid min-w-0 gap-4 md:grid-cols-2">
+                            <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
                                 <InputBlock
                                     label="Email"
                                     icon={<Mail size={16} />}
@@ -275,7 +274,7 @@ export const SettingsPage = () => {
                                     registration={register('facebookUrl')}
                                 />
 
-                                <div className="md:col-span-2">
+                                <div className="2xl:col-span-2">
                                     <InputBlock
                                         label="Instagram URL"
                                         icon={<Instagram size={16} />}
@@ -292,7 +291,7 @@ export const SettingsPage = () => {
                             title="Business Hours"
                             subtitle="Use clear customer-facing text such as 12:00 - 22:00 or Closed."
                         >
-                            <div className="grid min-w-0 gap-3 md:grid-cols-2">
+                            <div className="grid min-w-0 gap-3 2xl:grid-cols-2">
                                 {DAYS.map((day) => (
                                     <InputBlock
                                         key={day.key}
@@ -426,12 +425,12 @@ const MetricCard = ({
     value: string | number;
     icon: ReactNode;
 }) => (
-    <div className="min-w-0 border-slate-200 px-4 py-4 odd:border-r sm:border-r sm:last:border-r-0 md:px-5">
-        <div className="flex items-center gap-2 text-slate-500">
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-2 text-[#d8c7ad]">
             {icon}
-            <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em]">{label}</p>
+            <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
         </div>
-        <p className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-950">{value}</p>
+        <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
     </div>
 );
 

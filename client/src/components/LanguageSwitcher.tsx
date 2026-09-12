@@ -7,7 +7,7 @@ const LANGUAGES = [
     { code: 'ta', label: 'Tamil', short: 'TA', flag: 'TA' },
 ] as const;
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({ dropUp = false }: { dropUp?: boolean }) => {
     const { i18n } = useTranslation();
     const [open, setOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
@@ -47,23 +47,29 @@ export const LanguageSwitcher = () => {
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 aria-label="Select language"
-                style={{
+style={{
                     display: 'inline-flex',
                     alignItems: 'center',
+                    justifyContent: dropUp ? 'space-between' : 'flex-start',
+                    width: dropUp ? '100%' : 'auto',
                     gap: 8,
                     borderRadius: 999,
-                    border: '1px solid rgba(184,122,16,0.35)',
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06))',
-                    color: '#2f2214',
+                    border: dropUp ? '1px solid rgba(240, 215, 156, 0.28)' : '1px solid rgba(184,122,16,0.35)',
+                    background: dropUp
+                        ? 'linear-gradient(135deg, rgba(255, 248, 237, 0.10), rgba(255, 248, 237, 0.04))'
+                        : 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06))',
+                    color: dropUp ? '#f5ead8' : '#2f2214',
                     fontFamily: 'var(--font-sans)',
                     fontSize: 12,
                     fontWeight: 600,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
-                    padding: '6px 10px 6px 8px',
+                    padding: '6px 12px 6px 8px',
                     cursor: 'pointer',
                     backdropFilter: 'blur(8px)',
-                    boxShadow: open ? '0 8px 24px rgba(26,18,9,0.15)' : '0 3px 10px rgba(26,18,9,0.08)',
+                    boxShadow: dropUp
+                        ? (open ? '0 10px 28px rgba(0, 0, 0, 0.18)' : '0 3px 10px rgba(0, 0, 0, 0.1)')
+                        : (open ? '0 8px 24px rgba(26,18,9,0.15)' : '0 3px 10px rgba(26,18,9,0.08)'),
                     transition: 'all 200ms ease',
                 }}
             >
@@ -104,8 +110,11 @@ export const LanguageSwitcher = () => {
                     aria-label="Language options"
                     style={{
                         position: 'absolute',
-                        top: 'calc(100% + 10px)',
+                        ...(dropUp
+                            ? { bottom: 'calc(100% + 10px)' }
+                            : { top: 'calc(100% + 10px)' }),
                         right: 0,
+                        width: dropUp ? '100%' : 'auto',
                         minWidth: 190,
                         borderRadius: 14,
                         border: '1px solid rgba(184,122,16,0.22)',

@@ -1,22 +1,22 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
+    ArrowLeft,
     CheckCircle2,
+    ChevronDown,
     Clock3,
     Filter,
     Inbox,
-    LayoutList,
     Mail,
     MessageSquare,
-    PanelLeft,
     Phone,
     Search,
     Trash2,
     UserCircle
 } from 'lucide-react';
 import { getMessages, api } from '../../hooks/useApi';
-import { Spinner } from '../../components/ui/Spinner';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 
 type MessageItem = {
     _id: string;
@@ -29,7 +29,6 @@ type MessageItem = {
 };
 
 type FilterType = 'ALL' | 'UNREAD' | 'READ';
-type ViewMode = 'inbox' | 'list';
 
 const filterConfig: Record<FilterType, { label: string; title: string; helper: string }> = {
     ALL: {
@@ -65,9 +64,10 @@ const fmt = (d: string) => {
 export const ViewMessages = () => {
     const queryClient = useQueryClient();
     const [filter, setFilter] = useState<FilterType>('ALL');
-    const [viewMode, setViewMode] = useState<ViewMode>('inbox');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [detailOpen, setDetailOpen] = useState(false);
+    const [pendingDelete, setPendingDelete] = useState<MessageItem | null>(null);
 
     const {
         data: raw,
@@ -102,6 +102,17 @@ export const ViewMessages = () => {
         onError: () => toast.error('Could not delete the message')
     });
 
+    const requestDelete = (id: string) => {
+        const target = messages.find((message) => message._id === id) ?? null;
+        setPendingDelete(target);
+    };
+
+    const confirmDelete = () => {
+        if (!pendingDelete) return;
+        deleteMsg.mutate(pendingDelete._id);
+        setPendingDelete(null);
+    };
+
     const unreadCount = messages.filter((msg) => !msg.read).length;
     const readCount = messages.filter((msg) => msg.read).length;
 
@@ -120,29 +131,43 @@ export const ViewMessages = () => {
     }, [messages, filter, searchTerm]);
 
     const selectedMessage = useMemo(() => {
-        return (
-            filteredMessages.find((msg) => msg._id === selectedId) ??
-            filteredMessages[0] ??
-            null
-        );
-    }, [filteredMessages, selectedId]);
-
-    useEffect(() => {
-        if (!filteredMessages.length) {
-            setSelectedId(null);
-            return;
-        }
-
-        if (!selectedId || !filteredMessages.some((msg) => msg._id === selectedId)) {
-            setSelectedId(filteredMessages[0]._id);
-        }
+        return filteredMessages.find((msg) => msg._id === selectedId) ?? null;
     }, [filteredMessages, selectedId]);
 
     if (isLoading) {
         return (
-            <div className="admin-loading-state">
-                <Spinner size="lg" />
-                <p>Loading customer messages...</p>
+            <div className="admin-page">
+                <div className="admin-page-container max-w-[1180px]">
+                    <div className="space-y-4">
+                        <section className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
+                            <div className="flex flex-wrap items-end justify-between gap-5">
+                                <div className="space-y-3">
+                                    <div className="admin-skeleton h-3 w-24" />
+                                    <div className="admin-skeleton h-8 w-64" />
+                                    <div className="admin-skeleton h-4 w-72" />
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                    {Array.from({ length: 3 }).map((_, index) => (
+                                        <div key={index} className="admin-skeleton h-20 w-28" />
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+                        <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+                            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+                                <div className="space-y-3">
+                                    <div className="admin-skeleton h-24" />
+                                    <div className="admin-skeleton h-24" />
+                                    <div className="admin-skeleton h-24" />
+                                </div>
+                                <div className="hidden space-y-3 lg:block">
+                                    <div className="admin-skeleton h-64" />
+                                    <div className="admin-skeleton h-28" />
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -168,16 +193,19 @@ export const ViewMessages = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container max-w-[1180px]">
-                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5 md:px-6">
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                Messages
+                            </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
                                     Customer Message Inbox
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
                                     <MessageSquare size={13} />
-                                    {viewMode === 'inbox' ? 'Inbox view' : 'List view'}
+                                    Inbox
                                 </span>
                             </div>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
@@ -193,23 +221,26 @@ export const ViewMessages = () => {
                     </div>
                 </section>
 
-                <section className="rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
+                <section className="rounded-[24px] border border-slate-200 bg-white p-2.5 shadow-sm sm:p-3">
                     <div className="grid gap-3 2xl:grid-cols-[minmax(0,1fr)_auto] 2xl:items-end">
-                        <label className="relative block">
+                        <label className="relative block min-w-0 max-w-[16rem]">
                             <Search
-                                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                                size={16}
+                                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                                size={15}
                             />
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search name, email, phone or message..."
-                                className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                                placeholder="Search messages"
+                                aria-label="Search messages"
+                                className="h-10 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
 
-                        <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
-                            <MessageTabs
+                        <div className="grid min-w-0 gap-3 sm:max-w-[240px]">
+                            <FilterSelect
+                                label="Status"
+                                icon={<Filter size={13} />}
                                 value={filter}
                                 counts={{
                                     ALL: messages.length,
@@ -218,7 +249,6 @@ export const ViewMessages = () => {
                                 }}
                                 onChange={setFilter}
                             />
-                            <ViewToggle value={viewMode} onChange={setViewMode} />
                         </div>
                     </div>
 
@@ -242,25 +272,36 @@ export const ViewMessages = () => {
                     </div>
                 </section>
 
-                {viewMode === 'inbox' ? (
-                    <InboxWorkspace
+                <InboxWorkspace
                         filter={filter}
                         messages={filteredMessages}
                         selectedMessage={selectedMessage}
                         selectedId={selectedId}
+                        detailOpen={detailOpen}
                         busy={markRead.isPending || deleteMsg.isPending}
-                        onSelect={setSelectedId}
+                        onOpen={(id) => {
+                            setSelectedId(id);
+                            setDetailOpen(true);
+                        }}
+                        onBack={() => setDetailOpen(false)}
                         onMarkRead={(id) => markRead.mutate(id)}
-                        onDelete={(id) => deleteMsg.mutate(id)}
+                        onDelete={requestDelete}
                     />
-                ) : (
-                    <MessageListView
-                        messages={filteredMessages}
-                        busy={markRead.isPending || deleteMsg.isPending}
-                        onMarkRead={(id) => markRead.mutate(id)}
-                        onDelete={(id) => deleteMsg.mutate(id)}
-                    />
-                )}
+
+                <ConfirmDialog
+                    open={Boolean(pendingDelete)}
+                    title="Delete message"
+                    message={
+                        pendingDelete
+                            ? `Delete the message from ${
+                                  pendingDelete.name || 'this customer'
+                              }? This cannot be undone.`
+                            : ''
+                    }
+                    busy={deleteMsg.isPending}
+                    onCancel={() => setPendingDelete(null)}
+                    onConfirm={confirmDelete}
+                />
             </div>
         </div>
     );
@@ -276,103 +317,53 @@ const MetricCard = ({
     icon: ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+            <div className="flex items-center gap-2 text-[#d8c7ad]">
                 {icon}
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em]">
+                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
         </div>
     );
 };
 
-const MessageTabs = ({
+const FilterSelect = ({
+    label,
+    icon,
     value,
     counts,
     onChange
 }: {
+    label: string;
+    icon: ReactNode;
     value: FilterType;
     counts: Record<FilterType, number>;
     onChange: (value: FilterType) => void;
 }) => {
-    const tabs: FilterType[] = ['ALL', 'UNREAD', 'READ'];
+    const options: FilterType[] = ['ALL', 'UNREAD', 'READ'];
 
     return (
-        <div className="grid gap-1.5">
+        <div className="grid min-w-0 gap-1.5">
             <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                <Filter size={13} />
-                Status
+                {icon}
+                {label}
             </span>
-            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
-                {tabs.map((tab) => {
-                    const active = value === tab;
-
-                    return (
-                        <button
-                            key={tab}
-                            type="button"
-                            onClick={() => onChange(tab)}
-                            className={`inline-flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
-                                active
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-900'
-                            }`}
-                        >
-                            {filterConfig[tab].label}
-                            <span
-                                className={`rounded-lg px-1.5 py-0.5 text-[10px] ${
-                                    active ? 'bg-amber-50 text-amber-800' : 'bg-white text-slate-500'
-                                }`}
-                            >
-                                {counts[tab]}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
-
-const ViewToggle = ({
-    value,
-    onChange
-}: {
-    value: ViewMode;
-    onChange: (value: ViewMode) => void;
-}) => {
-    const options: { value: ViewMode; label: string; icon: ReactNode }[] = [
-        { value: 'inbox', label: 'Inbox', icon: <PanelLeft size={14} /> },
-        { value: 'list', label: 'List', icon: <LayoutList size={14} /> }
-    ];
-
-    return (
-        <div className="grid gap-1.5">
-            <span className="px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                View
-            </span>
-            <div className="flex rounded-2xl border border-slate-200 bg-stone-50 p-1">
-                {options.map((option) => {
-                    const active = value === option.value;
-
-                    return (
-                        <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => onChange(option.value)}
-                            className={`inline-flex h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
-                                active
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-900'
-                            }`}
-                        >
-                            {option.icon}
-                            {option.label}
-                        </button>
-                    );
-                })}
+            <div className="relative min-w-0">
+                <select
+                    value={value}
+                    onChange={(e) => onChange(e.target.value as FilterType)}
+                    aria-label={label}
+                    className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white pl-4 pr-9 text-sm font-bold text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
+                >
+                    {options.map((opt) => (
+                        <option key={opt} value={opt}>
+                            {filterConfig[opt].label} ({counts[opt]})
+                        </option>
+                    ))}
+                </select>
+                <ChevronDown size={15} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
         </div>
     );
@@ -383,8 +374,10 @@ const InboxWorkspace = ({
     messages,
     selectedMessage,
     selectedId,
+    detailOpen,
     busy,
-    onSelect,
+    onOpen,
+    onBack,
     onMarkRead,
     onDelete
 }: {
@@ -392,13 +385,15 @@ const InboxWorkspace = ({
     messages: MessageItem[];
     selectedMessage: MessageItem | null;
     selectedId: string | null;
+    detailOpen: boolean;
     busy: boolean;
-    onSelect: (id: string) => void;
+    onOpen: (id: string) => void;
+    onBack: () => void;
     onMarkRead: (id: string) => void;
     onDelete: (id: string) => void;
 }) => {
     return (
-        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-2.5 shadow-sm sm:p-3">
             <WorkspaceHeader
                 title={filterConfig[filter].title}
                 text={filterConfig[filter].helper}
@@ -410,25 +405,25 @@ const InboxWorkspace = ({
                     title="No matching messages"
                     text="Adjust search or filters to find the customer message you need."
                 />
+            ) : detailOpen ? (
+                <MessageDetail
+                    message={selectedMessage}
+                    fullscreen
+                    busy={busy}
+                    onBack={onBack}
+                    onMarkRead={onMarkRead}
+                    onDelete={onDelete}
+                />
             ) : (
-                <div className="grid gap-4 lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.2fr)]">
-                    <div className="grid gap-2 lg:max-h-[68vh] lg:overflow-y-auto lg:pr-1">
-                        {messages.map((message) => (
-                            <MessagePreviewCard
-                                key={message._id}
-                                message={message}
-                                active={selectedId === message._id}
-                                onClick={() => onSelect(message._id)}
-                            />
-                        ))}
-                    </div>
-
-                    <MessageDetail
-                        message={selectedMessage}
-                        busy={busy}
-                        onMarkRead={onMarkRead}
-                        onDelete={onDelete}
-                    />
+                <div className="grid gap-2">
+                    {messages.map((message) => (
+                        <MessagePreviewCard
+                            key={message._id}
+                            message={message}
+                            active={selectedId === message._id}
+                            onClick={() => onOpen(message._id)}
+                        />
+                    ))}
                 </div>
             )}
         </section>
@@ -445,7 +440,7 @@ const WorkspaceHeader = ({
     badge: string;
 }) => {
     return (
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-3 py-2.5 shadow-sm backdrop-blur sm:px-4 sm:py-3">
             <div className="min-w-0">
                 <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
                     {title}
@@ -474,7 +469,7 @@ const MessagePreviewCard = ({
         <button
             type="button"
             onClick={onClick}
-            className={`w-full rounded-2xl border p-4 text-left shadow-sm transition ${
+            className={`w-full rounded-2xl border p-3.5 text-left shadow-sm transition sm:p-4 ${
                 active
                     ? 'border-amber-300 bg-white shadow-md'
                     : 'border-slate-200 bg-white/80 hover:border-amber-200 hover:bg-white'
@@ -507,12 +502,16 @@ const MessagePreviewCard = ({
 
 const MessageDetail = ({
     message,
+    fullscreen = false,
     busy,
+    onBack,
     onMarkRead,
     onDelete
 }: {
     message: MessageItem | null;
+    fullscreen?: boolean;
     busy: boolean;
+    onBack: () => void;
     onMarkRead: (id: string) => void;
     onDelete: (id: string) => void;
 }) => {
@@ -533,7 +532,20 @@ const MessageDetail = ({
     }
 
     return (
-        <article className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+        <article className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            {fullscreen && (
+                <div className="mb-4">
+                    <button
+                        type="button"
+                        onClick={onBack}
+                        className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:bg-stone-50"
+                    >
+                        <ArrowLeft size={14} />
+                        Back to inbox
+                    </button>
+                </div>
+            )}
+
             <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 md:flex-row md:items-start md:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
                     <Avatar name={message.name} unread={!message.read} large />
@@ -572,167 +584,6 @@ const MessageDetail = ({
                 <p className="whitespace-pre-wrap text-[15px] font-semibold leading-7 text-slate-700">
                     {message.message}
                 </p>
-            </div>
-        </article>
-    );
-};
-
-const MessageListView = ({
-    messages,
-    busy,
-    onMarkRead,
-    onDelete
-}: {
-    messages: MessageItem[];
-    busy: boolean;
-    onMarkRead: (id: string) => void;
-    onDelete: (id: string) => void;
-}) => {
-    return (
-        <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
-            <WorkspaceHeader
-                title="List workspace"
-                text="Scan matching messages in one dense operational view."
-                badge={`${messages.length} message${messages.length === 1 ? '' : 's'}`}
-            />
-
-            {messages.length === 0 ? (
-                <EmptyState
-                    title="No matching messages"
-                    text="Adjust search or filters to find the customer message you need."
-                />
-            ) : (
-                <>
-                    <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 lg:block">
-                        <table className="w-full min-w-[900px] border-separate border-spacing-0 text-left">
-                            <thead className="bg-stone-50">
-                                <tr>
-                                    {['Customer', 'Status', 'Message', 'Received', 'Contact', 'Action'].map((heading) => (
-                                        <th
-                                            key={heading}
-                                            className="border-b border-slate-200 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500"
-                                        >
-                                            {heading}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {messages.map((message) => (
-                                    <MessageListRow
-                                        key={message._id}
-                                        message={message}
-                                        busy={busy}
-                                        onMarkRead={onMarkRead}
-                                        onDelete={onDelete}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="grid gap-3 lg:hidden">
-                        {messages.map((message) => (
-                            <MessageMobileCard
-                                key={message._id}
-                                message={message}
-                                busy={busy}
-                                onMarkRead={onMarkRead}
-                                onDelete={onDelete}
-                            />
-                        ))}
-                    </div>
-                </>
-            )}
-        </section>
-    );
-};
-
-const MessageListRow = ({
-    message,
-    busy,
-    onMarkRead,
-    onDelete
-}: {
-    message: MessageItem;
-    busy: boolean;
-    onMarkRead: (id: string) => void;
-    onDelete: (id: string) => void;
-}) => {
-    return (
-        <tr className="transition hover:bg-amber-50/50">
-            <td className="border-b border-slate-100 px-4 py-4">
-                <div className="flex min-w-0 items-center gap-3">
-                    <Avatar name={message.name} unread={!message.read} />
-                    <div className="min-w-0">
-                        <p className="truncate text-sm font-extrabold text-slate-900">
-                            {message.name || 'Unnamed customer'}
-                        </p>
-                        <p className="mt-1 truncate text-xs font-bold text-slate-500">
-                            {message.email || 'No email address'}
-                        </p>
-                    </div>
-                </div>
-            </td>
-            <td className="border-b border-slate-100 px-4 py-4">
-                <MessageBadge read={message.read} />
-            </td>
-            <td className="max-w-[300px] border-b border-slate-100 px-4 py-4 text-sm font-semibold leading-6 text-slate-600">
-                {truncateText(message.message, 92)}
-            </td>
-            <td className="border-b border-slate-100 px-4 py-4 text-sm font-bold text-slate-700">
-                {fmt(message.createdAt)}
-            </td>
-            <td className="border-b border-slate-100 px-4 py-4">
-                <div className="grid gap-1">
-                    <ContactLink icon={<Mail size={14} />} value={message.email || 'No email'} href={message.email ? `mailto:${message.email}` : undefined} />
-                    <ContactLink icon={<Phone size={14} />} value={message.phone || 'No phone'} href={message.phone ? `tel:${message.phone}` : undefined} />
-                </div>
-            </td>
-            <td className="border-b border-slate-100 px-4 py-4">
-                <MessageActions message={message} busy={busy} onMarkRead={onMarkRead} onDelete={onDelete} compact />
-            </td>
-        </tr>
-    );
-};
-
-const MessageMobileCard = ({
-    message,
-    busy,
-    onMarkRead,
-    onDelete
-}: {
-    message: MessageItem;
-    busy: boolean;
-    onMarkRead: (id: string) => void;
-    onDelete: (id: string) => void;
-}) => {
-    return (
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                    <MessageBadge read={message.read} />
-                    <h3 className="mt-3 truncate text-base font-extrabold text-slate-900">
-                        {message.name || 'Unnamed customer'}
-                    </h3>
-                    <p className="mt-1 text-xs font-bold text-slate-500">
-                        {fmt(message.createdAt)}
-                    </p>
-                </div>
-                <Avatar name={message.name} unread={!message.read} />
-            </div>
-
-            <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
-                {truncateText(message.message, 140)}
-            </p>
-
-            <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-[#fbfaf7] px-3 py-3">
-                <ContactLink icon={<Mail size={14} />} value={message.email || 'No email'} href={message.email ? `mailto:${message.email}` : undefined} />
-                <ContactLink icon={<Phone size={14} />} value={message.phone || 'No phone'} href={message.phone ? `tel:${message.phone}` : undefined} />
-            </div>
-
-            <div className="mt-4">
-                <MessageActions message={message} busy={busy} onMarkRead={onMarkRead} onDelete={onDelete} />
             </div>
         </article>
     );
@@ -845,40 +696,6 @@ const ContactBlock = ({
                 <div className="flex min-w-0 items-center gap-2">{content}</div>
             )}
         </div>
-    );
-};
-
-const ContactLink = ({
-    icon,
-    value,
-    href
-}: {
-    icon: ReactNode;
-    value: string;
-    href?: string;
-}) => {
-    const content = (
-        <>
-            <span className="text-slate-400">{icon}</span>
-            <span className="truncate">{value}</span>
-        </>
-    );
-
-    if (!href) {
-        return (
-            <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-slate-500">
-                {content}
-            </div>
-        );
-    }
-
-    return (
-        <a
-            href={href}
-            className="flex min-w-0 items-center gap-2 rounded-xl text-sm font-bold text-slate-700 transition hover:text-amber-800"
-        >
-            {content}
-        </a>
     );
 };
 

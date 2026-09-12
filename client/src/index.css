@@ -1966,6 +1966,8 @@ select:focus-visible {
 }
 
 .admin-shell {
+  max-width: 100%;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 16% 0%, rgba(201, 151, 43, 0.14), transparent 28rem),
     linear-gradient(180deg, #fffaf1 0%, #f4eadb 100%);
@@ -2005,15 +2007,14 @@ select:focus-visible {
 
 .admin-brand-link {
   display: grid;
-  min-height: 4.65rem;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.65rem;
   border: 1px solid rgba(255, 248, 237, 0.12);
   border-radius: 1rem;
   background:
     linear-gradient(135deg, rgba(255, 248, 237, 0.105), rgba(255, 248, 237, 0.035));
-  padding: 0.72rem;
+  padding: 0.5rem;
   text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
@@ -2027,13 +2028,23 @@ select:focus-visible {
 
 .admin-brand-seal {
   display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3.5rem;
+  height: 3.5rem;
   place-items: center;
+  overflow: hidden;
   border: 1px solid rgba(255, 248, 237, 0.14);
-  border-radius: 0.9rem;
-  background: rgba(255, 250, 241, 0.92);
+  border-radius: 1rem;
+  background: #fff;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+}
+
+.admin-brand-seal img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .admin-brand-arrow {
@@ -2116,6 +2127,7 @@ select:focus-visible {
   position: relative;
   border: 1px solid transparent;
   min-height: 2.8rem;
+  min-width: 0;
   color: rgba(255, 248, 237, 0.68);
   overflow: hidden;
 }
@@ -2144,6 +2156,7 @@ select:focus-visible {
 
 .admin-nav-chevron {
   margin-left: auto;
+  flex-shrink: 0;
   color: rgba(255, 248, 237, 0.22);
   opacity: 0;
   transform: translateX(-0.25rem);
@@ -2224,6 +2237,7 @@ select:focus-visible {
 }
 
 .admin-main {
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 88% 0%, rgba(57, 83, 59, 0.12), transparent 24rem),
     transparent;
@@ -2244,9 +2258,15 @@ select:focus-visible {
 
 .admin-page-container {
   width: 100%;
+  min-width: 0;
   margin-inline: auto;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.15rem;
+}
+
+.admin-page-container > * {
+  min-width: 0;
 }
 
 .admin-loading-state {
@@ -2887,6 +2907,140 @@ select:focus-visible {
   color: inherit;
 }
 
+/* Sidebar collapse + topbar (expanded/collapsed live on the side) */
+.admin-sidebar-panel {
+  overflow: hidden;
+  transition: width 0.28s ease;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.65rem clamp(1rem, 2.6vw, 2rem);
+  border-bottom: 1px solid rgba(37, 25, 23, 0.07);
+  background: rgba(255, 250, 241, 0.86);
+  backdrop-filter: blur(10px);
+}
+
+.admin-topbar-page {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b4a1f;
+}
+
+.admin-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid rgba(37, 25, 23, 0.14);
+  border-radius: 0.8rem;
+  background: #2a1a18;
+  color: #f4d38b;
+  box-shadow: 0 10px 24px rgba(37, 25, 23, 0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.admin-topbar-logo {
+  display: none;
+}
+
+.admin-sidebar-toggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(216, 162, 58, 0.55);
+  background: #36211d;
+}
+
+.admin-sidebar-toggle:focus-visible {
+  outline: 2px solid #c9962b;
+  outline-offset: 2px;
+}
+
+.admin-sidebar-toggle:active {
+  transform: translateY(0);
+}
+
+.admin-sidebar-backdrop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .admin-sidebar-collapsed .admin-sidebar-panel {
+    width: 4.5rem !important;
+  }
+
+.admin-sidebar-collapsed .admin-brand-block {
+  padding: 0.75rem 0.5rem;
+}
+
+.admin-sidebar-collapsed .admin-brand-link {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 0;
+  padding: 0.35rem;
+  min-height: 2.4rem;
+}
+
+.admin-sidebar-collapsed .admin-brand-seal {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+}
+
+.admin-sidebar-collapsed .admin-brand-link > div:not(.admin-brand-seal),
+.admin-sidebar-collapsed .admin-brand-arrow,
+.admin-sidebar-collapsed .admin-sidebar-status,
+.admin-sidebar-collapsed .admin-nav-group-header,
+.admin-sidebar-collapsed .admin-nav-link > span:not(.admin-nav-icon),
+.admin-sidebar-collapsed .admin-nav-chevron,
+.admin-sidebar-collapsed .admin-user-card > div:not(.admin-user-avatar),
+.admin-sidebar-collapsed .admin-user-shield,
+.admin-sidebar-collapsed .admin-language-slot,
+.admin-sidebar-collapsed .admin-logout span {
+  display: none;
+}
+
+.admin-sidebar-collapsed .admin-nav {
+  padding-inline: 0.4rem;
+}
+
+.admin-sidebar-collapsed .admin-nav-link {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.admin-sidebar-collapsed .admin-nav-icon {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+
+.admin-sidebar-collapsed .admin-user-block {
+  padding-inline: 0.35rem;
+}
+
+.admin-sidebar-collapsed .admin-user-card {
+  justify-content: center;
+  padding-inline: 0.25rem;
+}
+
+.admin-sidebar-collapsed .admin-logout {
+  justify-content: center;
+  padding-inline: 0.45rem;
+}
+}
+
 @media (max-width: 860px) {
   .admin-login-card {
     grid-template-columns: 1fr;
@@ -2896,127 +3050,128 @@ select:focus-visible {
   .admin-login-image {
     display: none;
   }
+}
+
+@keyframes adminTopbarLogoIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-topbar {
+    z-index: 90;
+    padding: 0.55rem 0.9rem;
+  }
+
+  .admin-topbar-logo {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.1rem;
+    height: 2.1rem;
+    overflow: hidden;
+    border-radius: 0.6rem;
+    background: #fff;
+    box-shadow: 0 6px 16px rgba(37, 25, 23, 0.18);
+    animation: adminTopbarLogoIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .admin-topbar-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 
   .admin-shell {
-    min-height: 100dvh;
-    height: auto;
-    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
   }
 
   .admin-sidebar-panel {
-    position: sticky;
-    top: 0;
-    z-index: 70;
-    width: 100% !important;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 248, 237, 0.12);
-    box-shadow: 0 18px 44px rgba(37, 25, 23, 0.18);
+    position: fixed;
+    top: 3.55rem;
+    bottom: 0;
+    left: 0;
+    z-index: 80;
+    width: min(17.5rem, 84vw) !important;
+    border-right: 1px solid rgba(255, 248, 237, 0.12);
+    box-shadow: 24px 0 70px rgba(37, 25, 23, 0.4);
+    transform: translateX(-102%);
+    transition: transform 0.26s ease;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar-panel.admin-mobile-open {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 75;
+    background: rgba(15, 10, 9, 0.5);
+    backdrop-filter: blur(3px);
+  }
+
+  .admin-brand-arrow {
+    display: none;
   }
 
   .admin-brand-block {
-    padding: 0.75rem 1rem 0.55rem;
+    padding: 0.6rem 0.65rem;
   }
 
   .admin-brand-link {
-    min-height: 3.4rem;
-    padding: 0.48rem 0.6rem;
+    gap: 0.6rem;
+    padding: 0.55rem 0.6rem;
+    min-height: 3.85rem;
   }
 
   .admin-brand-seal {
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.85rem;
   }
 
-  .admin-brand-arrow,
   .admin-sidebar-status {
-    display: none;
-  }
-
-  .admin-nav {
-    display: flex;
-    max-height: none;
+    margin-top: 0.6rem;
+    padding: 0.6rem 0.65rem;
     gap: 0.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0.75rem 1rem;
-    scroll-snap-type: x proximity;
   }
 
-  .admin-nav > div,
-  .admin-nav-group {
-    display: flex;
-    flex: 0 0 auto;
-    min-width: max-content;
-    gap: 0.5rem;
-    margin-top: 0 !important;
-   }
-
-  .admin-nav-group-header,
-  .admin-nav-label {
-    display: none;
+  .admin-sidebar-status strong {
+    font-size: 0.74rem;
   }
 
-  .admin-nav-link {
-    display: inline-flex;
-    min-height: 2.65rem;
-    min-width: max-content;
-    margin-bottom: 0 !important;
-    padding-left: 0.72rem !important;
-    padding-right: 0.72rem !important;
-    scroll-snap-align: start;
-    white-space: nowrap;
-  }
-
-  .admin-nav-icon {
-    width: 1.65rem;
-    height: 1.65rem;
-  }
-
-  .admin-nav-chevron {
-    display: none;
-  }
-
-  .admin-nav-link--active::before {
-    inset: auto 0 0;
-    width: auto;
-    height: 3px;
-  }
-
-  .admin-user-block {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.75rem;
-    align-items: center;
-    padding: 0.75rem 1rem;
-  }
-
-  .admin-user-block > .px-3 {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .admin-user-card {
-    flex: 1 1 auto;
-    margin-bottom: 0 !important;
-  }
-
-  .admin-user-shield,
-  .admin-language-slot {
-    display: none;
-  }
-
-  .admin-logout {
-    width: auto !important;
-    flex: 0 0 auto;
+  .admin-status-pill {
+    padding: 0.28rem 0.5rem;
   }
 
   .admin-main {
     min-height: 0;
-    overflow: visible;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .admin-main-inner {
-    padding: 1rem;
+    padding: 0.5rem;
+  }
+
+  .admin-page {
+    padding: 0.5rem;
+  }
+
+  .admin-page-container {
+    gap: 0.85rem;
   }
 }
 
@@ -3040,6 +3195,12 @@ select:focus-visible {
   .admin-logout {
     flex: 1 1 auto;
     justify-content: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  .admin-brand-arrow {
+    display: none;
   }
 }
 
@@ -3120,6 +3281,57 @@ select:focus-visible {
 @media (max-width: 560px) {
   .admin-panel-font .admin-command-hero {
     border-radius: 1.25rem !important;
+  }
+}
+
+/* Warm rice-paper remaps for the shared admin workspace layer. */
+.admin-panel-font [class*="bg-[#fbfaf7]"] {
+  background-color: #f6ecdb !important;
+}
+
+.admin-panel-font .bg-white\/60,
+.admin-panel-font .bg-white\/70,
+.admin-panel-font .bg-white\/75,
+.admin-panel-font .bg-white\/80 {
+  background-color: rgba(255, 250, 241, 0.62) !important;
+}
+
+.admin-panel-font section[class*="135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%"] {
+  background-image: linear-gradient(135deg, #fffaf0 0%, #fff6e7 42%, #f6ecdb 100%) !important;
+}
+
+.admin-panel-font [class*="shadow-[0_18px_45px_rgba(15,23,42,0.10)"]:hover {
+  box-shadow: 0 18px 45px rgba(83, 46, 26, 0.14) !important;
+}
+
+.admin-panel-font .admin-command-hero h1 {
+  font-size: clamp(1.5rem, 2.2vw, 1.75rem) !important;
+  line-height: 1.15;
+}
+
+.admin-panel-font .admin-command-hero p.text-white {
+  color: #fff !important;
+}
+
+.admin-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  background-color: rgba(199, 168, 138, 0.2);
+}
+
+.admin-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 250, 241, 0.65), transparent);
+  animation: admin-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-shimmer {
+  to {
+    transform: translateX(100%);
   }
 }
 

@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { getLeads, updateLeadStatus } from '../../hooks/useApi';
-import { Spinner } from '../../components/ui/Spinner';
+
 
 type LeadStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 
@@ -81,6 +81,19 @@ const statusConfig: Record<
 
 const statusOrder: LeadStatus[] = ['OPEN', 'IN_PROGRESS', 'COMPLETED'];
 
+const useIsMinWidth = (query: string) => {
+    const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia(query);
+        const handleChange = () => setMatches(mediaQuery.matches);
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, [query]);
+
+    return matches;
+};
+
 export const ManageLeads = () => {
     const queryClient = useQueryClient();
     const [localLeads, setLocalLeads] = useState<Lead[]>([]);
@@ -90,6 +103,8 @@ export const ManageLeads = () => {
     const [sourceFilter, setSourceFilter] = useState('ALL');
     const [statusFilter, setStatusFilter] = useState<'ALL' | LeadStatus>('ALL');
     const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
+    const canShowBoard = useIsMinWidth('(min-width: 1024px)');
+    const activeViewMode = canShowBoard ? viewMode : 'list';
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['leads'],
@@ -218,9 +233,37 @@ export const ManageLeads = () => {
 
     if (isLoading) {
         return (
-            <div className="admin-loading-state">
-                <Spinner size="lg" />
-                <p>Loading lead pipeline...</p>
+            <div className="admin-page">
+                <div className="admin-page-container max-w-[1180px]">
+                    <div className="space-y-4">
+                        <section className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
+                            <div className="flex flex-wrap items-end justify-between gap-5">
+                                <div className="space-y-3">
+                                    <div className="admin-skeleton h-3 w-24" />
+                                    <div className="admin-skeleton h-8 w-64" />
+                                    <div className="admin-skeleton h-4 w-72" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                    {Array.from({ length: 4 }).map((_, index) => (
+                                        <div key={index} className="admin-skeleton h-20 w-28" />
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+                        <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+                            <div className="grid grid-cols-3 gap-4">
+                                {[0, 1, 2].map((column) => (
+                                    <div key={column} className="space-y-3">
+                                        <div className="admin-skeleton h-20" />
+                                        <div className="admin-skeleton h-44" />
+                                        <div className="admin-skeleton h-44" />
+                                        <div className="admin-skeleton h-44" />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -259,7 +302,7 @@ export const ManageLeads = () => {
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
                                     <Sparkles size={13} />
-                                    {viewMode === 'board' ? 'Board view' : 'List view'}
+                                    {activeViewMode === 'board' ? 'Board view' : 'List view'}
                                 </span>
                             </div>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
@@ -288,12 +331,13 @@ export const ManageLeads = () => {
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 placeholder="Search name, email, phone, package, message or source..."
+                                aria-label="Search leads"
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
 
-                        <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
-                            <StatusTabs
+                        <div className="grid gap-3 min-[480px]:grid-cols-2 xl:flex xl:items-end xl:gap-3">
+                            <StatusSelect
                                 value={statusFilter}
                                 counts={{
                                     ALL: totalLeads,
@@ -304,8 +348,7 @@ export const ManageLeads = () => {
                                 onChange={setStatusFilter}
                             />
 
-                            <div className="sm:w-[190px]">
-                                <FilterSelect
+                            <FilterSelect
                                     label="Source"
                                     value={sourceFilter}
                                     onChange={setSourceFilter}
@@ -314,9 +357,8 @@ export const ManageLeads = () => {
                                         label: source === 'ALL' ? 'All sources' : source
                                     }))}
                                 />
-                            </div>
 
-                            <ViewToggle value={viewMode} onChange={setViewMode} />
+                            {canShowBoard && <ViewToggle value={viewMode} onChange={setViewMode} />}
                         </div>
                     </div>
 
@@ -341,7 +383,7 @@ export const ManageLeads = () => {
                     </div>
                 </section>
 
-                {viewMode === 'board' ? (
+                {activeViewMode === 'board' ? (
                     <section className="max-w-full overflow-x-auto rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
                         <WorkspaceHeader
                             title={
@@ -364,8 +406,8 @@ export const ManageLeads = () => {
                         <div
                             className={`grid gap-4 ${
                                 visibleStatuses.length === 1
-                                    ? 'min-w-[340px] md:grid-cols-1'
-                                    : 'min-w-[980px] grid-cols-3'
+                                    ? 'min-w-0'
+                                    : 'min-w-0 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
                             }`}
                         >
                             {visibleStatuses.map((status) => (
@@ -440,14 +482,14 @@ const MetricCard = ({
     icon: ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+            <div className="flex items-center gap-2 text-[#d8c7ad]">
                 {icon}
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em]">
+                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
         </div>
     );
 };
@@ -472,7 +514,7 @@ const FilterSelect = ({
             <select
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
-                className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                className="h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
             >
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -552,7 +594,7 @@ const WorkspaceHeader = ({
     );
 };
 
-const StatusTabs = ({
+const StatusSelect = ({
     value,
     counts,
     onChange
@@ -561,7 +603,7 @@ const StatusTabs = ({
     counts: Record<'ALL' | LeadStatus, number>;
     onChange: (value: 'ALL' | LeadStatus) => void;
 }) => {
-    const tabs: { value: 'ALL' | LeadStatus; label: string }[] = [
+    const options: { value: 'ALL' | LeadStatus; label: string }[] = [
         { value: 'ALL', label: 'All' },
         { value: 'OPEN', label: 'New' },
         { value: 'IN_PROGRESS', label: 'Progress' },
@@ -569,39 +611,23 @@ const StatusTabs = ({
     ];
 
     return (
-        <div className="grid gap-1.5">
+        <label className="grid gap-1.5">
             <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
                 <Filter size={13} />
                 Status
             </span>
-            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
-                {tabs.map((tab) => {
-                    const active = value === tab.value;
-
-                    return (
-                        <button
-                            key={tab.value}
-                            type="button"
-                            onClick={() => onChange(tab.value)}
-                            className={`inline-flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
-                                active
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-900'
-                            }`}
-                        >
-                            {tab.label}
-                            <span
-                                className={`rounded-lg px-1.5 py-0.5 text-[10px] ${
-                                    active ? 'bg-amber-50 text-amber-800' : 'bg-white text-slate-500'
-                                }`}
-                            >
-                                {counts[tab.value]}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
-        </div>
+            <select
+                value={value}
+                onChange={(event) => onChange(event.target.value as 'ALL' | LeadStatus)}
+                className="h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+            >
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label} ({counts[option.value]})
+                    </option>
+                ))}
+            </select>
+        </label>
     );
 };
 

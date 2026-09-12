@@ -8,6 +8,7 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { VerifyEmail } from './pages/VerifyEmail';
+import { Navigate } from 'react-router-dom';
 import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminLayout } from './components/AdminLayout';
 import { Dashboard } from './pages/admin/Dashboard';
@@ -58,6 +59,7 @@ function App() {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<Dashboard />} />
                 <Route path="/admin/leads" element={<ManageLeads />} />
                 <Route path="/admin/users" element={<ManageUsers />} />
