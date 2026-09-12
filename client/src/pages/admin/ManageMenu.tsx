@@ -454,7 +454,7 @@ const AvailabilityTabs = ({
                 <Eye size={13} />
                 Visibility
             </span>
-            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
+            <div className="flex max-w-full flex-wrap rounded-2xl border border-slate-200 bg-stone-50 p-1 admin-tab-strip">
                 {tabs.map((tab) => {
                     const active = value === tab;
                     return (
@@ -497,7 +497,7 @@ const DietTabs = ({
                 <Leaf size={13} />
                 Diet
             </span>
-            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
+            <div className="flex max-w-full flex-wrap rounded-2xl border border-slate-200 bg-stone-50 p-1 admin-tab-strip">
                 {tabs.map((tab) => {
                     const active = value === tab.value;
                     return (
@@ -814,7 +814,7 @@ const MenuActions = ({
 
 export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     const { categories } = useMenu();
-    const [preview, setPreview] = useState<string>(initialData?.image || '');
+    const [preview, setPreview] = useState<string>(isValidImageUrl(initialData?.image) ? initialData?.image || '' : '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
 
@@ -870,7 +870,7 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                 spiceLevel: Number(initialData.spiceLevel || 0),
                 image: null
             });
-            setPreview(initialData.image || '');
+            setPreview(isValidImageUrl(initialData.image) ? initialData.image || '' : '');
         } else {
             reset({
                 name: '',
@@ -1037,7 +1037,14 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                             <p className="mb-3 text-sm font-extrabold text-slate-700">Image preview</p>
                             <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white">
                                 {preview ? (
-                                    <img src={preview} alt="Preview" className="h-64 w-full object-cover" />
+                                    <img
+                                        src={preview}
+                                        alt="Preview"
+                                        className="h-64 w-full object-cover"
+                                        onError={(event) => {
+                                            event.currentTarget.src = '/hero-catering.jpg';
+                                        }}
+                                    />
                                 ) : (
                                     <div className="flex h-64 w-full flex-col items-center justify-center gap-3 text-slate-400">
                                         <ImagePlus size={28} />
@@ -1368,6 +1375,9 @@ const getCategoryName = (item: MenuItem, categoryMap: Map<string, string>) => {
 };
 
 const formatPrice = (price?: number) => `€ ${Number(price || 0).toFixed(2)}`;
+
+const isValidImageUrl = (url?: string) =>
+    !!url && (/^(https?:|data:image\/|blob:)/.test(url)) && !url.startsWith('/');
 
 const getSpiceLabel = (level?: number) => {
     const spice = Number(level || 0);

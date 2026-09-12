@@ -222,23 +222,28 @@ export const ManageCateringOrders = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container max-w-[1180px] space-y-5">
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-5">
+                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
+                                Orders
                             </p>
-                            <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                <UtensilsCrossed size={24} className="text-slate-900" />
-                                Catering Orders
-                            </h1>
-                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+                            <div className="mt-2 flex flex-wrap items-center gap-3">
+                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
+                                    Catering Orders
+                                </h1>
+                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
+                                    <UtensilsCrossed size={13} />
+                                    Live event bookings
+                                </span>
+                            </div>
+                            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
                                 Review event bookings, customer selections, payment state
                                 and production status in one clean view.
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:w-[560px] xl:grid-cols-4">
                             <MetricCard
                                 label="Orders"
                                 value={stats.total}
@@ -261,7 +266,7 @@ export const ManageCateringOrders = () => {
                             />
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <div className="relative z-30 rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -556,14 +561,14 @@ const MetricCard = ({
     icon: ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+            <div className="flex items-center gap-2 text-[#d8c7ad]">
                 {icon}
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
+                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
+            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
         </div>
     );
 };

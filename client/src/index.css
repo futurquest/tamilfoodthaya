@@ -2397,6 +2397,16 @@ select:focus-visible {
   backdrop-filter: none !important;
 }
 
+.admin-panel-font .admin-page-container .admin-tab-strip {
+  background-color: #f6efe2 !important;
+  backdrop-filter: none !important;
+}
+
+.admin-panel-font .admin-page-container .admin-tab-strip .bg-white {
+  background-color: rgba(255, 253, 249, 0.97) !important;
+  box-shadow: 0 8px 22px rgba(37, 25, 23, 0.12) !important;
+}
+
 .admin-panel-font .admin-dropdown-menu .hover\:bg-amber-50:hover,
 .admin-panel-font .admin-dropdown-menu .hover\:bg-blue-50:hover,
 .admin-panel-font .admin-dropdown-menu .hover\:bg-indigo-50:hover,
