@@ -1,13 +1,40 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, UseInterceptors, UploadedFile, Req, BadRequestException } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { randomBytes } from 'crypto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../auth/schemas/user.schema';
 import { CreateMenuItemDto, UpdateMenuItemDto } from './dto/create-menu-item.dto';
+
+const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+const IMAGE_EXTENSIONS: Record<string, string> = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/webp': '.webp',
+};
+
+const imageUploadOptions = {
+    storage: diskStorage({
+        destination: './uploads/menu',
+        filename: (_req, file, cb) => {
+            const randomName = randomBytes(16).toString('hex');
+            cb(null, `${randomName}${IMAGE_EXTENSIONS[file.mimetype] || ''}`);
+        },
+    }),
+    fileFilter: (_req: any, file: Express.Multer.File, cb: (error: Error | null, accept: boolean) => void) => {
+        if (ALLOWED_IMAGE_MIMES.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new BadRequestException('Only image files are allowed (JPEG, PNG, WebP)'), false);
+        }
+    },
+    limits: { fileSize: MAX_IMAGE_SIZE },
+};
 
 @Controller('menu')
 export class MenuController {
@@ -52,15 +79,7 @@ export class MenuController {
     @Post('items')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.ADMIN)
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './uploads/menu',
-            filename: (req, file, cb) => {
-                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-                cb(null, `${randomName}${extname(file.originalname)}`);
-            }
-        })
-    }))
+    @UseInterceptors(FileInterceptor('image', imageUploadOptions))
     async createItem(@Body() data: CreateMenuItemDto, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
         if (itemData.choices && typeof itemData.choices === 'string') {
@@ -84,15 +103,7 @@ export class MenuController {
     @Patch('items/:id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.ADMIN)
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './uploads/menu',
-            filename: (req, file, cb) => {
-                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-                cb(null, `${randomName}${extname(file.originalname)}`);
-            }
-        })
-    }))
+    @UseInterceptors(FileInterceptor('image', imageUploadOptions))
     async updateItem(@Param('id') id: string, @Body() data: UpdateMenuItemDto, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
         if (itemData.choices && typeof itemData.choices === 'string') {

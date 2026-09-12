@@ -198,9 +198,13 @@ export class CateringService {
         return order;
     }
 
-    async findOrderById(id: string): Promise<CateringOrder> {
+    async findOrderById(id: string, user?: any): Promise<CateringOrder> {
         const order = await this.cateringOrderModel.findById(id).exec();
         if (!order || !order.isActive) {
+            throw new NotFoundException(`Order not found: ${id}`);
+        }
+        const isAdmin = user?.role === 'admin' || user?.role === 'staff';
+        if (!isAdmin && order.userId?.toString() !== user?._id?.toString()) {
             throw new NotFoundException(`Order not found: ${id}`);
         }
         return order;

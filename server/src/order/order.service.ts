@@ -23,15 +23,22 @@ export class OrderService {
         let url: string = '';
 
         await session.withTransaction(async () => {
-            // 0. Validate Stock
+            // 0. Validate Stock & re-derive prices from the DB (never trust client prices/names)
             for (const item of orderData.items) {
                 const menuItem = await this.menuItemModel.findById(item.menuItemId).session(session);
                 if (!menuItem) {
                     throw new NotFoundException(`Menu item not found: ${item.menuItemId}`);
                 }
-                if (menuItem.stockCount < item.quantity) {
+                const quantity = Number(item.quantity);
+                if (!Number.isInteger(quantity) || quantity < 1) {
+                    throw new BadRequestException(`Invalid quantity for ${menuItem.name}`);
+                }
+                if (menuItem.stockCount < quantity) {
                     throw new BadRequestException(`Not enough stock for ${menuItem.name}. Available: ${menuItem.stockCount}`);
                 }
+                item.quantity = quantity;
+                item.price = menuItem.price;
+                item.name = menuItem.name;
             }
 
             // 1. Create a pending order in DB
@@ -108,9 +115,13 @@ export class OrderService {
         return { received: true };
     }
 
-    async getOrderById(id: string) {
+    async getOrderById(id: string, user?: any) {
         const order = await this.orderModel.findById(id).exec();
         if (!order || !order.isActive) {
+            throw new NotFoundException(`Order not found: ${id}`);
+        }
+        const isAdmin = user?.role === 'admin' || user?.role === 'staff';
+        if (!isAdmin && order.userId?.toString() !== user?._id?.toString()) {
             throw new NotFoundException(`Order not found: ${id}`);
         }
         return order;
@@ -144,6 +155,9 @@ export class OrderService {
     }
 
     async updateOrderStatus(id: string, newStatus: OrderStatus): Promise<Order> {
+        if (!Object.values(OrderStatus).includes(newStatus)) {
+            throw new BadRequestException(`Invalid order status: ${newStatus}`);
+        }
         const order = await this.orderModel.findById(id).exec();
         if (!order) {
             throw new NotFoundException(`Order not found: ${id}`);

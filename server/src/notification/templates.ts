@@ -2,6 +2,20 @@
  * Premium HTML Email Templates for Tamil Food Thaya
  */
 
+const escapeHtml = (str: string) =>
+    String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+const escapeAttr = (str: string) =>
+    String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
 const BASE_STYLE = `
     font-family: 'Inter', Helvetica, Arial, sans-serif;
     line-height: 1.6;
@@ -86,27 +100,32 @@ export const getStatusUpdateTemplate = (data: {
     };
 
     const color = statusColors[data.newStatus.toLowerCase()] || '#f97316';
+    const orderIdSafe = escapeHtml(data.orderId.slice(-8).toUpperCase());
+    const customerNameSafe = escapeHtml(data.customerName);
+    const newStatusSafe = escapeHtml(data.newStatus);
+    const orderTypeSafe = escapeHtml(data.orderType);
+    const dashboardUrlSafe = escapeAttr(data.dashboardUrl);
 
     const content = `
         <h2 style="margin-top: 0; font-size: 20px; font-weight: 700;">Order Status Update</h2>
-        <p>Hi ${data.customerName},</p>
-        <p>Your <strong>${data.orderType}</strong> order <span style="font-family: monospace; background: #f4f4f5; padding: 2px 4px; border-radius: 4px;">#${data.orderId.slice(-8).toUpperCase()}</span> has been updated.</p>
+        <p>Hi ${customerNameSafe},</p>
+        <p>Your <strong>${orderTypeSafe}</strong> order <span style="font-family: monospace; background: #f4f4f5; padding: 2px 4px; border-radius: 4px;">#${orderIdSafe}</span> has been updated.</p>
         
         <div style="margin: 32px 0; padding: 24px; background-color: #f8fafc; border-radius: 12px; border-left: 4px solid ${color};">
             <p style="margin: 0; font-size: 14px; text-transform: uppercase; font-weight: 800; color: #71717a; letter-spacing: 0.05em;">New Status</p>
-            <p style="margin: 4px 0 0; font-size: 24px; font-weight: 800; color: ${color}; text-transform: capitalize;">${data.newStatus}</p>
+            <p style="margin: 4px 0 0; font-size: 24px; font-weight: 800; color: ${color}; text-transform: capitalize;">${newStatusSafe}</p>
         </div>
 
         <p>You can view the full details of your booking and request modifications through your personal dashboard.</p>
         
-        <a href="${data.dashboardUrl}" style="${BUTTON_STYLE}">View My Dashboard</a>
+        <a href="${dashboardUrlSafe}" style="${BUTTON_STYLE}">View My Dashboard</a>
 
         <p style="margin-top: 32px; font-size: 14px; color: #71717a;">
             If you have any urgent questions, please reply to this email or contact our support team.
         </p>
     `;
 
-    return getBaseTemplate(`Order Status Update - ${data.newStatus}`, content);
+    return getBaseTemplate(`Order Status Update - ${newStatusSafe}`, content);
 };
 
 export const getVerificationEmailTemplate = (pin: string) => {

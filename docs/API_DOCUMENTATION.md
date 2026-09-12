@@ -29,7 +29,7 @@ Manage users, registration, and sessions.
 | **POST** | `/auth/login` | Log in to get JWT token | Public |
 | **POST** | `/auth/forgot-password` | Request password reset email | Public |
 | **POST** | `/auth/reset-password` | Reset password using token | Public |
-| **POST** | `/auth/init-admin` | Initialize first admin account | Public |
+| **POST** | `/auth/init-admin` | Initialize first admin account | Env-gated (`ALLOW_ADMIN_SEED=true`); generates a random temporary password |
 
 ---
 
@@ -63,8 +63,9 @@ Manage catering packages and complex orders.
 | **POST** | `/catering/packages` | Create complex package | **Admin** |
 | **PATCH** | `/catering/packages/:id` | Update package structure | **Admin** |
 | **DELETE** | `/catering/packages/:id` | Delete package | **Admin** |
+| **GET** | `/catering/orders/:id` | Get catering order (owner or admin only) | **Auth (Owner/Admin)** |
 | **GET** | `/catering/orders` | View all catering orders (Paginated: `?page=x&limit=y`) | **Admin** |
-| **PATCH** | `/catering/orders/:id/status`| Update catering order status | **Admin** |
+| **PATCH** | `/catering/orders/:id/status`| Update catering order status | **Admin/Staff** |
 | **GET** | `/catering/quotes` | View all quote requests | **Admin** |
 
 ---
@@ -75,8 +76,10 @@ Handles takeaway orders and Stripe integration.
 | Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
 | **POST** | `/orders/checkout` | Create Stripe checkout session | Public |
-| **POST** | `/orders/webhook` | Stripe Webhook listener | Public |
+| **POST** | `/orders/webhook` | Stripe Webhook listener (signature-verified) | Public |
 | **GET** | `/orders` | List all restaurant orders | **Admin** |
+| **GET** | `/orders/:id` | Get order (owner or admin only) | **Auth (Owner/Admin)** |
+| **PATCH** | `/orders/:id/status` | Update order status | **Admin/Staff** |
 
 ---
 

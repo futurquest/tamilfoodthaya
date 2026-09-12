@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { getModelToken } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
+import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
@@ -17,6 +18,10 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: { sign: jest.fn().mockReturnValue('mock-token') },
+        },
+        {
+          provide: NotificationService,
+          useValue: { sendVerificationPin: jest.fn() },
         },
         {
           provide: getModelToken(User.name),

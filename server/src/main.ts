@@ -3,13 +3,20 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // bodyParser is disabled so we can capture the raw request body required
+  // for Stripe-like webhook signature verification, then re-enable parsing.
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bodyParser: false });
+
+  // Capture raw body bytes for signature verification, then parse JSON normally.
+  app.use(json({ verify: (req: any, _res, buf) => { req.rawBody = buf; } }));
+  app.use(urlencoded({ extended: true }));
 
   // Serve Static Files
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
@@ -23,6 +30,7 @@ async function bootstrap() {
       directives: {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", 'data:', 'https:', 'http://localhost:3000'],
+        objectSrc: ["'none'"],
       },
     },
   }));
@@ -33,15 +41,17 @@ async function bootstrap() {
   // Set Global API Prefix
   app.setGlobalPrefix('api/v1');
 
-  // Swagger Configuration
-  const config = new DocumentBuilder()
-    .setTitle('Tamil Food Thaya API')
-    .setDescription('The API documentation for Tamil Food Thaya restaurant and catering platform.')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/v1/docs', app, document);
+  // Swagger only available outside production
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Tamil Food Thaya API')
+      .setDescription('The API documentation for Tamil Food Thaya restaurant and catering platform.')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/v1/docs', app, document);
+  }
 
   // Enable Global Validation
   app.useGlobalPipes(new ValidationPipe({

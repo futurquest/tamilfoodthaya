@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 
@@ -28,7 +29,14 @@ describe('OrderController', () => {
     });
 
     it('should correctly pass the method parameter from URL to webhook handler', async () => {
-        await controller.webhook('paypal', { headers: { 'x-signature': 'my-sig' }, body: {} });
-        expect(service.handleWebhook).toHaveBeenCalledWith('paypal', 'my-sig', {});
+        const rawBody = Buffer.from('{"id":"evt_test"}');
+        await controller.webhook('paypal', undefined, 'my-sig', { rawBody });
+        expect(service.handleWebhook).toHaveBeenCalledWith('paypal', 'my-sig', rawBody);
+    });
+
+    it('should reject webhooks without a signature header', async () => {
+        await expect(controller.webhook('stripe', undefined, undefined, { rawBody: Buffer.from('{}') }))
+            .rejects.toThrow(BadRequestException);
+        expect(service.handleWebhook).not.toHaveBeenCalled();
     });
 });

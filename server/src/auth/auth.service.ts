@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 import { User, UserRole } from './schemas/user.schema';
 import { NotificationService } from '../notification/notification.service';
 
@@ -39,7 +40,7 @@ export class AuthService {
     }
 
     async register(registerDto: any) {
-        const { username, email, password, role, name, phone, address, eventPreferences } = registerDto;
+        const { username, email, password, name, phone, address, eventPreferences } = registerDto;
 
         // Check if user exists
         const existingUser = await this.userModel.findOne({ $or: [{ username }, { email }] });
@@ -60,7 +61,7 @@ export class AuthService {
             phone,
             address,
             eventPreferences,
-            role: role || UserRole.USER,
+            role: UserRole.USER,
             verificationPin: pin,
             verificationPinExpires: pinExpires,
             isVerified: false,
@@ -104,8 +105,6 @@ export class AuthService {
         user.resetPasswordToken = token;
         user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
         await user.save();
-
-        console.log(`[MOCK EMAIL] Password reset token for ${user.email}: ${token}`);
         // In production, integrate NodeMailer or SendGrid here
         console.log(`Reset Token for ${email}: ${token}`);
 
@@ -130,11 +129,12 @@ export class AuthService {
         return { message: 'Password reset successful' };
     }
 
-    // Temporary method to create initial admin
+    // Bootstrap method to create initial admin (guarded in the controller by ALLOW_ADMIN_SEED)
     async createInitialAdmin() {
         const adminExists = await this.userModel.findOne({ role: UserRole.ADMIN });
         if (!adminExists) {
-            const hashedPassword = await bcrypt.hash('admin123', 10);
+            const plainPassword = randomBytes(12).toString('base64url');
+            const hashedPassword = await bcrypt.hash(plainPassword, 10);
             const admin = new this.userModel({
                 username: 'admin',
                 email: 'admin@tamilfoodthaya.com',
@@ -144,6 +144,7 @@ export class AuthService {
                 role: UserRole.ADMIN,
             });
             await admin.save();
+            console.log(`[INIT ADMIN] Temporary admin credentials — username: admin, password: ${plainPassword}`);
         }
     }
 }
