@@ -1,226 +1,454 @@
 {
-    "nav": {
-        "home": "Home",
-        "menu": "Menu",
-        "catering": "Catering",
-        "contact": "Contact",
-        "cart": "Mandje",
-        "login": "Inloggen",
-        "logout": "Uitloggen",
-        "admin": "Admin"
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "catering": "Catering",
+    "contact": "Contact",
+    "cart": "Mandje",
+    "login": "Inloggen",
+    "logout": "Uitloggen",
+    "admin": "Admin",
+    "orderFood": "Eten bestellen",
+    "my_dashboard": "Dashboard"
+  },
+  "hero": {
+    "title": "Authentieke Tamil Smaak,",
+    "titleHighlight": "Nederlandse Kwaliteit.",
+    "subtitle": "Van heerlijke Kottu Roti tot exclusieve bruiloftscatering. Tamil Food Thaya brengt de warmte van Sri Lanka naar Rotterdam en Leiden.",
+    "pButton": "Direct Bestellen",
+    "sButton": "Catering Offerte",
+    "rotterdam": "Restaurant & Catering",
+    "leiden": "Exclusieve Catering"
+  },
+  "footer": {
+    "description": "Brengt de authentieke Tamil en Sri Lankaanse keuken naar Nederland. Kwaliteit, traditie en gastvrijheid in elke hap.",
+    "locations": "Locaties",
+    "contact": "Contact",
+    "rights": "Alle rechten voorbehouden.",
+    "tagline": "Traditioneel Tamil eten in Nederland",
+    "explore": "Ontdek",
+    "visit": "Bezoek",
+    "hours": "Keukenuren",
+    "monFri": "Ma - Vr",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag",
+    "cateringCta": "Vraag naar catering",
+    "copyright": "Copyright 2026 Tamil Food Thaya. Alle rechten voorbehouden.",
+    "privacy": "Privacybeleid",
+    "terms": "Gebruiksvoorwaarden"
+  },
+  "home": {
+    "whyTitle": "Waarom Tamil Food Thaya?",
+    "feature1": {
+      "title": "Authentieke Recepten",
+      "desc": "Onze koks bereiden gerechten met kruiden die rechtstreeks uit Sri Lanka komen voor de echte Tamil smaak."
     },
+    "feature2": {
+      "title": "Vers & Lokaal",
+      "desc": "We combineren traditionele smaken met verse, lokale ingrediënten uit de regio Rotterdam en Leiden."
+    },
+    "feature3": {
+      "title": "Passie voor Gastvrijheid",
+      "desc": "Bij Tamil Food Thaya staat warmte en gastvrijheid centraal, of u nu bij ons dineert of wij bij u cateren."
+    },
+    "highlightsTitle": "Onze Highlights",
+    "highlightsDesc": "Proef de populairste gerechten die onze klanten keer op keer bestellen.",
+    "viewMenu": "Bekijk Volledig Menu",
+    "add": "Toevoegen +"
+  },
+  "menu": {
+    "title": "Ons Menu",
+    "subtitle": "Ontdek de authentieke smaken van Sri Lanka en de Tamil keuken.",
+    "all": "Allemaal",
+    "addToCart": "Toevoegen aan Mandje",
+    "addedToCart": "toegevoegd aan mandje"
+  },
+  "contact": {
+    "phone": "Telefoon",
+    "email": "E-mail",
+    "sendMessage": "Stuur ons een bericht"
+  },
+  "form": {
+    "name": "Naam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "message": "Bericht",
+    "send": "Verstuur Bericht",
+    "sending": "Verzenden...",
+    "success": "Bericht verzonden!",
+    "error": "Verzenden mislukt.",
+    "required": "Verplicht",
+    "invalidEmail": "Ongeldig e-mailadres"
+  },
+  "auth": {
+    "login": {
+      "welcome": "Welkom",
+      "back": "terug",
+      "tagline": "We zijn blij u weer te zien bij Tamil Food Thaya.",
+      "username": "Gebruikersnaam",
+      "password": "Wachtwoord",
+      "loginBtn": "Inloggen",
+      "waiting": "Even wachten...",
+      "noAccount": "Nog geen account?",
+      "signUp": "Nu registreren",
+      "loginSuccess": "Welkom terug, {username}!",
+      "loginError": "Login mislukt. Controleer uw gegevens."
+    },
+    "register": {
+      "welcome": "Aan de Slag",
+      "with": "met Tamil Food Thaya",
+      "tagline": "Maak een account aan om te bestellen en uw events bij te houden.",
+      "username": "Gebruikersnaam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "confirmPassword": "Bevestig Wachtwoord",
+      "agreeTerms": "Ik ga akkoord met de",
+      "termsOfService": "Servicevoorwaarden",
+      "registerBtn": "Account Aanmaken",
+      "registering": "Account aanmaken...",
+      "haveAccount": "Hebt u al een account?",
+      "signIn": "Inloggen hier",
+      "registerSuccess": "Account succesvol aangemaakt!",
+      "registerError": "Registratie mislukt. Probeer het opnieuw."
+    }
+  },
+  "catering": {
     "hero": {
-        "title": "Authentieke Tamil Smaak,",
-        "titleHighlight": "Nederlandse Kwaliteit.",
-        "subtitle": "Van heerlijke Kottu Roti tot exclusieve bruiloftscatering. Tamil Food Thaya brengt de warmte van Sri Lanka naar Rotterdam en Leiden.",
-        "pButton": "Direct Bestellen",
-        "sButton": "Catering Offerte",
-        "rotterdam": "Restaurant & Catering",
-        "leiden": "Exclusieve Catering"
+      "title": "Maak van elk event een",
+      "titleHighlight": "Feest",
+      "desc": "Van intieme diners tot grootschalige bruiloften. Wij brengen de smaak en sfeer naar elke gewenste locatie in Nederland.",
+      "button": "Vraag Offerte Aan"
     },
-    "footer": {
-        "description": "Brengt de authentieke Tamil en Sri Lankaanse keuken naar Nederland. Kwaliteit, traditie en gastvrijheid in elke hap.",
-        "locations": "Locaties",
-        "contact": "Contact",
-        "rights": "Alle rechten voorbehouden."
+    "packages": {
+      "title": "Onze Pakketten",
+      "subtitle": "Kies een pakket dat past bij uw wensen en budget.",
+      "silver": {
+        "name": "Silver",
+        "desc": "Ideaal voor verjaardagen en informele bijeenkomsten."
+      },
+      "gold": {
+        "name": "Gold",
+        "desc": "Ons populairste pakket voor bruiloften en jubilea.",
+        "badge": "Meest Gekozen"
+      },
+      "platinum": {
+        "name": "Platinum",
+        "desc": "De ultieme culinaire ervaring voor uw gasten."
+      },
+      "selectButton": "Pakket Kiezen"
     },
-    "home": {
-        "whyTitle": "Waarom Tamil Food Thaya?",
-        "feature1": {
-            "title": "Authentieke Recepten",
-            "desc": "Onze koks bereiden gerechten met kruiden die rechtstreeks uit Sri Lanka komen voor de echte Tamil smaak."
-        },
-        "feature2": {
-            "title": "Vers & Lokaal",
-            "desc": "We combineren traditionele smaken met verse, lokale ingrediënten uit de regio Rotterdam en Leiden."
-        },
-        "feature3": {
-            "title": "Passie voor Gastvrijheid",
-            "desc": "Bij Tamil Food Thaya staat warmte en gastvrijheid centraal, of u nu bij ons dineert of wij bij u cateren."
-        },
-        "highlightsTitle": "Onze Highlights",
-        "highlightsDesc": "Proef de populairste gerechten die onze klanten keer op keer bestellen.",
-        "viewMenu": "Bekijk Volledig Menu",
-        "add": "Toevoegen +"
-    },
-    "menu": {
-        "title": "Ons Menu",
-        "subtitle": "Ontdek de authentieke smaken van Sri Lanka en de Tamil keuken.",
-        "all": "Allemaal",
-        "addToCart": "Toevoegen aan Mandje",
-        "addedToCart": "toegevoegd aan mandje"
-    },
-    "contact": {
-        "phone": "Telefoon",
-        "email": "E-mail",
-        "sendMessage": "Stuur ons een bericht"
+    "quote": {
+      "title": "Direct een offerte?",
+      "capacity": {
+        "title": "Capaciteit",
+        "desc": "Wij cateren voor groepen van 20 tot 500+ personen."
+      },
+      "location": {
+        "title": "Locatie",
+        "desc": "Service in heel Nederland, focus op Zuid-Holland."
+      },
+      "response": {
+        "title": "Snelle Reactie",
+        "desc": "Binnen 24 uur een voorstel in uw mailbox."
+      }
     },
     "form": {
-        "name": "Naam",
-        "email": "E-mail",
-        "phone": "Telefoon",
-        "message": "Bericht",
-        "send": "Verstuur Bericht",
-        "sending": "Verzenden...",
-        "success": "Bericht verzonden!",
-        "error": "Verzenden mislukt.",
-        "required": "Verplicht",
-        "invalidEmail": "Ongeldig e-mailadres"
-    },
-    "auth": {
-        "login": {
-            "welcome": "Welkom",
-            "back": "terug",
-            "tagline": "We zijn blij u weer te zien bij Tamil Food Thaya.",
-            "username": "Gebruikersnaam",
-            "password": "Wachtwoord",
-            "loginBtn": "Inloggen",
-            "waiting": "Even wachten...",
-            "noAccount": "Nog geen account?",
-            "signUp": "Nu registreren",
-            "loginSuccess": "Welkom terug, {username}!",
-            "loginError": "Login mislukt. Controleer uw gegevens."
-        },
-        "register": {
-            "welcome": "Aan de Slag",
-            "with": "met Tamil Food Thaya",
-            "tagline": "Maak een account aan om te bestellen en uw events bij te houden.",
-            "username": "Gebruikersnaam",
-            "email": "E-mail",
-            "password": "Wachtwoord",
-            "confirmPassword": "Bevestig Wachtwoord",
-            "agreeTerms": "Ik ga akkoord met de",
-            "termsOfService": "Servicevoorwaarden",
-            "registerBtn": "Account Aanmaken",
-            "registering": "Account aanmaken...",
-            "haveAccount": "Hebt u al een account?",
-            "signIn": "Inloggen hier",
-            "registerSuccess": "Account succesvol aangemaakt!",
-            "registerError": "Registratie mislukt. Probeer het opnieuw."
-        }
-    },
-    "catering": {
-        "hero": {
-            "title": "Maak van elk event een",
-            "titleHighlight": "Feest",
-            "desc": "Van intieme diners tot grootschalige bruiloften. Wij brengen de smaak en sfeer naar elke gewenste locatie in Nederland.",
-            "button": "Vraag Offerte Aan"
-        },
-        "packages": {
-            "title": "Onze Pakketten",
-            "subtitle": "Kies een pakket dat past bij uw wensen en budget.",
-            "silver": {
-                "name": "Silver",
-                "desc": "Ideaal voor verjaardagen en informele bijeenkomsten."
-            },
-            "gold": {
-                "name": "Gold",
-                "desc": "Ons populairste pakket voor bruiloften en jubilea.",
-                "badge": "Meest Gekozen"
-            },
-            "platinum": {
-                "name": "Platinum",
-                "desc": "De ultieme culinaire ervaring voor uw gasten."
-            },
-            "selectButton": "Pakket Kiezen"
-        },
-        "quote": {
-            "title": "Direct een offerte?",
-            "capacity": {
-                "title": "Capaciteit",
-                "desc": "Wij cateren voor groepen van 20 tot 500+ personen."
-            },
-            "location": {
-                "title": "Locatie",
-                "desc": "Service in heel Nederland, focus op Zuid-Holland."
-            },
-            "response": {
-                "title": "Snelle Reactie",
-                "desc": "Binnen 24 uur een voorstel in uw mailbox."
-            }
-        },
-        "form": {
-            "title": "Direct een offerte?",
-            "name": "Naam",
-            "email": "E-mail",
-            "phone": "Telefoonnummer",
-            "date": "Datum Event",
-            "guests": "Gasten",
-            "location": "Locatie",
-            "submit": "Offerte Aanvragen",
-            "success": "Bedankt! We nemen binnen 24 uur contact met u op.",
-            "error": "Er is iets misgegaan. Probeer het later opnieuw."
-        }
-    },
-    "admin": {
-        "layout": {
-            "title": "Admin Paneel",
-            "loggedInAs": "Ingelogd als",
-            "logout": "Uitloggen",
-            "overview": "Tamil Food Thaya Overzicht",
-            "dashboard": "Dashboard",
-            "orders": "Bestellingen",
-            "leads": "Leads",
-            "menu": "Menu Beheer",
-            "categories": "Categorieën",
-            "settings": "Instellingen",
-            "messages": "Berichten"
-        },
-        "common": {
-            "save": "Opslaan",
-            "cancel": "Annuleren",
-            "delete": "Verwijderen",
-            "edit": "Bewerken",
-            "add": "Toevoegen",
-            "search": "Zoeken",
-            "filter": "Filteren",
-            "actions": "Acties",
-            "status": "Status",
-            "date": "Datum",
-            "name": "Naam",
-            "email": "E-mail",
-            "phone": "Telefoon",
-            "loading": "Laden...",
-            "noData": "Geen gegevens beschikbaar"
-        },
-        "leads": {
-            "title": "Catering Leads & Aanvragen",
-            "requests": "Aanvragen",
-            "viewDetails": "Bekijk Details",
-            "markFollowed": "Markeer als Opgevolgd",
-            "statusUpdated": "Status bijgewerkt",
-            "updateFailed": "Update mislukt",
-            "noRequests": "Geen aanvragen gevonden",
-            "package": "Pakket",
-            "noPackage": "Geen pakket",
-            "guests": "Gasten",
-            "source": "Bron"
-        },
-        "menu": {
-            "title": "Menu Beheer",
-            "addItem": "Nieuw Menu Item",
-            "editItem": "Menu Item Bewerken",
-            "itemName": "Item Naam",
-            "description": "Beschrijving",
-            "price": "Prijs",
-            "category": "Categorie",
-            "spiceLevel": "Pittigheid",
-            "image": "Afbeelding URL",
-            "available": "Beschikbaar",
-            "manageCategories": "Categorieën beheren"
-        },
-        "categories": {
-            "title": "Categorieën Beheer",
-            "addCategory": "Nieuwe Categorie",
-            "categoryName": "Categorie Naam",
-            "type": "Type",
-            "food": "Eten",
-            "beverage": "Drank"
-        },
-        "messages": {
-            "title": "Klant Berichten",
-            "markRead": "Markeer als Gelezen",
-            "unread": "Ongelezen"
-        }
+      "title": "Direct een offerte?",
+      "name": "Naam",
+      "email": "E-mail",
+      "phone": "Telefoonnummer",
+      "date": "Datum Event",
+      "guests": "Gasten",
+      "location": "Locatie",
+      "submit": "Offerte Aanvragen",
+      "success": "Bedankt! We nemen binnen 24 uur contact met u op.",
+      "error": "Er is iets misgegaan. Probeer het later opnieuw."
     }
+  },
+  "admin": {
+    "layout": {
+      "title": "Admin Paneel",
+      "loggedInAs": "Ingelogd als",
+      "logout": "Uitloggen",
+      "overview": "Tamil Food Thaya Overzicht",
+      "dashboard": "Dashboard",
+      "orders": "Bestellingen",
+      "leads": "Leads",
+      "menu": "Menu Beheer",
+      "categories": "Categorieën",
+      "settings": "Instellingen",
+      "messages": "Berichten"
+    },
+    "common": {
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "delete": "Verwijderen",
+      "edit": "Bewerken",
+      "add": "Toevoegen",
+      "search": "Zoeken",
+      "filter": "Filteren",
+      "actions": "Acties",
+      "status": "Status",
+      "date": "Datum",
+      "name": "Naam",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "loading": "Laden...",
+      "noData": "Geen gegevens beschikbaar"
+    },
+    "leads": {
+      "title": "Catering Leads & Aanvragen",
+      "requests": "Aanvragen",
+      "viewDetails": "Bekijk Details",
+      "markFollowed": "Markeer als Opgevolgd",
+      "statusUpdated": "Status bijgewerkt",
+      "updateFailed": "Update mislukt",
+      "noRequests": "Geen aanvragen gevonden",
+      "package": "Pakket",
+      "noPackage": "Geen pakket",
+      "guests": "Gasten",
+      "source": "Bron"
+    },
+    "menu": {
+      "title": "Menu Beheer",
+      "addItem": "Nieuw Menu Item",
+      "editItem": "Menu Item Bewerken",
+      "itemName": "Item Naam",
+      "description": "Beschrijving",
+      "price": "Prijs",
+      "category": "Categorie",
+      "spiceLevel": "Pittigheid",
+      "image": "Afbeelding URL",
+      "available": "Beschikbaar",
+      "manageCategories": "Categorieën beheren"
+    },
+    "categories": {
+      "title": "Categorieën Beheer",
+      "addCategory": "Nieuwe Categorie",
+      "categoryName": "Categorie Naam",
+      "type": "Type",
+      "food": "Eten",
+      "beverage": "Drank"
+    },
+    "messages": {
+      "title": "Klant Berichten",
+      "markRead": "Markeer als Gelezen",
+      "unread": "Ongelezen"
+    }
+  },
+  "common": {
+    "veg": "Vega",
+    "spice": "Pittigheid",
+    "included": "Inbegrepen",
+    "from": "Vanaf",
+    "fixed": "vast",
+    "perGuest": "per gast",
+    "dishes": "gerechten"
+  },
+  "home2": {
+    "seoTitle": "Traditioneel Tamil eten en catering",
+    "seoDescription": "Tamil Food Thaya serveert authentiek Tamil en Sri Lankaans eten, takeaway en eventcatering in Nederland.",
+    "title": "Traditioneel Tamil eten, gekookt voor mensen die de echte smaak missen.",
+    "lead": "Tamil Food Thaya brengt kruidige curries, krokante dosai, geurige biryani, warme rijstmaaltijden en royale catering naar huizen, kantoren, bruiloften en familiefeesten in Nederland.",
+    "menuCta": "Bekijk het menu",
+    "cateringCta": "Plan catering",
+    "trust1": "Geliefd bij liefhebbers van traditioneel eten",
+    "trust2": "Huisgemaakte masala's",
+    "trust3": "Vega en non-vega buffetten",
+    "boardLabel": "Signatuur Tamil gerechten",
+    "today": "Vandaag uit de keuken",
+    "dish1": "Chettinad kipcurry",
+    "dish1Desc": "Peper, venkel, curryblaadjes en langzaam geroosterde kruidenpasta",
+    "breakfast": "Ontbijtfavoriet",
+    "dish2": "Idli, sambar en chutney",
+    "dish2Desc": "Zachte gestoomde rijstcakejes met kokos- en tomatenchutney",
+    "anchor": "Catering basis",
+    "dish3": "Bruiloft banana-leaf meal",
+    "dish3Desc": "Rijst, sambar, poriyal, kootu, rasam, appalam en payasam",
+    "eventCta": "Vraag een eventmenu aan",
+    "proof1": "Tamil en Sri Lankaanse klassiekers",
+    "proof2": "Catering van klein tot groot",
+    "proof3": "Vega en halalvriendelijke opties"
+  },
+  "story": {
+    "title": "Eten voor momenten waar traditie telt.",
+    "lead": "De behoefte is simpel: als families samenkomen, moet het eten smaken als thuis en toch makkelijk te regelen zijn. Wij maken de vertrouwde gerechten, helpen met porties en houden bestellen duidelijk.",
+    "cta": "Praat met de keuken",
+    "journey": [
+      "Kies een menu of pakket",
+      "Vertel ons gasten, datum en dieetwensen",
+      "Wij bevestigen het menu en de service",
+      "Het eten wordt met zorg bereid, verpakt en geserveerd"
+    ],
+    "events": [
+      [
+        "Bruiloften",
+        "Banana-leaf maaltijden, biryani service, zoetigheden en planning die uw ceremonie respecteert."
+      ],
+      [
+        "Familiebijeenkomsten",
+        "Vertrouwde gerechten die goed reizen en passen bij ouderen, kinderen en gasten."
+      ],
+      [
+        "Kantoorlunches",
+        "Duidelijke porties, gelabelde dieetkeuzes en eten dat serveerklaar aankomt."
+      ],
+      [
+        "Verjaardagen en mijlpalen",
+        "Een feestelijke spread met starters, curries, rijst en zoetigheden."
+      ],
+      [
+        "Thuis eten",
+        "Takeaway favorieten voor avonden waarop alleen echt Tamil eten goed genoeg is."
+      ]
+    ]
+  },
+  "menuPage": {
+    "seoTitle": "Menu",
+    "seoDescription": "Ontdek het traditionele Tamil en Sri Lankaanse menu van Tamil Food Thaya.",
+    "heroTitle": "Vind het Tamil gerecht waar u trek in had.",
+    "heroDesc": "Bekijk ontbijtklassiekers, rijstmaaltijden, curries, snacks, zoetigheden en eventfavorieten. Bestellen en catering blijven dichtbij.",
+    "searchPlaceholder": "Zoek dosa, biryani, payasam...",
+    "all": "Alle gerechten",
+    "categories": "Gerechtcategorieen",
+    "emptyTitle": "Geen gerechten gevonden",
+    "emptyDesc": "Probeer een andere zoekopdracht of neem contact op voor catering op maat.",
+    "fallbackDesc": "Bereid met traditionele kruiden en verse ingredienten."
+  },
+  "menuPreview": {
+    "title": "Een menu met gerechten die mensen uit herinnering herkennen.",
+    "lead": "Van takeaway doordeweeks tot feestelijke spreads: het menu houdt de klassiekers makkelijk vindbaar en de details dichtbij.",
+    "categories": "Menu categorieen",
+    "viewFull": "Bekijk het volledige menu",
+    "close": "Sluiten"
+  },
+  "catering2": {
+    "seoTitle": "Catering",
+    "seoDescription": "Traditionele Tamil catering voor bruiloften, familiefeesten, zakelijke maaltijden en prive-evenementen.",
+    "heroTitle": "Kies een Tamil cateringpakket dat uw gasten onthouden.",
+    "heroLead": "Begin met het pakket. Pas daarna gerechten, aantal gasten, extra opties, servicenotities en eventdetails aan in een duidelijke checkout.",
+    "viewPackages": "Bekijk cateringpakketten",
+    "requestGuidance": "Vraag advies",
+    "panelTitle": "Eerst pakketten, daarna details",
+    "panelText": "Vergelijk de spreads hieronder, kies er een en pas het aan voor bruiloften, verjaardagen, kantoorlunches, tempelbijeenkomsten of familiefeesten.",
+    "packagesTitle": "Kies het pakket dat bij uw event past.",
+    "packagesLead": "Dit is de hoofdkeuze: vergelijk gasten, prijs en eventstijl, open daarna checkout om elk gerecht aan te passen.",
+    "spotlight": "Aanbevolen startpunt",
+    "customiseThis": "Pas dit pakket aan",
+    "refreshTitle": "Pakketten worden vernieuwd",
+    "refreshText": "Gebruik het contactformulier voor een offerte op maat terwijl pakketdetails worden bijgewerkt.",
+    "quote": "Vraag een offerte aan",
+    "best": "Beste eerste keuze",
+    "favorite": "Gastfavoriet",
+    "ready": "Eventklaar",
+    "package": "Cateringpakket",
+    "guests": "gasten",
+    "customise": "Aanpassen",
+    "processTitle": "Een duidelijk pad van eerste vraag tot laatste bord.",
+    "processLead": "Zodra een pakket opvalt, maakt de flow elke volgende keuze zichtbaar en blijft boeken dichtbij.",
+    "process": [
+      [
+        "Deel de gelegenheid",
+        "Vertel ons datum, aantal gasten, servicestijl, locatie en dieetwensen."
+      ],
+      [
+        "Stel de spread samen",
+        "Kies een pakket en pas starters, curries, rijst, zoetigheden, extra opties en service aan."
+      ],
+      [
+        "Bevestig met vertrouwen",
+        "Controleer uw keuzes, prijs en eventnotities voordat u bestelt."
+      ]
+    ]
+  },
+  "addons": {
+    "title": "Handige extra opties, alleen wanneer uw event ze nodig heeft.",
+    "lead": "Houd de maaltijd centraal en voeg daarna onderdelen toe die de eventdag makkelijker maken: drankjes, decoratie, muziek, kindermenu of service.",
+    "addDuring": "Toevoegen tijdens catering checkout",
+    "browse": "Bekijk cateringpakketten"
+  },
+  "contactPage": {
+    "seoTitle": "Contact",
+    "seoDescription": "Neem contact op met Tamil Food Thaya voor menuvragen, takeaway en traditionele Tamil catering.",
+    "heroTitle": "Vertel ons wat u plant.",
+    "heroDesc": "Vraag naar een gerecht, catering, dieetwensen of stuur details voor uw volgende familiefeest.",
+    "asideTitle": "De snelste route naar de juiste maaltijd.",
+    "asideLead": "Deel de gelegenheid, het aantal gasten, de datum en belangrijke gerechten. Wij reageren met de volgende praktische stap.",
+    "visit": "Bezoek",
+    "call": "Bel",
+    "bestFor": "Beste voor catering",
+    "bestDetails": "Datum, gasten, locatie en dieetwensen",
+    "formTitle": "Stuur een aanvraag",
+    "formLead": "Cateringaanvragen zijn makkelijker te offreren met enkele details vooraf.",
+    "yourName": "Uw naam",
+    "messagePlaceholder": "Vertel ons de gelegenheid, het aantal gasten, datum en gewenste gerechten.",
+    "sendInquiry": "Aanvraag verzenden",
+    "success": "Bedankt. Uw bericht is verzonden.",
+    "error": "We konden uw bericht niet verzenden. Probeer het opnieuw.",
+    "nameRequired": "Naam is verplicht",
+    "emailRequired": "E-mail is verplicht",
+    "phoneRequired": "Telefoon is verplicht",
+    "messageRequired": "Bericht is verplicht",
+    "validEmail": "Voer een geldig e-mailadres in"
+  },
+  "checkout": {
+    "seoTitle": "Checkout",
+    "seoDescription": "Rond uw takeaway bestelling bij Tamil Food Thaya af.",
+    "heroTitle": "Bevestig uw bestelling en afhaaltijd.",
+    "heroDesc": "Een gerichte stap voor veilige betaling. Controleer uw gerechten, voeg keukennotities toe en kies wanneer u wilt afhalen.",
+    "customerTitle": "Klantgegevens",
+    "customerLead": "We gebruiken deze gegevens alleen om uw afhaalbestelling te bevestigen en klaar te maken.",
+    "fullName": "Volledige naam",
+    "yourFullName": "Uw volledige naam",
+    "pickupTime": "Afhaaltijd",
+    "notes": "Notities voor de keuken",
+    "notesPlaceholder": "Allergieen, pittigheid, afhaalnotities...",
+    "secureTitle": "Veilige betaling",
+    "secureText": "Na deze stap gaat u door naar de betaalprovider.",
+    "preparing": "Betaling voorbereiden...",
+    "continuePayment": "Doorgaan naar betaling",
+    "summary": "Besteloverzicht",
+    "review": "klaar om te controleren.",
+    "itemSingular": "item",
+    "itemPlural": "items",
+    "subtotal": "Subtotaal",
+    "vat": "BTW inbegrepen",
+    "total": "Totaal",
+    "paymentMissing": "Betaallink niet ontvangen. Probeer het opnieuw.",
+    "processError": "We konden uw bestelling niet verwerken. Probeer het opnieuw.",
+    "nameRequired": "Naam is verplicht",
+    "validEmail": "Voer een geldig e-mailadres in",
+    "validPhone": "Voer een geldig telefoonnummer in",
+    "choosePickup": "Kies een afhaaltijd"
+  },
+  "cateringCheckout": {
+    "steps": [
+      "Kies gerechten",
+      "Extra opties",
+      "Eventgegevens",
+      "Controle & bestellen"
+    ],
+    "loading": "Pakket laden...",
+    "packageLabel": "Cateringpakket",
+    "categoriesTitle": "Menu categorieen",
+    "categoriesHelp": "Selecteer elke groep in uw eigen volgorde. Voltooide groepen blijven gemarkeerd.",
+    "completeRequired": "Maak alle verplichte categorieen compleet voordat u doorgaat.",
+    "previous": "Vorige",
+    "next": "Volgende",
+    "chooseAddons": "Kies extra opties",
+    "optionalAddons": "Optionele extra opties",
+    "backToItems": "Terug naar gerechten",
+    "backToAddons": "Terug naar extra opties",
+    "reviewOrder": "Bestelling controleren",
+    "reviewTitle": "Controleer uw bestelling",
+    "yourSelections": "Uw keuzes",
+    "eventDetails": "Eventgegevens",
+    "back": "Terug",
+    "placing": "Bestelling plaatsen...",
+    "placeOrder": "Bestelling plaatsen",
+    "priceSummary": "Prijsoverzicht",
+    "basePrice": "Basisprijs",
+    "perPerson": "Per persoon",
+    "apply": "Toepassen"
+  }
 }

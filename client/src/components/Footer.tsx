@@ -19,10 +19,8 @@ export default function Footer() {
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
-
                 .ft-root {
-                    font-family: 'DM Sans', sans-serif;
+                    font-family: var(--font-sans);
                     background: #0a0806;
                     color: #f0ece4;
                     position: relative;
@@ -69,7 +67,7 @@ export default function Footer() {
 
                 /* Brand column */
                 .ft-brand-name {
-                    font-family: 'Playfair Display', serif;
+                    font-family: var(--font-display);
                     font-size: 26px;
                     font-weight: 700;
                     color: #f5efe4;
@@ -130,7 +128,7 @@ export default function Footer() {
                     color: rgba(232,160,32,0.7);
                     font-weight: 600;
                     margin-bottom: 20px;
-                    font-family: 'DM Sans', sans-serif;
+                    font-family: var(--font-sans);
                 }
 
                 /* Nav links */

@@ -1,29 +1,38 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+import {
+    Box,
+    CheckCircle2,
+    ChevronDown,
+    Euro,
+    Eye,
+    EyeOff,
+    FileText,
+    Filter,
+    Flame,
+    Grid3X3,
+    ImagePlus,
+    Layers3,
+    Leaf,
+    List,
+    Package,
+    Pencil,
+    Plus,
+    Search,
+    Soup,
+    Trash2,
+    X
+} from 'lucide-react';
 import {
     useMenu,
     createMenuItem,
     updateMenuItem,
     deleteMenuItem
 } from '../../hooks/useApi';
-import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '../../components/ui/Button';
-import { Card, CardContent } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
-import { toast } from 'react-hot-toast';
-import {
-    X,
-    ImagePlus,
-    ChevronDown,
-    Package,
-    Euro,
-    Layers3,
-    FileText,
-    Box,
-    Check,
-    Leaf,
-    Flame
-} from 'lucide-react';
 
 type MenuFormValues = {
     name: string;
@@ -37,10 +46,39 @@ type MenuFormValues = {
     image: FileList | null;
 };
 
+type MenuItem = {
+    _id: string;
+    name?: string;
+    description?: string;
+    price?: number;
+    stockCount?: number;
+    categoryId?: string | { _id?: string; name?: string; nameTranslations?: { nl?: string; en?: string; ta?: string } };
+    available?: boolean;
+    isVeg?: boolean;
+    spiceLevel?: number;
+    image?: string;
+};
+
+type CategoryItem = {
+    _id: string;
+    name?: string;
+    nameTranslations?: { nl?: string; en?: string; ta?: string };
+};
+
+type ViewMode = 'grid' | 'list';
+type AvailabilityFilter = 'ALL' | 'AVAILABLE' | 'HIDDEN';
+type DietFilter = 'ALL' | 'VEG' | 'NON_VEG';
+
 type MenuFormProps = {
     onClose: () => void;
     onSubmit: (data: FormData) => Promise<void> | void;
-    initialData?: any | null;
+    initialData?: MenuItem | null;
+};
+
+const availabilityConfig: Record<AvailabilityFilter, { label: string }> = {
+    ALL: { label: 'All' },
+    AVAILABLE: { label: 'Available' },
+    HIDDEN: { label: 'Hidden' }
 };
 
 export const ManageMenu = () => {
@@ -48,21 +86,68 @@ export const ManageMenu = () => {
     const queryClient = useQueryClient();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [editingItem, setEditingItem] = useState<any | null>(null);
+    const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('ALL');
+    const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('ALL');
+    const [dietFilter, setDietFilter] = useState<DietFilter>('ALL');
+    const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
-    const menuList = useMemo(
-        () => (Array.isArray(menuItems.data) ? menuItems.data : []),
-        [menuItems.data]
-    );
+    const menuList: MenuItem[] = useMemo(() => {
+        if (Array.isArray(menuItems.data)) return menuItems.data;
+        if (Array.isArray(menuItems.data?.data)) return menuItems.data.data;
+        return [];
+    }, [menuItems.data]);
 
-    const categoryList = useMemo(
-        () => (Array.isArray(categories.data) ? categories.data : []),
-        [categories.data]
-    );
+    const categoryList: CategoryItem[] = useMemo(() => {
+        if (Array.isArray(categories.data)) return categories.data;
+        if (Array.isArray(categories.data?.data)) return categories.data.data;
+        return [];
+    }, [categories.data]);
 
     const categoryMap = useMemo(() => {
-        return new Map(categoryList.map((category: any) => [category._id, category.name]));
+        return new Map(
+            categoryList.map((category) => [
+                category._id,
+                category.nameTranslations?.nl || category.name || 'Untitled category'
+            ])
+        );
     }, [categoryList]);
+
+    const stats = useMemo(() => {
+        const total = menuList.length;
+        const available = menuList.filter((item) => item.available).length;
+        const hidden = total - available;
+        const lowStock = menuList.filter((item) => Number(item.stockCount ?? 0) <= 5).length;
+
+        return { total, available, hidden, lowStock };
+    }, [menuList]);
+
+    const filteredItems = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+
+        return menuList.filter((item) => {
+            const categoryId = getCategoryId(item);
+            const categoryName = getCategoryName(item, categoryMap);
+
+            if (categoryFilter !== 'ALL' && categoryId !== categoryFilter) return false;
+            if (availabilityFilter === 'AVAILABLE' && !item.available) return false;
+            if (availabilityFilter === 'HIDDEN' && item.available) return false;
+            if (dietFilter === 'VEG' && !item.isVeg) return false;
+            if (dietFilter === 'NON_VEG' && item.isVeg) return false;
+            if (!query) return true;
+
+            return [
+                item.name,
+                item.description,
+                categoryName,
+                String(item.price ?? 0),
+                String(item.stockCount ?? 0)
+            ]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query));
+        });
+    }, [menuList, searchTerm, categoryFilter, availabilityFilter, dietFilter, categoryMap]);
 
     const closeModal = () => {
         setIsEditing(false);
@@ -74,20 +159,20 @@ export const ManageMenu = () => {
         setIsEditing(true);
     };
 
-    const handleEdit = (item: any) => {
+    const handleEdit = (item: MenuItem) => {
         setEditingItem(item);
         setIsEditing(true);
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Delete this menu item?')) return;
+        if (!confirm('Delete this menu item? Customers will no longer see it.')) return;
 
         try {
             await deleteMenuItem(id);
             toast.success('Menu item deleted');
             queryClient.invalidateQueries({ queryKey: ['menu-items'] });
         } catch {
-            toast.error('Failed to delete menu item');
+            toast.error('Could not delete menu item');
         }
     };
 
@@ -104,117 +189,141 @@ export const ManageMenu = () => {
             queryClient.invalidateQueries({ queryKey: ['menu-items'] });
             closeModal();
         } catch {
-            toast.error('Failed to save menu item');
+            toast.error('Could not save menu item');
         }
     };
 
     return (
-        <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
-            <div className="mx-auto max-w-[1080px] space-y-5">
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="admin-page">
+            <div className="admin-page-container max-w-[1180px]">
+                <section className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
-                            </p>
-                            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                Manage Menu
-                            </h1>
-                            <p className="mt-2 text-sm text-slate-500">
-                                Create, update and organize menu items.
+                            <div className="mt-2 flex flex-wrap items-center gap-3">
+                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
+                                    Menu Item Workspace
+                                </h1>
+                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
+                                    <Soup size={13} />
+                                    {viewMode === 'grid' ? 'Grid view' : 'List view'}
+                                </span>
+                            </div>
+                            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
+                                Manage dishes, pricing, images, dietary details, stock and menu visibility in one polished workspace.
                             </p>
                         </div>
 
-                        <Button
-                            onClick={handleCreate}
-                            className="h-11 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800"
-                        >
-                            Add Menu Item
-                        </Button>
+                        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:w-[720px]">
+                            <MetricCard label="Total" value={stats.total} icon={<Package size={16} />} />
+                            <MetricCard label="Visible" value={stats.available} icon={<Eye size={16} />} />
+                            <MetricCard label="Hidden" value={stats.hidden} icon={<EyeOff size={16} />} />
+                            <MetricCard label="Low stock" value={stats.lowStock} icon={<Box size={16} />} />
+                            <Button
+                                onClick={handleCreate}
+                                className="h-full min-h-16 rounded-2xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white hover:bg-slate-800"
+                            >
+                                <Plus size={16} className="mr-2" />
+                                Add Item
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                <section className="rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="grid gap-3 2xl:grid-cols-[minmax(0,1fr)_auto] 2xl:items-end">
+                        <label className="relative block">
+                            <Search
+                                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                                size={16}
+                            />
+                            <input
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                placeholder="Search dish name, description, category, price or stock..."
+                                className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                            />
+                        </label>
+
+                        <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
+                            <FilterSelect
+                                label="Category"
+                                value={categoryFilter}
+                                onChange={setCategoryFilter}
+                                options={[
+                                    { value: 'ALL', label: 'All categories' },
+                                    ...categoryList.map((category) => ({
+                                        value: category._id,
+                                        label: category.nameTranslations?.nl || category.name || 'Untitled category'
+                                    }))
+                                ]}
+                            />
+                            <AvailabilityTabs
+                                value={availabilityFilter}
+                                counts={{
+                                    ALL: stats.total,
+                                    AVAILABLE: stats.available,
+                                    HIDDEN: stats.hidden
+                                }}
+                                onChange={setAvailabilityFilter}
+                            />
+                            <DietTabs value={dietFilter} onChange={setDietFilter} />
+                            <ViewToggle value={viewMode} onChange={setViewMode} />
+                        </div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-bold text-slate-500">
+                        <span className="inline-flex items-center gap-1.5">
+                            <Filter size={12} />
+                            Showing {filteredItems.length} of {menuList.length} menu items
+                        </span>
+                        {(searchTerm ||
+                            categoryFilter !== 'ALL' ||
+                            availabilityFilter !== 'ALL' ||
+                            dietFilter !== 'ALL') && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setCategoryFilter('ALL');
+                                    setAvailabilityFilter('ALL');
+                                    setDietFilter('ALL');
+                                }}
+                                className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
+                            >
+                                Clear filters
+                            </button>
+                        )}
+                    </div>
+                </section>
 
                 {menuItems.isLoading ? (
-                    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm">
-                        <div className="flex justify-center">
-                            <Spinner />
-                        </div>
-                    </div>
-                ) : menuList.length === 0 ? (
-                    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-                        <h3 className="text-lg font-semibold text-slate-900">No menu items found</h3>
-                        <p className="mt-2 text-sm text-slate-500">
-                            Add your first menu item to get started.
-                        </p>
-                    </div>
+                    <LoadingPanel />
+                ) : menuItems.isError ? (
+                    <ErrorPanel />
+                ) : filteredItems.length === 0 ? (
+                    <EmptyState
+                        title={menuList.length === 0 ? 'No menu items yet' : 'No matching menu items'}
+                        text={
+                            menuList.length === 0
+                                ? 'Create the first dish to start building the customer-facing menu.'
+                                : 'Adjust search or filters to find the dish you need.'
+                        }
+                        action={menuList.length === 0 ? handleCreate : undefined}
+                    />
+                ) : viewMode === 'grid' ? (
+                    <MenuGrid
+                        items={filteredItems}
+                        categoryMap={categoryMap}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                    />
                 ) : (
-                    <div className="space-y-3">
-                        {menuList.map((item: any) => (
-                            <Card
-                                key={item._id}
-                                className="rounded-[26px] border border-slate-200 bg-white shadow-sm"
-                            >
-                                <CardContent className="p-5">
-                                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-start gap-4">
-                                                <img
-                                                    src={item.image || '/placeholder-food.jpg'}
-                                                    alt={item.name}
-                                                    className="h-16 w-16 rounded-2xl border border-slate-200 object-cover"
-                                                />
-
-                                                <div className="min-w-0">
-                                                    <h3 className="text-[16px] font-semibold text-slate-900">
-                                                        {item.name}
-                                                    </h3>
-                                                    <p className="mt-1 text-sm text-slate-500">
-                                                        {item.description || 'No description'}
-                                                    </p>
-
-                                                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                                                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1">
-                                                            Category: {categoryMap.get(item.categoryId?._id || item.categoryId) || 'N/A'}
-                                                        </span>
-                                                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1">
-                                                            Stock: {item.stockCount ?? 0}
-                                                        </span>
-                                                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1">
-                                                            {item.available ? 'Available' : 'Hidden'}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 md:justify-end">
-                                            <span className="mr-2 text-lg font-semibold text-slate-900">
-                                                € {Number(item.price || 0).toFixed(2)}
-                                            </span>
-
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => handleEdit(item)}
-                                                className="h-10 rounded-full border-slate-200 bg-white px-4 text-slate-700 hover:border-slate-300 hover:bg-stone-50"
-                                            >
-                                                Edit
-                                            </Button>
-
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => handleDelete(item._id)}
-                                                className="h-10 rounded-full border-slate-200 bg-white px-4 text-slate-700 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-                                            >
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                    <MenuList
+                        items={filteredItems}
+                        categoryMap={categoryMap}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                    />
                 )}
 
                 {isEditing && (
@@ -233,19 +342,439 @@ export const ManageMenu = () => {
     );
 };
 
-export const MenuForm = ({
-    onClose,
-    onSubmit,
-    initialData
-}: MenuFormProps) => {
+const MetricCard = ({
+    label,
+    value,
+    icon
+}: {
+    label: string;
+    value: string | number;
+    icon: ReactNode;
+}) => (
+    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-2 text-slate-400">
+            {icon}
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em]">{label}</p>
+        </div>
+        <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+    </div>
+);
+
+const FilterSelect = ({
+    label,
+    value,
+    onChange,
+    options
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    options: { value: string; label: string }[];
+}) => (
+    <label className="grid gap-1.5 xl:w-[210px]">
+        <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+            <Filter size={13} />
+            {label}
+        </span>
+        <select
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+        >
+            {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    </label>
+);
+
+const AvailabilityTabs = ({
+    value,
+    counts,
+    onChange
+}: {
+    value: AvailabilityFilter;
+    counts: Record<AvailabilityFilter, number>;
+    onChange: (value: AvailabilityFilter) => void;
+}) => {
+    const tabs: AvailabilityFilter[] = ['ALL', 'AVAILABLE', 'HIDDEN'];
+
+    return (
+        <div className="grid gap-1.5">
+            <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                <Eye size={13} />
+                Visibility
+            </span>
+            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
+                {tabs.map((tab) => {
+                    const active = value === tab;
+                    return (
+                        <button
+                            key={tab}
+                            type="button"
+                            onClick={() => onChange(tab)}
+                            className={`inline-flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
+                                active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                        >
+                            {availabilityConfig[tab].label}
+                            <span className={`rounded-lg px-1.5 py-0.5 text-[10px] ${active ? 'bg-amber-50 text-amber-800' : 'bg-white text-slate-500'}`}>
+                                {counts[tab]}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const DietTabs = ({
+    value,
+    onChange
+}: {
+    value: DietFilter;
+    onChange: (value: DietFilter) => void;
+}) => {
+    const tabs: { value: DietFilter; label: string }[] = [
+        { value: 'ALL', label: 'All' },
+        { value: 'VEG', label: 'Veg' },
+        { value: 'NON_VEG', label: 'Non-veg' }
+    ];
+
+    return (
+        <div className="grid gap-1.5">
+            <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                <Leaf size={13} />
+                Diet
+            </span>
+            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
+                {tabs.map((tab) => {
+                    const active = value === tab.value;
+                    return (
+                        <button
+                            key={tab.value}
+                            type="button"
+                            onClick={() => onChange(tab.value)}
+                            className={`inline-flex h-9 shrink-0 rounded-xl px-3 text-xs font-extrabold transition ${
+                                active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                        >
+                            {tab.label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const ViewToggle = ({
+    value,
+    onChange
+}: {
+    value: ViewMode;
+    onChange: (value: ViewMode) => void;
+}) => {
+    const options: { value: ViewMode; label: string; icon: ReactNode }[] = [
+        { value: 'grid', label: 'Grid', icon: <Grid3X3 size={14} /> },
+        { value: 'list', label: 'List', icon: <List size={14} /> }
+    ];
+
+    return (
+        <div className="grid gap-1.5">
+            <span className="px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                View
+            </span>
+            <div className="flex rounded-2xl border border-slate-200 bg-stone-50 p-1">
+                {options.map((option) => {
+                    const active = value === option.value;
+                    return (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => onChange(option.value)}
+                            className={`inline-flex h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
+                                active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                        >
+                            {option.icon}
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const MenuGrid = ({
+    items,
+    categoryMap,
+    onEdit,
+    onDelete
+}: {
+    items: MenuItem[];
+    categoryMap: Map<string, string>;
+    onEdit: (item: MenuItem) => void;
+    onDelete: (id: string) => void;
+}) => (
+    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+        <WorkspaceHeader
+            title="Menu board"
+            text="Review dish photography, pricing, stock, dietary flags and visibility in a visual workspace."
+            badge={`${items.length} ${items.length === 1 ? 'item' : 'items'}`}
+        />
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {items.map((item) => (
+                <MenuCard
+                    key={item._id}
+                    item={item}
+                    categoryMap={categoryMap}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                />
+            ))}
+        </div>
+    </section>
+);
+
+const MenuCard = ({
+    item,
+    categoryMap,
+    onEdit,
+    onDelete
+}: {
+    item: MenuItem;
+    categoryMap: Map<string, string>;
+    onEdit: (item: MenuItem) => void;
+    onDelete: (id: string) => void;
+}) => (
+    <article className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
+        <div className="relative aspect-[4/3] bg-stone-50">
+            <img
+                src={item.image || '/placeholder-food.jpg'}
+                alt={item.name || 'Menu item'}
+                onError={(event) => {
+                    event.currentTarget.src = '/hero-catering.jpg';
+                }}
+                className="h-full w-full object-cover"
+            />
+            <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+                <VisibilityBadge available={Boolean(item.available)} />
+                {item.isVeg && <DietBadge />}
+            </div>
+            <span className="absolute bottom-3 right-3 rounded-2xl bg-white px-3 py-2 text-sm font-extrabold text-slate-900 shadow-sm">
+                {formatPrice(item.price)}
+            </span>
+        </div>
+
+        <div className="p-4">
+            <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <h3 className="truncate text-base font-extrabold text-slate-900">
+                        {item.name || 'Untitled item'}
+                    </h3>
+                    <p className="mt-1 line-clamp-2 text-sm font-semibold leading-6 text-slate-600">
+                        {item.description || 'No description added yet.'}
+                    </p>
+                </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+                <MiniMeta label="Category" value={getCategoryName(item, categoryMap)} />
+                <MiniMeta label="Stock" value={`${item.stockCount ?? 0}`} />
+                <MiniMeta label="Spice" value={getSpiceLabel(item.spiceLevel)} />
+                <MiniMeta label="Diet" value={item.isVeg ? 'Vegetarian' : 'Regular'} />
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-stone-50 px-3 py-1.5 text-xs font-extrabold text-slate-700">
+                    <CheckCircle2 size={13} />
+                    Stock {item.stockCount ?? 0}
+                </span>
+                <MenuActions item={item} onEdit={onEdit} onDelete={onDelete} />
+            </div>
+        </div>
+    </article>
+);
+
+const MenuList = ({
+    items,
+    categoryMap,
+    onEdit,
+    onDelete
+}: {
+    items: MenuItem[];
+    categoryMap: Map<string, string>;
+    onEdit: (item: MenuItem) => void;
+    onDelete: (id: string) => void;
+}) => (
+    <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+        <WorkspaceHeader
+            title="List workspace"
+            text="Scan prices, category, stock and menu visibility in one dense table."
+            badge={`${items.length} ${items.length === 1 ? 'item' : 'items'}`}
+        />
+
+        <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 lg:block">
+            <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+                <thead className="bg-stone-50">
+                    <tr>
+                        {['Item', 'Category', 'Price', 'Stock', 'Visibility', 'Diet', 'Action'].map((heading) => (
+                            <th
+                                key={heading}
+                                className="border-b border-slate-200 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500"
+                            >
+                                {heading}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item) => (
+                        <MenuRow
+                            key={item._id}
+                            item={item}
+                            categoryMap={categoryMap}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                        />
+                    ))}
+                </tbody>
+            </table>
+        </div>
+
+        <div className="grid gap-3 lg:hidden">
+            {items.map((item) => (
+                <MenuCard
+                    key={item._id}
+                    item={item}
+                    categoryMap={categoryMap}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                />
+            ))}
+        </div>
+    </section>
+);
+
+const MenuRow = ({
+    item,
+    categoryMap,
+    onEdit,
+    onDelete
+}: {
+    item: MenuItem;
+    categoryMap: Map<string, string>;
+    onEdit: (item: MenuItem) => void;
+    onDelete: (id: string) => void;
+}) => (
+    <tr className="transition hover:bg-amber-50/50">
+        <td className="border-b border-slate-100 px-4 py-4">
+            <div className="flex min-w-0 items-center gap-3">
+                <img
+                    src={item.image || '/placeholder-food.jpg'}
+                    alt={item.name || 'Menu item'}
+                    onError={(event) => {
+                        event.currentTarget.src = '/hero-catering.jpg';
+                    }}
+                    className="h-12 w-12 shrink-0 rounded-2xl border border-slate-200 object-cover"
+                />
+                <div className="min-w-0">
+                    <p className="truncate text-sm font-extrabold text-slate-900">
+                        {item.name || 'Untitled item'}
+                    </p>
+                    <p className="mt-1 max-w-[280px] truncate text-xs font-bold text-slate-500">
+                        {item.description || 'No description added yet.'}
+                    </p>
+                </div>
+            </div>
+        </td>
+        <td className="border-b border-slate-100 px-4 py-4 text-sm font-extrabold text-slate-900">
+            {getCategoryName(item, categoryMap)}
+        </td>
+        <td className="whitespace-nowrap border-b border-slate-100 px-4 py-4 text-sm font-extrabold text-slate-900">
+            {formatPrice(item.price)}
+        </td>
+        <td className="border-b border-slate-100 px-4 py-4">
+            <StockBadge count={item.stockCount ?? 0} />
+        </td>
+        <td className="border-b border-slate-100 px-4 py-4">
+            <VisibilityBadge available={Boolean(item.available)} />
+        </td>
+        <td className="border-b border-slate-100 px-4 py-4">
+            {item.isVeg ? <DietBadge /> : <span className="text-xs font-bold text-slate-500">Regular</span>}
+        </td>
+        <td className="border-b border-slate-100 px-4 py-4">
+            <MenuActions item={item} onEdit={onEdit} onDelete={onDelete} />
+        </td>
+    </tr>
+);
+
+const WorkspaceHeader = ({
+    title,
+    text,
+    badge
+}: {
+    title: string;
+    text: string;
+    badge: string;
+}) => (
+    <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="min-w-0">
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
+                {title}
+            </p>
+            <p className="mt-1 text-sm font-bold leading-5 text-slate-700">{text}</p>
+        </div>
+        <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
+            {badge}
+        </span>
+    </div>
+);
+
+const MenuActions = ({
+    item,
+    onEdit,
+    onDelete
+}: {
+    item: MenuItem;
+    onEdit: (item: MenuItem) => void;
+    onDelete: (id: string) => void;
+}) => (
+    <div className="flex flex-wrap justify-end gap-2">
+        <button
+            type="button"
+            onClick={() => onEdit(item)}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-3 text-xs font-extrabold text-white transition hover:bg-slate-800"
+        >
+            <Pencil size={14} />
+            Edit
+        </button>
+        <button
+            type="button"
+            onClick={() => onDelete(item._id)}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+        >
+            <Trash2 size={14} />
+            Delete
+        </button>
+    </div>
+);
+
+export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
     const { categories } = useMenu();
     const [preview, setPreview] = useState<string>(initialData?.image || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const categoryList = useMemo(
-        () => (Array.isArray(categories.data) ? categories.data : []),
-        [categories.data]
-    );
+    const categoryList: CategoryItem[] = useMemo(() => {
+        if (Array.isArray(categories.data)) return categories.data;
+        if (Array.isArray(categories.data?.data)) return categories.data.data;
+        return [];
+    }, [categories.data]);
 
     const {
         register,
@@ -280,16 +809,12 @@ export const MenuForm = ({
                 description: initialData.description || '',
                 price: Number(initialData.price || 0),
                 stockCount: Number(initialData.stockCount || 0),
-                categoryId:
-                    initialData.categoryId?._id ||
-                    initialData.categoryId ||
-                    '',
+                categoryId: getCategoryId(initialData),
                 available: Boolean(initialData.available),
                 isVeg: Boolean(initialData.isVeg),
                 spiceLevel: Number(initialData.spiceLevel || 0),
                 image: null
             });
-
             setPreview(initialData.image || '');
         } else {
             reset({
@@ -342,55 +867,43 @@ export const MenuForm = ({
     };
 
     return (
-        <div className="w-full rounded-[30px] border border-slate-200 bg-white shadow-2xl">
-            {/* Header */}
+        <div className="w-full overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                 <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                        Menu Editor
-                    </p>
-                    <h2 className="mt-1 text-xl font-semibold text-slate-900">
-                        {initialData ? 'Edit Menu Item' : 'Create Menu Item'}
+                    <h2 className="text-2xl font-extrabold text-slate-900">
+                        {initialData ? 'Edit menu item' : 'Create menu item'}
                     </h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                        Clean editor for product details, pricing, stock and category.
+                    <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
+                        Keep customer-facing dishes accurate, appetizing and easy to order.
                     </p>
                 </div>
 
                 <button
                     type="button"
                     onClick={onClose}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700"
+                    aria-label="Close menu item editor"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700"
                 >
                     <X size={18} />
                 </button>
             </div>
 
-            <form
-                onSubmit={handleSubmit(submitForm)}
-                className="max-h-[85vh] overflow-y-auto px-6 py-6"
-            >
+            <form onSubmit={handleSubmit(submitForm)} className="max-h-[85vh] overflow-y-auto px-6 py-6">
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                    {/* Left */}
                     <div className="space-y-5">
-                        <SectionTitle
-                            title="Basic Information"
-                            subtitle="Main content shown in the menu"
-                        />
+                        <SectionTitle title="Dish information" subtitle="Name, description, pricing and placement" />
 
                         <InputField
-                            label="Item Name"
+                            label="Item name"
                             placeholder="Eg. Chicken Kottu"
                             icon={<Package size={16} />}
                             error={errors.name?.message}
-                            registration={register('name', {
-                                required: 'Item name is required'
-                            })}
+                            registration={register('name', { required: 'Item name is required' })}
                         />
 
                         <TextAreaField
                             label="Description"
-                            placeholder="Write a short description for this item..."
+                            placeholder="Write a short customer-facing description..."
                             icon={<FileText size={16} />}
                             error={errors.description?.message}
                             registration={register('description')}
@@ -409,9 +922,8 @@ export const MenuForm = ({
                                     valueAsNumber: true
                                 })}
                             />
-
                             <InputField
-                                label="Stock Count"
+                                label="Stock count"
                                 type="number"
                                 placeholder="0"
                                 icon={<Box size={16} />}
@@ -426,213 +938,98 @@ export const MenuForm = ({
                         <PremiumSelect
                             label="Category"
                             icon={<Layers3 size={16} />}
-                            value={watch('categoryId')}
                             error={errors.categoryId?.message}
-                            registration={register('categoryId', {
-                                required: 'Please select a category'
-                            })}
+                            registration={register('categoryId', { required: 'Please select a category' })}
                         >
                             <option value="">Select category</option>
-                            {categoryList.map((category: any) => (
+                            {categoryList.map((category) => (
                                 <option key={category._id} value={category._id}>
-                                    {category.name}
+                                    {category.nameTranslations?.nl || category.name || 'Untitled category'}
                                 </option>
                             ))}
                         </PremiumSelect>
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <PremiumSelect
-                                label="Spice Level"
+                                label="Spice level"
                                 icon={<Flame size={16} />}
-                                value={String(spiceLevel)}
-                                registration={register('spiceLevel', {
-                                    valueAsNumber: true
-                                })}
+                                registration={register('spiceLevel', { valueAsNumber: true })}
                             >
                                 <option value="0">0 - None</option>
                                 <option value="1">1 - Mild</option>
                                 <option value="2">2 - Medium</option>
                                 <option value="3">3 - Hot</option>
-                                <option value="4">4 - Extra Hot</option>
+                                <option value="4">4 - Extra hot</option>
                             </PremiumSelect>
 
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Item Type
-                                </label>
-
-                                <button
-                                    type="button"
-                                    onClick={() => setValue('isVeg', !isVeg)}
-                                    className={`flex h-[52px] w-full items-center justify-between rounded-2xl border px-4 transition ${
-                                        isVeg
-                                            ? 'border-emerald-200 bg-emerald-50'
-                                            : 'border-slate-200 bg-white hover:bg-stone-50'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                                                isVeg
-                                                    ? 'bg-emerald-100 text-emerald-700'
-                                                    : 'bg-stone-100 text-slate-500'
-                                            }`}
-                                        >
-                                            <Leaf size={16} />
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="text-sm font-medium text-slate-900">
-                                                Vegetarian
-                                            </p>
-                                            <p className="text-xs text-slate-500">
-                                                Mark this item as veg
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        className={`flex h-6 w-11 items-center rounded-full p-1 transition ${
-                                            isVeg ? 'bg-emerald-500' : 'bg-slate-300'
-                                        }`}
-                                    >
-                                        <div
-                                            className={`h-4 w-4 rounded-full bg-white transition ${
-                                                isVeg ? 'translate-x-5' : 'translate-x-0'
-                                            }`}
-                                        />
-                                    </div>
-                                </button>
-                            </div>
+                            <ToggleControl
+                                title="Vegetarian"
+                                text="Mark this item as vegetarian"
+                                icon={<Leaf size={16} />}
+                                checked={isVeg}
+                                onClick={() => setValue('isVeg', !isVeg)}
+                            />
                         </div>
                     </div>
 
-                    {/* Right */}
                     <div className="space-y-5">
-                        <SectionTitle
-                            title="Image & Status"
-                            subtitle="Product preview and visibility"
-                        />
+                        <SectionTitle title="Image and status" subtitle="Photography, visibility and quick review" />
 
-                        <div className="rounded-[26px] border border-slate-200 bg-stone-50 p-4">
-                            <p className="mb-3 text-sm font-medium text-slate-700">
-                                Image Preview
-                            </p>
-
+                        <div className="rounded-[26px] border border-slate-200 bg-[#fbfaf7] p-4">
+                            <p className="mb-3 text-sm font-extrabold text-slate-700">Image preview</p>
                             <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white">
                                 {preview ? (
-                                    <img
-                                        src={preview}
-                                        alt="Preview"
-                                        className="h-64 w-full object-cover"
-                                    />
+                                    <img src={preview} alt="Preview" className="h-64 w-full object-cover" />
                                 ) : (
                                     <div className="flex h-64 w-full flex-col items-center justify-center gap-3 text-slate-400">
                                         <ImagePlus size={28} />
-                                        <p className="text-sm">No image selected</p>
+                                        <p className="text-sm font-semibold">No image selected</p>
                                     </div>
                                 )}
                             </div>
 
-                            <label className="mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-stone-50">
+                            <label className="mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-stone-50">
                                 <ImagePlus size={16} />
-                                Upload Image
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    {...register('image')}
-                                />
+                                Upload image
+                                <input type="file" accept="image/*" className="hidden" {...register('image')} />
                             </label>
                         </div>
 
-                        <div className="rounded-[26px] border border-slate-200 bg-white p-4">
-                            <p className="mb-3 text-sm font-medium text-slate-700">
-                                Visibility
-                            </p>
+                        <ToggleControl
+                            title={available ? 'Visible in menu' : 'Hidden from menu'}
+                            text="Control whether customers can order this item"
+                            icon={available ? <Eye size={16} /> : <EyeOff size={16} />}
+                            checked={available}
+                            dark
+                            onClick={() => setValue('available', !available)}
+                        />
 
-                            <button
-                                type="button"
-                                onClick={() => setValue('available', !available)}
-                                className={`flex w-full items-center justify-between rounded-2xl border px-4 py-4 transition ${
-                                    available
-                                        ? 'border-slate-900 bg-slate-900 text-white'
-                                        : 'border-slate-200 bg-white text-slate-700 hover:bg-stone-50'
-                                }`}
-                            >
-                                <div className="text-left">
-                                    <p className="text-sm font-semibold">
-                                        {available ? 'Visible in menu' : 'Hidden from menu'}
-                                    </p>
-                                    <p
-                                        className={`mt-1 text-xs ${
-                                            available ? 'text-slate-300' : 'text-slate-500'
-                                        }`}
-                                    >
-                                        Toggle whether customers can see this item
-                                    </p>
-                                </div>
-
-                                <div
-                                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                                        available
-                                            ? 'bg-white text-slate-900'
-                                            : 'bg-stone-100 text-slate-500'
-                                    }`}
-                                >
-                                    <Check size={16} />
-                                </div>
-                            </button>
-                        </div>
-
-                        <div className="rounded-[26px] border border-slate-200 bg-stone-50 p-4">
-                            <p className="text-sm font-medium text-slate-700">
-                                Quick Summary
-                            </p>
-
+                        <div className="rounded-[26px] border border-slate-200 bg-[#fbfaf7] p-4">
+                            <p className="text-sm font-extrabold text-slate-700">Quick summary</p>
                             <div className="mt-3 space-y-2 text-sm text-slate-600">
-                                <div className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
-                                    <span>Name</span>
-                                    <span className="font-medium text-slate-900">
-                                        {watch('name') || '-'}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
-                                    <span>Price</span>
-                                    <span className="font-medium text-slate-900">
-                                        € {Number(watch('price') || 0).toFixed(2)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
-                                    <span>Stock</span>
-                                    <span className="font-medium text-slate-900">
-                                        {watch('stockCount') || 0}
-                                    </span>
-                                </div>
+                                <SummaryRow label="Name" value={watch('name') || '-'} />
+                                <SummaryRow label="Price" value={formatPrice(watch('price'))} />
+                                <SummaryRow label="Stock" value={`${watch('stockCount') || 0}`} />
+                                <SummaryRow label="Spice" value={getSpiceLabel(spiceLevel)} />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className="mt-6 flex flex-col-reverse gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="h-11 rounded-full border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:bg-stone-50"
+                        className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-stone-50"
                     >
                         Cancel
                     </button>
-
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-11 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+                        className="h-11 rounded-xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white transition hover:bg-slate-800 disabled:opacity-50"
                     >
-                        {isSubmitting
-                            ? 'Saving...'
-                            : initialData
-                            ? 'Save Changes'
-                            : 'Create Item'}
+                        {isSubmitting ? 'Saving...' : initialData ? 'Save changes' : 'Create item'}
                     </button>
                 </div>
             </form>
@@ -640,22 +1037,55 @@ export const MenuForm = ({
     );
 };
 
-const SectionTitle = ({
+const ToggleControl = ({
     title,
-    subtitle
+    text,
+    icon,
+    checked,
+    dark = false,
+    onClick
 }: {
     title: string;
-    subtitle: string;
-}) => {
-    return (
-        <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                {title}
-            </p>
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+    text: string;
+    icon: ReactNode;
+    checked: boolean;
+    dark?: boolean;
+    onClick: () => void;
+}) => (
+    <button
+        type="button"
+        onClick={onClick}
+        className={`flex min-h-[74px] w-full items-center justify-between rounded-2xl border px-4 py-3 transition ${
+            checked && dark
+                ? 'border-slate-900 bg-slate-900 text-white'
+                : checked
+                ? 'border-emerald-200 bg-emerald-50'
+                : 'border-slate-200 bg-white text-slate-700 hover:bg-stone-50'
+        }`}
+    >
+        <div className="flex items-center gap-3 text-left">
+            <span className={`grid h-9 w-9 place-items-center rounded-xl ${checked && dark ? 'bg-white text-slate-900' : 'bg-stone-100 text-slate-500'}`}>
+                {icon}
+            </span>
+            <span>
+                <span className="block text-sm font-extrabold">{title}</span>
+                <span className={`mt-1 block text-xs font-semibold ${checked && dark ? 'text-slate-300' : 'text-slate-500'}`}>
+                    {text}
+                </span>
+            </span>
         </div>
-    );
-};
+        <span className={`flex h-6 w-11 items-center rounded-full p-1 transition ${checked ? 'bg-[#39533b]' : 'bg-slate-300'}`}>
+            <span className={`h-4 w-4 rounded-full bg-white transition ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
+        </span>
+    </button>
+);
+
+const SectionTitle = ({ title, subtitle }: { title: string; subtitle: string }) => (
+    <div>
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{title}</p>
+        <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">{subtitle}</p>
+    </div>
+);
 
 const InputField = ({
     label,
@@ -667,40 +1097,32 @@ const InputField = ({
     step
 }: {
     label: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     error?: string;
-    registration: any;
+    registration: UseFormRegisterReturn;
     type?: string;
     placeholder?: string;
     step?: string;
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div
-                className={`flex h-[52px] items-center gap-3 rounded-2xl border bg-white px-4 transition ${
-                    error
-                        ? 'border-red-300 ring-2 ring-red-50'
-                        : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
-                }`}
-            >
-                <span className="text-slate-400">{icon}</span>
-                <input
-                    type={type}
-                    step={step}
-                    placeholder={placeholder}
-                    {...registration}
-                    className="h-full w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
-                />
-            </div>
-
-            {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+}) => (
+    <div>
+        <label className="mb-2 block text-sm font-extrabold text-slate-700">{label}</label>
+        <div
+            className={`flex h-[52px] items-center gap-3 rounded-2xl border bg-white px-4 transition ${
+                error ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
+            }`}
+        >
+            <span className="text-slate-400">{icon}</span>
+            <input
+                type={type}
+                step={step}
+                placeholder={placeholder}
+                {...registration}
+                className="h-full w-full bg-transparent text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
+            />
         </div>
-    );
-};
+        {error && <p className="mt-2 text-xs font-bold text-red-500">{error}</p>}
+    </div>
+);
 
 const TextAreaField = ({
     label,
@@ -710,85 +1132,172 @@ const TextAreaField = ({
     placeholder
 }: {
     label: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     error?: string;
-    registration: any;
+    registration: UseFormRegisterReturn;
     placeholder?: string;
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div
-                className={`rounded-2xl border bg-white px-4 py-3 transition ${
-                    error
-                        ? 'border-red-300 ring-2 ring-red-50'
-                        : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
-                }`}
-            >
-                <div className="mb-2 flex items-center gap-3 text-slate-400">
-                    {icon}
-                </div>
-                <textarea
-                    rows={5}
-                    placeholder={placeholder}
-                    {...registration}
-                    className="w-full resize-none bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400"
-                />
-            </div>
-
-            {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+}) => (
+    <div>
+        <label className="mb-2 block text-sm font-extrabold text-slate-700">{label}</label>
+        <div
+            className={`rounded-2xl border bg-white px-4 py-3 transition ${
+                error ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
+            }`}
+        >
+            <div className="mb-2 flex items-center gap-3 text-slate-400">{icon}</div>
+            <textarea
+                rows={5}
+                placeholder={placeholder}
+                {...registration}
+                className="w-full resize-none bg-transparent text-sm font-semibold leading-6 text-slate-900 outline-none placeholder:text-slate-400"
+            />
         </div>
-    );
-};
+        {error && <p className="mt-2 text-xs font-bold text-red-500">{error}</p>}
+    </div>
+);
 
 const PremiumSelect = ({
     label,
     icon,
     error,
     registration,
-    children,
-    value
+    children
 }: {
     label: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     error?: string;
-    registration: any;
-    children: React.ReactNode;
-    value?: string;
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div
-                className={`relative flex h-[52px] items-center gap-3 rounded-2xl border bg-white px-4 transition ${
-                    error
-                        ? 'border-red-300 ring-2 ring-red-50'
-                        : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
-                }`}
+    registration: UseFormRegisterReturn;
+    children: ReactNode;
+}) => (
+    <div>
+        <label className="mb-2 block text-sm font-extrabold text-slate-700">{label}</label>
+        <div
+            className={`relative flex h-[52px] items-center gap-3 rounded-2xl border bg-white px-4 transition ${
+                error ? 'border-red-300 ring-2 ring-red-50' : 'border-slate-200 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-slate-100'
+            }`}
+        >
+            <span className="shrink-0 text-slate-400">{icon}</span>
+            <select
+                {...registration}
+                className="h-full w-full appearance-none bg-transparent pr-8 text-sm font-semibold text-slate-900 outline-none"
             >
-                <span className="shrink-0 text-slate-400">{icon}</span>
-
-                <select
-                    {...registration}
-                    defaultValue={value}
-                    className="h-full w-full appearance-none bg-transparent pr-8 text-sm text-slate-900 outline-none"
-                >
-                    {children}
-                </select>
-
-                <ChevronDown
-                    size={16}
-                    className="pointer-events-none absolute right-4 text-slate-400"
-                />
-            </div>
-
-            {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+                {children}
+            </select>
+            <ChevronDown size={16} className="pointer-events-none absolute right-4 text-slate-400" />
         </div>
+        {error && <p className="mt-2 text-xs font-bold text-red-500">{error}</p>}
+    </div>
+);
+
+const SummaryRow = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2">
+        <span>{label}</span>
+        <span className="truncate font-extrabold text-slate-900">{value}</span>
+    </div>
+);
+
+const MiniMeta = ({ label, value }: { label: string; value: string }) => (
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-3 py-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+        <p className="mt-1 truncate text-sm font-extrabold text-slate-800">{value}</p>
+    </div>
+);
+
+const VisibilityBadge = ({ available }: { available: boolean }) =>
+    available ? (
+        <span className="inline-flex rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-emerald-700">
+            Available
+        </span>
+    ) : (
+        <span className="inline-flex rounded-xl border border-slate-200 bg-stone-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-600">
+            Hidden
+        </span>
     );
+
+const DietBadge = () => (
+    <span className="inline-flex rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-emerald-700">
+        Veg
+    </span>
+);
+
+const StockBadge = ({ count }: { count: number }) => (
+    <span
+        className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${
+            count <= 0
+                ? 'border-red-200 bg-red-50 text-red-700'
+                : count <= 5
+                ? 'border-amber-200 bg-amber-50 text-amber-800'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+        }`}
+    >
+        {count <= 0 ? 'Out' : count <= 5 ? `Low ${count}` : `${count} in stock`}
+    </span>
+);
+
+const LoadingPanel = () => (
+    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm">
+        <div className="flex justify-center">
+            <Spinner />
+        </div>
+    </div>
+);
+
+const ErrorPanel = () => (
+    <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-14 text-center shadow-sm">
+        <Package className="mx-auto text-red-700" size={28} />
+        <h2 className="mt-4 text-xl font-extrabold text-red-700">Menu items could not be loaded</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm font-semibold leading-6 text-red-600">
+            Refresh the page or check the API connection before changing dishes.
+        </p>
+    </div>
+);
+
+const EmptyState = ({
+    title,
+    text,
+    action
+}: {
+    title: string;
+    text: string;
+    action?: () => void;
+}) => (
+    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50">
+            <Package size={22} className="text-slate-400" />
+        </div>
+        <h3 className="mt-4 text-lg font-extrabold text-slate-900">{title}</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm font-semibold leading-6 text-slate-500">{text}</p>
+        {action && (
+            <Button
+                onClick={action}
+                className="mt-5 h-10 rounded-xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white hover:bg-slate-800"
+            >
+                <Plus size={16} className="mr-2" />
+                Add item
+            </Button>
+        )}
+    </div>
+);
+
+const getCategoryId = (item: MenuItem) => {
+    if (typeof item.categoryId === 'object') return item.categoryId?._id || '';
+    return item.categoryId || '';
+};
+
+const getCategoryName = (item: MenuItem, categoryMap: Map<string, string>) => {
+    if (typeof item.categoryId === 'object') {
+        return item.categoryId.nameTranslations?.nl || item.categoryId.name || 'Unassigned';
+    }
+    return categoryMap.get(item.categoryId || '') || 'Unassigned';
+};
+
+const formatPrice = (price?: number) => `€ ${Number(price || 0).toFixed(2)}`;
+
+const getSpiceLabel = (level?: number) => {
+    const spice = Number(level || 0);
+    if (spice <= 0) return 'None';
+    if (spice === 1) return 'Mild';
+    if (spice === 2) return 'Medium';
+    if (spice === 3) return 'Hot';
+    return 'Extra hot';
 };

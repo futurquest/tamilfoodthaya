@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
 import { CateringPage } from './pages/CateringPage';
 import { ContactPage } from './pages/ContactPage';
+import { CheckoutPage } from './pages/CheckoutPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { VerifyEmail } from './pages/VerifyEmail';
@@ -39,6 +40,7 @@ function App() {
             <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
             <Route path="/menu" element={<PublicLayout><MenuPage /></PublicLayout>} />
             <Route path="/catering" element={<PublicLayout><CateringPage /></PublicLayout>} />
+            <Route path="/checkout" element={<PublicLayout><CheckoutPage /></PublicLayout>} />
             <Route path="/catering/checkout/:packageId" element={<PublicLayout><CateringCheckoutPage /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
 
@@ -77,9 +79,10 @@ function App() {
 }
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen flex flex-col">
+  <div className="site-shell">
+    <a className="skip-link" href="#main-content">Skip to content</a>
     <Header />
-    <main className="flex-grow">{children}</main>
+    <main id="main-content" className="site-main">{children}</main>
     <Footer />
   </div>
 );

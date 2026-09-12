@@ -132,16 +132,17 @@ export const SettingsPage = () => {
 
     if (isLoading) {
         return (
-            <div className="flex min-h-[55vh] items-center justify-center bg-stone-50">
+            <div className="admin-loading-state">
                 <Spinner size="lg" />
+                <p>Loading site settings...</p>
             </div>
         );
     }
 
     if (isError) {
         return (
-            <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
-                <div className="mx-auto max-w-[1080px]">
+            <div className="admin-page">
+                <div className="admin-page-container max-w-[1080px]">
                     <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-10 text-center">
                         <h3 className="text-lg font-semibold text-red-700">
                             Failed to load settings
@@ -156,8 +157,8 @@ export const SettingsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
-            <div className="mx-auto max-w-[1080px] space-y-5">
+        <div className="admin-page">
+            <div className="admin-page-container max-w-[1080px]">
                 {/* Header */}
                 <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

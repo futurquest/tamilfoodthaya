@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type ReactNode } from 'react';
+import { useState, useEffect, useMemo, type FocusEvent, type MouseEvent, type ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container } from '../components/ui/Container';
@@ -76,13 +76,6 @@ interface Addon {
     category: string;
 }
 
-const STEP_LABELS = [
-    'Choose Items',
-    'Add-ons',
-    'Event Details',
-    'Review & Order'
-] as const;
-
 const ADDON_ICONS: Record<string, ReactNode> = {
     entertainment: <Music size={18} className="text-purple-500" />,
     decoration: <Flower2 size={18} className="text-pink-500" />,
@@ -93,13 +86,25 @@ const ADDON_ICONS: Record<string, ReactNode> = {
 
 type Selections = Record<string, SelectedItemState[]>;
 
+interface DishPreview {
+    image: string;
+    name: string;
+    description: string;
+    price: number;
+    choices: Choice[];
+    selectedChoice?: string;
+    top: number;
+    left: number;
+}
+
 export const CateringCheckoutPage = () => {
     const { packageId } = useParams<{ packageId: string }>();
     const navigate = useNavigate();
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { user } = useAuth();
 
     const currentLang = i18n.language?.split('-')[0] || 'nl';
+    const stepLabels = t('cateringCheckout.steps', { returnObjects: true }) as string[];
 
     const getLabel = (translations: any, fallback: string | undefined) =>
         translations?.[currentLang] || translations?.nl || fallback || '';
@@ -130,6 +135,7 @@ export const CateringCheckoutPage = () => {
         discountType: string;
     } | null>(null);
     const [couponLoading, setCouponLoading] = useState(false);
+    const [dishPreview, setDishPreview] = useState<DishPreview | null>(null);
 
     useEffect(() => {
         if (!packageId) {
@@ -273,6 +279,52 @@ export const CateringCheckoutPage = () => {
         setCouponCode('');
     };
 
+    const goToCategory = (index: number) => {
+        const nextIndex = Math.max(0, Math.min(index, pkg ? pkg.categories.length - 1 : 0));
+        setActiveCatIdx(nextIndex);
+
+        window.setTimeout(() => {
+            document
+                .getElementById('catering-items-panel')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 0);
+    };
+
+    const showDishPreview = (
+        event: MouseEvent<HTMLDivElement> | FocusEvent<HTMLDivElement>,
+        item: MenuItem,
+        name: string,
+        description: string,
+        selectedChoice?: string
+    ) => {
+        if (!item.image) return;
+
+        const rect = event.currentTarget.getBoundingClientRect();
+        const cardWidth = 340;
+        const cardHeight = 390;
+        const viewportPadding = 16;
+        const preferredLeft = rect.right + 18;
+        const left = Math.min(
+            Math.max(viewportPadding, preferredLeft),
+            window.innerWidth - cardWidth - viewportPadding
+        );
+        const top = Math.min(
+            Math.max(88, rect.top - 16),
+            window.innerHeight - cardHeight - viewportPadding
+        );
+
+        setDishPreview({
+            image: item.image,
+            name,
+            description,
+            price: item.price,
+            choices: item.choices || [],
+            selectedChoice,
+            top,
+            left
+        });
+    };
+
     const pricePerPerson = useMemo(() => {
         if (!pkg) return 0;
 
@@ -372,7 +424,7 @@ export const CateringCheckoutPage = () => {
     if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white pt-24 pb-16">
-                <div className="text-lg text-gray-500">Loading package...</div>
+                <div className="text-lg text-gray-500">{t('cateringCheckout.loading')}</div>
             </div>
         );
     }
@@ -382,7 +434,7 @@ export const CateringCheckoutPage = () => {
     const activeCategory = pkg.categories[activeCatIdx];
 
     return (
-        <div className="min-h-screen bg-white font-sans pt-24 pb-16 text-gray-900">
+        <div className="catering-checkout min-h-screen bg-white font-sans pt-24 pb-16 text-gray-900">
             <SEO
                 title={`${pkg.name} - Catering`}
                 description={`Customize your ${pkg.name} catering package.`}
@@ -393,7 +445,7 @@ export const CateringCheckoutPage = () => {
                     <div className="mx-auto max-w-6xl py-8">
                         <div className="rounded-3xl border border-gray-200 bg-white p-6 md:p-8">
                             <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                                Catering Package
+                                {t('cateringCheckout.packageLabel')}
                             </p>
 
                             <h1 className="mt-2 text-3xl font-semibold text-gray-900 md:text-4xl">
@@ -405,8 +457,8 @@ export const CateringCheckoutPage = () => {
                             </p>
 
                             <div className="mt-6 border-t border-gray-200 pt-5">
-                                <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                                    {STEP_LABELS.map((label, i) => (
+                                <div className="flex flex-wrap items-center gap-2">
+                                    {stepLabels.map((label, i) => (
                                         <div
                                             key={label}
                                             className="flex items-center gap-2 whitespace-nowrap"
@@ -429,7 +481,7 @@ export const CateringCheckoutPage = () => {
                                                 {label}
                                             </span>
 
-                                            {i < STEP_LABELS.length - 1 && (
+                                            {i < stepLabels.length - 1 && (
                                                 <ChevronRight
                                                     size={16}
                                                     className="text-gray-400"
@@ -448,11 +500,25 @@ export const CateringCheckoutPage = () => {
                 <div className="mx-auto mt-8 grid max-w-6xl gap-6 lg:grid-cols-[1.2fr_0.8fr]">
                     <div>
                         {step === 0 && activeCategory && (
-                            <div className="lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)]">
-                                <div className="flex h-full flex-col gap-4">
+                            <div className="space-y-4">
+                                <div className="space-y-4">
                                     <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
                                         <CardContent className="p-4">
-                                            <div className="flex gap-2 overflow-x-auto pb-1">
+                                            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                                                <div>
+                                                    <h2 className="text-lg font-semibold text-gray-900">
+                                                        {t('cateringCheckout.categoriesTitle')}
+                                                    </h2>
+                                                    <p className="text-sm text-gray-600">
+                                                        {t('cateringCheckout.categoriesHelp')}
+                                                    </p>
+                                                </div>
+                                                <span className="text-sm font-medium text-gray-500">
+                                                    {activeCatIdx + 1} of {pkg.categories.length}
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
                                                 {pkg.categories.map((cat, idx) => {
                                                     const count = (selections[cat.name] || []).length;
                                                     const isValid = count >= cat.minSelect;
@@ -460,22 +526,34 @@ export const CateringCheckoutPage = () => {
                                                     return (
                                                         <button
                                                             key={idx}
-                                                            onClick={() => setActiveCatIdx(idx)}
-                                                            className={`rounded-full border px-4 py-2 text-sm font-medium whitespace-nowrap transition ${
+                                                            type="button"
+                                                            onClick={() => goToCategory(idx)}
+                                                            aria-current={
+                                                                activeCatIdx === idx ? 'step' : undefined
+                                                            }
+                                                            className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition ${
                                                                 activeCatIdx === idx
                                                                     ? 'border-black bg-black text-white'
                                                                     : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                                                             } ${
                                                                 isValid && activeCatIdx !== idx
-                                                                    ? 'ring-1 ring-green-500'
+                                                                    ? 'border-green-500 bg-green-50 text-green-800'
                                                                     : ''
                                                             }`}
                                                         >
-                                                            {getLabel(
-                                                                (cat as any).nameTranslations,
-                                                                cat.name
-                                                            )}
-                                                            <span className="ml-2 text-xs opacity-70">
+                                                            <span>
+                                                                {getLabel(
+                                                                    (cat as any).nameTranslations,
+                                                                    cat.name
+                                                                )}
+                                                            </span>
+                                                            <span className={`rounded-full px-2 py-1 text-xs ${
+                                                                activeCatIdx === idx
+                                                                    ? 'bg-white/15 text-white'
+                                                                    : isValid
+                                                                      ? 'bg-green-100 text-green-800'
+                                                                      : 'bg-gray-100 text-gray-600'
+                                                            }`}>
                                                                 {count}/{cat.maxSelect}
                                                             </span>
                                                         </button>
@@ -485,9 +563,10 @@ export const CateringCheckoutPage = () => {
                                         </CardContent>
                                     </Card>
 
-                                    <Card className="flex-1 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-none">
-                                        <CardContent className="flex h-full min-h-0 flex-col p-6">
-                                            <div className="shrink-0">
+                                    <div id="catering-items-panel" className="scroll-mt-28">
+                                        <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                            <CardContent className="p-6">
+                                            <div>
                                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                                                     <div>
                                                         <h2 className="text-2xl font-semibold text-gray-900">
@@ -522,13 +601,13 @@ export const CateringCheckoutPage = () => {
                                                 {selectionErrors.length > 0 && (
                                                     <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
                                                         <p className="text-sm font-medium text-red-700">
-                                                            Complete all required categories before continuing.
+                                                            {t('cateringCheckout.completeRequired')}
                                                         </p>
                                                     </div>
                                                 )}
                                             </div>
 
-                                            <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1">
+                                            <div className="mt-4">
                                                 <div className="space-y-3">
                                                     {activeCategory.items.map((itemObj, iIdx) => {
                                                         const item = itemObj.menuItem;
@@ -542,11 +621,19 @@ export const CateringCheckoutPage = () => {
                                                             activeCategory.name,
                                                             item.name
                                                         );
+                                                        const itemName = getLabel(
+                                                            (item as any).nameTranslations,
+                                                            item.name
+                                                        );
+                                                        const itemDescription = getLabel(
+                                                            (item as any).descriptionTranslations,
+                                                            item.description
+                                                        );
 
                                                         return (
                                                             <Card
                                                                 key={iIdx}
-                                                                className={`rounded-2xl border-2 bg-white shadow-none transition ${
+                                                                className={`overflow-visible rounded-2xl border-2 bg-white shadow-none transition ${
                                                                     selected
                                                                         ? 'border-black bg-gray-50 ring-2 ring-black/10'
                                                                         : 'border-gray-200 hover:border-gray-400'
@@ -590,45 +677,49 @@ export const CateringCheckoutPage = () => {
                                                                             </button>
 
                                                                             {item.image && (
-                                                                                <div className="relative group">
+                                                                                <div
+                                                                                    className="relative z-30 shrink-0"
+                                                                                    onMouseEnter={(event) =>
+                                                                                        showDishPreview(
+                                                                                            event,
+                                                                                            item,
+                                                                                            itemName,
+                                                                                            itemDescription,
+                                                                                            selectedChoice
+                                                                                        )
+                                                                                    }
+                                                                                    onMouseLeave={() => setDishPreview(null)}
+                                                                                    onFocus={(event) =>
+                                                                                        showDishPreview(
+                                                                                            event,
+                                                                                            item,
+                                                                                            itemName,
+                                                                                            itemDescription,
+                                                                                            selectedChoice
+                                                                                        )
+                                                                                    }
+                                                                                    onBlur={() => setDishPreview(null)}
+                                                                                    tabIndex={0}
+                                                                                    aria-label={`Preview ${itemName}`}
+                                                                                >
                                                                                     <div className="h-14 w-14 overflow-hidden rounded-xl border border-gray-200">
                                                                                         <img
                                                                                             src={item.image}
-                                                                                            alt={item.name}
+                                                                                            alt={itemName}
                                                                                             className="h-full w-full object-cover"
                                                                                         />
-                                                                                    </div>
-
-                                                                                    <div className="pointer-events-none absolute left-full top-1/2 z-20 ml-4 -translate-y-1/2 scale-95 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
-                                                                                        <div className="rounded-xl border border-gray-200 bg-white p-2 shadow-lg">
-                                                                                            <img
-                                                                                                src={item.image}
-                                                                                                alt={item.name}
-                                                                                                className="h-48 w-48 rounded-lg object-cover"
-                                                                                            />
-                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             )}
 
                                                                             <div>
                                                                                 <h3 className="font-medium text-gray-900">
-                                                                                    {getLabel(
-                                                                                        (item as any)
-                                                                                            .nameTranslations,
-                                                                                        item.name
-                                                                                    )}
+                                                                                    {itemName}
                                                                                 </h3>
 
-                                                                                {(item.description ||
-                                                                                    (item as any)
-                                                                                        .descriptionTranslations) && (
+                                                                                {itemDescription && (
                                                                                     <p className="mt-1 text-sm text-gray-600">
-                                                                                        {getLabel(
-                                                                                            (item as any)
-                                                                                                .descriptionTranslations,
-                                                                                            item.description
-                                                                                        )}
+                                                                                        {itemDescription}
                                                                                     </p>
                                                                                 )}
                                                                             </div>
@@ -693,25 +784,25 @@ export const CateringCheckoutPage = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="mt-5 flex shrink-0 justify-between">
+                                            <div className="sticky bottom-3 z-10 mt-5 flex justify-between gap-3 rounded-2xl border border-gray-200 bg-white/95 p-3 shadow-lg backdrop-blur">
                                                 <Button
                                                     variant="outline"
                                                     disabled={activeCatIdx === 0}
-                                                    onClick={() => setActiveCatIdx(activeCatIdx - 1)}
+                                                    onClick={() => goToCategory(activeCatIdx - 1)}
                                                     className="gap-2"
                                                 >
                                                     <ChevronLeft size={18} />
-                                                    Previous
+                                                    {t('cateringCheckout.previous')}
                                                 </Button>
 
                                                 {activeCatIdx < pkg.categories.length - 1 ? (
                                                     <Button
                                                         onClick={() =>
-                                                            setActiveCatIdx(activeCatIdx + 1)
+                                                            goToCategory(activeCatIdx + 1)
                                                         }
                                                         className="gap-2 bg-black text-white hover:bg-gray-900"
                                                     >
-                                                        Next
+                                                        {t('cateringCheckout.next')}
                                                         <ChevronRight size={18} />
                                                     </Button>
                                                 ) : (
@@ -720,13 +811,14 @@ export const CateringCheckoutPage = () => {
                                                         onClick={() => setStep(1)}
                                                         className="gap-2 bg-black text-white hover:bg-gray-900"
                                                     >
-                                                        Choose Add-ons
+                                                        {t('cateringCheckout.chooseAddons')}
                                                         <ArrowRight size={18} />
                                                     </Button>
                                                 )}
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -736,7 +828,7 @@ export const CateringCheckoutPage = () => {
                                 <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
                                     <CardContent className="p-6">
                                         <h2 className="text-2xl font-semibold text-gray-900">
-                                            Optional Add-ons
+                                            {t('cateringCheckout.optionalAddons')}
                                         </h2>
                                         <p className="mt-2 text-sm text-gray-600">
                                             Select any extras to make your event more special.
@@ -826,7 +918,7 @@ export const CateringCheckoutPage = () => {
                                                 className="gap-2"
                                             >
                                                 <ChevronLeft size={18} />
-                                                Back to Items
+                                                {t('cateringCheckout.backToItems')}
                                             </Button>
 
                                             <Button
@@ -951,7 +1043,7 @@ export const CateringCheckoutPage = () => {
                                                 className="gap-2"
                                             >
                                                 <ChevronLeft size={18} />
-                                                Back to Add-ons
+                                                {t('cateringCheckout.backToAddons')}
                                             </Button>
 
                                             <Button
@@ -959,7 +1051,7 @@ export const CateringCheckoutPage = () => {
                                                 onClick={() => setStep(3)}
                                                 className="gap-2 bg-black text-white hover:bg-gray-900"
                                             >
-                                                Review Order
+                                                {t('cateringCheckout.reviewOrder')}
                                                 <ArrowRight size={18} />
                                             </Button>
                                         </div>
@@ -973,13 +1065,13 @@ export const CateringCheckoutPage = () => {
                                 <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
                                     <CardContent className="p-6">
                                         <h2 className="text-2xl font-semibold text-gray-900">
-                                            Review Your Order
+                                            {t('cateringCheckout.reviewTitle')}
                                         </h2>
 
                                         <div className="mt-6 space-y-5">
                                             <div>
                                                 <h3 className="mb-3 text-lg font-medium text-gray-900">
-                                                    Your Selections
+                                                    {t('cateringCheckout.yourSelections')}
                                                 </h3>
 
                                                 <div className="space-y-4">
@@ -1020,7 +1112,7 @@ export const CateringCheckoutPage = () => {
 
                                             <div className="border-t border-gray-200 pt-5">
                                                 <h3 className="mb-3 text-lg font-medium text-gray-900">
-                                                    Event Details
+                                                    {t('cateringCheckout.eventDetails')}
                                                 </h3>
 
                                                 <div className="grid grid-cols-1 gap-4 text-sm text-gray-700 sm:grid-cols-2">
@@ -1076,7 +1168,7 @@ export const CateringCheckoutPage = () => {
                                                 className="gap-2"
                                             >
                                                 <ChevronLeft size={18} />
-                                                Back
+                                                {t('cateringCheckout.back')}
                                             </Button>
 
                                             <Button
@@ -1084,7 +1176,7 @@ export const CateringCheckoutPage = () => {
                                                 disabled={submitting}
                                                 className="gap-2 bg-black px-8 text-white hover:bg-gray-900"
                                             >
-                                                {submitting ? 'Placing Order...' : 'Place Order'}
+                                                {submitting ? t('cateringCheckout.placing') : t('cateringCheckout.placeOrder')}
                                             </Button>
                                         </div>
                                     </CardContent>
@@ -1097,12 +1189,12 @@ export const CateringCheckoutPage = () => {
                         <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
                             <CardContent className="p-6">
                                 <h3 className="text-lg font-medium text-gray-900">
-                                    Price Summary
+                                    {t('cateringCheckout.priceSummary')}
                                 </h3>
 
                                 <div className="mt-5 space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Base price</span>
+                                        <span className="text-gray-500">{t('cateringCheckout.basePrice')}</span>
                                         <span className="text-gray-900">
                                             €{pkg.basePrice.toFixed(2)} p.p.
                                         </span>
@@ -1176,7 +1268,7 @@ export const CateringCheckoutPage = () => {
 
                                     <div className="mt-3 border-t border-gray-200 pt-3">
                                         <div className="flex justify-between font-medium text-gray-900">
-                                            <span>Per person</span>
+                                            <span>{t('cateringCheckout.perPerson')}</span>
                                             <span>€{pricePerPerson.toFixed(2)}</span>
                                         </div>
                                     </div>
@@ -1206,7 +1298,7 @@ export const CateringCheckoutPage = () => {
                                                     className="flex items-center gap-1 rounded-xl bg-black px-3 py-2 text-xs font-medium text-white hover:bg-gray-900"
                                                 >
                                                     <Tag size={12} />
-                                                    Apply
+                                                    {t('cateringCheckout.apply')}
                                                 </button>
                                             </div>
                                         ) : (
@@ -1232,7 +1324,7 @@ export const CateringCheckoutPage = () => {
 
                                     <div className="mt-3 border-t border-gray-200 pt-3">
                                         <div className="flex justify-between text-xl font-semibold text-gray-900">
-                                            <span>Total</span>
+                                            <span>{t('checkout.total')}</span>
                                             <span>€{totalPrice.toFixed(2)}</span>
                                         </div>
 
@@ -1249,6 +1341,64 @@ export const CateringCheckoutPage = () => {
                     </div>
                 </div>
             </Container>
+
+            {dishPreview && (
+                <div
+                    className="pointer-events-none fixed z-[9999] hidden w-[340px] overflow-hidden rounded-2xl border border-gray-200 bg-white text-left shadow-2xl ring-1 ring-black/10 md:block"
+                    style={{ top: dishPreview.top, left: dishPreview.left }}
+                >
+                    <img
+                        src={dishPreview.image}
+                        alt={dishPreview.name}
+                        className="h-44 w-full object-cover"
+                    />
+                    <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                            <h4 className="text-lg font-extrabold leading-snug text-gray-900">
+                                {dishPreview.name}
+                            </h4>
+                            {dishPreview.price > 0 ? (
+                                <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-800">
+                                    +â‚¬{dishPreview.price.toFixed(2)}
+                                </span>
+                            ) : (
+                                <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700">
+                                    Included
+                                </span>
+                            )}
+                        </div>
+
+                        {dishPreview.description && (
+                            <p className="mt-2 max-h-24 overflow-hidden text-sm leading-6 text-gray-600">
+                                {dishPreview.description}
+                            </p>
+                        )}
+
+                        {dishPreview.choices.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-1.5">
+                                {dishPreview.choices.map((choice, cIdx) => (
+                                    <span
+                                        key={cIdx}
+                                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                                            dishPreview.selectedChoice === choice.name
+                                                ? 'bg-black text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        {choice.name}
+                                        {choice.priceModifier !== 0 && (
+                                            <span className="ml-1 opacity-70">
+                                                {choice.priceModifier > 0 ? '+' : '-'}â‚¬
+                                                {Math.abs(choice.priceModifier).toFixed(2)}
+                                            </span>
+                                        )}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

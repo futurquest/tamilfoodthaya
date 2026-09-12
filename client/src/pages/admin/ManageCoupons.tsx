@@ -175,8 +175,8 @@ export const ManageCoupons = () => {
     };
 
     return (
-        <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
-            <div className="mx-auto max-w-[1080px] space-y-5">
+        <div className="admin-page">
+            <div className="admin-page-container max-w-[1080px]">
                 <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                         <div>

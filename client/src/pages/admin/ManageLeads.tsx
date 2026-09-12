@@ -1,17 +1,27 @@
-import { useEffect, useState, type DragEvent } from 'react';
+import { useEffect, useMemo, useState, type DragEvent, type ReactNode } from 'react';
 import {
-    Mail,
-    Phone,
-    CalendarDays,
+    ArrowRight,
     CheckCircle2,
     CircleDot,
+    Columns3,
+    Clock3,
+    Filter,
     GripVertical,
-    ArrowRight
+    Inbox,
+    List,
+    Mail,
+    MessageSquare,
+    MoreHorizontal,
+    Phone,
+    Search,
+    Sparkles,
+    Tag,
+    Users
 } from 'lucide-react';
-import { getLeads, updateLeadStatus } from '../../hooks/useApi';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Spinner } from '../../components/ui/Spinner';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { getLeads, updateLeadStatus } from '../../hooks/useApi';
+import { Spinner } from '../../components/ui/Spinner';
 
 type LeadStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 
@@ -33,43 +43,64 @@ const statusConfig: Record<
     {
         title: string;
         subtitle: string;
+        helper: string;
+        accentClass: string;
         dotClass: string;
         badgeClass: string;
+        activeClass: string;
     }
 > = {
     OPEN: {
         title: 'New',
         subtitle: 'Fresh enquiries',
-        dotClass: 'bg-slate-900',
-        badgeClass: 'bg-slate-900 text-white'
+        helper: 'Qualify and respond quickly',
+        accentClass: 'from-amber-400 to-orange-700',
+        dotClass: 'bg-amber-500',
+        badgeClass: 'border-amber-200 bg-amber-50 text-amber-700',
+        activeClass: 'border-amber-300 ring-4 ring-amber-100'
     },
     IN_PROGRESS: {
         title: 'In Progress',
-        subtitle: 'Ongoing conversations',
-        dotClass: 'bg-amber-500',
-        badgeClass: 'bg-amber-50 text-amber-700 border border-amber-200'
+        subtitle: 'Active conversations',
+        helper: 'Needs quote or follow-up',
+        accentClass: 'from-[#39533b] to-[#c9972b]',
+        dotClass: 'bg-[#39533b]',
+        badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+        activeClass: 'border-emerald-300 ring-4 ring-emerald-100'
     },
     COMPLETED: {
         title: 'Completed',
         subtitle: 'Closed enquiries',
-        dotClass: 'bg-emerald-500',
-        badgeClass: 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+        helper: 'Converted or archived',
+        accentClass: 'from-slate-700 to-stone-400',
+        dotClass: 'bg-slate-700',
+        badgeClass: 'border-slate-200 bg-stone-50 text-slate-700',
+        activeClass: 'border-slate-300 ring-4 ring-slate-100'
     }
 };
 
+const statusOrder: LeadStatus[] = ['OPEN', 'IN_PROGRESS', 'COMPLETED'];
+
 export const ManageLeads = () => {
     const queryClient = useQueryClient();
+    const [localLeads, setLocalLeads] = useState<Lead[]>([]);
+    const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null);
+    const [activeDropStatus, setActiveDropStatus] = useState<LeadStatus | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sourceFilter, setSourceFilter] = useState('ALL');
+    const [statusFilter, setStatusFilter] = useState<'ALL' | LeadStatus>('ALL');
+    const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['leads'],
         queryFn: getLeads
     });
 
-    const [localLeads, setLocalLeads] = useState<Lead[]>([]);
-    const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null);
-    const [activeDropStatus, setActiveDropStatus] = useState<LeadStatus | null>(null);
-
-    const leadsFromApi: Lead[] = Array.isArray(data?.data) ? data.data : [];
+    const leadsFromApi: Lead[] = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
 
     useEffect(() => {
         setLocalLeads(leadsFromApi);
@@ -86,7 +117,7 @@ export const ManageLeads = () => {
         }) => updateLeadStatus(id, status),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['leads'] });
-            toast.success('Lead updated');
+            toast.success('Lead status updated');
         },
         onError: (_error, variables) => {
             setLocalLeads((current) =>
@@ -96,9 +127,57 @@ export const ManageLeads = () => {
                         : lead
                 )
             );
-            toast.error('Failed to update lead');
+            toast.error('Could not update the lead. Please try again.');
         }
     });
+
+    const sources = useMemo(() => {
+        const unique = new Set(
+            localLeads.map((lead) => getLeadSource(lead)).filter(Boolean)
+        );
+        return ['ALL', ...Array.from(unique)];
+    }, [localLeads]);
+
+    const filteredLeads = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+
+        return localLeads.filter((lead) => {
+            if (statusFilter !== 'ALL' && lead.status !== statusFilter) return false;
+
+            const source = getLeadSource(lead);
+            if (sourceFilter !== 'ALL' && source !== sourceFilter) return false;
+
+            if (!query) return true;
+
+            return [
+                lead.name,
+                lead.email,
+                lead.phone,
+                lead.package,
+                lead.message,
+                source
+            ]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query));
+        });
+    }, [localLeads, searchTerm, sourceFilter, statusFilter]);
+
+    const groupedLeads = useMemo(
+        () => ({
+            OPEN: filteredLeads.filter((lead) => lead.status === 'OPEN'),
+            IN_PROGRESS: filteredLeads.filter((lead) => lead.status === 'IN_PROGRESS'),
+            COMPLETED: filteredLeads.filter((lead) => lead.status === 'COMPLETED')
+        }),
+        [filteredLeads]
+    );
+    const visibleStatuses = statusFilter === 'ALL' ? statusOrder : [statusFilter];
+
+    const totalLeads = localLeads.length;
+    const newLeads = localLeads.filter((lead) => lead.status === 'OPEN').length;
+    const activeLeads = localLeads.filter((lead) => lead.status === 'IN_PROGRESS').length;
+    const completedLeads = localLeads.filter((lead) => lead.status === 'COMPLETED').length;
+    const conversionRate =
+        totalLeads > 0 ? Math.round((completedLeads / totalLeads) * 100) : 0;
 
     const moveLead = (leadId: string, nextStatus: LeadStatus) => {
         const currentLead = localLeads.find((lead) => lead._id === leadId);
@@ -119,7 +198,7 @@ export const ManageLeads = () => {
         });
     };
 
-    const onDragStart = (e: DragEvent<HTMLDivElement>, leadId: string) => {
+    const onDragStart = (e: DragEvent<HTMLElement>, leadId: string) => {
         setDraggedLeadId(leadId);
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', leadId);
@@ -137,139 +216,215 @@ export const ManageLeads = () => {
         setActiveDropStatus(null);
     };
 
-    const groupedLeads = {
-        OPEN: localLeads.filter((lead) => lead.status === 'OPEN'),
-        IN_PROGRESS: localLeads.filter((lead) => lead.status === 'IN_PROGRESS'),
-        COMPLETED: localLeads.filter((lead) => lead.status === 'COMPLETED')
-    };
-
-    const totalLeads = localLeads.length;
-    const conversionRate =
-        totalLeads > 0
-            ? Math.round((groupedLeads.COMPLETED.length / totalLeads) * 100)
-            : 0;
-
     if (isLoading) {
         return (
-            <div className="flex min-h-[55vh] items-center justify-center bg-stone-50">
-                <Spinner />
+            <div className="admin-loading-state">
+                <Spinner size="lg" />
+                <p>Loading lead pipeline...</p>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="admin-page">
+                <div className="admin-page-container max-w-[1180px]">
+                    <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-12 text-center">
+                        <Inbox className="mx-auto text-red-700" size={28} />
+                        <h1 className="mt-4 text-2xl font-extrabold text-red-700">
+                            Leads could not be loaded
+                        </h1>
+                        <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-red-600">
+                            Refresh the page or check the API connection before following up
+                            with new catering enquiries.
+                        </p>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-stone-50 px-4 py-6 md:px-6">
-            <div className="mx-auto max-w-[1180px] space-y-5">
-                {/* Header */}
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="admin-page">
+            <div className="admin-page-container max-w-[1180px]">
+                <section className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
+                                Leads
                             </p>
-                            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                Lead Pipeline
-                            </h1>
-                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                                A minimal overview of incoming enquiries with quick actions and
-                                drag-and-drop movement across stages.
+                            <div className="mt-2 flex flex-wrap items-center gap-3">
+                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
+                                    Catering Lead Board
+                                </h1>
+                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
+                                    <Sparkles size={13} />
+                                    {viewMode === 'board' ? 'Board view' : 'List view'}
+                                </span>
+                            </div>
+                            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
+                                A polished sales board for qualifying catering enquiries,
+                                contacting customers, tracking sources and moving work forward.
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <MetricCard label="Total" value={totalLeads} />
-                            <MetricCard label="New" value={groupedLeads.OPEN.length} />
-                            <MetricCard
-                                label="Active"
-                                value={groupedLeads.IN_PROGRESS.length}
-                            />
-                            <MetricCard label="Closed" value={`${conversionRate}%`} />
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 xl:w-[560px]">
+                            <MetricCard label="Total" value={totalLeads} icon={<Inbox size={16} />} />
+                            <MetricCard label="New" value={newLeads} icon={<Users size={16} />} />
+                            <MetricCard label="Active" value={activeLeads} icon={<MessageSquare size={16} />} />
+                            <MetricCard label="Closed" value={`${conversionRate}%`} icon={<CheckCircle2 size={16} />} />
                         </div>
                     </div>
-                </div>
+                </section>
 
-                {/* Board */}
-                <div className="grid gap-4 lg:grid-cols-3">
-                    <BoardColumn
-                        status="OPEN"
-                        leads={groupedLeads.OPEN}
-                        activeDropStatus={activeDropStatus}
-                        draggedLeadId={draggedLeadId}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDragEnter={() => draggedLeadId && setActiveDropStatus('OPEN')}
-                        onDrop={() => onDropColumn('OPEN')}
-                    >
-                        {groupedLeads.OPEN.length > 0 ? (
-                            groupedLeads.OPEN.map((lead) => (
-                                <LeadCard
-                                    key={lead._id}
-                                    lead={lead}
-                                    isDragging={draggedLeadId === lead._id}
-                                    busy={updateStatusMutation.isPending}
-                                    onDragStart={onDragStart}
-                                    onDragEnd={onDragEnd}
-                                    onMove={moveLead}
-                                />
-                            ))
-                        ) : (
-                            <EmptyState text="No new leads" />
-                        )}
-                    </BoardColumn>
+                <section className="rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="grid gap-3 2xl:grid-cols-[minmax(0,1fr)_auto] 2xl:items-end">
+                        <label className="relative block">
+                            <Search
+                                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                                size={16}
+                            />
+                            <input
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                placeholder="Search name, email, phone, package, message or source..."
+                                className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                            />
+                        </label>
 
-                    <BoardColumn
-                        status="IN_PROGRESS"
-                        leads={groupedLeads.IN_PROGRESS}
-                        activeDropStatus={activeDropStatus}
-                        draggedLeadId={draggedLeadId}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDragEnter={() =>
-                            draggedLeadId && setActiveDropStatus('IN_PROGRESS')
-                        }
-                        onDrop={() => onDropColumn('IN_PROGRESS')}
-                    >
-                        {groupedLeads.IN_PROGRESS.length > 0 ? (
-                            groupedLeads.IN_PROGRESS.map((lead) => (
-                                <LeadCard
-                                    key={lead._id}
-                                    lead={lead}
-                                    isDragging={draggedLeadId === lead._id}
-                                    busy={updateStatusMutation.isPending}
-                                    onDragStart={onDragStart}
-                                    onDragEnd={onDragEnd}
-                                    onMove={moveLead}
-                                />
-                            ))
-                        ) : (
-                            <EmptyState text="Nothing in progress" />
-                        )}
-                    </BoardColumn>
+                        <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
+                            <StatusTabs
+                                value={statusFilter}
+                                counts={{
+                                    ALL: totalLeads,
+                                    OPEN: newLeads,
+                                    IN_PROGRESS: activeLeads,
+                                    COMPLETED: completedLeads
+                                }}
+                                onChange={setStatusFilter}
+                            />
 
-                    <BoardColumn
-                        status="COMPLETED"
-                        leads={groupedLeads.COMPLETED}
-                        activeDropStatus={activeDropStatus}
-                        draggedLeadId={draggedLeadId}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDragEnter={() => draggedLeadId && setActiveDropStatus('COMPLETED')}
-                        onDrop={() => onDropColumn('COMPLETED')}
-                    >
-                        {groupedLeads.COMPLETED.length > 0 ? (
-                            groupedLeads.COMPLETED.map((lead) => (
-                                <LeadCard
-                                    key={lead._id}
-                                    lead={lead}
-                                    isDragging={draggedLeadId === lead._id}
-                                    busy={updateStatusMutation.isPending}
-                                    onDragStart={onDragStart}
-                                    onDragEnd={onDragEnd}
-                                    onMove={moveLead}
+                            <div className="sm:w-[190px]">
+                                <FilterSelect
+                                    label="Source"
+                                    value={sourceFilter}
+                                    onChange={setSourceFilter}
+                                    options={sources.map((source) => ({
+                                        value: source,
+                                        label: source === 'ALL' ? 'All sources' : source
+                                    }))}
                                 />
-                            ))
-                        ) : (
-                            <EmptyState text="No completed leads" />
+                            </div>
+
+                            <ViewToggle value={viewMode} onChange={setViewMode} />
+                        </div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-bold text-slate-500">
+                        <span className="inline-flex items-center gap-1.5">
+                            <CircleDot size={12} />
+                            Showing {filteredLeads.length} of {totalLeads} leads
+                        </span>
+                        {(searchTerm || sourceFilter !== 'ALL' || statusFilter !== 'ALL') && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setSourceFilter('ALL');
+                                    setStatusFilter('ALL');
+                                }}
+                                className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
+                            >
+                                Clear filters
+                            </button>
                         )}
-                    </BoardColumn>
-                </div>
+                    </div>
+                </section>
+
+                {viewMode === 'board' ? (
+                    <section className="max-w-full overflow-x-auto rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+                        <WorkspaceHeader
+                            title={
+                                statusFilter === 'ALL'
+                                    ? 'Sales workspace'
+                                    : `${statusConfig[statusFilter].title} workspace`
+                            }
+                            text={
+                                statusFilter === 'ALL'
+                                    ? 'Drag leads between stages or use the card action to move the enquiry forward.'
+                                    : `Only ${statusConfig[statusFilter].title.toLowerCase()} leads are shown in this focused view.`
+                            }
+                            badge={
+                                statusFilter === 'ALL'
+                                    ? `${statusOrder.length} stages`
+                                    : `${filteredLeads.length} lead${filteredLeads.length === 1 ? '' : 's'}`
+                            }
+                        />
+
+                        <div
+                            className={`grid gap-4 ${
+                                visibleStatuses.length === 1
+                                    ? 'min-w-[340px] md:grid-cols-1'
+                                    : 'min-w-[980px] grid-cols-3'
+                            }`}
+                        >
+                            {visibleStatuses.map((status) => (
+                                <BoardColumn
+                                    key={status}
+                                    status={status}
+                                    leads={groupedLeads[status]}
+                                    focused={visibleStatuses.length === 1}
+                                    activeDropStatus={activeDropStatus}
+                                    draggedLeadId={draggedLeadId}
+                                    onDragOver={(event) => event.preventDefault()}
+                                    onDragEnter={() => draggedLeadId && setActiveDropStatus(status)}
+                                    onDrop={() => onDropColumn(status)}
+                                >
+                                    {groupedLeads[status].length > 0 ? (
+                                        <div
+                                            className={
+                                                visibleStatuses.length === 1
+                                                    ? 'grid gap-3 md:grid-cols-2 xl:grid-cols-3'
+                                                    : 'space-y-3'
+                                            }
+                                        >
+                                            {groupedLeads[status].map((lead) => (
+                                                <LeadCard
+                                                    key={lead._id}
+                                                    lead={lead}
+                                                    isDragging={draggedLeadId === lead._id}
+                                                    busy={updateStatusMutation.isPending}
+                                                    onDragStart={onDragStart}
+                                                    onDragEnd={onDragEnd}
+                                                    onMove={moveLead}
+                                                />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <EmptyState
+                                            title={
+                                                filteredLeads.length === 0
+                                                    ? 'No matching leads'
+                                                    : `No ${statusConfig[status].title.toLowerCase()} leads`
+                                            }
+                                            text={
+                                                filteredLeads.length === 0
+                                                    ? 'Adjust search or filters to find the enquiry you need.'
+                                                    : statusConfig[status].helper
+                                            }
+                                        />
+                                    )}
+                                </BoardColumn>
+                            ))}
+                        </div>
+                    </section>
+                ) : (
+                    <LeadListView
+                        leads={filteredLeads}
+                        busy={updateStatusMutation.isPending}
+                        onMove={moveLead}
+                    />
+                )}
             </div>
         </div>
     );
@@ -277,17 +432,175 @@ export const ManageLeads = () => {
 
 const MetricCard = ({
     label,
-    value
+    value,
+    icon
 }: {
     label: string;
     value: string | number;
+    icon: ReactNode;
 }) => {
     return (
         <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
+            <div className="flex items-center gap-2 text-slate-400">
+                {icon}
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em]">
+                    {label}
+                </p>
+            </div>
+            <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
+        </div>
+    );
+};
+
+const FilterSelect = ({
+    label,
+    value,
+    onChange,
+    options
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    options: { value: string; label: string }[];
+}) => {
+    return (
+        <label className="grid gap-1.5">
+            <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                <Filter size={13} />
                 {label}
-            </p>
-            <p className="mt-1 text-xl font-semibold text-slate-900">{value}</p>
+            </span>
+            <select
+                value={value}
+                onChange={(event) => onChange(event.target.value)}
+                className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+            >
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+        </label>
+    );
+};
+
+const ViewToggle = ({
+    value,
+    onChange
+}: {
+    value: 'board' | 'list';
+    onChange: (value: 'board' | 'list') => void;
+}) => {
+    const options: { value: 'board' | 'list'; label: string; icon: ReactNode }[] = [
+        { value: 'board', label: 'Board', icon: <Columns3 size={14} /> },
+        { value: 'list', label: 'List', icon: <List size={14} /> }
+    ];
+
+    return (
+        <div className="grid gap-1.5">
+            <span className="px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                View
+            </span>
+            <div className="flex rounded-2xl border border-slate-200 bg-stone-50 p-1">
+                {options.map((option) => {
+                    const active = value === option.value;
+
+                    return (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => onChange(option.value)}
+                            className={`inline-flex h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
+                                active
+                                    ? 'bg-white text-slate-900 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                        >
+                            {option.icon}
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const WorkspaceHeader = ({
+    title,
+    text,
+    badge
+}: {
+    title: string;
+    text: string;
+    badge: string;
+}) => {
+    return (
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
+            <div className="min-w-0">
+                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
+                    {title}
+                </p>
+                <p className="mt-1 text-sm font-bold leading-5 text-slate-700">
+                    {text}
+                </p>
+            </div>
+            <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
+                {badge}
+            </span>
+        </div>
+    );
+};
+
+const StatusTabs = ({
+    value,
+    counts,
+    onChange
+}: {
+    value: 'ALL' | LeadStatus;
+    counts: Record<'ALL' | LeadStatus, number>;
+    onChange: (value: 'ALL' | LeadStatus) => void;
+}) => {
+    const tabs: { value: 'ALL' | LeadStatus; label: string }[] = [
+        { value: 'ALL', label: 'All' },
+        { value: 'OPEN', label: 'New' },
+        { value: 'IN_PROGRESS', label: 'Progress' },
+        { value: 'COMPLETED', label: 'Done' }
+    ];
+
+    return (
+        <div className="grid gap-1.5">
+            <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                <Filter size={13} />
+                Status
+            </span>
+            <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
+                {tabs.map((tab) => {
+                    const active = value === tab.value;
+
+                    return (
+                        <button
+                            key={tab.value}
+                            type="button"
+                            onClick={() => onChange(tab.value)}
+                            className={`inline-flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${
+                                active
+                                    ? 'bg-white text-slate-900 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                        >
+                            {tab.label}
+                            <span
+                                className={`rounded-lg px-1.5 py-0.5 text-[10px] ${
+                                    active ? 'bg-amber-50 text-amber-800' : 'bg-white text-slate-500'
+                                }`}
+                            >
+                                {counts[tab.value]}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 };
@@ -295,6 +608,7 @@ const MetricCard = ({
 const BoardColumn = ({
     status,
     leads,
+    focused = false,
     activeDropStatus,
     draggedLeadId,
     children,
@@ -304,44 +618,53 @@ const BoardColumn = ({
 }: {
     status: LeadStatus;
     leads: Lead[];
+    focused?: boolean;
     activeDropStatus: LeadStatus | null;
     draggedLeadId: string | null;
-    children: React.ReactNode;
-    onDragOver: (e: DragEvent<HTMLDivElement>) => void;
+    children: ReactNode;
+    onDragOver: (event: DragEvent<HTMLDivElement>) => void;
     onDragEnter: () => void;
     onDrop: () => void;
 }) => {
     const config = statusConfig[status];
-    const isActive = activeDropStatus === status && draggedLeadId;
+    const isActive = activeDropStatus === status && Boolean(draggedLeadId);
 
     return (
         <div
             onDragOver={onDragOver}
             onDragEnter={onDragEnter}
             onDrop={onDrop}
-            className={`rounded-[26px] border bg-white p-3 shadow-sm transition-all ${
-                isActive
-                    ? 'border-slate-400 ring-2 ring-slate-200'
-                    : 'border-slate-200'
-            }`}
+            className={`relative overflow-hidden rounded-[26px] border bg-white/60 p-3 shadow-sm transition-all ${
+                isActive ? config.activeClass : 'border-slate-200'
+            } ${focused ? 'min-h-[520px]' : 'min-h-[620px]'}`}
         >
-            <div className="mb-3 flex items-center justify-between rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3">
-                <div className="flex items-center gap-3">
-                    <span className={`h-2.5 w-2.5 rounded-full ${config.dotClass}`} />
-                    <div>
-                        <h3 className="text-sm font-semibold text-slate-900">
-                            {config.title}
-                        </h3>
-                        <p className="text-xs text-slate-500">{config.subtitle}</p>
+            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${config.accentClass}`} />
+            <div className="mb-3 rounded-2xl border border-white bg-white px-4 py-3 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                        <span className={`mt-1 h-2.5 w-2.5 rounded-full ${config.dotClass} shadow-sm`} />
+                        <div>
+                            <h2 className="text-base font-extrabold text-slate-900">
+                                {config.title}
+                            </h2>
+                            <p className="mt-1 text-xs font-medium leading-5 text-slate-500">
+                                {config.subtitle}
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
-                    {leads.length}
-                </span>
+                    <span className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-extrabold text-slate-700">
+                        {leads.length}
+                    </span>
+                </div>
+                <p className="mt-3 text-xs font-semibold text-slate-500">
+                    {config.helper}
+                </p>
             </div>
 
-            <div className="max-h-[68vh] space-y-3 overflow-y-auto pr-1">{children}</div>
+            <div className="space-y-3 xl:max-h-[68vh] xl:overflow-y-auto xl:pr-1">
+                {children}
+            </div>
         </div>
     );
 };
@@ -357,154 +680,432 @@ const LeadCard = ({
     lead: Lead;
     isDragging: boolean;
     busy: boolean;
-    onDragStart: (e: DragEvent<HTMLDivElement>, leadId: string) => void;
+    onDragStart: (event: DragEvent<HTMLElement>, leadId: string) => void;
     onDragEnd: () => void;
     onMove: (leadId: string, nextStatus: LeadStatus) => void;
 }) => {
     const status = statusConfig[lead.status];
-    const isCatering = Boolean(lead.package || lead.eventDate);
-    const sourceLabel = isCatering ? 'Catering' : lead.utmSource || 'Website';
+    const sourceLabel = getLeadSource(lead);
+    const nextStatus =
+        lead.status === 'OPEN'
+            ? 'IN_PROGRESS'
+            : lead.status === 'IN_PROGRESS'
+            ? 'COMPLETED'
+            : null;
 
     return (
-        <div
+        <article
             draggable
-            onDragStart={(e) => onDragStart(e, lead._id)}
+            onDragStart={(event) => onDragStart(event, lead._id)}
             onDragEnd={onDragEnd}
-            className={`cursor-grab rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm transition ${
-                isDragging ? 'scale-[0.98] opacity-60' : 'hover:border-slate-300'
+            className={`group cursor-grab rounded-[22px] border border-slate-200 bg-white p-3.5 shadow-sm transition ${
+                isDragging
+                    ? 'scale-[0.98] opacity-60'
+                    : 'hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]'
             }`}
         >
-            <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                        <GripVertical size={15} className="text-slate-300" />
-                        <h4 className="truncate text-[15px] font-semibold text-slate-900">
-                            {lead.name}
-                        </h4>
-                    </div>
-                    <p className="mt-1 text-xs text-slate-500">{sourceLabel}</p>
-                </div>
-
-                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${status.badgeClass}`}>
+            <div className="mb-3 flex items-center justify-between gap-2">
+                <span className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${status.badgeClass}`}>
                     {status.title}
                 </span>
+                <div className="flex items-center gap-1 text-slate-300">
+                    <GripVertical size={15} />
+                    <MoreHorizontal size={16} />
+                </div>
             </div>
 
-            <div className="mt-4 space-y-2">
-                <InfoRow icon={<Mail size={14} />} value={lead.email} />
-                <InfoRow icon={<Phone size={14} />} value={lead.phone} />
-                {lead.eventDate && (
-                    <InfoRow
-                        icon={<CalendarDays size={14} />}
-                        value={formatDate(lead.eventDate)}
-                    />
-                )}
+            <div className="flex items-start gap-3">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                    {(lead.name || 'L').charAt(0).toUpperCase()}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-[15px] font-extrabold text-slate-900">
+                        {lead.name || 'Unnamed lead'}
+                    </h3>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-amber-800">
+                            <Tag size={11} />
+                            {sourceLabel}
+                        </span>
+                        {lead.eventDate && (
+                            <span className="inline-flex items-center gap-1 rounded-lg bg-stone-100 px-2 py-1 text-[10px] font-bold text-slate-600">
+                                <Clock3 size={11} />
+                                {formatDate(lead.eventDate)}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-4 grid gap-2 rounded-2xl border border-slate-200 bg-[#fbfaf7] px-3 py-3">
+                <ContactLink
+                    icon={<Mail size={14} />}
+                    value={lead.email || 'No email'}
+                    href={lead.email ? `mailto:${lead.email}` : undefined}
+                />
+                <ContactLink
+                    icon={<Phone size={14} />}
+                    value={lead.phone || 'No phone'}
+                    href={lead.phone ? `tel:${lead.phone}` : undefined}
+                />
             </div>
 
             {(lead.package || lead.guests) && (
-                <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-slate-200 bg-stone-50 p-3">
+                <div className="mt-3 grid grid-cols-2 gap-2">
                     <MiniMeta label="Package" value={lead.package || '-'} />
-                    <MiniMeta
-                        label="Guests"
-                        value={lead.guests ? `${lead.guests}` : '-'}
-                    />
+                    <MiniMeta label="Guests" value={lead.guests ? `${lead.guests}` : '-'} />
                 </div>
             )}
 
             {lead.message && (
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-3 py-3">
-                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Message
+                <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-3 py-3">
+                    <p className="mb-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                        <MessageSquare size={12} />
+                        Customer note
                     </p>
-                    <p className="text-sm leading-6 text-slate-600">
-                        {truncateText(lead.message, 110)}
+                    <p className="text-sm font-semibold leading-6 text-slate-600">
+                        {truncateText(lead.message, 130)}
                     </p>
                 </div>
             )}
 
-            <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1 text-xs text-slate-400">
+            <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
                     <CircleDot size={12} />
-                    Drag to move
+                    Drag card
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {lead.status === 'OPEN' && (
-                        <button
-                            disabled={busy}
-                            onClick={() => onMove(lead._id, 'IN_PROGRESS')}
-                            className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:opacity-50"
-                        >
-                            Start
+                {nextStatus ? (
+                    <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => onMove(lead._id, nextStatus)}
+                        className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-3 text-xs font-extrabold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        {nextStatus === 'IN_PROGRESS' ? 'Start' : 'Done'}
+                        {nextStatus === 'COMPLETED' ? (
+                            <CheckCircle2 size={14} />
+                        ) : (
                             <ArrowRight size={14} />
-                        </button>
-                    )}
+                        )}
+                    </button>
+                ) : (
+                    <span className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-stone-50 px-3 text-xs font-extrabold text-slate-600">
+                        <CheckCircle2 size={14} />
+                        Complete
+                    </span>
+                )}
+            </div>
+        </article>
+    );
+};
 
-                    {lead.status === 'IN_PROGRESS' && (
-                        <button
-                            disabled={busy}
-                            onClick={() => onMove(lead._id, 'COMPLETED')}
-                            className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-900 bg-slate-900 px-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
-                        >
-                            Complete
-                            <CheckCircle2 size={14} />
-                        </button>
-                    )}
+const LeadListView = ({
+    leads,
+    busy,
+    onMove
+}: {
+    leads: Lead[];
+    busy: boolean;
+    onMove: (leadId: string, nextStatus: LeadStatus) => void;
+}) => {
+    return (
+        <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
+            <WorkspaceHeader
+                title="List workspace"
+                text="Scan every matching lead in one dense view with quick contact and status actions."
+                badge={`${leads.length} lead${leads.length === 1 ? '' : 's'}`}
+            />
 
-                    {lead.status === 'COMPLETED' && (
-                        <div className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-stone-50 px-3 text-sm font-medium text-slate-600">
-                            <CheckCircle2 size={14} />
-                            Done
-                        </div>
-                    )}
+            {leads.length === 0 ? (
+                <EmptyState
+                    title="No matching leads"
+                    text="Adjust search or filters to find the enquiry you need."
+                />
+            ) : (
+                <>
+                    <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 lg:block">
+                        <table className="w-full min-w-[940px] border-separate border-spacing-0 text-left">
+                            <thead className="bg-stone-50">
+                                <tr>
+                                    {['Lead', 'Status', 'Event', 'Package', 'Contact', 'Action'].map((heading) => (
+                                        <th
+                                            key={heading}
+                                            className="border-b border-slate-200 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500"
+                                        >
+                                            {heading}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {leads.map((lead) => (
+                                    <LeadListRow
+                                        key={lead._id}
+                                        lead={lead}
+                                        busy={busy}
+                                        onMove={onMove}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="grid gap-3 lg:hidden">
+                        {leads.map((lead) => (
+                            <LeadListMobileCard
+                                key={lead._id}
+                                lead={lead}
+                                busy={busy}
+                                onMove={onMove}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+        </section>
+    );
+};
+
+const LeadListRow = ({
+    lead,
+    busy,
+    onMove
+}: {
+    lead: Lead;
+    busy: boolean;
+    onMove: (leadId: string, nextStatus: LeadStatus) => void;
+}) => {
+    const status = statusConfig[lead.status];
+    const nextStatus = getNextStatus(lead.status);
+
+    return (
+        <tr className="transition hover:bg-amber-50/50">
+            <td className="border-b border-slate-100 px-4 py-4">
+                <div className="flex min-w-0 items-center gap-3">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                        {(lead.name || 'L').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                        <p className="truncate text-sm font-extrabold text-slate-900">
+                            {lead.name || 'Unnamed lead'}
+                        </p>
+                        <p className="mt-1 truncate text-xs font-bold text-slate-500">
+                            {truncateText(lead.message || 'No customer note yet', 72)}
+                        </p>
+                    </div>
                 </div>
+            </td>
+            <td className="border-b border-slate-100 px-4 py-4">
+                <span className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${status.badgeClass}`}>
+                    {status.title}
+                </span>
+            </td>
+            <td className="border-b border-slate-100 px-4 py-4 text-sm font-bold text-slate-700">
+                {lead.eventDate ? formatDate(lead.eventDate) : 'Not set'}
+            </td>
+            <td className="border-b border-slate-100 px-4 py-4">
+                <p className="text-sm font-extrabold text-slate-900">
+                    {lead.package || '-'}
+                </p>
+                <p className="mt-1 text-xs font-bold text-slate-500">
+                    {lead.guests ? `${lead.guests} guests` : 'Guest count not set'}
+                </p>
+            </td>
+            <td className="border-b border-slate-100 px-4 py-4">
+                <div className="grid gap-1">
+                    <ContactLink
+                        icon={<Mail size={14} />}
+                        value={lead.email || 'No email'}
+                        href={lead.email ? `mailto:${lead.email}` : undefined}
+                    />
+                    <ContactLink
+                        icon={<Phone size={14} />}
+                        value={lead.phone || 'No phone'}
+                        href={lead.phone ? `tel:${lead.phone}` : undefined}
+                    />
+                </div>
+            </td>
+            <td className="border-b border-slate-100 px-4 py-4">
+                <StatusAction lead={lead} nextStatus={nextStatus} busy={busy} onMove={onMove} />
+            </td>
+        </tr>
+    );
+};
+
+const LeadListMobileCard = ({
+    lead,
+    busy,
+    onMove
+}: {
+    lead: Lead;
+    busy: boolean;
+    onMove: (leadId: string, nextStatus: LeadStatus) => void;
+}) => {
+    const status = statusConfig[lead.status];
+    const nextStatus = getNextStatus(lead.status);
+
+    return (
+        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <span className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${status.badgeClass}`}>
+                        {status.title}
+                    </span>
+                    <h3 className="mt-3 truncate text-base font-extrabold text-slate-900">
+                        {lead.name || 'Unnamed lead'}
+                    </h3>
+                    <p className="mt-1 text-xs font-bold text-slate-500">
+                        {lead.eventDate ? formatDate(lead.eventDate) : 'Event date not set'}
+                    </p>
+                </div>
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                    {(lead.name || 'L').charAt(0).toUpperCase()}
+                </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+                <MiniMeta label="Package" value={lead.package || '-'} />
+                <MiniMeta label="Guests" value={lead.guests ? `${lead.guests}` : '-'} />
+            </div>
+
+            <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-[#fbfaf7] px-3 py-3">
+                <ContactLink
+                    icon={<Mail size={14} />}
+                    value={lead.email || 'No email'}
+                    href={lead.email ? `mailto:${lead.email}` : undefined}
+                />
+                <ContactLink
+                    icon={<Phone size={14} />}
+                    value={lead.phone || 'No phone'}
+                    href={lead.phone ? `tel:${lead.phone}` : undefined}
+                />
+            </div>
+
+            {lead.message && (
+                <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
+                    {truncateText(lead.message, 120)}
+                </p>
+            )}
+
+            <div className="mt-4">
+                <StatusAction lead={lead} nextStatus={nextStatus} busy={busy} onMove={onMove} />
+            </div>
+        </article>
+    );
+};
+
+const StatusAction = ({
+    lead,
+    nextStatus,
+    busy,
+    onMove
+}: {
+    lead: Lead;
+    nextStatus: LeadStatus | null;
+    busy: boolean;
+    onMove: (leadId: string, nextStatus: LeadStatus) => void;
+}) => {
+    if (!nextStatus) {
+        return (
+            <span className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-stone-50 px-3 text-xs font-extrabold text-slate-600">
+                <CheckCircle2 size={14} />
+                Complete
+            </span>
+        );
+    }
+
+    return (
+        <button
+            type="button"
+            disabled={busy}
+            onClick={() => onMove(lead._id, nextStatus)}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-3 text-xs font-extrabold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+            {nextStatus === 'IN_PROGRESS' ? 'Start' : 'Done'}
+            {nextStatus === 'COMPLETED' ? <CheckCircle2 size={14} /> : <ArrowRight size={14} />}
+        </button>
+    );
+};
+
+const ContactLink = ({
+    icon,
+    value,
+    href
+}: {
+    icon: ReactNode;
+    value: string;
+    href?: string;
+}) => {
+    const content = (
+        <>
+            <span className="text-slate-400">{icon}</span>
+            <span className="truncate">{value}</span>
+        </>
+    );
+
+    if (!href) {
+        return (
+            <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-slate-500">
+                {content}
+            </div>
+        );
+    }
+
+    return (
+        <a
+            href={href}
+            className="flex min-w-0 items-center gap-2 rounded-xl text-sm font-bold text-slate-700 transition hover:text-amber-800"
+        >
+            {content}
+        </a>
+    );
+};
+
+const MiniMeta = ({ label, value }: { label: string; value: string }) => {
+    return (
+        <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-3 py-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                {label}
+            </p>
+            <p className="mt-1 truncate text-sm font-extrabold text-slate-800">
+                {value}
+            </p>
+        </div>
+    );
+};
+
+const EmptyState = ({ title, text }: { title: string; text: string }) => {
+    return (
+        <div className="grid min-h-[210px] place-items-center rounded-[22px] border border-dashed border-slate-200 bg-stone-50 px-4 text-center">
+            <div>
+                <Inbox className="mx-auto text-slate-400" size={24} />
+                <p className="mt-3 text-sm font-extrabold text-slate-800">{title}</p>
+                <p className="mx-auto mt-1 max-w-[15rem] text-xs font-medium leading-5 text-slate-500">
+                    {text}
+                </p>
             </div>
         </div>
     );
 };
 
-const InfoRow = ({
-    icon,
-    value
-}: {
-    icon: React.ReactNode;
-    value: string;
-}) => {
-    return (
-        <div className="flex items-center gap-2 text-sm text-slate-600">
-            <span className="text-slate-400">{icon}</span>
-            <span className="truncate">{value}</span>
-        </div>
-    );
+const getLeadSource = (lead: Lead) => {
+    if (lead.package || lead.eventDate || lead.guests) return 'Catering';
+    return lead.utmSource || 'Website';
 };
 
-const MiniMeta = ({
-    label,
-    value
-}: {
-    label: string;
-    value: string;
-}) => {
-    return (
-        <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                {label}
-            </p>
-            <p className="mt-1 text-sm font-medium text-slate-800">{value}</p>
-        </div>
-    );
-};
-
-const EmptyState = ({ text }: { text: string }) => {
-    return (
-        <div className="flex min-h-[180px] items-center justify-center rounded-[22px] border border-dashed border-slate-200 bg-stone-50 px-4 text-center">
-            <p className="text-sm text-slate-400">{text}</p>
-        </div>
-    );
+const getNextStatus = (status: LeadStatus): LeadStatus | null => {
+    if (status === 'OPEN') return 'IN_PROGRESS';
+    if (status === 'IN_PROGRESS') return 'COMPLETED';
+    return null;
 };
 
 const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return 'Date not set';
+
+    return date.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',
         year: 'numeric'
