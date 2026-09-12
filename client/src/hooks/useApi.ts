@@ -13,6 +13,25 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const isExpiredAdminSession =
+            error.response?.status === 401 &&
+            window.location.pathname.startsWith('/admin') &&
+            window.location.pathname !== '/admin/login' &&
+            !String(error.config?.url || '').includes('/auth/login');
+
+        if (isExpiredAdminSession) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.replace('/admin/login?session=expired');
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 export const useMenu = () => {
     const categories = useQuery({
         queryKey: ['categories'],

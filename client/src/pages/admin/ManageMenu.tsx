@@ -196,7 +196,7 @@ export const ManageMenu = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container max-w-[1180px]">
-                <section className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <div className="mt-2 flex flex-wrap items-center gap-3">

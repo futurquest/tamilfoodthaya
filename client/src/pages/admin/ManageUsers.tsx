@@ -1,30 +1,36 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-    Search,
-    User as UserIcon,
-    Mail,
-    Phone,
-    Pencil,
-    Trash2,
-    X,
-    Check,
-    ShieldCheck,
-    Users,
-    UserCog,
+    AlertCircle,
     BadgeCheck,
-    ChevronDown
+    CalendarDays,
+    Check,
+    ChevronDown,
+    Filter,
+    Mail,
+    Pencil,
+    Phone,
+    RotateCcw,
+    Search,
+    ShieldCheck,
+    Trash2,
+    User as UserIcon,
+    UserCheck,
+    UserCog,
+    Users,
+    X
 } from 'lucide-react';
 import {
+    deleteAdminUser,
     getAdminUsers,
-    updateAdminUser,
-    deleteAdminUser
+    updateAdminUser
 } from '../../hooks/useApi';
-import { Card, CardContent } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
 import { toast } from 'react-hot-toast';
 
 type UserRole = 'user' | 'staff' | 'admin';
+type RoleFilter = 'all' | UserRole;
+type VerificationFilter = 'all' | 'verified' | 'unverified';
 
 type AdminUser = {
     _id: string;
@@ -37,10 +43,21 @@ type AdminUser = {
     createdAt?: string;
 };
 
+const ROLE_OPTIONS: Array<{ value: RoleFilter; label: string }> = [
+    { value: 'all', label: 'All roles' },
+    { value: 'admin', label: 'Admins' },
+    { value: 'staff', label: 'Staff' },
+    { value: 'user', label: 'Customers' }
+];
+
 export const ManageUsers = () => {
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState<RoleFilter>('all');
+    const [verificationFilter, setVerificationFilter] =
+        useState<VerificationFilter>('all');
     const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+    const [formError, setFormError] = useState('');
 
     const usersQuery = useQuery({
         queryKey: ['admin-users'],
@@ -52,10 +69,14 @@ export const ManageUsers = () => {
             updateAdminUser(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-            toast.success('User updated successfully');
+            toast.success('User updated');
             setEditingUser(null);
+            setFormError('');
         },
-        onError: () => toast.error('Failed to update user')
+        onError: () => {
+            setFormError('The user could not be updated. Check the details and try again.');
+            toast.error('Failed to update user');
+        }
     });
 
     const deleteMutation = useMutation({
@@ -74,408 +95,390 @@ export const ManageUsers = () => {
         ? rawUsers.data
         : [];
 
-    const filteredUsers = useMemo(() => {
-        const term = searchTerm.trim().toLowerCase();
-
-        if (!term) return userList;
-
-        return userList.filter((user) => {
-            const name = user.name?.toLowerCase() || '';
-            const email = user.email?.toLowerCase() || '';
-            const username = user.username?.toLowerCase() || '';
-            const phone = user.phone?.toLowerCase() || '';
-
-            return (
-                name.includes(term) ||
-                email.includes(term) ||
-                username.includes(term) ||
-                phone.includes(term)
-            );
-        });
-    }, [userList, searchTerm]);
-
     const stats = useMemo(() => {
         const total = userList.length;
-        const admins = userList.filter((u) => u.role === 'admin').length;
-        const staff = userList.filter((u) => u.role === 'staff').length;
-        const verified = userList.filter((u) => u.isVerified).length;
+        const admins = userList.filter((user) => user.role === 'admin').length;
+        const staff = userList.filter((user) => user.role === 'staff').length;
+        const customers = userList.filter((user) => user.role === 'user').length;
+        const verified = userList.filter((user) => user.isVerified).length;
 
-        return { total, admins, staff, verified };
+        return { total, admins, staff, customers, verified };
     }, [userList]);
 
-    const handleDelete = (id: string) => {
+    const filteredUsers = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+
+        return userList.filter((user) => {
+            if (roleFilter !== 'all' && user.role !== roleFilter) return false;
+            if (verificationFilter === 'verified' && !user.isVerified) return false;
+            if (verificationFilter === 'unverified' && user.isVerified) return false;
+            if (!query) return true;
+
+            return [
+                user.name,
+                user.username,
+                user.email,
+                user.phone,
+                user.role,
+                user.isVerified ? 'verified' : 'unverified',
+                user.createdAt ? formatDate(user.createdAt) : ''
+            ]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query));
+        });
+    }, [roleFilter, searchTerm, userList, verificationFilter]);
+
+    const hasActiveFilters =
+        Boolean(searchTerm.trim()) ||
+        roleFilter !== 'all' ||
+        verificationFilter !== 'all';
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setRoleFilter('all');
+        setVerificationFilter('all');
+    };
+
+    const openEdit = (user: AdminUser) => {
+        setEditingUser(user);
+        setFormError('');
+    };
+
+    const handleDelete = (user: AdminUser) => {
+        const label = user.name || user.username || user.email || 'this user';
+
         if (
             window.confirm(
-                'Are you sure you want to delete this user? This action cannot be undone.'
+                `Delete ${label}? This removes the account and cannot be undone.`
             )
         ) {
-            deleteMutation.mutate(id);
+            deleteMutation.mutate(user._id);
         }
+    };
+
+    const handleSave = () => {
+        if (!editingUser) return;
+
+        if (!editingUser.name?.trim()) {
+            setFormError('Enter a name before saving this account.');
+            return;
+        }
+
+        updateMutation.mutate({
+            id: editingUser._id,
+            data: {
+                role: editingUser.role,
+                name: editingUser.name,
+                phone: editingUser.phone,
+                isVerified: editingUser.isVerified
+            }
+        });
     };
 
     if (usersQuery.isLoading) {
         return (
             <div className="admin-loading-state">
                 <Spinner size="lg" />
-                <p>Loading admin users...</p>
-            </div>
-        );
-    }
-
-    if (usersQuery.isError) {
-        return (
-            <div className="admin-page">
-                <div className="admin-page-container max-w-[1080px]">
-                    <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-10 text-center">
-                        <h3 className="text-lg font-semibold text-red-700">
-                            Failed to load users
-                        </h3>
-                        <p className="mt-2 text-sm text-red-600">
-                            Please refresh and try again.
-                        </p>
-                    </div>
-                </div>
+                <p>Loading users...</p>
             </div>
         );
     }
 
     return (
         <div className="admin-page">
-            <div className="admin-page-container max-w-[1080px]">
-                {/* Header */}
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
-                            </p>
-                            <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                <Users size={24} className="text-slate-900" />
-                                User Management
-                            </h1>
-                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                                View and manage registered user accounts, roles and verification status.
+            <div className="admin-page-container min-w-0 max-w-[1180px]">
+                <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+                        <div className="min-w-0 max-w-2xl">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
+                                    <Users size={21} />
+                                </span>
+                                <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
+                                    User Management
+                                </h1>
+                            </div>
+                            <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
+                                Review customer accounts, staff access, verification status and
+                                admin permissions from one controlled workspace.
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <MetricCard
-                                label="Users"
-                                value={stats.total}
-                                icon={<Users size={16} />}
+                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                                Directory health
+                            </p>
+                            <p className="mt-1 text-sm font-extrabold text-slate-950">
+                                {stats.verified} of {stats.total} verified
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-5">
+                        <MetricCard label="Users" value={stats.total} icon={<Users size={15} />} />
+                        <MetricCard label="Admins" value={stats.admins} icon={<ShieldCheck size={15} />} />
+                        <MetricCard label="Staff" value={stats.staff} icon={<UserCog size={15} />} />
+                        <MetricCard label="Customers" value={stats.customers} icon={<UserIcon size={15} />} />
+                        <MetricCard label="Verified" value={stats.verified} icon={<BadgeCheck size={15} />} />
+                    </div>
+                </div>
+
+                <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(280px,1fr)_auto] xl:items-end">
+                        <label className="relative block min-w-0">
+                            <span className="sr-only">Search users</span>
+                            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="text"
+                                placeholder="Search name, username, email, phone or role"
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
                             />
-                            <MetricCard
-                                label="Admins"
-                                value={stats.admins}
-                                icon={<ShieldCheck size={16} />}
-                            />
-                            <MetricCard
-                                label="Staff"
-                                value={stats.staff}
+                        </label>
+
+                        <div className="grid min-w-0 gap-3 sm:grid-cols-[240px_minmax(0,1fr)]">
+                            <PremiumSelect
+                                compact
+                                label="Role"
+                                value={roleFilter}
+                                onChange={(value) => setRoleFilter(value as RoleFilter)}
+                                options={ROLE_OPTIONS}
                                 icon={<UserCog size={16} />}
                             />
-                            <MetricCard
-                                label="Verified"
-                                value={stats.verified}
-                                icon={<BadgeCheck size={16} />}
-                            />
+
+                            <div className="grid min-w-0 gap-1.5">
+                                <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                                    <BadgeCheck size={13} /> Verification
+                                </span>
+                                <div className="grid h-11 grid-cols-3 rounded-xl bg-stone-100 p-1">
+                                    {([
+                                        ['all', 'All'],
+                                        ['verified', 'Verified'],
+                                        ['unverified', 'Open']
+                                    ] as Array<[VerificationFilter, string]>).map(([value, label]) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            onClick={() => setVerificationFilter(value)}
+                                            aria-pressed={verificationFilter === value}
+                                            className={`rounded-lg px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${
+                                                verificationFilter === value
+                                                    ? 'bg-white text-slate-950 shadow-sm'
+                                                    : 'text-slate-500 hover:text-slate-900'
+                                            }`}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-1 pt-3 text-xs font-semibold text-slate-500">
+                        <span className="inline-flex items-center gap-1.5">
+                            <Filter size={13} /> Showing {filteredUsers.length} of {userList.length} users
+                        </span>
+                        {hasActiveFilters && (
+                            <button
+                                type="button"
+                                onClick={clearFilters}
+                                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                            >
+                                <RotateCcw size={13} /> Clear filters
+                            </button>
+                        )}
                     </div>
                 </div>
 
-                {/* Search */}
-                <div className="rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
-                    <div className="relative">
-                        <Search
-                            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                            size={16}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Search by name, username, email or phone..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
-                        />
-                    </div>
-                </div>
+                {usersQuery.isError ? (
+                    <ErrorState onRetry={() => usersQuery.refetch()} />
+                ) : userList.length === 0 ? (
+                    <EmptyState
+                        title="No users yet"
+                        copy="Registered customers and staff accounts will appear here once they are created."
+                    />
+                ) : filteredUsers.length === 0 ? (
+                    <EmptyState
+                        title="No matching users"
+                        copy="Adjust the search or filters to find the account you need."
+                        actionLabel="Clear filters"
+                        onAction={clearFilters}
+                    />
+                ) : (
+                    <UserResults
+                        users={filteredUsers}
+                        deletePending={deleteMutation.isPending}
+                        onEdit={openEdit}
+                        onDelete={handleDelete}
+                    />
+                )}
 
-                {/* Table */}
-                <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-                    <CardContent className="p-0">
-                        <div className="max-h-[68vh] overflow-x-auto overflow-y-auto">
-                            <table className="w-full min-w-[980px] text-sm">
-                                <thead className="sticky top-0 z-10 border-b border-slate-200 bg-stone-50">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            User
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            Contact
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            Role
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            Status
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            Joined
-                                        </th>
-                                        <th className="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody className="divide-y divide-slate-100">
-                                    {filteredUsers.length === 0 ? (
-                                        <tr>
-                                            <td
-                                                colSpan={6}
-                                                className="px-6 py-20 text-center"
-                                            >
-                                                <div className="mx-auto max-w-sm">
-                                                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50 text-slate-400">
-                                                        <Users size={20} />
-                                                    </div>
-                                                    <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                                                        No users found
-                                                    </h3>
-                                                    <p className="mt-2 text-sm text-slate-500">
-                                                        Try changing the search term.
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        filteredUsers.map((user) => (
-                                            <tr
-                                                key={user._id}
-                                                className="transition hover:bg-stone-50/70"
-                                            >
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50 text-slate-600">
-                                                            <UserIcon size={18} />
-                                                        </div>
-
-                                                        <div className="min-w-0">
-                                                            <p className="truncate text-[15px] font-semibold text-slate-900">
-                                                                {user.name || 'No Name'}
-                                                            </p>
-                                                            <p className="mt-1 text-xs text-slate-500">
-                                                                @{user.username || 'no-username'}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td className="px-6 py-4">
-                                                    <div className="space-y-1.5">
-                                                        <div className="flex items-center gap-2 text-xs text-slate-600">
-                                                            <Mail
-                                                                size={12}
-                                                                className="text-slate-400"
-                                                            />
-                                                            <span>{user.email || 'No email'}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-xs text-slate-600">
-                                                            <Phone
-                                                                size={12}
-                                                                className="text-slate-400"
-                                                            />
-                                                            <span>{user.phone || 'No phone'}</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td className="px-6 py-4">
-                                                    <RoleBadge role={user.role} />
-                                                </td>
-
-                                                <td className="px-6 py-4">
-                                                    {user.isVerified ? (
-                                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
-                                                            <Check size={13} />
-                                                            Verified
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-stone-50 px-3 py-1.5 text-xs font-semibold text-slate-500">
-                                                            <X size={13} />
-                                                            Unverified
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                <td className="px-6 py-4 text-sm text-slate-500">
-                                                    {formatDate(user.createdAt)}
-                                                </td>
-
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <button
-                                                            onClick={() => setEditingUser(user)}
-                                                            className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-stone-50"
-                                                        >
-                                                            <Pencil size={14} />
-                                                            Edit
-                                                        </button>
-
-                                                        <button
-                                                            onClick={() => handleDelete(user._id)}
-                                                            disabled={deleteMutation.isPending}
-                                                            className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Edit Modal */}
                 {editingUser && (
                     <div
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]"
                         onClick={() => setEditingUser(null)}
                     >
                         <div
-                            className="w-full max-w-xl rounded-[30px] border border-slate-200 bg-white shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="user-editor-title"
+                            className="w-full max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+                            onClick={(event) => event.stopPropagation()}
                         >
-                            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-                                <div>
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                        User Editor
-                                    </p>
-                                    <h2 className="mt-1 text-xl font-semibold text-slate-900">
-                                        Edit User
+                            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
+                                <div className="min-w-0">
+                                    <h2 id="user-editor-title" className="text-xl font-extrabold text-slate-950">
+                                        Edit user
                                     </h2>
+                                    <p className="mt-1 text-sm font-medium text-slate-500">
+                                        Update account details, role and verification state.
+                                    </p>
                                 </div>
 
                                 <button
+                                    type="button"
                                     onClick={() => setEditingUser(null)}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700"
+                                    aria-label="Close user editor"
+                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                 >
                                     <X size={18} />
                                 </button>
                             </div>
 
-                            <div className="max-h-[85vh] overflow-y-auto px-6 py-6">
-                                <div className="space-y-6">
-                                    <div>
-                                        <SectionTitle
-                                            title="Account"
-                                            subtitle="Update basic account details and permissions."
-                                        />
-
-                                        <div className="mt-4 grid gap-4 md:grid-cols-2">
-                                            <InputBlock
-                                                label="Name"
-                                                value={editingUser.name || ''}
-                                                onChange={(value) =>
-                                                    setEditingUser({
-                                                        ...editingUser,
-                                                        name: value
-                                                    })
-                                                }
-                                                placeholder="Full name"
-                                                icon={<UserIcon size={16} />}
+                            <div className="max-h-[82vh] overflow-y-auto px-5 py-6 sm:px-6">
+                                <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_260px]">
+                                    <div className="min-w-0 space-y-6">
+                                        <div>
+                                            <SectionTitle
+                                                title="Account details"
+                                                subtitle="Keep operational contact details accurate for orders and support."
                                             />
 
-                                            <InputBlock
-                                                label="Phone"
-                                                value={editingUser.phone || ''}
-                                                onChange={(value) =>
-                                                    setEditingUser({
-                                                        ...editingUser,
-                                                        phone: value
-                                                    })
-                                                }
-                                                placeholder="Phone number"
-                                                icon={<Phone size={16} />}
-                                            />
+                                            <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
+                                                <InputBlock
+                                                    label="Name"
+                                                    value={editingUser.name || ''}
+                                                    onChange={(value) =>
+                                                        setEditingUser({
+                                                            ...editingUser,
+                                                            name: value
+                                                        })
+                                                    }
+                                                    placeholder="Full name"
+                                                    icon={<UserIcon size={16} />}
+                                                />
+
+                                                <InputBlock
+                                                    label="Phone"
+                                                    value={editingUser.phone || ''}
+                                                    onChange={(value) =>
+                                                        setEditingUser({
+                                                            ...editingUser,
+                                                            phone: value
+                                                        })
+                                                    }
+                                                    placeholder="Phone number"
+                                                    icon={<Phone size={16} />}
+                                                />
+                                            </div>
                                         </div>
 
-                                        <div className="mt-4">
-                                            <PremiumSelect
-                                                label="Role"
-                                                value={editingUser.role}
-                                                onChange={(value) =>
-                                                    setEditingUser({
-                                                        ...editingUser,
-                                                        role: value as UserRole
-                                                    })
-                                                }
-                                                options={[
-                                                    { value: 'user', label: 'User' },
-                                                    { value: 'staff', label: 'Staff' },
-                                                    { value: 'admin', label: 'Admin' }
-                                                ]}
+                                        <div>
+                                            <SectionTitle
+                                                title="Permissions"
+                                                subtitle="Choose the access level this account should have."
                                             />
+
+                                            <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
+                                                <PremiumSelect
+                                                    label="Role"
+                                                    value={editingUser.role}
+                                                    onChange={(value) =>
+                                                        setEditingUser({
+                                                            ...editingUser,
+                                                            role: value as UserRole
+                                                        })
+                                                    }
+                                                    options={[
+                                                        { value: 'user', label: 'Customer' },
+                                                        { value: 'staff', label: 'Staff' },
+                                                        { value: 'admin', label: 'Admin' }
+                                                    ]}
+                                                    icon={<ShieldCheck size={16} />}
+                                                />
+
+                                                <ToggleCard
+                                                    title={
+                                                        editingUser.isVerified
+                                                            ? 'Email verified'
+                                                            : 'Email not verified'
+                                                    }
+                                                    description="Controls whether the account is marked as verified."
+                                                    checked={Boolean(editingUser.isVerified)}
+                                                    onChange={(checked) =>
+                                                        setEditingUser({
+                                                            ...editingUser,
+                                                            isVerified: checked
+                                                        })
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <SectionTitle
-                                            title="Verification"
-                                            subtitle="Control email verification status."
-                                        />
+                                    <div className="rounded-2xl bg-[#fbf6ed] p-4">
+                                        <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
+                                            <UserCheck size={17} className="text-amber-700" />
+                                            Account preview
+                                        </div>
 
-                                        <div className="mt-4">
-                                            <ToggleCard
-                                                title={
-                                                    editingUser.isVerified
-                                                        ? 'Email Verified'
-                                                        : 'Email Not Verified'
-                                                }
-                                                description="Toggle whether this user’s email is marked as verified."
-                                                checked={Boolean(editingUser.isVerified)}
-                                                onChange={(checked) =>
-                                                    setEditingUser({
-                                                        ...editingUser,
-                                                        isVerified: checked
-                                                    })
-                                                }
-                                            />
+                                        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                                            <Avatar user={editingUser} large />
+                                            <p className="mt-3 truncate text-lg font-extrabold text-slate-950">
+                                                {getDisplayName(editingUser)}
+                                            </p>
+                                            <p className="mt-1 truncate text-sm font-semibold text-slate-500">
+                                                @{editingUser.username || 'no-username'}
+                                            </p>
+                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                <RoleBadge role={editingUser.role} />
+                                                <VerificationBadge verified={Boolean(editingUser.isVerified)} />
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 space-y-3 text-xs font-semibold text-slate-500">
+                                            <PreviewLine label="Email" value={editingUser.email || 'No email'} />
+                                            <PreviewLine label="Phone" value={editingUser.phone || 'No phone'} />
+                                            <PreviewLine label="Joined" value={formatDate(editingUser.createdAt)} />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-6 flex flex-col-reverse gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                                {formError && (
+                                    <div role="alert" className="mt-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                                        <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                                        <span>{formError}</span>
+                                    </div>
+                                )}
+
+                                <div className="sticky bottom-0 z-10 -mx-5 mt-6 flex flex-col-reverse gap-2 border-t border-slate-200 bg-white px-5 pb-1 pt-4 sm:-mx-6 sm:flex-row sm:justify-end sm:px-6">
                                     <button
+                                        type="button"
                                         onClick={() => setEditingUser(null)}
-                                        className="h-11 rounded-full border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:bg-stone-50"
+                                        className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                     >
                                         Cancel
                                     </button>
 
                                     <button
-                                        onClick={() =>
-                                            updateMutation.mutate({
-                                                id: editingUser._id,
-                                                data: {
-                                                    role: editingUser.role,
-                                                    name: editingUser.name,
-                                                    phone: editingUser.phone,
-                                                    isVerified: editingUser.isVerified
-                                                }
-                                            })
-                                        }
+                                        type="button"
+                                        onClick={handleSave}
                                         disabled={updateMutation.isPending}
-                                        className="h-11 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+                                        className="h-11 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {updateMutation.isPending
-                                            ? 'Saving...'
-                                            : 'Save Changes'}
+                                        {updateMutation.isPending ? 'Saving...' : 'Save changes'}
                                     </button>
                                 </div>
                             </div>
@@ -487,6 +490,140 @@ export const ManageUsers = () => {
     );
 };
 
+const UserResults = ({
+    users,
+    deletePending,
+    onEdit,
+    onDelete
+}: {
+    users: AdminUser[];
+    deletePending: boolean;
+    onEdit: (user: AdminUser) => void;
+    onDelete: (user: AdminUser) => void;
+}) => (
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="hidden overflow-x-auto lg:block">
+            <table className="w-full min-w-[1040px] text-sm">
+                <thead className="border-b border-slate-200 bg-[#fbf6ed]">
+                    <tr>
+                        <TableHeader>User</TableHeader>
+                        <TableHeader>Contact</TableHeader>
+                        <TableHeader>Role</TableHeader>
+                        <TableHeader>Status</TableHeader>
+                        <TableHeader>Joined</TableHeader>
+                        <TableHeader align="right">Actions</TableHeader>
+                    </tr>
+                </thead>
+
+                <tbody className="divide-y divide-slate-100">
+                    {users.map((user) => (
+                        <tr key={user._id} className="transition hover:bg-stone-50/70">
+                            <td className="px-5 py-4">
+                                <div className="flex min-w-0 items-center gap-3">
+                                    <Avatar user={user} />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-[15px] font-extrabold text-slate-950">
+                                            {getDisplayName(user)}
+                                        </p>
+                                        <p className="mt-1 truncate text-xs font-semibold text-slate-500">
+                                            @{user.username || 'no-username'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td className="px-5 py-4">
+                                <ContactBlock user={user} />
+                            </td>
+
+                            <td className="px-5 py-4">
+                                <RoleBadge role={user.role} />
+                            </td>
+
+                            <td className="px-5 py-4">
+                                <VerificationBadge verified={Boolean(user.isVerified)} />
+                            </td>
+
+                            <td className="px-5 py-4 font-semibold text-slate-600">
+                                {formatDate(user.createdAt)}
+                            </td>
+
+                            <td className="px-5 py-4">
+                                <ActionGroup
+                                    user={user}
+                                    deletePending={deletePending}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+
+        <div className="grid gap-3 p-3 lg:hidden">
+            {users.map((user) => (
+                <UserCard
+                    key={user._id}
+                    user={user}
+                    deletePending={deletePending}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                />
+            ))}
+        </div>
+    </div>
+);
+
+const UserCard = ({
+    user,
+    deletePending,
+    onEdit,
+    onDelete
+}: {
+    user: AdminUser;
+    deletePending: boolean;
+    onEdit: (user: AdminUser) => void;
+    onDelete: (user: AdminUser) => void;
+}) => (
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+                <Avatar user={user} />
+                <div className="min-w-0">
+                    <p className="truncate text-base font-extrabold text-slate-950">
+                        {getDisplayName(user)}
+                    </p>
+                    <p className="mt-1 truncate text-xs font-semibold text-slate-500">
+                        @{user.username || 'no-username'}
+                    </p>
+                </div>
+            </div>
+            <VerificationBadge verified={Boolean(user.isVerified)} />
+        </div>
+
+        <div className="mt-4 rounded-xl bg-[#fbf6ed] p-3">
+            <ContactBlock user={user} />
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <InfoTile label="Role" value={formatRole(user.role)} icon={<ShieldCheck size={14} />} />
+            <InfoTile label="Joined" value={formatDate(user.createdAt)} icon={<CalendarDays size={14} />} />
+        </div>
+
+        <div className="mt-4">
+            <ActionGroup
+                user={user}
+                deletePending={deletePending}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                mobile
+            />
+        </div>
+    </article>
+);
+
 const MetricCard = ({
     label,
     value,
@@ -495,19 +632,61 @@ const MetricCard = ({
     label: string;
     value: string | number;
     icon: ReactNode;
-}) => {
-    return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
-                {icon}
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
+}) => (
+    <div className="min-w-0 border-slate-200 px-4 py-4 odd:border-r sm:border-r sm:last:border-r-0 md:px-5">
+        <div className="flex items-center gap-2 text-slate-500">
+            {icon}
+            <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em]">{label}</p>
         </div>
-    );
-};
+        <p className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-950">{value}</p>
+    </div>
+);
+
+const EmptyState = ({
+    title,
+    copy,
+    actionLabel,
+    onAction
+}: {
+    title: string;
+    copy: string;
+    actionLabel?: string;
+    onAction?: () => void;
+}) => (
+    <div className="rounded-2xl border border-slate-200 bg-white px-5 py-12 text-center shadow-sm">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-[#fbf6ed] text-slate-500">
+            <Users size={24} />
+        </div>
+        <h3 className="mt-4 text-lg font-extrabold text-slate-950">{title}</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-slate-500">{copy}</p>
+        {actionLabel && onAction && (
+            <button
+                type="button"
+                onClick={onAction}
+                className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+            >
+                <RotateCcw size={16} />
+                {actionLabel}
+            </button>
+        )}
+    </div>
+);
+
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+    <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 shadow-sm">
+        <AlertCircle size={18} className="mt-0.5 shrink-0" />
+        <div>
+            <p>Users could not be loaded.</p>
+            <button
+                type="button"
+                onClick={onRetry}
+                className="mt-2 font-extrabold underline decoration-red-300 underline-offset-4"
+            >
+                Try again
+            </button>
+        </div>
+    </div>
+);
 
 const SectionTitle = ({
     title,
@@ -515,16 +694,12 @@ const SectionTitle = ({
 }: {
     title: string;
     subtitle: string;
-}) => {
-    return (
-        <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                {title}
-            </p>
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
-        </div>
-    );
-};
+}) => (
+    <div>
+        <h3 className="text-base font-extrabold text-slate-950">{title}</h3>
+        <p className="mt-1 text-sm font-medium text-slate-500">{subtitle}</p>
+    </div>
+);
 
 const InputBlock = ({
     label,
@@ -538,71 +713,74 @@ const InputBlock = ({
     onChange: (value: string) => void;
     placeholder?: string;
     icon?: ReactNode;
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div className="relative">
-                {icon && (
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                        {icon}
-                    </span>
-                )}
-                <input
-                    type="text"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    placeholder={placeholder}
-                    className={`h-11 w-full rounded-2xl border border-slate-200 bg-white text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100 ${
-                        icon ? 'pl-11 pr-4' : 'px-4'
-                    }`}
-                />
-            </div>
+}) => (
+    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
+        <div className="relative">
+            {icon && (
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    {icon}
+                </span>
+            )}
+            <input
+                type="text"
+                value={value}
+                onChange={(event) => onChange(event.target.value)}
+                placeholder={placeholder}
+                className={`h-12 w-full min-w-0 rounded-xl border border-stone-200 bg-white text-sm font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 ${
+                    icon ? 'pl-11 pr-4' : 'px-4'
+                }`}
+            />
         </div>
-    );
-};
+    </div>
+);
 
 const PremiumSelect = ({
     label,
     value,
     onChange,
-    options
+    options,
+    icon,
+    compact
 }: {
     label: string;
     value: string;
     onChange: (value: string) => void;
     options: { value: string; label: string }[];
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div className="relative">
-                <select
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="h-11 w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 pr-10 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
-                >
-                    {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-
-                <ChevronDown
-                    size={16}
-                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-            </div>
+    icon?: ReactNode;
+    compact?: boolean;
+}) => (
+    <div className={compact ? 'grid gap-1.5' : 'min-w-0 rounded-2xl bg-[#fbf6ed] p-4'}>
+        <label className={`${compact ? 'px-1 text-[11px] uppercase tracking-[0.1em] text-slate-500' : 'mb-2 text-sm text-slate-800'} flex items-center gap-1.5 font-bold`}>
+            {compact && icon}
+            {label}
+        </label>
+        <div className="relative">
+            {!compact && icon && (
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    {icon}
+                </span>
+            )}
+            <select
+                value={value}
+                onChange={(event) => onChange(event.target.value)}
+                className={`h-12 w-full min-w-0 appearance-none rounded-xl border border-stone-200 bg-white text-sm font-bold text-slate-950 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 ${
+                    !compact && icon ? 'pl-11 pr-10' : 'px-4 pr-10'
+                }`}
+            >
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+            <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
         </div>
-    );
-};
+    </div>
+);
 
 const ToggleCard = ({
     title,
@@ -614,36 +792,96 @@ const ToggleCard = ({
     description: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
-}) => {
-    return (
+}) => (
+    <button
+        type="button"
+        onClick={() => onChange(!checked)}
+        className={`flex min-h-[124px] w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-4 focus:ring-amber-100 ${
+            checked
+                ? 'border-[#251917] bg-[#251917] text-white'
+                : 'border-slate-200 bg-[#fbf6ed] text-slate-700 hover:bg-amber-50'
+        }`}
+    >
+        <div className="min-w-0">
+            <p className="text-sm font-extrabold">{title}</p>
+            <p className={`mt-1 text-xs font-semibold leading-5 ${checked ? 'text-stone-200' : 'text-slate-500'}`}>
+                {description}
+            </p>
+        </div>
+
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${checked ? 'bg-white text-slate-900' : 'bg-white text-slate-500'}`}>
+            <Check size={16} />
+        </span>
+    </button>
+);
+
+const TableHeader = ({
+    children,
+    align = 'left'
+}: {
+    children: ReactNode;
+    align?: 'left' | 'right';
+}) => (
+    <th className={`px-5 py-4 ${align === 'right' ? 'text-right' : 'text-left'} text-[11px] font-extrabold uppercase tracking-[0.1em] text-slate-500`}>
+        {children}
+    </th>
+);
+
+const ActionGroup = ({
+    user,
+    deletePending,
+    onEdit,
+    onDelete,
+    mobile
+}: {
+    user: AdminUser;
+    deletePending: boolean;
+    onEdit: (user: AdminUser) => void;
+    onDelete: (user: AdminUser) => void;
+    mobile?: boolean;
+}) => (
+    <div className={`flex items-center gap-2 ${mobile ? 'grid grid-cols-2' : 'justify-end'}`}>
         <button
             type="button"
-            onClick={() => onChange(!checked)}
-            className={`flex w-full items-center justify-between rounded-[22px] border px-4 py-4 text-left transition ${
-                checked
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-200 bg-white text-slate-700 hover:bg-stone-50'
-            }`}
+            onClick={() => onEdit(user)}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-200"
         >
-            <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p
-                    className={`mt-1 text-xs leading-5 ${
-                        checked ? 'text-slate-300' : 'text-slate-500'
-                    }`}
-                >
-                    {description}
-                </p>
-            </div>
-
-            <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                    checked ? 'bg-white text-slate-900' : 'bg-stone-100 text-slate-500'
-                }`}
-            >
-                <Check size={16} />
-            </div>
+            <Pencil size={14} />
+            Edit
         </button>
+
+        <button
+            type="button"
+            onClick={() => onDelete(user)}
+            disabled={deletePending}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+            <Trash2 size={14} />
+            Delete
+        </button>
+    </div>
+);
+
+const ContactBlock = ({ user }: { user: AdminUser }) => (
+    <div className="space-y-1.5 text-xs font-semibold text-slate-600">
+        <div className="flex min-w-0 items-center gap-2">
+            <Mail size={13} className="shrink-0 text-slate-400" />
+            <span className="truncate">{user.email || 'No email'}</span>
+        </div>
+        <div className="flex min-w-0 items-center gap-2">
+            <Phone size={13} className="shrink-0 text-slate-400" />
+            <span className="truncate">{user.phone || 'No phone'}</span>
+        </div>
+    </div>
+);
+
+const Avatar = ({ user, large }: { user: AdminUser; large?: boolean }) => {
+    const initial = getDisplayName(user).charAt(0).toUpperCase();
+
+    return (
+        <div className={`${large ? 'h-14 w-14 text-lg' : 'h-11 w-11 text-sm'} flex shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-[#fbf6ed] font-extrabold text-slate-700`}>
+            {initial || 'U'}
+        </div>
     );
 };
 
@@ -655,16 +893,61 @@ const RoleBadge = ({ role }: { role: UserRole }) => {
     };
 
     return (
-        <span
-            className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] ${styles[role]}`}
-        >
-            {role}
+        <span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.08em] ${styles[role]}`}>
+            {formatRole(role)}
         </span>
     );
 };
 
+const VerificationBadge = ({ verified }: { verified: boolean }) => (
+    <span
+        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
+            verified
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                : 'border-slate-200 bg-stone-50 text-slate-500'
+        }`}
+    >
+        {verified ? <Check size={13} /> : <X size={13} />}
+        {verified ? 'Verified' : 'Open'}
+    </span>
+);
+
+const InfoTile = ({
+    label,
+    value,
+    icon
+}: {
+    label: string;
+    value: string;
+    icon: ReactNode;
+}) => (
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
+        <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+            {icon}
+            {label}
+        </p>
+        <p className="mt-1 truncate text-sm font-extrabold text-slate-950">{value}</p>
+    </div>
+);
+
+const PreviewLine = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2 last:border-b-0 last:pb-0">
+        <span>{label}</span>
+        <span className="min-w-0 truncate text-right font-extrabold text-slate-800">{value}</span>
+    </div>
+);
+
+const getDisplayName = (user: AdminUser) => {
+    return user.name || user.username || user.email || 'Unnamed user';
+};
+
+const formatRole = (role: UserRole) => {
+    if (role === 'user') return 'Customer';
+    return role.charAt(0).toUpperCase() + role.slice(1);
+};
+
 const formatDate = (value?: string) => {
-    if (!value) return '-';
+    if (!value) return 'Not recorded';
 
     return new Date(value).toLocaleDateString('en-GB', {
         day: '2-digit',

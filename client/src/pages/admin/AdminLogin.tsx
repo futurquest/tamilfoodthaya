@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { loginUser } from '../../hooks/useApi';
 import { Eye, EyeOff, Lock, ShieldCheck, User } from 'lucide-react';
 
@@ -17,8 +17,13 @@ type LoginForm = z.infer<typeof loginSchema>;
 export const AdminLogin = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [showPw, setShowPw] = useState(false);
-    const [loginError, setLoginError] = useState('');
+    const [loginError, setLoginError] = useState(() =>
+        searchParams.get('session') === 'expired'
+            ? 'Uw sessie is verlopen. Log opnieuw in om verder te gaan.'
+            : ''
+    );
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>({
         resolver: zodResolver(loginSchema),

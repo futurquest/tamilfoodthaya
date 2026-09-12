@@ -2,7 +2,8 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
     LayoutDashboard, Users, BookOpen, Settings, LogOut,
-    UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles
+    UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles,
+    ShieldCheck, CircleDot, ChevronRight
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -17,12 +18,14 @@ export const AdminLayout = () => {
     const navGroups = [
         {
             label: 'Overview',
+            description: 'Daily control',
             items: [
                 { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={18} /> },
             ]
         },
         {
             label: 'Sales',
+            description: 'Inbox and leads',
             items: [
                 { name: 'Leads', path: '/admin/leads', icon: <Users size={18} /> },
                 { name: 'Messages', path: '/admin/messages', icon: <MessageSquare size={18} /> },
@@ -30,6 +33,7 @@ export const AdminLayout = () => {
         },
         {
             label: 'Menu',
+            description: 'Food catalogue',
             items: [
                 { name: 'Categories', path: '/admin/categories', icon: <BookOpen size={18} /> },
                 { name: 'Menu Items', path: '/admin/menu', icon: <UtensilsCrossed size={18} /> },
@@ -37,6 +41,7 @@ export const AdminLayout = () => {
         },
         {
             label: 'Catering',
+            description: 'Events and offers',
             items: [
                 { name: 'Packages', path: '/admin/catering-packages', icon: <UtensilsCrossed size={18} /> },
                 { name: 'Orders', path: '/admin/catering-orders', icon: <ClipboardList size={18} /> },
@@ -46,6 +51,7 @@ export const AdminLayout = () => {
         },
         {
             label: 'System',
+            description: 'Access and setup',
             items: [
                 { name: 'Users', path: '/admin/users', icon: <Users size={18} /> },
                 { name: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
@@ -67,25 +73,40 @@ export const AdminLayout = () => {
                 }
             `}</style>
             {/* Sidebar */}
-            <aside className="admin-sidebar-panel w-64 flex flex-col flex-shrink-0">
+            <aside className="admin-sidebar-panel w-[17.5rem] flex flex-col flex-shrink-0">
                 {/* Logo */}
-                <div className="admin-brand-block px-5 py-5">
-                    <NavLink to="/admin/dashboard" className="flex items-center gap-3 group">
+                <div className="admin-brand-block px-4 py-4">
+                    <NavLink to="/admin/dashboard" className="admin-brand-link group">
                         <span className="admin-brand-seal">
                             <img src="/logo.png" alt="Tamil Food Thaya" className="h-8 w-8 object-contain" />
                         </span>
-                        <div>
-                            <h2 className="text-sm font-extrabold leading-tight">Admin CMS</h2>
-                            <p className="text-xs">Tamil Food Thaya</p>
+                        <div className="min-w-0">
+                            <h2 className="truncate text-sm font-extrabold leading-tight">Tamil Food Thaya</h2>
+                            <p className="truncate text-xs">Restaurant operations</p>
                         </div>
+                        <ChevronRight size={16} className="admin-brand-arrow" />
                     </NavLink>
+
+                    <div className="admin-sidebar-status">
+                        <div>
+                            <span>System</span>
+                            <strong>Admin console</strong>
+                        </div>
+                        <span className="admin-status-pill">
+                            <CircleDot size={12} />
+                            Live
+                        </span>
+                    </div>
                 </div>
 
                 {/* Nav */}
-                <nav className="admin-nav flex-grow px-3 py-4 space-y-5 overflow-y-auto">
+                <nav className="admin-nav flex-grow px-3 py-4 space-y-4 overflow-y-auto" aria-label="Admin navigation">
                     {navGroups.map(group => (
-                        <div key={group.label}>
-                            <p className="admin-nav-label px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest">{group.label}</p>
+                        <div className="admin-nav-group" key={group.label}>
+                            <div className="admin-nav-group-header px-2">
+                                <p className="admin-nav-label text-[10px] font-bold uppercase tracking-widest">{group.label}</p>
+                                <span>{group.description}</span>
+                            </div>
                             {group.items.map(item => (
                                 <NavLink
                                     key={item.path}
@@ -97,9 +118,9 @@ export const AdminLayout = () => {
                                         }`
                                     }
                                 >
-                                    {item.icon}
+                                    <span className="admin-nav-icon">{item.icon}</span>
                                     <span>{item.name}</span>
-                                    {/* active indicator */}
+                                    <ChevronRight size={15} className="admin-nav-chevron" />
                                 </NavLink>
                             ))}
                         </div>
@@ -108,16 +129,17 @@ export const AdminLayout = () => {
 
                 {/* User / Logout */}
                 <div className="admin-user-block px-3 py-4">
-                    <div className="admin-user-card flex items-center gap-3 px-3 py-2 rounded-xl mb-2">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    <div className="admin-user-card flex items-center gap-3 px-3 py-3 rounded-xl mb-3">
+                        <div className="admin-user-avatar w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0">
                             {user?.username?.[0]?.toUpperCase() || 'A'}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold truncate">{user?.username}</p>
-                            <p className="text-xs">Administrator</p>
+                            <p className="text-xs">Administrator access</p>
                         </div>
+                        <ShieldCheck size={16} className="admin-user-shield" />
                     </div>
-                    <div className="px-3 py-2 mb-1">
+                    <div className="admin-language-slot px-3 py-2 mb-2">
                         <LanguageSwitcher />
                     </div>
                     <button

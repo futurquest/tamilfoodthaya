@@ -1,23 +1,26 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getSettings, updateSettings } from '../../hooks/useApi';
-import { Button } from '../../components/ui/Button';
-import { Card, CardContent } from '../../components/ui/Card';
-import { useForm } from 'react-hook-form';
 import { useEffect, type ReactNode } from 'react';
-import { toast } from 'react-hot-toast';
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getSettings, updateSettings } from '../../hooks/useApi';
 import { Spinner } from '../../components/ui/Spinner';
+import { toast } from 'react-hot-toast';
 import {
-    Store,
-    Mail,
-    Phone,
-    MessageCircle,
-    MapPin,
-    Facebook,
-    Instagram,
+    AlertCircle,
+    CheckCircle2,
     Clock3,
-    Settings as SettingsIcon,
+    Facebook,
+    Globe2,
+    Instagram,
+    Mail,
+    MapPin,
+    MessageCircle,
+    Phone,
     Power,
-    CheckCircle2
+    RotateCcw,
+    Save,
+    Settings as SettingsIcon,
+    Store,
+    UtensilsCrossed
 } from 'lucide-react';
 
 type BusinessHours = {
@@ -42,6 +45,8 @@ type SiteSettings = {
     businessHours: BusinessHours;
 };
 
+type SettingsSection = 'identity' | 'contact' | 'hours' | 'orders';
+
 const DEFAULT_SETTINGS: SiteSettings = {
     siteName: '',
     email: '',
@@ -62,14 +67,14 @@ const DEFAULT_SETTINGS: SiteSettings = {
     }
 };
 
-const DAYS: Array<keyof BusinessHours> = [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday'
+const DAYS: Array<{ key: keyof BusinessHours; label: string }> = [
+    { key: 'monday', label: 'Monday' },
+    { key: 'tuesday', label: 'Tuesday' },
+    { key: 'wednesday', label: 'Wednesday' },
+    { key: 'thursday', label: 'Thursday' },
+    { key: 'friday', label: 'Friday' },
+    { key: 'saturday', label: 'Saturday' },
+    { key: 'sunday', label: 'Sunday' }
 ];
 
 export const SettingsPage = () => {
@@ -78,13 +83,20 @@ export const SettingsPage = () => {
     const {
         data: settings,
         isLoading,
-        isError
+        isError,
+        refetch
     } = useQuery({
         queryKey: ['settings'],
         queryFn: getSettings
     });
 
-    const { register, handleSubmit, reset, watch } = useForm<SiteSettings>({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        formState: { isDirty }
+    } = useForm<SiteSettings>({
         defaultValues: DEFAULT_SETTINGS
     });
 
@@ -107,7 +119,7 @@ export const SettingsPage = () => {
         mutationFn: updateSettings,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['settings'] });
-            toast.success('Settings saved successfully');
+            toast.success('Settings saved');
         },
         onError: () => {
             toast.error('Failed to save settings');
@@ -128,7 +140,16 @@ export const SettingsPage = () => {
         mutation.mutate(payload);
     };
 
-    const ordersEnabled = watch('ordersEnabled');
+    const values = watch();
+    const ordersEnabled = Boolean(values.ordersEnabled);
+    const completedContactFields = [
+        values.email,
+        values.phone,
+        values.whatsapp,
+        values.address
+    ].filter(Boolean).length;
+    const filledHours = Object.values(values.businessHours || {}).filter(Boolean).length;
+    const hasSocialLinks = Boolean(values.facebookUrl || values.instagramUrl);
 
     if (isLoading) {
         return (
@@ -142,15 +163,8 @@ export const SettingsPage = () => {
     if (isError) {
         return (
             <div className="admin-page">
-                <div className="admin-page-container max-w-[1080px]">
-                    <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-10 text-center">
-                        <h3 className="text-lg font-semibold text-red-700">
-                            Failed to load settings
-                        </h3>
-                        <p className="mt-2 text-sm text-red-600">
-                            Please refresh and try again.
-                        </p>
-                    </div>
+                <div className="admin-page-container min-w-0 max-w-[1180px]">
+                    <ErrorState onRetry={() => refetch()} />
                 </div>
             </div>
         );
@@ -158,65 +172,81 @@ export const SettingsPage = () => {
 
     return (
         <div className="admin-page">
-            <div className="admin-page-container max-w-[1080px]">
-                {/* Header */}
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
-                            </p>
-                            <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                <SettingsIcon size={24} className="text-slate-900" />
-                                Site Settings
-                            </h1>
-                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                                Manage your restaurant contact details, social links, opening hours and online ordering.
+            <div className="admin-page-container min-w-0 max-w-[1180px]">
+                <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+                        <div className="min-w-0 max-w-2xl">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
+                                    <SettingsIcon size={21} />
+                                </span>
+                                <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
+                                    Site Settings
+                                </h1>
+                            </div>
+                            <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
+                                Control public restaurant details, contact channels, opening
+                                hours and online ordering availability.
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <MetricCard
-                                label="Info"
-                                value="General"
-                                icon={<Store size={16} />}
-                            />
-                            <MetricCard
-                                label="Hours"
-                                value="7 Days"
-                                icon={<Clock3 size={16} />}
-                            />
-                            <MetricCard
-                                label="Orders"
-                                value={ordersEnabled ? 'Enabled' : 'Disabled'}
-                                icon={<Power size={16} />}
-                            />
-                            <MetricCard
-                                label="Status"
-                                value="Ready"
-                                icon={<CheckCircle2 size={16} />}
-                            />
+                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                                Save status
+                            </p>
+                            <p className="mt-1 text-sm font-extrabold text-slate-950">
+                                {mutation.isPending
+                                    ? 'Saving changes'
+                                    : isDirty
+                                    ? 'Unsaved changes'
+                                    : 'All changes saved'}
+                            </p>
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-5">
+                        <MetricCard label="Brand" value={values.siteName ? 'Set' : 'Missing'} icon={<Store size={15} />} />
+                        <MetricCard label="Contact" value={`${completedContactFields}/4`} icon={<Phone size={15} />} />
+                        <MetricCard label="Hours" value={`${filledHours}/7`} icon={<Clock3 size={15} />} />
+                        <MetricCard label="Social" value={hasSocialLinks ? 'Linked' : 'Empty'} icon={<Globe2 size={15} />} />
+                        <MetricCard label="Orders" value={ordersEnabled ? 'Enabled' : 'Paused'} icon={<Power size={15} />} />
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                    {/* General Info */}
-                    <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-5 md:p-6">
-                            <SectionTitle
-                                title="General Info"
-                                subtitle="Basic business contact details shown across the website."
-                            />
+                <form onSubmit={handleSubmit(onSubmit)} className="grid min-w-0 gap-5 xl:grid-cols-[230px_minmax(0,1fr)_300px] xl:items-start">
+                    <SettingsNav />
 
-                            <div className="mt-5 grid gap-4 md:grid-cols-2">
+                    <div className="min-w-0 space-y-5">
+                        <SettingsCard
+                            id="identity"
+                            icon={<Store size={18} />}
+                            title="Business Identity"
+                            subtitle="The public-facing restaurant name and address shown across the website."
+                        >
+                            <div className="grid min-w-0 gap-4 md:grid-cols-2">
                                 <InputBlock
-                                    label="Site Name"
+                                    label="Site name"
                                     icon={<Store size={16} />}
                                     placeholder="Tamil Food Thaya"
                                     registration={register('siteName')}
                                 />
 
+                                <InputBlock
+                                    label="Address"
+                                    icon={<MapPin size={16} />}
+                                    placeholder="Restaurant address"
+                                    registration={register('address')}
+                                />
+                            </div>
+                        </SettingsCard>
+
+                        <SettingsCard
+                            id="contact"
+                            icon={<MessageCircle size={18} />}
+                            title="Contact Channels"
+                            subtitle="Keep phone, email, WhatsApp and social links consistent for customer support."
+                        >
+                            <div className="grid min-w-0 gap-4 md:grid-cols-2">
                                 <InputBlock
                                     label="Email"
                                     icon={<Mail size={16} />}
@@ -238,27 +268,6 @@ export const SettingsPage = () => {
                                     registration={register('whatsapp')}
                                 />
 
-                                <div className="md:col-span-2">
-                                    <InputBlock
-                                        label="Address"
-                                        icon={<MapPin size={16} />}
-                                        placeholder="Restaurant address"
-                                        registration={register('address')}
-                                    />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Social Media */}
-                    <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-5 md:p-6">
-                            <SectionTitle
-                                title="Social Media"
-                                subtitle="Add your public social links for the website footer and contact sections."
-                            />
-
-                            <div className="mt-5 grid gap-4 md:grid-cols-2">
                                 <InputBlock
                                     label="Facebook URL"
                                     icon={<Facebook size={16} />}
@@ -266,76 +275,147 @@ export const SettingsPage = () => {
                                     registration={register('facebookUrl')}
                                 />
 
-                                <InputBlock
-                                    label="Instagram URL"
-                                    icon={<Instagram size={16} />}
-                                    placeholder="https://instagram.com/..."
-                                    registration={register('instagramUrl')}
-                                />
+                                <div className="md:col-span-2">
+                                    <InputBlock
+                                        label="Instagram URL"
+                                        icon={<Instagram size={16} />}
+                                        placeholder="https://instagram.com/..."
+                                        registration={register('instagramUrl')}
+                                    />
+                                </div>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </SettingsCard>
 
-                    {/* Business Hours */}
-                    <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-5 md:p-6">
-                            <SectionTitle
-                                title="Business Hours"
-                                subtitle="Set the opening hours shown on the website for each day."
-                            />
-
-                            <div className="mt-5 grid gap-4 md:grid-cols-2">
+                        <SettingsCard
+                            id="hours"
+                            icon={<Clock3 size={18} />}
+                            title="Business Hours"
+                            subtitle="Use clear customer-facing text such as 12:00 - 22:00 or Closed."
+                        >
+                            <div className="grid min-w-0 gap-3 md:grid-cols-2">
                                 {DAYS.map((day) => (
                                     <InputBlock
-                                        key={day}
-                                        label={capitalize(day)}
+                                        key={day.key}
+                                        label={day.label}
                                         icon={<Clock3 size={16} />}
-                                        placeholder="e.g. 12:00 - 22:00"
-                                        registration={register(`businessHours.${day}`)}
+                                        placeholder="12:00 - 22:00"
+                                        registration={register(`businessHours.${day.key}`)}
                                     />
                                 ))}
                             </div>
-                        </CardContent>
-                    </Card>
+                        </SettingsCard>
 
-                    {/* Orders Toggle */}
-                    <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-5 md:p-6">
-                            <SectionTitle
-                                title="Online Orders"
-                                subtitle="Enable or disable online order functionality for customers."
-                            />
-
-                            <div className="mt-5">
-                                <ToggleCard
-                                    title={
-                                        ordersEnabled
-                                            ? 'Online Orders Enabled'
-                                            : 'Online Orders Disabled'
-                                    }
-                                    description="Toggle whether customers can place orders through the website."
-                                    checked={Boolean(ordersEnabled)}
-                                    inputProps={register('ordersEnabled')}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Save */}
-                    <div className="flex justify-end">
-                        <Button
-                            type="submit"
-                            disabled={mutation.isPending}
-                            className="h-11 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+                        <SettingsCard
+                            id="orders"
+                            icon={<UtensilsCrossed size={18} />}
+                            title="Online Orders"
+                            subtitle="Pause ordering when the kitchen is closed for maintenance or special events."
                         >
-                            {mutation.isPending ? 'Saving...' : 'Save Settings'}
-                        </Button>
+                            <ToggleCard
+                                title={ordersEnabled ? 'Online orders enabled' : 'Online orders paused'}
+                                description="Controls whether customers can place orders through the website."
+                                checked={ordersEnabled}
+                                inputProps={register('ordersEnabled')}
+                            />
+                        </SettingsCard>
                     </div>
+
+                    <aside className="min-w-0 space-y-5 xl:sticky xl:top-6">
+                        <OperationsPreview values={values} />
+
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                            <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
+                                <CheckCircle2 size={17} className="text-emerald-700" />
+                                Readiness
+                            </div>
+                            <div className="mt-4 space-y-3">
+                                <ReadinessLine label="Business name" complete={Boolean(values.siteName)} />
+                                <ReadinessLine label="Contact details" complete={completedContactFields >= 3} />
+                                <ReadinessLine label="Opening hours" complete={filledHours === 7} />
+                                <ReadinessLine label="Order availability" complete />
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                            <button
+                                type="submit"
+                                disabled={mutation.isPending}
+                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                <Save size={16} />
+                                {mutation.isPending ? 'Saving...' : 'Save settings'}
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => reset()}
+                                disabled={!isDirty || mutation.isPending}
+                                className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <RotateCcw size={15} />
+                                Reset changes
+                            </button>
+                        </div>
+                    </aside>
                 </form>
             </div>
         </div>
     );
 };
+
+const SettingsNav = () => {
+    const items: Array<{ id: SettingsSection; label: string; icon: ReactNode }> = [
+        { id: 'identity', label: 'Identity', icon: <Store size={15} /> },
+        { id: 'contact', label: 'Contact', icon: <MessageCircle size={15} /> },
+        { id: 'hours', label: 'Hours', icon: <Clock3 size={15} /> },
+        { id: 'orders', label: 'Orders', icon: <Power size={15} /> }
+    ];
+
+    return (
+        <nav className="hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm xl:sticky xl:top-6 xl:block">
+            {items.map((item) => (
+                <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-amber-50 hover:text-amber-800"
+                >
+                    {item.icon}
+                    {item.label}
+                </a>
+            ))}
+        </nav>
+    );
+};
+
+const SettingsCard = ({
+    id,
+    icon,
+    title,
+    subtitle,
+    children
+}: {
+    id: SettingsSection;
+    icon: ReactNode;
+    title: string;
+    subtitle: string;
+    children: ReactNode;
+}) => (
+    <section id={id} className="scroll-mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#fbf6ed] text-amber-800">
+                {icon}
+            </span>
+            <div className="min-w-0">
+                <h2 className="text-lg font-extrabold text-slate-950">{title}</h2>
+                <p className="mt-1 max-w-[70ch] text-sm font-medium leading-6 text-slate-500">
+                    {subtitle}
+                </p>
+            </div>
+        </div>
+
+        <div className="mt-5">{children}</div>
+    </section>
+);
 
 const MetricCard = ({
     label,
@@ -345,36 +425,15 @@ const MetricCard = ({
     label: string;
     value: string | number;
     icon: ReactNode;
-}) => {
-    return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
-                {icon}
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
+}) => (
+    <div className="min-w-0 border-slate-200 px-4 py-4 odd:border-r sm:border-r sm:last:border-r-0 md:px-5">
+        <div className="flex items-center gap-2 text-slate-500">
+            {icon}
+            <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em]">{label}</p>
         </div>
-    );
-};
-
-const SectionTitle = ({
-    title,
-    subtitle
-}: {
-    title: string;
-    subtitle: string;
-}) => {
-    return (
-        <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                {title}
-            </p>
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
-        </div>
-    );
-};
+        <p className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-950">{value}</p>
+    </div>
+);
 
 const InputBlock = ({
     label,
@@ -385,32 +444,26 @@ const InputBlock = ({
     label: string;
     icon?: ReactNode;
     placeholder?: string;
-    registration: any;
-}) => {
-    return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-                {label}
-            </label>
-
-            <div className="relative">
-                {icon && (
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                        {icon}
-                    </span>
-                )}
-
-                <input
-                    {...registration}
-                    placeholder={placeholder}
-                    className={`h-11 w-full rounded-2xl border border-slate-200 bg-white text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100 ${
-                        icon ? 'pl-11 pr-4' : 'px-4'
-                    }`}
-                />
-            </div>
+    registration: UseFormRegisterReturn;
+}) => (
+    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
+        <div className="relative">
+            {icon && (
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    {icon}
+                </span>
+            )}
+            <input
+                {...registration}
+                placeholder={placeholder}
+                className={`h-12 w-full min-w-0 rounded-xl border border-stone-200 bg-white text-sm font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 ${
+                    icon ? 'pl-11 pr-4' : 'px-4'
+                }`}
+            />
         </div>
-    );
-};
+    </div>
+);
 
 const ToggleCard = ({
     title,
@@ -421,40 +474,94 @@ const ToggleCard = ({
     title: string;
     description: string;
     checked: boolean;
-    inputProps: any;
-}) => {
-    return (
-        <label
-            className={`flex w-full cursor-pointer items-center justify-between rounded-[22px] border px-4 py-4 text-left transition ${
-                checked
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-200 bg-white text-slate-700 hover:bg-stone-50'
-            }`}
-        >
-            <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p
-                    className={`mt-1 text-xs leading-5 ${
-                        checked ? 'text-slate-300' : 'text-slate-500'
-                    }`}
-                >
-                    {description}
-                </p>
-            </div>
+    inputProps: UseFormRegisterReturn;
+}) => (
+    <label
+        className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 text-left transition focus-within:ring-4 focus-within:ring-amber-100 ${
+            checked
+                ? 'border-[#251917] bg-[#251917] text-white'
+                : 'border-slate-200 bg-[#fbf6ed] text-slate-700 hover:bg-amber-50'
+        }`}
+    >
+        <div className="min-w-0">
+            <p className="text-sm font-extrabold">{title}</p>
+            <p className={`mt-1 text-xs font-semibold leading-5 ${checked ? 'text-stone-200' : 'text-slate-500'}`}>
+                {description}
+            </p>
+        </div>
 
-            <div className="flex items-center gap-3">
-                <input type="checkbox" className="sr-only" {...inputProps} />
-                <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                        checked ? 'bg-white text-slate-900' : 'bg-stone-100 text-slate-500'
-                    }`}
-                >
-                    <Power size={16} />
-                </div>
-            </div>
-        </label>
-    );
-};
+        <div className="flex items-center gap-3">
+            <input type="checkbox" className="sr-only" {...inputProps} />
+            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${checked ? 'bg-white text-slate-900' : 'bg-white text-slate-500'}`}>
+                <Power size={16} />
+            </span>
+        </div>
+    </label>
+);
 
-const capitalize = (value: string) =>
-    value.charAt(0).toUpperCase() + value.slice(1);
+const OperationsPreview = ({ values }: { values: SiteSettings }) => (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
+            <Globe2 size={17} className="text-amber-700" />
+            Public preview
+        </div>
+
+        <div className="mt-4 rounded-xl border border-slate-200 bg-[#fbf6ed] p-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                Restaurant
+            </p>
+            <p className="mt-1 text-lg font-extrabold text-slate-950">
+                {values.siteName || 'Tamil Food Thaya'}
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
+                {values.address || 'Restaurant address'}
+            </p>
+        </div>
+
+        <div className="mt-4 space-y-3 text-xs font-semibold text-slate-500">
+            <PreviewLine label="Email" value={values.email || 'No email'} />
+            <PreviewLine label="Phone" value={values.phone || 'No phone'} />
+            <PreviewLine label="WhatsApp" value={values.whatsapp || 'No WhatsApp'} />
+            <PreviewLine label="Orders" value={values.ordersEnabled ? 'Enabled' : 'Paused'} />
+        </div>
+    </div>
+);
+
+const ReadinessLine = ({
+    label,
+    complete
+}: {
+    label: string;
+    complete: boolean;
+}) => (
+    <div className="flex items-center justify-between gap-3 text-xs font-bold">
+        <span className="text-slate-600">{label}</span>
+        <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${complete ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>
+            {complete ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
+            {complete ? 'Ready' : 'Needs info'}
+        </span>
+    </div>
+);
+
+const PreviewLine = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2 last:border-b-0 last:pb-0">
+        <span>{label}</span>
+        <span className="min-w-0 truncate text-right font-extrabold text-slate-800">{value}</span>
+    </div>
+);
+
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+    <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 shadow-sm">
+        <AlertCircle size={18} className="mt-0.5 shrink-0" />
+        <div>
+            <p>Settings could not be loaded.</p>
+            <button
+                type="button"
+                onClick={onRetry}
+                className="mt-2 font-extrabold underline decoration-red-300 underline-offset-4"
+            >
+                Try again
+            </button>
+        </div>
+    </div>
+);

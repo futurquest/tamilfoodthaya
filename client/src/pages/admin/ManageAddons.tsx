@@ -10,12 +10,21 @@ import {
     Wine,
     Baby,
     Camera,
+    AlertCircle,
+    Clock3,
     Sparkles,
     ChevronDown,
+    Filter,
+    Grid3X3,
+    List,
+    RotateCcw,
+    Search,
+    Shapes,
     X,
     Package,
     Euro,
     Layers3,
+    Users,
     Wand2
 } from 'lucide-react';
 
@@ -26,6 +35,8 @@ type CategoryType =
     | 'service'
     | 'extra_time'
     | 'other';
+type ViewMode = 'grid' | 'list';
+type PricingFilter = 'all' | PricingType;
 
 type AddonForm = {
     name: string;
@@ -45,8 +56,8 @@ const CATEGORY_ICONS: Record<CategoryType, ReactNode> = {
     entertainment: <Music size={16} />,
     decoration: <Flower2 size={16} />,
     service: <Wine size={16} />,
-    extra_time: <Baby size={16} />,
-    other: <Camera size={16} />
+    extra_time: <Clock3 size={16} />,
+    other: <Shapes size={16} />
 };
 
 const CATEGORY_STYLES: Record<CategoryType, string> = {
@@ -118,7 +129,13 @@ export const ManageAddons = () => {
     const [editing, setEditing] = useState<string | null>(null);
     const [form, setForm] = useState<AddonForm>(EMPTY_FORM);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [formError, setFormError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState<'all' | CategoryType>('all');
+    const [pricingFilter, setPricingFilter] = useState<PricingFilter>('all');
+    const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
     const stats = useMemo(() => {
         const total = addons.length;
@@ -131,16 +148,57 @@ export const ManageAddons = () => {
         return { total, fixed, perPerson, categories };
     }, [addons]);
 
+    const categoryCounts = useMemo(() => {
+        const categories: CategoryType[] = [
+            'decoration',
+            'entertainment',
+            'service',
+            'extra_time',
+            'other'
+        ];
+
+        return categories.reduce<Record<CategoryType, number>>((counts, category) => {
+            counts[category] = addons.filter((addon) => addon.category === category).length;
+            return counts;
+        }, {} as Record<CategoryType, number>);
+    }, [addons]);
+
+    const filteredAddons = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+
+        return addons.filter((addon) => {
+            if (categoryFilter !== 'all' && addon.category !== categoryFilter) return false;
+            if (pricingFilter !== 'all' && addon.pricingType !== pricingFilter) return false;
+            if (!query) return true;
+
+            return [
+                addon.name,
+                addon.description,
+                ...Object.values(addon.nameTranslations || {}),
+                ...Object.values(addon.descriptionTranslations || {}),
+                formatCategory(addon.category),
+                String(addon.price || 0)
+            ]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query));
+        });
+    }, [addons, categoryFilter, pricingFilter, searchTerm]);
+
+    const hasActiveFilters =
+        Boolean(searchTerm.trim()) || categoryFilter !== 'all' || pricingFilter !== 'all';
+
     const load = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/addons');
+            setLoadError(false);
+            const response = await api.get('/addons/all');
             const data = Array.isArray(response.data)
                 ? response.data
                 : response.data?.data || [];
             setAddons(data);
         } catch {
             setAddons([]);
+            setLoadError(true);
             toast.error('Failed to load add-ons');
         } finally {
             setLoading(false);
@@ -155,6 +213,7 @@ export const ManageAddons = () => {
         setShowForm(false);
         setEditing(null);
         setForm(EMPTY_FORM);
+        setFormError('');
     };
 
     const buildPresetForm = (preset?: Partial<AddonForm>): AddonForm => {
@@ -182,6 +241,7 @@ export const ManageAddons = () => {
     const openNew = (preset?: Partial<AddonForm>) => {
         setEditing(null);
         setForm(buildPresetForm(preset));
+        setFormError('');
         setShowForm(true);
     };
 
@@ -207,6 +267,7 @@ export const ManageAddons = () => {
             pricingType: addon.pricingType,
             category: addon.category
         });
+        setFormError('');
         setShowForm(true);
     };
 
@@ -240,11 +301,12 @@ export const ManageAddons = () => {
             const payload = buildPayload(form);
 
             if (!payload.name.trim()) {
-                toast.error('Please enter at least the Dutch name');
+                setFormError('Enter a Dutch name before saving this add-on.');
                 return;
             }
 
             setSaving(true);
+            setFormError('');
 
             if (editing) {
                 await api.put(`/addons/${editing}`, payload);
@@ -257,7 +319,7 @@ export const ManageAddons = () => {
             closeForm();
             await load();
         } catch {
-            toast.error('Failed to save add-on');
+            setFormError('The add-on could not be saved. Check the details and try again.');
         } finally {
             setSaving(false);
         }
@@ -275,49 +337,132 @@ export const ManageAddons = () => {
         }
     };
 
+    const clearFilters = () => {
+        setSearchTerm('');
+        setCategoryFilter('all');
+        setPricingFilter('all');
+    };
+
     return (
         <div className="admin-page">
-            <div className="admin-page-container max-w-[1080px]">
-                <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
-                            </p>
-                            <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[30px]">
-                                <Sparkles size={24} className="text-slate-900" />
-                                Event Add-ons
-                            </h1>
-                            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                                Manage optional extras guests can add to their
-                                catering package.
+            <div className="admin-page-container min-w-0 max-w-[1180px]">
+                <section className="admin-command-hero min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+                        <div className="min-w-0 max-w-2xl">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
+                                    <Sparkles size={21} />
+                                </span>
+                                <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
+                                    Event Add-ons
+                                </h1>
+                            </div>
+                            <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
+                                Manage optional services customers can add to a catering booking,
+                                with clear pricing and multilingual descriptions.
                             </p>
                         </div>
 
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                <MetricCard label="Add-ons" value={stats.total} />
-                                <MetricCard label="Fixed" value={stats.fixed} />
-                                <MetricCard
-                                    label="Per Person"
-                                    value={stats.perPerson}
-                                />
-                                <MetricCard
-                                    label="Categories"
-                                    value={stats.categories}
-                                />
+                        <button
+                            type="button"
+                            onClick={() => openNew()}
+                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(37,25,23,0.18)] transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
+                        >
+                            <Plus size={17} />
+                            Add add-on
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-4">
+                        <MetricCard label="Total add-ons" value={stats.total} icon={<Package size={15} />} />
+                        <MetricCard label="Fixed price" value={stats.fixed} icon={<Euro size={15} />} />
+                        <MetricCard label="Per person" value={stats.perPerson} icon={<Users size={15} />} />
+                        <MetricCard label="Categories" value={stats.categories} icon={<Layers3 size={15} />} />
+                    </div>
+                </section>
+
+                <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(280px,1fr)_auto] xl:items-end">
+                        <label className="relative block min-w-0">
+                            <span className="sr-only">Search add-ons</span>
+                            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                placeholder="Search name, description, category or price"
+                                className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
+                            />
+                        </label>
+
+                        <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
+                            <div className="grid min-w-0 gap-1.5">
+                                <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                                    <Euro size={13} /> Pricing
+                                </span>
+                                <div className="grid h-11 grid-cols-3 rounded-xl bg-stone-100 p-1">
+                                    {([
+                                        ['all', 'All'],
+                                        ['fixed', 'Fixed'],
+                                        ['per_person', 'Per person']
+                                    ] as Array<[PricingFilter, string]>).map(([value, label]) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            onClick={() => setPricingFilter(value)}
+                                            aria-pressed={pricingFilter === value}
+                                            className={`rounded-lg px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${
+                                                pricingFilter === value
+                                                    ? 'bg-white text-slate-950 shadow-sm'
+                                                    : 'text-slate-500 hover:text-slate-900'
+                                            }`}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            <button
-                                onClick={() => openNew()}
-                                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800"
-                            >
-                                <Plus size={16} />
-                                New Add-on
-                            </button>
+                            <div className="grid gap-1.5">
+                                <span className="px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">View</span>
+                                <div className="grid h-11 grid-cols-2 rounded-xl bg-stone-100 p-1">
+                                    <ViewButton label="Grid" icon={<Grid3X3 size={15} />} active={viewMode === 'grid'} onClick={() => setViewMode('grid')} />
+                                    <ViewButton label="List" icon={<List size={15} />} active={viewMode === 'list'} onClick={() => setViewMode('list')} />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="mt-3 min-w-0 border-t border-slate-100 pt-3">
+                        <div className="flex min-w-0 gap-2 overflow-x-auto pb-1">
+                            <CategoryTab label="All categories" count={addons.length} active={categoryFilter === 'all'} onClick={() => setCategoryFilter('all')} />
+                            {(Object.keys(CATEGORY_ICONS) as CategoryType[]).map((category) => (
+                                <CategoryTab
+                                    key={category}
+                                    label={formatCategory(category)}
+                                    count={categoryCounts[category] || 0}
+                                    icon={CATEGORY_ICONS[category]}
+                                    active={categoryFilter === category}
+                                    onClick={() => setCategoryFilter(category)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-semibold text-slate-500">
+                        <span className="inline-flex items-center gap-1.5">
+                            <Filter size={13} /> Showing {filteredAddons.length} of {addons.length} add-ons
+                        </span>
+                        {hasActiveFilters && (
+                            <button
+                                type="button"
+                                onClick={clearFilters}
+                                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                            >
+                                <RotateCcw size={13} /> Clear filters
+                            </button>
+                        )}
+                    </div>
+                </section>
 
                 {addons.length === 0 && !loading && (
                     <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
@@ -352,41 +497,71 @@ export const ManageAddons = () => {
                 )}
 
                 {loading ? (
-                    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-                        <p className="text-sm text-slate-400">Loading add-ons...</p>
-                    </div>
-                ) : addons.length === 0 ? (
-                    <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50">
-                            <Package size={22} className="text-slate-400" />
-                        </div>
-                        <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                            No add-ons yet
-                        </h3>
-                        <p className="mt-2 text-sm text-slate-500">
-                            Click <strong>New Add-on</strong> to create the first
-                            option.
+                    <LoadingPanel />
+                ) : loadError ? (
+                    <div className="rounded-2xl border border-red-200 bg-white px-6 py-14 text-center shadow-sm">
+                        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                            <AlertCircle size={21} />
+                        </span>
+                        <h3 className="mt-4 text-lg font-extrabold text-slate-950">Add-ons could not be loaded</h3>
+                        <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-slate-600">
+                            Check the connection and retry. Existing add-on data has not been changed.
                         </p>
+                        <button
+                            type="button"
+                            onClick={load}
+                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+                        >
+                            <RotateCcw size={15} /> Retry loading
+                        </button>
+                    </div>
+                ) : filteredAddons.length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50">
+                            {addons.length > 0 ? <Search size={22} className="text-slate-400" /> : <Package size={22} className="text-slate-400" />}
+                        </div>
+                        <h3 className="mt-4 text-lg font-extrabold text-slate-950">
+                            {addons.length > 0 ? 'No add-ons match these filters' : 'Create your first add-on'}
+                        </h3>
+                        <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-slate-600">
+                            {addons.length > 0
+                                ? 'Clear the filters or try a different search term.'
+                                : 'Add optional services such as welcome drinks, decoration or entertainment.'}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={addons.length > 0 ? clearFilters : () => openNew()}
+                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+                        >
+                            {addons.length > 0 ? <RotateCcw size={15} /> : <Plus size={15} />}
+                            {addons.length > 0 ? 'Clear filters' : 'Add first add-on'}
+                        </button>
                     </div>
                 ) : (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {addons.map((addon) => (
+                    <div className={viewMode === 'grid' ? 'grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3' : 'grid min-w-0 gap-3'}>
+                        {filteredAddons.map((addon) => (
                             <div
                                 key={addon._id}
-                                className="group rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                                className={`group min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_rgba(37,25,23,0.09)] ${
+                                    viewMode === 'list'
+                                        ? 'md:grid md:grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_150px_145px_82px] md:items-center md:gap-4'
+                                        : 'flex flex-col'
+                                }`}
                             >
-                                <div className="mb-4 flex items-start justify-between gap-3">
+                                <div className={`flex items-start justify-between gap-3 ${viewMode === 'grid' ? 'mb-4' : 'mb-4 md:contents'}`}>
                                     <span
-                                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${CATEGORY_STYLES[addon.category]}`}
+                                        className={`inline-flex w-fit items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-bold ${CATEGORY_STYLES[addon.category]} ${viewMode === 'list' ? 'md:col-start-3 md:row-start-1' : ''}`}
                                     >
                                         {CATEGORY_ICONS[addon.category]}
                                         {formatCategory(addon.category)}
                                     </span>
 
-                                    <div className="flex gap-2 opacity-100 transition md:opacity-0 md:group-hover:opacity-100">
+                                    <div className={`flex shrink-0 gap-1.5 ${viewMode === 'list' ? 'md:col-start-5 md:row-start-1 md:justify-end' : ''}`}>
                                         <button
                                             onClick={() => openEdit(addon)}
-                                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:bg-stone-50 hover:text-slate-700"
+                                            aria-label={`Edit ${addon.nameTranslations?.nl || addon.name}`}
+                                            title="Edit add-on"
+                                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
                                         >
                                             <Pencil size={14} />
                                         </button>
@@ -395,24 +570,26 @@ export const ManageAddons = () => {
                                             onClick={() =>
                                                 handleDelete(addon._id)
                                             }
-                                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                                            aria-label={`Delete ${addon.nameTranslations?.nl || addon.name}`}
+                                            title="Delete add-on"
+                                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-200"
                                         >
                                             <Trash2 size={14} />
                                         </button>
                                     </div>
                                 </div>
 
-                                <h3 className="text-[16px] font-semibold text-slate-900">
+                                <h3 className={`break-words text-base font-extrabold text-slate-950 ${viewMode === 'list' ? 'md:col-start-1 md:row-start-1' : ''}`}>
                                     {addon.nameTranslations?.nl || addon.name}
                                 </h3>
 
-                                <p className="mt-2 min-h-[60px] text-sm leading-6 text-slate-500">
+                                <p className={`break-words text-sm font-medium leading-6 text-slate-600 ${viewMode === 'grid' ? 'mt-2 flex-1' : 'mt-2 md:col-start-2 md:row-start-1 md:mt-0'}`}>
                                     {addon.descriptionTranslations?.nl ||
                                         addon.description ||
                                         'No description added'}
                                 </p>
 
-                                <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3">
+                                <div className={`flex items-center justify-between gap-3 ${viewMode === 'grid' ? 'mt-5 border-t border-slate-100 pt-4' : 'mt-4 md:col-start-4 md:row-start-1 md:mt-0'}`}>
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Euro size={14} />
                                         <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">
@@ -438,32 +615,37 @@ export const ManageAddons = () => {
 
                 {showForm && (
                     <div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]"
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#160d0b]/60 p-3 backdrop-blur-[2px] sm:p-5"
                         onClick={closeForm}
                     >
                         <div
-                            className="w-full max-w-3xl rounded-[30px] border border-slate-200 bg-white shadow-2xl"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="addon-editor-title"
+                            className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_32px_90px_rgba(22,13,11,0.32)] sm:max-h-[calc(100dvh-2.5rem)]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-                                <div>
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                        Add-on Editor
-                                    </p>
-                                    <h2 className="mt-1 text-xl font-semibold text-slate-900">
-                                        {editing ? 'Edit Add-on' : 'New Add-on'}
+                                <div className="min-w-0">
+                                    <h2 id="addon-editor-title" className="text-xl font-extrabold text-slate-950">
+                                        {editing ? 'Edit add-on' : 'Create add-on'}
                                     </h2>
+                                    <p className="mt-1 text-sm font-medium text-slate-500">
+                                        Add customer-facing translations, pricing and catalogue placement.
+                                    </p>
                                 </div>
 
                                 <button
                                     onClick={closeForm}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700"
+                                    aria-label="Close add-on editor"
+                                    title="Close"
+                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100"
                                 >
                                     <X size={18} />
                                 </button>
                             </div>
 
-                            <div className="max-h-[85vh] overflow-y-auto px-6 py-6">
+                            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
                                 <div className="space-y-6">
                                     <div>
                                         <SectionTitle
@@ -471,7 +653,7 @@ export const ManageAddons = () => {
                                             subtitle="Add multilingual display names."
                                         />
 
-                                        <div className="mt-4 grid gap-4 md:grid-cols-3">
+                                        <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-3">
                                             <InputBlock
                                                 label="Name (NL)"
                                                 placeholder="Dutch name"
@@ -546,7 +728,7 @@ export const ManageAddons = () => {
                                             subtitle="Add descriptions in each language."
                                         />
 
-                                        <div className="mt-4 grid gap-4 md:grid-cols-3">
+                                        <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-3">
                                             <TextAreaBlock
                                                 label="Description (NL)"
                                                 placeholder="Dutch description"
@@ -624,7 +806,7 @@ export const ManageAddons = () => {
                                             subtitle="Configure how this add-on is billed."
                                         />
 
-                                        <div className="mt-4 grid gap-4 md:grid-cols-3">
+                                        <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                             <NumberBlock
                                                 label="Price (€)"
                                                 value={form.price}
@@ -697,10 +879,17 @@ export const ManageAddons = () => {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 flex flex-col-reverse gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                                {formError && (
+                                    <div role="alert" className="mt-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                                        <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                                        <span>{formError}</span>
+                                    </div>
+                                )}
+
+                                <div className="sticky bottom-0 z-10 -mx-5 mt-6 flex flex-col-reverse gap-2 border-t border-slate-200 bg-white px-5 pb-1 pt-4 sm:-mx-6 sm:flex-row sm:justify-end sm:px-6">
                                     <button
                                         onClick={closeForm}
-                                        className="h-11 rounded-full border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:bg-stone-50"
+                                        className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                     >
                                         Cancel
                                     </button>
@@ -708,7 +897,7 @@ export const ManageAddons = () => {
                                     <button
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="h-11 rounded-full border border-slate-900 bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+                                        className="h-11 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {saving
                                             ? 'Saving...'
@@ -728,20 +917,98 @@ export const ManageAddons = () => {
 
 const MetricCard = ({
     label,
-    value
+    value,
+    icon
 }: {
     label: string;
     value: string | number;
+    icon: ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-                {label}
-            </p>
-            <p className="mt-1 text-xl font-semibold text-slate-900">{value}</p>
+        <div className="min-w-0 border-slate-200 px-4 py-4 odd:border-r sm:border-r sm:last:border-r-0 md:px-5">
+            <div className="flex items-center gap-2 text-slate-500">
+                {icon}
+                <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em]">{label}</p>
+            </div>
+            <p className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-950">{value}</p>
         </div>
     );
 };
+
+const ViewButton = ({
+    label,
+    icon,
+    active,
+    onClick
+}: {
+    label: string;
+    icon: ReactNode;
+    active: boolean;
+    onClick: () => void;
+}) => (
+    <button
+        type="button"
+        onClick={onClick}
+        aria-pressed={active}
+        className={`flex items-center justify-center gap-2 rounded-lg text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${
+            active ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+        }`}
+    >
+        {icon}
+        {label}
+    </button>
+);
+
+const CategoryTab = ({
+    label,
+    count,
+    icon,
+    active,
+    onClick
+}: {
+    label: string;
+    count: number;
+    icon?: ReactNode;
+    active: boolean;
+    onClick: () => void;
+}) => (
+    <button
+        type="button"
+        onClick={onClick}
+        aria-pressed={active}
+        className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${
+            active
+                ? 'border-[#251917] bg-[#251917] text-white'
+                : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50'
+        }`}
+    >
+        {icon}
+        <span>{label}</span>
+        <span className={`rounded-md px-1.5 py-0.5 text-[10px] ${active ? 'bg-white/15' : 'bg-stone-100'}`}>
+            {count}
+        </span>
+    </button>
+);
+
+const LoadingPanel = () => (
+    <div aria-label="Loading add-ons" className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+            <div
+                key={index}
+                className="min-h-[250px] animate-pulse rounded-2xl border border-slate-200 bg-white p-5 shadow-sm motion-reduce:animate-none"
+            >
+                <div className="flex justify-between">
+                    <div className="h-7 w-28 rounded-lg bg-stone-200" />
+                    <div className="h-9 w-20 rounded-lg bg-stone-100" />
+                </div>
+                <div className="mt-6 h-5 w-3/5 rounded bg-stone-200" />
+                <div className="mt-3 h-4 w-full rounded bg-stone-100" />
+                <div className="mt-2 h-4 w-4/5 rounded bg-stone-100" />
+                <div className="mt-8 h-14 rounded-xl bg-stone-100" />
+            </div>
+        ))}
+    </div>
+);
 
 const SectionTitle = ({
     title,
@@ -752,10 +1019,10 @@ const SectionTitle = ({
 }) => {
     return (
         <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+            <h3 className="text-base font-extrabold text-slate-950">
                 {title}
-            </p>
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+            </h3>
+            <p className="mt-1 text-sm font-medium text-slate-500">{subtitle}</p>
         </div>
     );
 };
@@ -772,15 +1039,15 @@ const InputBlock = ({
     onChange: (value: string) => void;
 }) => {
     return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
             <input
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                className="h-12 w-full min-w-0 rounded-xl border border-stone-200 bg-white px-4 text-sm font-medium text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
             />
         </div>
     );
@@ -796,8 +1063,8 @@ const NumberBlock = ({
     onChange: (value: number) => void;
 }) => {
     return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
             <input
@@ -806,7 +1073,7 @@ const NumberBlock = ({
                 step="0.01"
                 value={value}
                 onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-                className="h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                className="h-12 w-full min-w-0 rounded-xl border border-stone-200 bg-white px-4 text-sm font-bold tabular-nums text-slate-950 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
             />
         </div>
     );
@@ -824,8 +1091,8 @@ const TextAreaBlock = ({
     onChange: (value: string) => void;
 }) => {
     return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
             <textarea
@@ -833,7 +1100,7 @@ const TextAreaBlock = ({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="min-h-[110px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+                className="min-h-[120px] w-full min-w-0 resize-y rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
             />
         </div>
     );
@@ -853,8 +1120,8 @@ const PremiumSelect = ({
     icon?: ReactNode;
 }) => {
     return (
-        <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
 
@@ -868,7 +1135,7 @@ const PremiumSelect = ({
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`h-11 w-full appearance-none rounded-2xl border border-slate-200 bg-white text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100 ${
+                    className={`h-12 w-full min-w-0 appearance-none rounded-xl border border-stone-200 bg-white text-sm font-bold text-slate-950 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 ${
                         icon ? 'pl-11 pr-10' : 'px-4 pr-10'
                     }`}
                 >
