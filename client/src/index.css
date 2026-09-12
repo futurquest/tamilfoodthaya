@@ -376,9 +376,8 @@ select:focus-visible {
 }
 
 .site-header--solid {
-  background: rgba(255, 250, 241, 0.9);
+  background: rgba(255, 250, 241, 0.97);
   box-shadow: 0 12px 38px rgba(83, 46, 26, 0.1);
-  backdrop-filter: blur(18px);
 }
 
 .site-header__inner {
@@ -426,6 +425,72 @@ select:focus-visible {
 .site-header--solid .brand-mark__seal {
   border-color: rgba(37, 25, 23, 0.22);
   box-shadow: 0 6px 18px rgba(75, 28, 18, 0.12);
+}
+
+/* Error boundary fallback */
+.fatal-panel {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(201, 151, 43, 0.14), transparent 18rem),
+    #fffaf1;
+}
+
+.fatal-panel__card {
+  width: min(30rem, 100%);
+  border: 1px solid rgba(37, 25, 23, 0.1);
+  border-radius: 1.25rem;
+  background: rgba(255, 250, 241, 0.9);
+  padding: clamp(1.6rem, 4vw, 3rem);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.fatal-panel__kicker {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  color: var(--spice);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fatal-panel__card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.fatal-panel__card p {
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.fatal-panel__detail {
+  display: block;
+  margin: 1rem auto 0;
+  max-width: 100%;
+  overflow: auto;
+  border-radius: 0.75rem;
+  background: rgba(37, 25, 23, 0.06);
+  padding: 0.6rem 0.8rem;
+  color: #8a2e1d;
+  font-size: 0.75rem;
+  text-align: left;
+}
+
+.fatal-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
 }
 
 /* Branded page loader */
@@ -3031,8 +3096,7 @@ select:focus-visible {
   gap: 0.8rem;
   padding: 0.65rem clamp(1rem, 2.6vw, 2rem);
   border-bottom: 1px solid rgba(37, 25, 23, 0.07);
-  background: rgba(255, 250, 241, 0.86);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 250, 241, 0.97);
 }
 
 .admin-topbar-page {

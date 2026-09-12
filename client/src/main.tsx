@@ -12,17 +12,24 @@ import '@fontsource/noto-sans-tamil/tamil-700.css';
 import App from './App';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ErrorBoundary from './components/ErrorBoundary';
 import { PageLoader } from './components/Logo';
 import './i18n';
 
 const queryClient = new QueryClient();
 
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('[unhandledrejection]', event.reason);
+});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<PageLoader />}>
-        <App />
-      </Suspense>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<PageLoader />}>
+          <App />
+        </Suspense>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );

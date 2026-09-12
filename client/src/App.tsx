@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Header, Footer } from './components/Header';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
@@ -29,14 +29,13 @@ import { UserDashboard } from './pages/user/UserDashboard';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
+import ErrorBoundary from './components/ErrorBoundary';
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Toaster position="top-center" />
-        <Router>
-          <Routes>
+    <ErrorBoundary resetKey={location.pathname} label="Router">
+      <Routes>
             {/* Public Routes */}
             <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
             <Route path="/menu" element={<PublicLayout><MenuPage /></PublicLayout>} />
@@ -74,6 +73,17 @@ function App() {
               </Route>
             </Route>
           </Routes>
+        </ErrorBoundary>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <Toaster position="top-center" />
+        <Router>
+          <AppRoutes />
         </Router>
       </CartProvider>
     </AuthProvider>
