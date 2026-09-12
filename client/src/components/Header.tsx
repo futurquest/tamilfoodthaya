@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { Logo } from './Logo';
 import { getSettings } from '../hooks/useApi';
 
 export const Header = () => {
@@ -38,7 +39,7 @@ export const Header = () => {
       <header className={`site-header ${solid ? 'site-header--solid' : ''}`}>
         <div className="site-header__inner">
           <NavLink to="/" className="brand-mark" aria-label="Tamil Food Thaya home">
-            <span className="brand-mark__seal">T</span>
+            <Logo />
             <span className="brand-mark__copy">
               <strong>Tamil Food Thaya</strong>
               <span>Traditional kitchen and catering</span>
@@ -136,7 +137,7 @@ export const Footer = () => {
       <div className="container site-footer__grid">
         <div className="site-footer__brand">
           <Link to="/" className="brand-mark brand-mark--footer">
-            <span className="brand-mark__seal">T</span>
+            <Logo />
             <span className="brand-mark__copy">
               <strong>Tamil Food Thaya</strong>
               <span>{t('footer.tagline', 'Traditional Tamil food in the Netherlands')}</span>

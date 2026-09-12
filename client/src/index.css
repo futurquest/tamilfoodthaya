@@ -404,14 +404,93 @@ select:focus-visible {
   width: 2.65rem;
   height: 2.65rem;
   place-items: center;
-  border: 1px solid rgba(255, 248, 237, 0.38);
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 248, 237, 0.5);
   border-radius: 0.85rem;
   background: linear-gradient(145deg, #d8a23a, #8a2e1d);
   color: #fffaf1;
   font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 700;
-  box-shadow: 0 14px 32px rgba(75, 28, 18, 0.18);
+  box-shadow: 0 14px 32px rgba(75, 28, 18, 0.22);
+}
+
+.brand-mark__seal img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.site-header--solid .brand-mark__seal {
+  border-color: rgba(37, 25, 23, 0.22);
+  box-shadow: 0 6px 18px rgba(75, 28, 18, 0.12);
+}
+
+/* Branded page loader */
+.page-loader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+}
+
+.page-loader--full {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(201, 151, 43, 0.12), transparent 16rem),
+    #fffaf1;
+}
+
+.page-loader__spinner {
+  position: relative;
+  display: grid;
+  width: 5rem;
+  height: 5rem;
+  place-items: center;
+}
+
+.page-loader__spinner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(201, 151, 43, 0.16);
+  border-top-color: #c9972b;
+  border-radius: 999px;
+  animation: page-loader-spin 0.9s linear infinite;
+}
+
+.page-loader__spinner img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.95rem;
+  object-fit: cover;
+  box-shadow: 0 10px 26px rgba(75, 28, 18, 0.18);
+}
+
+.page-loader__brand {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.page-loader__hint {
+  margin-top: -0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+@keyframes page-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .brand-mark__copy {

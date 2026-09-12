@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { getCateringPackage, createCateringOrder, api } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
+import { PageLoader } from '../components/Logo';
 import { toast } from 'react-hot-toast';
 import {
     CheckCircle,
@@ -421,10 +422,10 @@ export const CateringCheckoutPage = () => {
         }
     };
 
-    if (loading) {
+if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white pt-24 pb-16">
-                <div className="text-lg text-gray-500">{t('cateringCheckout.loading')}</div>
+                <PageLoader full={false} hint={t('cateringCheckout.loading')} />
             </div>
         );
     }
