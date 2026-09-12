@@ -2392,6 +2392,26 @@ select:focus-visible {
   background-color: rgba(255, 250, 241, 0.9) !important;
 }
 
+.admin-panel-font .admin-dropdown-menu {
+  background-color: #fffdf9 !important;
+  backdrop-filter: none !important;
+}
+
+.admin-panel-font .admin-dropdown-menu .hover\:bg-amber-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-blue-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-indigo-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-emerald-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-green-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-purple-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-stone-50:hover,
+.admin-panel-font .admin-dropdown-menu .hover\:bg-red-50:hover {
+  background-color: rgba(37, 25, 23, 0.06) !important;
+}
+
+.admin-panel-font .admin-dropdown-menu .bg-stone-50 {
+  background-color: rgba(37, 25, 23, 0.06) !important;
+}
+
 .admin-panel-font .bg-slate-900 {
   background-color: var(--ink) !important;
 }

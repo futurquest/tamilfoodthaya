@@ -621,7 +621,7 @@ const FilterDropdown = ({
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 top-[52px] z-30 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+                <div className="admin-dropdown-menu absolute right-0 top-[52px] z-30 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
                     <button
                         type="button"
                         onClick={() => onSelect('')}
@@ -709,7 +709,7 @@ const StatusDropdown = ({
             </button>
 
             {isOpen && !disabled && (
-                <div className="absolute right-0 bottom-[52px] z-50 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+                <div className="admin-dropdown-menu absolute right-0 bottom-[52px] z-50 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
                     {STATUS_OPTIONS.map((status) => {
                         const meta = statusMeta[status];
 
