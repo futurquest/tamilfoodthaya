@@ -42,6 +42,9 @@ export class MenuItem extends Document {
     @Prop({ default: true })
     available: boolean;
 
+    @Prop({ default: false })
+    isVeg: boolean;
+
     @Prop({ default: 0 })
     stockCount: number;
 

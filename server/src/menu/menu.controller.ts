@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../auth/schemas/user.schema';
+import { CreateMenuItemDto, UpdateMenuItemDto } from './dto/create-menu-item.dto';
 
 @Controller('menu')
 export class MenuController {
@@ -60,7 +61,7 @@ export class MenuController {
             }
         })
     }))
-    async createItem(@Body() data: any, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
+    async createItem(@Body() data: CreateMenuItemDto, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
         if (itemData.choices && typeof itemData.choices === 'string') {
             try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }
@@ -92,7 +93,7 @@ export class MenuController {
             }
         })
     }))
-    async updateItem(@Param('id') id: string, @Body() data: any, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
+    async updateItem(@Param('id') id: string, @Body() data: UpdateMenuItemDto, @UploadedFile() file: Express.Multer.File, @Req() req: any) {
         const itemData = { ...data };
         if (itemData.choices && typeof itemData.choices === 'string') {
             try { itemData.choices = JSON.parse(itemData.choices); } catch (e) { }

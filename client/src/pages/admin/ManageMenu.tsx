@@ -977,7 +977,8 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                                 error={errors.price?.message}
                                 registration={register('price', {
                                     required: 'Price is required',
-                                    valueAsNumber: true
+                                    valueAsNumber: true,
+                                    min: { value: 0, message: 'Price cannot be negative' }
                                 })}
                             />
                             <InputField
@@ -988,7 +989,8 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                                 error={errors.stockCount?.message}
                                 registration={register('stockCount', {
                                     required: 'Stock count is required',
-                                    valueAsNumber: true
+                                    valueAsNumber: true,
+                                    min: { value: 0, message: 'Stock count cannot be negative' }
                                 })}
                             />
                         </div>
