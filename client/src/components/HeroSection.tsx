@@ -25,12 +25,12 @@ export default function HeroSection() {
             <h1 className="display">{t('home2.title')}</h1>
             <p className="lead">{t('home2.lead')}</p>
             <div className="home-hero__actions">
-              <Link to="/menu" className="btn-primary">
-                {t('home2.menuCta')}
+              <Link to="/catering" className="btn-primary">
+                {t('home2.cateringCta')}
                 <ArrowRight size={18} />
               </Link>
-              <Link to="/catering" className="btn-secondary">
-                {t('home2.cateringCta')}
+              <Link to="/menu" className="btn-secondary">
+                {t('home2.menuCta')}
               </Link>
             </div>
             <div className="home-hero__trust" aria-label="Restaurant highlights">

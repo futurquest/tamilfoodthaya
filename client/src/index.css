@@ -127,7 +127,18 @@ select:focus-visible {
 
 .section {
   position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: clamp(4rem, 8vw, 7rem) 1.25rem;
+}
+
+.section > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .container {
@@ -331,11 +342,20 @@ select:focus-visible {
 .page-hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(8rem, 15vw, 11rem) 1.25rem clamp(4.25rem, 8vw, 6.25rem);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: clamp(5.5rem, 10vw, 7.5rem) 1.25rem clamp(2.75rem, 6vw, 4.5rem);
   background:
     linear-gradient(105deg, rgba(29, 18, 22, 0.92), rgba(29, 18, 22, 0.74)),
     var(--page-image, url('/hero-catering.jpg')) center/cover;
   color: #fff8ed;
+}
+
+.page-hero .container {
+  width: 100%;
+  margin: 0 auto;
 }
 
 .page-hero::after {
@@ -845,7 +865,7 @@ select:focus-visible {
   position: relative;
   z-index: 2;
   display: grid;
-  min-height: calc(100dvh - 10rem);
+  min-height: calc(100dvh - 19rem);
   grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.62fr);
   align-items: center;
   gap: clamp(2rem, 5vw, 4rem);
@@ -947,7 +967,7 @@ select:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
-  margin-top: 2rem;
+  margin-top: 1.25rem;
   overflow: hidden;
   border: 1px solid rgba(255, 248, 237, 0.16);
   border-radius: 1rem;
@@ -955,7 +975,7 @@ select:focus-visible {
 }
 
 .home-hero__proof div {
-  padding: 1.1rem;
+  padding: 0.95rem 1.1rem;
   background: rgba(255, 248, 237, 0.07);
 }
 
@@ -1564,7 +1584,8 @@ select:focus-visible {
 }
 
 .catering-hero--packages {
-  min-height: min(720px, 84dvh);
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
 }
@@ -3626,7 +3647,7 @@ select:focus-visible {
   }
 
   .home-hero {
-    min-height: auto;
+    min-height: 100svh;
   }
 
   .home-hero__grid {
