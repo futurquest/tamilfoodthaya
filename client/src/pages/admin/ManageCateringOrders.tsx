@@ -225,19 +225,19 @@ export const ManageCateringOrders = () => {
                 <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                            <p className="fluid-label font-semibold uppercase tracking-[0.22em] text-slate-400">
                                 Orders
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
-                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
+                                <h1 className="fluid-hero-title font-extrabold tracking-tight text-slate-900">
                                     Catering Orders
                                 </h1>
-                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
+                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 fluid-chip font-extrabold text-amber-800">
                                     <UtensilsCrossed size={13} />
                                     Live event bookings
                                 </span>
                             </div>
-                            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
+                            <p className="mt-3 max-w-2xl fluid-small font-medium text-slate-500">
                                 Review event bookings, customer selections, payment state
                                 and production status in one clean view.
                             </p>
@@ -261,7 +261,7 @@ export const ManageCateringOrders = () => {
                             />
                             <MetricCard
                                 label="Revenue"
-                                value={`€ ${stats.revenue.toFixed(2)}`}
+                                value={formatEuro(stats.revenue)}
                                 icon={<CircleDollarSign size={16} />}
                             />
                         </div>
@@ -302,7 +302,7 @@ export const ManageCateringOrders = () => {
                 {loading ? (
                     <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
                         <CardContent className="px-6 py-16 text-center">
-                            <p className="text-sm text-slate-400">
+                            <p className="fluid-small text-slate-400">
                                 Loading catering orders...
                             </p>
                         </CardContent>
@@ -313,10 +313,10 @@ export const ManageCateringOrders = () => {
                             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50 text-slate-400">
                                 <UtensilsCrossed size={20} />
                             </div>
-                            <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                            <h3 className="fluid-title mt-4 font-semibold text-slate-900">
                                 No catering orders found
                             </h3>
-                            <p className="mt-2 text-sm text-slate-500">
+                            <p className="mt-2 fluid-small text-slate-500">
                                 Orders will appear here when customers place catering bookings.
                             </p>
                         </CardContent>
@@ -347,12 +347,12 @@ export const ManageCateringOrders = () => {
                                             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                                                 <div className="min-w-0 flex-1">
                                                     <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                        <span className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 font-mono text-[11px] font-bold tracking-[0.18em] text-slate-500">
+                                                        <span className="fluid-chip rounded-xl border border-slate-200 bg-white px-3 py-1.5 font-mono font-bold tracking-[0.18em] text-slate-500">
                                                             #{String(order._id).slice(-6).toUpperCase()}
                                                         </span>
 
                                                         <span
-                                                            className={`inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                                                            className={`fluid-chip inline-flex rounded-full border px-3 py-1.5 font-semibold uppercase tracking-[0.12em] ${
                                                                 statusMeta[order.status]?.chipClass ||
                                                                 'border-slate-200 bg-stone-50 text-slate-700'
                                                             }`}
@@ -361,21 +361,21 @@ export const ManageCateringOrders = () => {
                                                         </span>
 
                                                         <span
-                                                            className={`inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${paymentClass}`}
+                                                            className={`fluid-chip inline-flex rounded-full border px-3 py-1.5 font-semibold uppercase tracking-[0.12em] ${paymentClass}`}
                                                         >
                                                             {formatStatus(order.paymentStatus)}
                                                         </span>
                                                     </div>
 
-                                                    <h3 className="text-[18px] font-semibold text-slate-900">
+                                                    <h3 className="fluid-title mt-1 font-semibold text-slate-900">
                                                         {order.customerInfo?.name || 'Unknown Customer'}
                                                     </h3>
 
-                                                    <p className="mt-1 text-sm text-slate-500">
+                                                    <p className="mt-1 fluid-small text-slate-500">
                                                         {order.packageName || 'No package name'}
                                                     </p>
 
-                                                    <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-500">
+                                                    <div className="mt-3 flex flex-wrap gap-2 fluid-small text-slate-500">
                                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-stone-50 px-3 py-1.5">
                                                             <Calendar size={14} />
                                                             {formatDate(order.eventDate)}
@@ -396,15 +396,15 @@ export const ManageCateringOrders = () => {
                                                 </div>
 
                                                 <div className="flex items-center justify-between gap-4 lg:justify-end">
-                                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3 text-left lg:text-right">
-                                                        <p className="text-sm text-slate-400">
+                                                    <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3 text-left lg:text-right">
+                                                        <p className="fluid-small text-slate-400">
                                                             Total
                                                         </p>
-                                                        <p className="text-2xl font-semibold text-slate-900">
-                                                            € {Number(order.totalPrice || 0).toFixed(2)}
+                                                        <p className="fluid-value-sm mt-0.5 font-semibold tabular-nums text-slate-900">
+                                                            {formatEuro(Number(order.totalPrice || 0))}
                                                         </p>
-                                                        <p className="text-xs text-slate-500">
-                                                            € {Number(order.pricePerPerson || 0).toFixed(2)} p.p.
+                                                        <p className="fluid-tiny mt-1 tabular-nums text-slate-500">
+                                                            {formatEuro(Number(order.pricePerPerson || 0))} p.p.
                                                         </p>
                                                     </div>
 
@@ -447,27 +447,27 @@ export const ManageCateringOrders = () => {
                                                 <div className="rounded-[22px] border border-slate-200 bg-stone-50 p-4">
                                                     <div className="mb-2 flex items-center gap-2 text-slate-400">
                                                         <FileText size={14} />
-                                                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+                                                        <p className="fluid-chip font-semibold uppercase tracking-[0.16em]">
                                                             Customer Notes
                                                         </p>
                                                     </div>
-                                                    <p className="text-sm leading-6 text-slate-700">
+                                                    <p className="fluid-small leading-6 text-slate-700">
                                                         {order.customerInfo?.notes || 'No notes provided'}
                                                     </p>
                                                 </div>
 
                                                 <div>
                                                     <div className="mb-3">
-                                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                                        <p className="fluid-chip font-semibold uppercase tracking-[0.18em] text-slate-400">
                                                             Package Selections
                                                         </p>
-                                                        <p className="mt-1 text-sm text-slate-500">
+                                                        <p className="mt-1 fluid-small text-slate-500">
                                                             Review the selected items per category.
                                                         </p>
                                                     </div>
 
                                                     {order.selections?.length === 0 ? (
-                                                        <div className="rounded-[22px] border border-dashed border-slate-200 bg-stone-50 px-4 py-8 text-center text-sm text-slate-400">
+                                                        <div className="rounded-[22px] border border-dashed border-slate-200 bg-stone-50 px-4 py-8 text-center fluid-small text-slate-400">
                                                             No selections recorded
                                                         </div>
                                                     ) : (
@@ -477,7 +477,7 @@ export const ManageCateringOrders = () => {
                                                                     key={i}
                                                                     className="rounded-[22px] border border-slate-200 bg-white p-4"
                                                                 >
-                                                                    <h4 className="text-sm font-semibold text-slate-900">
+                                                                    <h4 className="fluid-small font-semibold text-slate-900">
                                                                         {selection.categoryName}
                                                                     </h4>
 
@@ -489,18 +489,18 @@ export const ManageCateringOrders = () => {
                                                                                     className="flex items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-stone-50 px-3 py-3"
                                                                                 >
                                                                                     <div className="min-w-0">
-                                                                                        <p className="text-sm font-medium text-slate-900">
+                                                                                        <p className="fluid-small font-medium text-slate-900">
                                                                                             {item.itemName}
                                                                                         </p>
                                                                                         {item.choiceName && (
-                                                                                            <p className="mt-1 text-xs text-slate-500">
+                                                                                            <p className="mt-1 fluid-tiny text-slate-500">
                                                                                                 Choice: {item.choiceName}
                                                                                             </p>
                                                                                         )}
                                                                                     </div>
 
-                                                                                    <span className="shrink-0 text-sm font-semibold text-slate-700">
-                                                                                        € {Number(item.price || 0).toFixed(2)}
+                                                                                    <span className="shrink-0 fluid-small font-semibold tabular-nums text-slate-700">
+                                                                                        {formatEuro(item.price)}
                                                                                     </span>
                                                                                 </div>
                                                                             )
@@ -514,10 +514,10 @@ export const ManageCateringOrders = () => {
 
                                                 <div className="flex flex-col gap-3 border-t border-slate-200 pt-4 lg:flex-row lg:items-center lg:justify-between overflow-visible">
                                                     <div>
-                                                        <p className="text-sm font-semibold text-slate-900">
+                                                        <p className="fluid-small font-semibold text-slate-900">
                                                             Update Status
                                                         </p>
-                                                        <p className="text-xs text-slate-500">
+                                                        <p className="fluid-tiny mt-1 text-slate-500">
                                                             Change the current progress of this catering order.
                                                         </p>
                                                     </div>
@@ -561,14 +561,14 @@ const MetricCard = ({
     icon: ReactNode;
 }) => {
     return (
-        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-3.5 py-3 shadow-sm md:px-4">
             <div className="flex items-center gap-2 text-[#d8c7ad]">
                 {icon}
-                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
+                <p className="fluid-label min-w-0 truncate font-bold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
+            <p className="mt-1.5 break-words leading-tight font-extrabold tabular-nums text-white fluid-value">{value}</p>
         </div>
     );
 };
@@ -586,11 +586,11 @@ const InfoCard = ({
         <div className="rounded-[22px] border border-slate-200 bg-stone-50 p-4">
             <div className="flex items-center gap-2 text-slate-400">
                 {icon}
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+                <p className="fluid-chip font-semibold uppercase tracking-[0.16em]">
                     {label}
                 </p>
             </div>
-            <p className="mt-2 break-words text-sm font-medium text-slate-900">{value}</p>
+            <p className="mt-2 break-words fluid-body font-medium text-slate-900">{value}</p>
         </div>
     );
 };
@@ -613,11 +613,11 @@ const FilterDropdown = ({
             <button
                 type="button"
                 onClick={onToggle}
-                className="flex h-11 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 transition hover:bg-stone-50"
+                className="flex h-11 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 fluid-small text-slate-900 transition hover:bg-stone-50"
             >
                 <span className="flex items-center gap-2">
-                    <Filter size={16} className="text-slate-400" />
-                    <span>{currentLabel}</span>
+                    <Filter size={16} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{currentLabel}</span>
                 </span>
                 <ChevronDown
                     size={16}
@@ -630,7 +630,7 @@ const FilterDropdown = ({
                     <button
                         type="button"
                         onClick={() => onSelect('')}
-                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-stone-50 ${
+                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 fluid-small transition hover:bg-stone-50 ${
                             value === '' ? 'bg-stone-50 text-slate-900' : 'text-slate-700'
                         }`}
                     >
@@ -646,7 +646,7 @@ const FilterDropdown = ({
                             key={status}
                             type="button"
                             onClick={() => onSelect(status)}
-                            className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm transition ${
+                            className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 fluid-small transition ${
                                 statusMeta[status]?.menuClass || 'hover:bg-stone-50'
                             } ${
                                 value === status ? 'bg-stone-50 text-slate-900' : 'text-slate-700'
@@ -695,7 +695,7 @@ const StatusDropdown = ({
                 type="button"
                 disabled={disabled}
                 onClick={onToggle}
-                className={`flex h-11 w-full items-center justify-between rounded-2xl border px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                className={`flex h-11 w-full items-center justify-between rounded-2xl border px-4 fluid-small font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     current?.chipClass || 'border-slate-200 bg-stone-50 text-slate-700'
                 }`}
             >
@@ -723,7 +723,7 @@ const StatusDropdown = ({
                                 key={status}
                                 type="button"
                                 onClick={() => onSelect(status)}
-                                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm transition ${
+                                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 fluid-small transition ${
                                     meta?.menuClass || 'hover:bg-stone-50'
                                 } ${
                                     value === status ? 'bg-stone-50 text-slate-900' : 'text-slate-700'
@@ -755,6 +755,14 @@ const formatStatus = (value?: string) => {
         .replace(/_/g, ' ')
         .replace(/\b\w/g, (char) => char.toUpperCase());
 };
+
+const formatEuro = (value: number) =>
+    new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(Number(value) || 0);
 
 const formatDate = (value?: string) => {
     if (!value) return '-';
