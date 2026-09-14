@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
@@ -399,7 +399,7 @@ const MetricCard = ({
     icon: ReactNode;
 }) => (
     <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-[#d8c7ad]">
+        <div className="flex items-center gap-2 text-(--brand-stone)">
             {icon}
             <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
         </div>
@@ -568,7 +568,7 @@ const MenuGrid = ({
     onEdit: (item: MenuItem) => void;
     onDelete: (id: string) => void;
 }) => (
-    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
         <WorkspaceHeader
             title="Menu board"
             text="Review dish photography, pricing, stock, dietary flags and visibility in a visual workspace."
@@ -599,7 +599,7 @@ const MenuCard = ({
     onEdit: (item: MenuItem) => void;
     onDelete: (id: string) => void;
 }) => (
-    <article className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
+    <article className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_var(--brand-slate-a10)]">
         <div className="relative aspect-[4/3] bg-stone-50">
             <img
                 src={item.image || '/placeholder-food.jpg'}
@@ -1035,7 +1035,7 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                     <div className="space-y-5">
                         <SectionTitle title="Image and status" subtitle="Photography, visibility and quick review" />
 
-                        <div className="rounded-[26px] border border-slate-200 bg-[#fbfaf7] p-4">
+                        <div className="rounded-[26px] border border-slate-200 bg-(--brand-surface-ivory) p-4">
                             <p className="mb-3 text-sm font-extrabold text-slate-700">Image preview</p>
                             <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white">
                                 {preview ? (
@@ -1071,7 +1071,7 @@ export const MenuForm = ({ onClose, onSubmit, initialData }: MenuFormProps) => {
                             onClick={() => setValue('available', !available)}
                         />
 
-                        <div className="rounded-[26px] border border-slate-200 bg-[#fbfaf7] p-4">
+                        <div className="rounded-[26px] border border-slate-200 bg-(--brand-surface-ivory) p-4">
                             <p className="text-sm font-extrabold text-slate-700">Quick summary</p>
                             <div className="mt-3 space-y-2 text-sm text-slate-600">
                                 <SummaryRow label="Name" value={watch('name') || '-'} />
@@ -1141,7 +1141,7 @@ const ToggleControl = ({
                 </span>
             </span>
         </div>
-        <span className={`flex h-6 w-11 items-center rounded-full p-1 transition ${checked ? 'bg-[#39533b]' : 'bg-slate-300'}`}>
+        <span className={`flex h-6 w-11 items-center rounded-full p-1 transition ${checked ? 'bg-(--brand-leaf)' : 'bg-slate-300'}`}>
             <span className={`h-4 w-4 rounded-full bg-white transition ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
         </span>
     </button>
@@ -1376,7 +1376,7 @@ const getCategoryName = (item: MenuItem, categoryMap: Map<string, string>) => {
     return categoryMap.get(item.categoryId || '') || 'Unassigned';
 };
 
-const formatPrice = (price?: number) => `€ ${Number(price || 0).toFixed(2)}`;
+const formatPrice = (price?: number) => `â‚¬ ${Number(price || 0).toFixed(2)}`;
 
 const isValidImageUrl = (url?: string) =>
     !!url && (/^(https?:|data:image\/|blob:)/.test(url)) && !url.startsWith('/');

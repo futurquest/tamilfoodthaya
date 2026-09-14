@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 import { Logo } from './Logo';
 import { getSettings } from '../hooks/useApi';
 
@@ -55,6 +56,7 @@ export const Header = () => {
           </nav>
 
           <div className="site-header__actions">
+            <ThemeToggle />
             <LanguageSwitcher />
             {user ? (
               <>
@@ -101,7 +103,10 @@ export const Header = () => {
               </NavLink>
             ))}
             <div className="mobile-menu__tools">
-              <LanguageSwitcher />
+              <div className="flex items-center gap-2 mb-2">
+                <ThemeToggle />
+                <div className="flex-1"><LanguageSwitcher /></div>
+              </div>
               {user ? (
                 <>
                   <NavLink to="/dashboard" className="mobile-menu__link">{t('nav.my_dashboard', 'Dashboard')}</NavLink>

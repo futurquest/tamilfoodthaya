@@ -2,8 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
     <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tamil Food Thaya</title>
     <meta
       name="description"
@@ -16,9 +32,96 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/logo.png" />
+    <link rel="preload" as="image" href="/logo.png" />
+    <link rel="preload" as="image" href="/hero-catering.jpg" fetchpriority="high" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fffaf1;
+      }
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem 1rem;
+        background:
+          radial-gradient(circle at 50% 38%, rgba(201, 151, 43, 0.12), transparent 16rem),
+          #fffaf1;
+      }
+      #app-splash__ring {
+        position: relative;
+        width: 5rem;
+        height: 5rem;
+        display: grid;
+        place-items: center;
+      }
+      #app-splash__ring::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 3px solid rgba(201, 151, 43, 0.16);
+        border-top-color: #c9972b;
+        border-radius: 999px;
+        animation: app-splash-spin 0.9s linear infinite;
+      }
+      #app-splash__ring img {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.95rem;
+        object-fit: cover;
+        box-shadow: 0 10px 26px rgba(75, 28, 18, 0.18);
+      }
+      #app-splash b {
+        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: #251917;
+      }
+      #app-splash span {
+        margin-top: -0.4rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #705b4a;
+      }
+      @keyframes app-splash-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      html[data-theme='dark'] body {
+        background: #191411;
+      }
+      html[data-theme='dark'] #app-splash {
+        background:
+          radial-gradient(circle at 50% 38%, rgba(232, 160, 32, 0.1), transparent 16rem),
+          #191411;
+      }
+      html[data-theme='dark'] #app-splash b {
+        color: #f3e8d9;
+      }
+      html[data-theme='dark'] #app-splash span {
+        color: #b6a28c;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="app-splash">
+        <div id="app-splash__ring">
+          <img src="/logo.png" alt="Tamil Food Thaya" />
+        </div>
+        <b>Tamil Food Thaya</b>
+        <span>loading&hellip;</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

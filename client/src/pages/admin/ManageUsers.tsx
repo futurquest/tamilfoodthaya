@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+﻿import { useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     AlertCircle,
@@ -203,7 +203,7 @@ export const ManageUsers = () => {
                         </div>
 
                         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#d8c7ad]">
+                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                                 <ShieldCheck size={13} />
                                 Directory health
                             </p>
@@ -427,7 +427,7 @@ export const ManageUsers = () => {
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl bg-[#fbf6ed] p-4">
+                                    <div className="rounded-2xl bg-(--brand-surface-dim) p-4">
                                         <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                                             <UserCheck size={17} className="text-amber-700" />
                                             Account preview
@@ -475,7 +475,7 @@ export const ManageUsers = () => {
                                         type="button"
                                         onClick={handleSave}
                                         disabled={updateMutation.isPending}
-                                        className="h-11 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                        className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {updateMutation.isPending ? 'Saving...' : 'Save changes'}
                                     </button>
@@ -503,7 +503,7 @@ const UserResults = ({
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="hidden overflow-x-auto xl:block">
             <table className="w-full min-w-[920px] text-sm">
-                <thead className="border-b border-slate-200 bg-[#fbf6ed]">
+                <thead className="border-b border-slate-200 bg-(--brand-surface-dim)">
                     <tr>
                         <TableHeader>User</TableHeader>
                         <TableHeader>Contact</TableHeader>
@@ -602,7 +602,7 @@ const UserCard = ({
             <VerificationBadge verified={Boolean(user.isVerified)} />
         </div>
 
-        <div className="mt-4 rounded-xl bg-[#fbf6ed] p-3">
+        <div className="mt-4 rounded-xl bg-(--brand-surface-dim) p-3">
             <ContactBlock user={user} />
         </div>
 
@@ -633,7 +633,7 @@ const MetricCard = ({
     icon: ReactNode;
 }) => (
     <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-[#d8c7ad]">
+        <div className="flex items-center gap-2 text-(--brand-stone)">
             {icon}
             <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
         </div>
@@ -653,7 +653,7 @@ const EmptyState = ({
     onAction?: () => void;
 }) => (
     <div className="rounded-2xl border border-slate-200 bg-white px-5 py-12 text-center shadow-sm">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-[#fbf6ed] text-slate-500">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-(--brand-surface-dim) text-slate-500">
             <Users size={24} />
         </div>
         <h3 className="mt-4 text-lg font-extrabold text-slate-950">{title}</h3>
@@ -662,7 +662,7 @@ const EmptyState = ({
             <button
                 type="button"
                 onClick={onAction}
-                className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+                className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
             >
                 <RotateCcw size={16} />
                 {actionLabel}
@@ -713,7 +713,7 @@ const InputBlock = ({
     placeholder?: string;
     icon?: ReactNode;
 }) => (
-    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+    <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
         <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
         <div className="relative">
             {icon && (
@@ -749,7 +749,7 @@ const PremiumSelect = ({
     icon?: ReactNode;
     compact?: boolean;
 }) => (
-    <div className={compact ? 'grid gap-1.5' : 'min-w-0 rounded-2xl bg-[#fbf6ed] p-4'}>
+    <div className={compact ? 'grid gap-1.5' : 'min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4'}>
         <label className={`${compact ? 'px-1 text-[11px] uppercase tracking-[0.1em] text-slate-500' : 'mb-2 text-sm text-slate-800'} flex items-center gap-1.5 font-bold`}>
             {compact && icon}
             {label}
@@ -797,8 +797,8 @@ const ToggleCard = ({
         onClick={() => onChange(!checked)}
         className={`flex min-h-[124px] w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-4 focus:ring-amber-100 ${
             checked
-                ? 'border-[#251917] bg-[#251917] text-white'
-                : 'border-slate-200 bg-[#fbf6ed] text-slate-700 hover:bg-amber-50'
+                ? 'border-(--brand-text) bg-(--brand-text) text-white'
+                : 'border-slate-200 bg-(--brand-surface-dim) text-slate-700 hover:bg-amber-50'
         }`}
     >
         <div className="min-w-0">
@@ -878,7 +878,7 @@ const Avatar = ({ user, large }: { user: AdminUser; large?: boolean }) => {
     const initial = getDisplayName(user).charAt(0).toUpperCase();
 
     return (
-        <div className={`${large ? 'h-14 w-14 text-lg' : 'h-11 w-11 text-sm'} flex shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-[#fbf6ed] font-extrabold text-slate-700`}>
+        <div className={`${large ? 'h-14 w-14 text-lg' : 'h-11 w-11 text-sm'} flex shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-(--brand-surface-dim) font-extrabold text-slate-700`}>
             {initial || 'U'}
         </div>
     );

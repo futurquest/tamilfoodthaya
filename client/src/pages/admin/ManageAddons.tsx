@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api } from '../../hooks/useApi';
 import toast from 'react-hot-toast';
 import {
@@ -350,7 +350,7 @@ export const ManageAddons = () => {
                     <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
                         <div className="min-w-0 max-w-2xl">
                             <div className="flex items-center gap-3">
-                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-(--brand-text) text-(--brand-accent-haze)">
                                     <Sparkles size={21} />
                                 </span>
                                 <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
@@ -366,14 +366,14 @@ export const ManageAddons = () => {
                         <button
                             type="button"
                             onClick={() => openNew()}
-                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(37,25,23,0.18)] transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
+                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white shadow-[0_10px_24px_var(--brand-text-a18)] transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
                         >
                             <Plus size={17} />
                             Add add-on
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-4">
+                    <div className="grid grid-cols-2 border-t border-slate-200 bg-(--brand-surface-dim) sm:grid-cols-4">
                         <MetricCard label="Total add-ons" value={stats.total} icon={<Package size={15} />} />
                         <MetricCard label="Fixed price" value={stats.fixed} icon={<Euro size={15} />} />
                         <MetricCard label="Per person" value={stats.perPerson} icon={<Users size={15} />} />
@@ -510,7 +510,7 @@ export const ManageAddons = () => {
                         <button
                             type="button"
                             onClick={load}
-                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
                         >
                             <RotateCcw size={15} /> Retry loading
                         </button>
@@ -531,7 +531,7 @@ export const ManageAddons = () => {
                         <button
                             type="button"
                             onClick={addons.length > 0 ? clearFilters : () => openNew()}
-                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+                            className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
                         >
                             {addons.length > 0 ? <RotateCcw size={15} /> : <Plus size={15} />}
                             {addons.length > 0 ? 'Clear filters' : 'Add first add-on'}
@@ -542,7 +542,7 @@ export const ManageAddons = () => {
                         {filteredAddons.map((addon) => (
                             <div
                                 key={addon._id}
-                                className={`group min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_rgba(37,25,23,0.09)] ${
+                                className={`group min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_var(--brand-text-a09)] ${
                                     viewMode === 'list'
                                         ? 'md:grid md:grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_150px_145px_82px] md:items-center md:gap-4'
                                         : 'flex flex-col'
@@ -599,7 +599,7 @@ export const ManageAddons = () => {
 
                                     <div className="text-right">
                                         <p className="text-base font-semibold text-slate-900">
-                                            € {Number(addon.price || 0).toFixed(2)}
+                                            â‚¬ {Number(addon.price || 0).toFixed(2)}
                                         </p>
                                         <p className="text-xs text-slate-500">
                                             {addon.pricingType === 'per_person'
@@ -615,14 +615,14 @@ export const ManageAddons = () => {
 
                 {showForm && (
                     <div
-className="fixed inset-0 z-[100] flex overflow-y-auto bg-[#160d0b]/60 p-3 backdrop-blur-[2px] sm:p-5"
+className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 p-3 backdrop-blur-[2px] sm:p-5"
                         onClick={closeForm}
                     >
                         <div
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="addon-editor-title"
-                            className="m-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_32px_90px_rgba(22,13,11,0.32)] sm:max-h-[calc(100dvh-2.5rem)]"
+                            className="m-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_32px_90px_var(--brand-char-a32)] sm:max-h-[calc(100dvh-2.5rem)]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
@@ -808,7 +808,7 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-[#160d0b]/60 p-3 backdr
 
                                         <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                             <NumberBlock
-                                                label="Price (€)"
+                                                label="Price (â‚¬)"
                                                 value={form.price}
                                                 onChange={(value) =>
                                                     setForm((prev) => ({
@@ -897,7 +897,7 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-[#160d0b]/60 p-3 backdr
                                     <button
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="h-11 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                        className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {saving
                                             ? 'Saving...'
@@ -978,7 +978,7 @@ const CategoryTab = ({
         aria-pressed={active}
         className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${
             active
-                ? 'border-[#251917] bg-[#251917] text-white'
+                ? 'border-(--brand-text) bg-(--brand-text) text-white'
                 : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50'
         }`}
     >
@@ -1039,7 +1039,7 @@ const InputBlock = ({
     onChange: (value: string) => void;
 }) => {
     return (
-        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
             <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
@@ -1063,7 +1063,7 @@ const NumberBlock = ({
     onChange: (value: number) => void;
 }) => {
     return (
-        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
             <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
@@ -1091,7 +1091,7 @@ const TextAreaBlock = ({
     onChange: (value: string) => void;
 }) => {
     return (
-        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
             <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>
@@ -1120,7 +1120,7 @@ const PremiumSelect = ({
     icon?: ReactNode;
 }) => {
     return (
-        <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+        <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
             <label className="mb-2 block text-sm font-bold text-slate-800">
                 {label}
             </label>

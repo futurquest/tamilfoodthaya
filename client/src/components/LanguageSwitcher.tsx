@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
@@ -54,11 +54,11 @@ style={{
                     width: dropUp ? '100%' : 'auto',
                     gap: 8,
                     borderRadius: 999,
-                    border: dropUp ? '1px solid rgba(240, 215, 156, 0.28)' : '1px solid rgba(184,122,16,0.35)',
+                    border: dropUp ? '1px solid color-mix(in srgb, var(--brand-accent-soft) 28%, transparent)' : '1px solid color-mix(in srgb, var(--brand-accent-olive) 35%, transparent)',
                     background: dropUp
-                        ? 'linear-gradient(135deg, rgba(255, 248, 237, 0.10), rgba(255, 248, 237, 0.04))'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06))',
-                    color: dropUp ? '#f5ead8' : '#2f2214',
+                        ? 'linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 10%, transparent), color-mix(in srgb, var(--brand-cream) 4%, transparent))'
+                        : 'linear-gradient(135deg, color-mix(in srgb, var(--brand-white) 18%, transparent), color-mix(in srgb, var(--brand-white) 6%, transparent))',
+                    color: dropUp ? 'var(--brand-surface-cream)' : 'var(--brand-ink-warm)',
                     fontFamily: 'var(--font-sans)',
                     fontSize: 12,
                     fontWeight: 600,
@@ -68,8 +68,8 @@ style={{
                     cursor: 'pointer',
                     backdropFilter: 'blur(8px)',
                     boxShadow: dropUp
-                        ? (open ? '0 10px 28px rgba(0, 0, 0, 0.18)' : '0 3px 10px rgba(0, 0, 0, 0.1)')
-                        : (open ? '0 8px 24px rgba(26,18,9,0.15)' : '0 3px 10px rgba(26,18,9,0.08)'),
+                        ? (open ? '0 10px 28px color-mix(in srgb, var(--brand-black) 18%, transparent)' : '0 3px 10px color-mix(in srgb, var(--brand-black) 10%, transparent)')
+                        : (open ? '0 8px 24px color-mix(in srgb, var(--brand-ink-char) 15%, transparent)' : '0 3px 10px color-mix(in srgb, var(--brand-ink-char) 8%, transparent)'),
                     transition: 'all 200ms ease',
                 }}
             >
@@ -81,8 +81,8 @@ style={{
                         width: 24,
                         height: 24,
                         borderRadius: '999px',
-                        background: 'linear-gradient(135deg, #b87a10, #e8a020)',
-                        color: '#0c0a08',
+                        background: 'linear-gradient(135deg, var(--brand-accent-olive), var(--brand-accent-bright))',
+                        color: 'var(--brand-ink-deep-b)',
                         fontSize: 10,
                         fontWeight: 700,
                     }}
@@ -117,10 +117,10 @@ style={{
                         width: dropUp ? '100%' : 'auto',
                         minWidth: 190,
                         borderRadius: 14,
-                        border: '1px solid rgba(184,122,16,0.22)',
-                        background: 'rgba(255,255,255,0.95)',
+                        border: '1px solid color-mix(in srgb, var(--brand-accent-olive) 22%, transparent)',
+                        background: 'color-mix(in srgb, var(--brand-white) 95%, transparent)',
                         backdropFilter: 'blur(10px)',
-                        boxShadow: '0 16px 40px rgba(15,13,10,0.16)',
+                        boxShadow: '0 16px 40px color-mix(in srgb, var(--brand-ink-char-soft) 16%, transparent)',
                         padding: 6,
                         zIndex: 150,
                     }}
@@ -145,8 +145,8 @@ style={{
                                     fontFamily: 'var(--font-sans)',
                                     fontSize: 13,
                                     fontWeight: active ? 700 : 500,
-                                    color: active ? '#1a1209' : '#4a3728',
-                                    background: active ? 'rgba(232,160,32,0.2)' : 'transparent',
+                                    color: active ? 'var(--brand-ink-char)' : 'var(--brand-ink-mocha)',
+                                    background: active ? 'color-mix(in srgb, var(--brand-accent-bright) 20%, transparent)' : 'transparent',
                                     transition: 'background 160ms ease',
                                     textAlign: 'left',
                                 }}
@@ -160,8 +160,8 @@ style={{
                                             borderRadius: '999px',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            background: active ? 'linear-gradient(135deg, #b87a10, #e8a020)' : 'rgba(26,18,9,0.08)',
-                                            color: active ? '#0c0a08' : '#6b5a3a',
+                                            background: active ? 'linear-gradient(135deg, var(--brand-accent-olive), var(--brand-accent-bright))' : 'color-mix(in srgb, var(--brand-ink-char) 8%, transparent)',
+                                            color: active ? 'var(--brand-ink-deep-b)' : 'var(--brand-muted-warm)',
                                             fontSize: 10,
                                             fontWeight: 700,
                                         }}
@@ -176,8 +176,8 @@ style={{
                                         style={{
                                             width: 7,
                                             height: 12,
-                                            borderRight: '2px solid #b87a10',
-                                            borderBottom: '2px solid #b87a10',
+                                            borderRight: '2px solid var(--brand-accent-olive)',
+                                            borderBottom: '2px solid var(--brand-accent-olive)',
                                             transform: 'rotate(45deg)',
                                             marginRight: 4,
                                         }}

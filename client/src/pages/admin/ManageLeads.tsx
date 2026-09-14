@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type DragEvent, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useState, type DragEvent, type ReactNode } from 'react';
 import {
     ArrowRight,
     CheckCircle2,
@@ -63,8 +63,8 @@ const statusConfig: Record<
         title: 'In Progress',
         subtitle: 'Active conversations',
         helper: 'Needs quote or follow-up',
-        accentClass: 'from-[#39533b] to-[#c9972b]',
-        dotClass: 'bg-[#39533b]',
+        accentClass: 'from-(--brand-leaf) to-(--brand-accent)',
+        dotClass: 'bg-(--brand-leaf)',
         badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700',
         activeClass: 'border-emerald-300 ring-4 ring-emerald-100'
     },
@@ -384,7 +384,7 @@ export const ManageLeads = () => {
                 </section>
 
                 {activeViewMode === 'board' ? (
-                    <section className="max-w-full overflow-x-auto rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+                    <section className="max-w-full overflow-x-auto rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
                         <WorkspaceHeader
                             title={
                                 statusFilter === 'ALL'
@@ -483,7 +483,7 @@ const MetricCard = ({
 }) => {
     return (
         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-[#d8c7ad]">
+            <div className="flex items-center gap-2 text-(--brand-stone)">
                 {icon}
                 <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
@@ -727,7 +727,7 @@ const LeadCard = ({
             className={`group cursor-grab rounded-[22px] border border-slate-200 bg-white p-3.5 shadow-sm transition ${
                 isDragging
                     ? 'scale-[0.98] opacity-60'
-                    : 'hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]'
+                    : 'hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_var(--brand-slate-a10)]'
             }`}
         >
             <div className="mb-3 flex items-center justify-between gap-2">
@@ -741,7 +741,7 @@ const LeadCard = ({
             </div>
 
             <div className="flex items-start gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-sm font-extrabold text-white shadow-sm">
                     {(lead.name || 'L').charAt(0).toUpperCase()}
                 </div>
 
@@ -764,7 +764,7 @@ const LeadCard = ({
                 </div>
             </div>
 
-            <div className="mt-4 grid gap-2 rounded-2xl border border-slate-200 bg-[#fbfaf7] px-3 py-3">
+            <div className="mt-4 grid gap-2 rounded-2xl border border-slate-200 bg-(--brand-surface-ivory) px-3 py-3">
                 <ContactLink
                     icon={<Mail size={14} />}
                     value={lead.email || 'No email'}
@@ -910,7 +910,7 @@ const LeadListRow = ({
         <tr className="transition hover:bg-amber-50/50">
             <td className="border-b border-slate-100 px-4 py-4">
                 <div className="flex min-w-0 items-center gap-3">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-sm font-extrabold text-white shadow-sm">
                         {(lead.name || 'L').charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
@@ -986,7 +986,7 @@ const LeadListMobileCard = ({
                         {lead.eventDate ? formatDate(lead.eventDate) : 'Event date not set'}
                     </p>
                 </div>
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-sm font-extrabold text-white shadow-sm">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-sm font-extrabold text-white shadow-sm">
                     {(lead.name || 'L').charAt(0).toUpperCase()}
                 </div>
             </div>
@@ -996,7 +996,7 @@ const LeadListMobileCard = ({
                 <MiniMeta label="Guests" value={lead.guests ? `${lead.guests}` : '-'} />
             </div>
 
-            <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-[#fbfaf7] px-3 py-3">
+            <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-(--brand-surface-ivory) px-3 py-3">
                 <ContactLink
                     icon={<Mail size={14} />}
                     value={lead.email || 'No email'}

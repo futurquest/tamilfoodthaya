@@ -7,6 +7,7 @@ import {
     ShieldCheck, CircleDot, ChevronRight, PanelLeftOpen, PanelLeftClose, Menu, X, Package, UserCog
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 import { useTranslation } from 'react-i18next';
 
 export const AdminLayout = () => {
@@ -194,7 +195,12 @@ const activePage = navGroups
                         <ShieldCheck size={16} className="admin-user-shield" />
                     </div>
                     <div className="admin-language-slot px-3 py-2 mb-2">
-                        <LanguageSwitcher dropUp />
+                        <div className="flex items-center gap-2">
+                            <ThemeToggle />
+                            <div className="flex-1">
+                                <LanguageSwitcher dropUp />
+                            </div>
+                        </div>
                     </div>
                     <button
                         onClick={handleLogout}

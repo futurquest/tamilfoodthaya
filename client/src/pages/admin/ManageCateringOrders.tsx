@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 import {
     Search,
@@ -425,12 +425,12 @@ export const ManageCateringOrders = () => {
                                                     <InfoCard
                                                         icon={<Mail size={14} />}
                                                         label="Email"
-                                                        value={order.customerInfo?.email || '—'}
+                                                        value={order.customerInfo?.email || 'â€”'}
                                                     />
                                                     <InfoCard
                                                         icon={<Phone size={14} />}
                                                         label="Phone"
-                                                        value={order.customerInfo?.phone || '—'}
+                                                        value={order.customerInfo?.phone || 'â€”'}
                                                     />
                                                     <InfoCard
                                                         icon={<Calendar size={14} />}
@@ -440,7 +440,7 @@ export const ManageCateringOrders = () => {
                                                     <InfoCard
                                                         icon={<MapPin size={14} />}
                                                         label="Event Location"
-                                                        value={order.eventLocation || '—'}
+                                                        value={order.eventLocation || 'â€”'}
                                                     />
                                                 </div>
 
@@ -562,7 +562,7 @@ const MetricCard = ({
 }) => {
     return (
         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-3.5 py-3 shadow-sm md:px-4">
-            <div className="flex items-center gap-2 text-[#d8c7ad]">
+            <div className="flex items-center gap-2 text-(--brand-stone)">
                 {icon}
                 <p className="fluid-label min-w-0 truncate font-bold uppercase tracking-[0.16em]">
                     {label}

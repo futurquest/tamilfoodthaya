@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { IconMapPin, IconPhone, IconMail } from './Icons';
 
 const footerLinks = [
@@ -10,9 +10,9 @@ const footerLinks = [
 ];
 
 const hours = [
-    { day: 'Mon – Fri', time: '10:00 – 22:30' },
-    { day: 'Saturday', time: '10:00 – 23:00' },
-    { day: 'Sunday', time: '11:00 – 22:00' },
+    { day: 'Mon â€“ Fri', time: '10:00 â€“ 22:30' },
+    { day: 'Saturday', time: '10:00 â€“ 23:00' },
+    { day: 'Sunday', time: '11:00 â€“ 22:00' },
 ];
 
 export default function Footer() {
@@ -21,8 +21,8 @@ export default function Footer() {
             <style>{`
                 .ft-root {
                     font-family: var(--font-sans);
-                    background: #0a0806;
-                    color: #f0ece4;
+                    background: var(--brand-ink-deep);
+                    color: var(--brand-surface-mist);
                     position: relative;
                     overflow: hidden;
                 }
@@ -32,9 +32,9 @@ export default function Footer() {
                     height: 1px;
                     background: linear-gradient(90deg,
                         transparent 0%,
-                        rgba(232,160,32,0.15) 20%,
-                        rgba(232,160,32,0.5) 50%,
-                        rgba(232,160,32,0.15) 80%,
+                        color-mix(in srgb, var(--brand-accent-bright) 15%, transparent) 20%,
+                        color-mix(in srgb, var(--brand-accent-bright) 50%, transparent) 50%,
+                        color-mix(in srgb, var(--brand-accent-bright) 15%, transparent) 80%,
                         transparent 100%
                     );
                 }
@@ -45,7 +45,7 @@ export default function Footer() {
                     top: 0; left: 50%;
                     transform: translateX(-50%);
                     width: 700px; height: 300px;
-                    background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,0.07) 0%, transparent 70%);
+                    background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brand-accent-bright) 7%, transparent) 0%, transparent 70%);
                     pointer-events: none;
                 }
 
@@ -70,26 +70,26 @@ export default function Footer() {
                     font-family: var(--font-display);
                     font-size: 26px;
                     font-weight: 700;
-                    color: #f5efe4;
+                    color: var(--brand-surface-tint);
                     line-height: 1.1;
                     margin-bottom: 4px;
                     letter-spacing: -0.01em;
                 }
                 .ft-brand-name em {
                     font-style: italic;
-                    color: #e8a020;
+                    color: var(--brand-accent-bright);
                 }
                 .ft-brand-sub {
                     font-size: 10px;
                     letter-spacing: 0.22em;
                     text-transform: uppercase;
-                    color: rgba(232,160,32,0.6);
+                    color: color-mix(in srgb, var(--brand-accent-bright) 60%, transparent);
                     font-weight: 500;
                     margin-bottom: 20px;
                 }
                 .ft-brand-desc {
                     font-size: 13.5px;
-                    color: rgba(240,236,228,0.45);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 45%, transparent);
                     line-height: 1.75;
                     font-weight: 300;
                     max-width: 240px;
@@ -106,17 +106,17 @@ export default function Footer() {
                 .ft-social a {
                     width: 38px; height: 38px;
                     border-radius: 10px;
-                    border: 1px solid rgba(255,255,255,0.1);
+                    border: 1px solid color-mix(in srgb, var(--brand-white) 10%, transparent);
                     display: flex; align-items: center; justify-content: center;
-                    color: rgba(240,236,228,0.5);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 50%, transparent);
                     text-decoration: none;
                     transition: all 0.25s;
                     font-size: 15px;
                 }
                 .ft-social a:hover {
-                    border-color: rgba(232,160,32,0.5);
-                    color: #e8a020;
-                    background: rgba(232,160,32,0.08);
+                    border-color: color-mix(in srgb, var(--brand-accent-bright) 50%, transparent);
+                    color: var(--brand-accent-bright);
+                    background: color-mix(in srgb, var(--brand-accent-bright) 8%, transparent);
                     transform: translateY(-2px);
                 }
 
@@ -125,7 +125,7 @@ export default function Footer() {
                     font-size: 10px;
                     letter-spacing: 0.22em;
                     text-transform: uppercase;
-                    color: rgba(232,160,32,0.7);
+                    color: color-mix(in srgb, var(--brand-accent-bright) 70%, transparent);
                     font-weight: 600;
                     margin-bottom: 20px;
                     font-family: var(--font-sans);
@@ -139,7 +139,7 @@ export default function Footer() {
                 }
                 .ft-nav a {
                     font-size: 14px;
-                    color: rgba(240,236,228,0.5);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 50%, transparent);
                     text-decoration: none;
                     font-weight: 400;
                     transition: color 0.2s, padding-left 0.2s;
@@ -150,12 +150,12 @@ export default function Footer() {
                 .ft-nav a::before {
                     content: '';
                     width: 0; height: 1px;
-                    background: #e8a020;
+                    background: var(--brand-accent-bright);
                     transition: width 0.25s;
                     display: inline-block;
                 }
                 .ft-nav a:hover {
-                    color: #f0ece4;
+                    color: var(--brand-surface-mist);
                 }
                 .ft-nav a:hover::before { width: 12px; }
 
@@ -173,11 +173,11 @@ export default function Footer() {
                 .ft-contact-icon {
                     width: 32px; height: 32px;
                     border-radius: 8px;
-                    background: rgba(232,160,32,0.1);
-                    border: 1px solid rgba(232,160,32,0.2);
+                    background: color-mix(in srgb, var(--brand-accent-bright) 10%, transparent);
+                    border: 1px solid color-mix(in srgb, var(--brand-accent-bright) 20%, transparent);
                     display: flex; align-items: center; justify-content: center;
                     flex-shrink: 0;
-                    color: #e8a020;
+                    color: var(--brand-accent-bright);
                 }
                 .ft-contact-text {
                     display: flex; flex-direction: column; gap: 1px;
@@ -186,17 +186,17 @@ export default function Footer() {
                     font-size: 10px;
                     letter-spacing: 0.1em;
                     text-transform: uppercase;
-                    color: rgba(240,236,228,0.25);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 25%, transparent);
                     font-weight: 500;
                 }
                 .ft-contact-val {
                     font-size: 13.5px;
-                    color: rgba(240,236,228,0.65);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 65%, transparent);
                     font-weight: 300;
                     text-decoration: none;
                     transition: color 0.2s;
                 }
-                a.ft-contact-val:hover { color: #f0ece4; }
+                a.ft-contact-val:hover { color: var(--brand-surface-mist); }
 
                 /* Hours */
                 .ft-hours {
@@ -209,18 +209,18 @@ export default function Footer() {
                     justify-content: space-between;
                     align-items: center;
                     padding-bottom: 12px;
-                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    border-bottom: 1px solid color-mix(in srgb, var(--brand-white) 5%, transparent);
                     gap: 16px;
                 }
                 .ft-hours-row:last-child { border-bottom: none; padding-bottom: 0; }
                 .ft-hours-day {
                     font-size: 13px;
-                    color: rgba(240,236,228,0.45);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 45%, transparent);
                     font-weight: 300;
                 }
                 .ft-hours-time {
                     font-size: 13px;
-                    color: rgba(240,236,228,0.75);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 75%, transparent);
                     font-weight: 500;
                     font-variant-numeric: tabular-nums;
                 }
@@ -228,19 +228,19 @@ export default function Footer() {
                     display: inline-flex;
                     align-items: center;
                     gap: 6px;
-                    background: rgba(34,197,94,0.12);
-                    border: 1px solid rgba(34,197,94,0.25);
+                    background: color-mix(in srgb, var(--brand-success-mid) 12%, transparent);
+                    border: 1px solid color-mix(in srgb, var(--brand-success-mid) 25%, transparent);
                     border-radius: 100px;
                     padding: 4px 12px;
                     font-size: 11px;
-                    color: #4ade80;
+                    color: var(--brand-success-bright);
                     font-weight: 500;
                     margin-top: 20px;
                 }
                 .ft-open-dot {
                     width: 6px; height: 6px;
                     border-radius: 50%;
-                    background: #4ade80;
+                    background: var(--brand-success-bright);
                     animation: ftpulse 2s ease-in-out infinite;
                 }
                 @keyframes ftpulse {
@@ -259,7 +259,7 @@ export default function Footer() {
                 /* Divider */
                 .ft-hr {
                     height: 1px;
-                    background: rgba(255,255,255,0.07);
+                    background: color-mix(in srgb, var(--brand-white) 7%, transparent);
                     border: none;
                     margin: 0;
                 }
@@ -275,7 +275,7 @@ export default function Footer() {
                 }
                 .ft-bottom-left {
                     font-size: 12.5px;
-                    color: rgba(240,236,228,0.3);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 30%, transparent);
                     font-weight: 300;
                 }
                 .ft-bottom-right {
@@ -285,23 +285,23 @@ export default function Footer() {
                 }
                 .ft-bottom-link {
                     font-size: 12px;
-                    color: rgba(240,236,228,0.25);
+                    color: color-mix(in srgb, var(--brand-surface-mist) 25%, transparent);
                     text-decoration: none;
                     transition: color 0.2s;
                     font-weight: 400;
                 }
-                .ft-bottom-link:hover { color: rgba(240,236,228,0.6); }
+                .ft-bottom-link:hover { color: color-mix(in srgb, var(--brand-surface-mist) 60%, transparent); }
                 .ft-bottom-dot {
                     width: 3px; height: 3px;
                     border-radius: 50%;
-                    background: rgba(255,255,255,0.15);
+                    background: color-mix(in srgb, var(--brand-white) 15%, transparent);
                     display: inline-block;
                 }
 
                 /* Tamil script decorative text */
                 .ft-tamil {
                     font-size: 11px;
-                    color: rgba(232,160,32,0.25);
+                    color: color-mix(in srgb, var(--brand-accent-bright) 25%, transparent);
                     letter-spacing: 0.1em;
                 }
 
@@ -329,16 +329,16 @@ export default function Footer() {
                 <div className="ft-inner">
                     <div className="ft-grid">
 
-                        {/* ── Brand ── */}
+                        {/* â”€â”€ Brand â”€â”€ */}
                         <div>
                             <Link to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 4 }}>
                                 <div className="ft-brand-name">
                                     Tamil Food <em>Thaya</em>
                                 </div>
                             </Link>
-                            <p className="ft-brand-sub">Authentic · Netherlands · Est. 2020</p>
+                            <p className="ft-brand-sub">Authentic Â· Netherlands Â· Est. 2020</p>
                             <p className="ft-brand-desc">
-                                Bringing the rich traditions of Tamil cuisine to the Netherlands — from intimate dinners to grand celebrations.
+                                Bringing the rich traditions of Tamil cuisine to the Netherlands â€” from intimate dinners to grand celebrations.
                             </p>
                             <ul className="ft-social">
                                 <li>
@@ -367,7 +367,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* ── Quick Links ── */}
+                        {/* â”€â”€ Quick Links â”€â”€ */}
                         <div>
                             <p className="ft-col-title">Navigate</p>
                             <ul className="ft-nav">
@@ -375,7 +375,7 @@ export default function Footer() {
                                     <li key={link.to}>
                                         <Link to={link.to} className="ft-nav a" style={{
                                             fontSize: 14,
-                                            color: 'rgba(240,236,228,0.5)',
+                                            color: 'color-mix(in srgb, var(--brand-surface-mist) 50%, transparent)',
                                             textDecoration: 'none',
                                             fontWeight: 400,
                                             display: 'inline-flex',
@@ -383,12 +383,12 @@ export default function Footer() {
                                             gap: 8,
                                             transition: 'color 0.2s',
                                         }}
-                                        onMouseEnter={e => e.currentTarget.style.color = '#f0ece4'}
-                                        onMouseLeave={e => e.currentTarget.style.color = 'rgba(240,236,228,0.5)'}
+                                        onMouseEnter={e => e.currentTarget.style.color = 'var(--brand-surface-mist)'}
+                                        onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, var(--brand-surface-mist) 50%, transparent)'}
                                         >
                                             <span style={{
                                                 width: 16, height: 1,
-                                                background: 'rgba(232,160,32,0.5)',
+                                                background: 'color-mix(in srgb, var(--brand-accent-bright) 50%, transparent)',
                                                 display: 'inline-block',
                                                 flexShrink: 0,
                                             }} />
@@ -399,7 +399,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* ── Contact ── */}
+                        {/* â”€â”€ Contact â”€â”€ */}
                         <div>
                             <p className="ft-col-title">Get in Touch</p>
                             <ul className="ft-contact">
@@ -433,7 +433,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* ── Hours ── */}
+                        {/* â”€â”€ Hours â”€â”€ */}
                         <div>
                             <p className="ft-col-title">Opening Hours</p>
                             <div className="ft-hours">
@@ -456,14 +456,14 @@ export default function Footer() {
                     <hr className="ft-hr" />
                     <div className="ft-bottom">
                         <p className="ft-bottom-left">
-                            © 2026 Tamil Food Thaya. All rights reserved.
+                            Â© 2026 Tamil Food Thaya. All rights reserved.
                         </p>
                         <div className="ft-bottom-right">
                             <a href="/privacy" className="ft-bottom-link">Privacy Policy</a>
                             <span className="ft-bottom-dot" />
                             <a href="/terms" className="ft-bottom-link">Terms of Use</a>
                             <span className="ft-bottom-dot" />
-                            <span className="ft-tamil">தமிழ் உணவு</span>
+                            <span className="ft-tamil">à®¤à®®à®¿à®´à¯ à®‰à®£à®µà¯</span>
                         </div>
                     </div>
                 </div>

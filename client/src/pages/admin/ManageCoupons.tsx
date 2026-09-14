@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type ReactNode } from 'react';
+﻿import { useState, useEffect, useMemo, type ReactNode } from 'react';
 import { api } from '../../hooks/useApi';
 import toast from 'react-hot-toast';
 import {
@@ -278,7 +278,7 @@ export const ManageCoupons = () => {
                     <div className="grid gap-6 px-5 py-6 md:px-7 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
                         <div className="min-w-0 max-w-2xl">
                             <div className="flex items-center gap-3">
-                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#251917] text-[#f4d38b]">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-(--brand-text) text-(--brand-accent-haze)">
                                     <TicketPercent size={21} />
                                 </span>
                                 <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
@@ -294,14 +294,14 @@ export const ManageCoupons = () => {
                         <button
                             type="button"
                             onClick={openNew}
-                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(37,25,23,0.18)] transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
+                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white shadow-[0_10px_24px_var(--brand-text-a18)] transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
                         >
                             <Plus size={17} />
                             Create coupon
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-2 border-t border-slate-200 bg-[#fbf6ed] sm:grid-cols-5">
+                    <div className="grid grid-cols-2 border-t border-slate-200 bg-(--brand-surface-dim) sm:grid-cols-5">
                         <MetricCard label="Total" value={stats.total} icon={<Tag size={15} />} />
                         <MetricCard label="Active" value={stats.active} icon={<CheckCircle2 size={15} />} />
                         <MetricCard label="Scheduled" value={stats.scheduled} icon={<Clock3 size={15} />} />
@@ -563,7 +563,7 @@ export const ManageCoupons = () => {
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl bg-[#fbf6ed] p-4">
+                                    <div className="rounded-2xl bg-(--brand-surface-dim) p-4">
                                         <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                                             <ReceiptText size={17} className="text-amber-700" />
                                             Campaign preview
@@ -614,7 +614,7 @@ export const ManageCoupons = () => {
                                         type="button"
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="h-11 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                        className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {saving
                                             ? 'Saving...'
@@ -648,7 +648,7 @@ const CouponResults = ({
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="hidden overflow-x-auto xl:block">
             <table className="w-full min-w-[920px] text-sm">
-                <thead className="border-b border-slate-200 bg-[#fbf6ed]">
+                <thead className="border-b border-slate-200 bg-(--brand-surface-dim)">
                     <tr>
                         <TableHeader>Code</TableHeader>
                         <TableHeader>Discount</TableHeader>
@@ -746,7 +746,7 @@ const CouponCard = ({
             <button
                 type="button"
                 onClick={() => onCopy(coupon.code)}
-                className="min-w-0 rounded-xl border border-slate-200 bg-[#fbf6ed] px-3 py-2 text-left transition hover:border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                className="min-w-0 rounded-xl border border-slate-200 bg-(--brand-surface-dim) px-3 py-2 text-left transition hover:border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200"
             >
                 <span className="block break-all text-lg font-extrabold tracking-[0.08em] text-slate-950">
                     {coupon.code}
@@ -763,7 +763,7 @@ const CouponCard = ({
             <InfoTile label="Minimum" value={formatCurrency(coupon.minOrderAmount)} icon={<WalletCards size={14} />} />
         </div>
 
-        <div className="mt-4 rounded-xl bg-[#fbf6ed] p-3">
+        <div className="mt-4 rounded-xl bg-(--brand-surface-dim) p-3">
             <UsageMeter coupon={coupon} />
             <div className="mt-3">
                 <DateRange coupon={coupon} />
@@ -806,7 +806,7 @@ const EmptyState = ({
     onAction: () => void;
 }) => (
     <div className="rounded-2xl border border-slate-200 bg-white px-5 py-12 text-center shadow-sm">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-[#fbf6ed] text-slate-500">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-(--brand-surface-dim) text-slate-500">
             <TicketPercent size={24} />
         </div>
         <h3 className="mt-4 text-lg font-extrabold text-slate-950">{title}</h3>
@@ -814,7 +814,7 @@ const EmptyState = ({
         <button
             type="button"
             onClick={onAction}
-            className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100"
+            className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
         >
             <Plus size={16} />
             {actionLabel}
@@ -870,7 +870,7 @@ const InputBlock = ({
     icon?: ReactNode;
     mono?: boolean;
 }) => (
-    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+    <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
         <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
         <div className="relative">
             {icon && (
@@ -903,7 +903,7 @@ const NumberBlock = ({
     onChange: (value: number) => void;
     integer?: boolean;
 }) => (
-    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+    <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
         <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
         <input
             type="number"
@@ -928,7 +928,7 @@ const DateBlock = ({
     value: string;
     onChange: (value: string) => void;
 }) => (
-    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+    <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
         <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
         <div className="relative">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -959,7 +959,7 @@ const PremiumSelect = ({
     icon?: ReactNode;
     compact?: boolean;
 }) => (
-    <div className={compact ? 'grid gap-1.5' : 'min-w-0 rounded-2xl bg-[#fbf6ed] p-4'}>
+    <div className={compact ? 'grid gap-1.5' : 'min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4'}>
         <label className={`${compact ? 'px-1 text-[11px] uppercase tracking-[0.1em] text-slate-500' : 'mb-2 text-sm text-slate-800'} flex items-center gap-1.5 font-bold`}>
             {compact && icon}
             {label}
@@ -1016,7 +1016,7 @@ const UsageMeter = ({ coupon }: { coupon: Coupon }) => {
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-stone-200">
                 <div
-                    className="h-full rounded-full bg-[#39533b]"
+                    className="h-full rounded-full bg-(--brand-leaf)"
                     style={{ width: limit > 0 ? `${percent}%` : '0%' }}
                 />
             </div>

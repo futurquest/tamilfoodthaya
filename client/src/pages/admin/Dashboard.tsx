@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowRight,
@@ -67,7 +67,7 @@ const toTimestamp = (value?: string): number => {
 
 const formatLeadDate = (value?: string): string => {
     const t = value ? Date.parse(value) : NaN;
-    if (!Number.isFinite(t)) return '—';
+    if (!Number.isFinite(t)) return 'â€”';
     return new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
         month: 'short',
@@ -249,10 +249,10 @@ export const Dashboard = () => {
             .slice(0, 5)
             .map((lead) => ({
                 key: lead._id,
-                name: lead.name || '—',
+                name: lead.name || 'â€”',
                 event: lead.package || 'Enquiry',
                 date: formatLeadDate(lead.eventDate),
-                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : '—',
+                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : 'â€”',
                 status: leadStatusLabel(lead.status),
                 statusTone: leadStatusTone(lead.status)
             }));
@@ -274,7 +274,7 @@ export const Dashboard = () => {
                                 Restaurant Operations
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Booked catering value, enquiries and priority admin work — computed
+                                Booked catering value, enquiries and priority admin work â€” computed
                                 live from your records.
                             </p>
                         </div>
@@ -290,7 +290,7 @@ export const Dashboard = () => {
                 <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <MetricCard
                         label="Booked Revenue"
-                        value={loading ? '…' : loadError ? '—' : kpis.revenue}
+                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.revenue}
                         detail={loading || loadError ? 'Up to date figures' : kpis.revenueDetail}
                         icon={Euro}
                         tone="brass"
@@ -298,7 +298,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="New Leads"
-                        value={loading ? '…' : loadError ? '—' : kpis.newLeads}
+                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.newLeads}
                         detail={loading || loadError ? 'Up to date figures' : kpis.newLeadsDetail}
                         icon={Users}
                         tone="leaf"
@@ -306,7 +306,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="Catering Orders"
-                        value={loading ? '…' : loadError ? '—' : kpis.orders}
+                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.orders}
                         detail={loading || loadError ? 'Up to date figures' : kpis.ordersDetail}
                         icon={ClipboardList}
                         tone="spice"
@@ -314,7 +314,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="Lead Conversion"
-                        value={loading ? '…' : loadError ? '—' : kpis.conversion}
+                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.conversion}
                         detail={loading || loadError ? 'Up to date figures' : kpis.conversionDetail}
                         icon={TrendingUp}
                         tone="ink"
@@ -336,7 +336,7 @@ export const Dashboard = () => {
 
                             <span className="inline-flex w-fit items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700">
                                 <TrendingUp size={14} />
-                                {loading ? '…' : `${bookedThisWeek > 0 ? bookedThisWeek : 0} booked this week`}
+                                {loading ? 'â€¦' : `${bookedThisWeek > 0 ? bookedThisWeek : 0} booked this week`}
                             </span>
                         </div>
 
@@ -347,7 +347,7 @@ export const Dashboard = () => {
                                     <div key={WEEK_LABELS[index]} className="flex h-full min-w-0 flex-1 flex-col justify-end gap-2">
                                         <div className="flex flex-1 items-end">
                                             <div
-                                                className="w-full rounded-t-xl bg-gradient-to-t from-[#8a2e1d] via-[#b46f24] to-[#d8a23a] shadow-sm"
+                                                className="w-full rounded-t-xl bg-gradient-to-t from-(--brand-primary) via-(--brand-accent-warm) to-(--brand-accent-strong) shadow-sm"
                                                 style={{ height: `${height}%` }}
                                                 aria-label={`${WEEK_LABELS[index]}: ${formatEuro(value)}`}
                                                 title={`${WEEK_LABELS[index]}: ${formatEuro(value)}`}
@@ -376,7 +376,7 @@ export const Dashboard = () => {
                                     Today&apos;s Priorities
                                 </h2>
                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
-                                    Counted from your live orders — updates yourself as statuses change.
+                                    Counted from your live orders â€” updates yourself as statuses change.
                                 </p>
                             </div>
                             <CheckCircle2 className="text-emerald-700" size={22} />
@@ -387,7 +387,7 @@ export const Dashboard = () => {
                                 <OperationItem
                                     key={item.label}
                                     label={item.label}
-                                    value={loading ? '…' : loadError ? '—' : item.value}
+                                    value={loading ? 'â€¦' : loadError ? 'â€”' : item.value}
                                     detail={item.detail}
                                     icon={item.icon}
                                     to="/admin/catering-orders"
@@ -419,7 +419,7 @@ export const Dashboard = () => {
 
                     <div className="divide-y divide-slate-100">
                         {loading ? (
-                            <p className="px-5 py-6 text-sm font-medium text-slate-500">Loading enquiries…</p>
+                            <p className="px-5 py-6 text-sm font-medium text-slate-500">Loading enquiriesâ€¦</p>
                         ) : hasLeads ? (
                             recentLeads.map((lead) => <LeadRow key={lead.key} lead={lead} />)
                         ) : (
@@ -462,22 +462,22 @@ const MetricCard = ({
     const toneMap = {
         brass: {
             icon: 'bg-amber-50 text-amber-700',
-            line: 'from-[#d8a23a] to-[#8a2e1d]',
+            line: 'from-(--brand-accent-strong) to-(--brand-primary)',
             text: 'text-amber-700'
         },
         leaf: {
             icon: 'bg-emerald-50 text-emerald-700',
-            line: 'from-[#39533b] to-[#c9972b]',
+            line: 'from-(--brand-leaf) to-(--brand-accent)',
             text: 'text-emerald-700'
         },
         spice: {
             icon: 'bg-red-50 text-red-700',
-            line: 'from-[#8a2e1d] to-[#c9972b]',
+            line: 'from-(--brand-primary) to-(--brand-accent)',
             text: 'text-red-700'
         },
         ink: {
             icon: 'bg-stone-100 text-slate-900',
-            line: 'from-[#251917] to-[#8a2e1d]',
+            line: 'from-(--brand-text) to-(--brand-primary)',
             text: 'text-slate-700'
         }
     }[tone];
@@ -508,7 +508,7 @@ const MetricCard = ({
     );
 
     const cardClass =
-        'relative block overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition group hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-[0_16px_40px_rgba(37,25,23,0.10)] focus-visible:outline-2 focus-visible:outline-amber-500';
+        'relative block overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition group hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-[0_16px_40px_color-mix(in srgb, var(--brand-text) 10%, transparent)] focus-visible:outline-2 focus-visible:outline-amber-500';
 
     return to ? (
         <Link to={to} className={cardClass}>
@@ -582,7 +582,7 @@ const OperationItem = ({
     );
 
     const itemClass =
-        'group flex items-center gap-4 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-4 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-50/60 hover:shadow-[0_12px_32px_rgba(37,25,23,0.08)] focus-visible:outline-2 focus-visible:outline-amber-500';
+        'group flex items-center gap-4 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-4 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-50/60 hover:shadow-[0_12px_32px_color-mix(in srgb, var(--brand-text) 8%, transparent)] focus-visible:outline-2 focus-visible:outline-amber-500';
 
     return to ? (
         <Link to={to} className={itemClass}>

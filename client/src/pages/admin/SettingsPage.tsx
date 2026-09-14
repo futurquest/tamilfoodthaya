@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+﻿import { useEffect, type ReactNode } from 'react';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSettings, updateSettings } from '../../hooks/useApi';
@@ -189,7 +189,7 @@ export const SettingsPage = () => {
                         </div>
 
                         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#d8c7ad]">
+                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                                 <SettingsIcon size={13} />
                                 Save status
                             </p>
@@ -339,7 +339,7 @@ export const SettingsPage = () => {
                             <button
                                 type="submit"
                                 disabled={mutation.isPending}
-                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#251917] px-5 text-sm font-bold text-white transition hover:bg-[#3a2825] focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 <Save size={16} />
                                 {mutation.isPending ? 'Saving...' : 'Save settings'}
@@ -401,7 +401,7 @@ const SettingsCard = ({
 }) => (
     <section id={id} className="scroll-mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
         <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#fbf6ed] text-amber-800">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--brand-surface-dim) text-amber-800">
                 {icon}
             </span>
             <div className="min-w-0">
@@ -426,7 +426,7 @@ const MetricCard = ({
     icon: ReactNode;
 }) => (
     <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-[#d8c7ad]">
+        <div className="flex items-center gap-2 text-(--brand-stone)">
             {icon}
             <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
         </div>
@@ -445,7 +445,7 @@ const InputBlock = ({
     placeholder?: string;
     registration: UseFormRegisterReturn;
 }) => (
-    <div className="min-w-0 rounded-2xl bg-[#fbf6ed] p-4">
+    <div className="min-w-0 rounded-2xl bg-(--brand-surface-dim) p-4">
         <label className="mb-2 block text-sm font-bold text-slate-800">{label}</label>
         <div className="relative">
             {icon && (
@@ -478,8 +478,8 @@ const ToggleCard = ({
     <label
         className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 text-left transition focus-within:ring-4 focus-within:ring-amber-100 ${
             checked
-                ? 'border-[#251917] bg-[#251917] text-white'
-                : 'border-slate-200 bg-[#fbf6ed] text-slate-700 hover:bg-amber-50'
+                ? 'border-(--brand-text) bg-(--brand-text) text-white'
+                : 'border-slate-200 bg-(--brand-surface-dim) text-slate-700 hover:bg-amber-50'
         }`}
     >
         <div className="min-w-0">
@@ -505,7 +505,7 @@ const OperationsPreview = ({ values }: { values: SiteSettings }) => (
             Public preview
         </div>
 
-        <div className="mt-4 rounded-xl border border-slate-200 bg-[#fbf6ed] p-4">
+        <div className="mt-4 rounded-xl border border-slate-200 bg-(--brand-surface-dim) p-4">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
                 Restaurant
             </p>

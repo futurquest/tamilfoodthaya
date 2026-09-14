@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
     Box,
     CheckCircle2,
@@ -330,10 +330,10 @@ export const ManageCateringPackages = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container max-w-[1180px]">
-                <section className="overflow-hidden rounded-[28px] border border-[#2f211f] bg-[#1d1216] text-white shadow-[0_28px_80px_rgba(37,25,23,0.24)]">
+                <section className="overflow-hidden rounded-[28px] border border-(--brand-outline-dark) bg-(--brand-night) text-white shadow-[0_28px_80px_var(--brand-text-a24)]">
                     <div className="grid gap-6 p-5 md:p-6 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
                         <div>
-                            <span className="inline-flex items-center gap-1.5 rounded-xl border border-[#d8a23a]/30 bg-[#d8a23a]/15 px-3 py-1.5 text-xs font-extrabold text-[#f4d38b]">
+                            <span className="inline-flex items-center gap-1.5 rounded-xl border border-(--brand-accent-strong)/30 bg-(--brand-accent-strong)/15 px-3 py-1.5 text-xs font-extrabold text-(--brand-accent-haze)">
                                 <Sparkles size={13} />
                                 Main catering product
                             </span>
@@ -352,7 +352,7 @@ export const ManageCateringPackages = () => {
                             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                                 <Button
                                     onClick={openNewPackage}
-                                    className="h-11 rounded-xl border border-[#d8a23a] bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] px-5 text-sm font-extrabold text-white hover:opacity-95"
+                                    className="h-11 rounded-xl border border-(--brand-accent-strong) bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) px-5 text-sm font-extrabold text-white hover:opacity-95"
                                 >
                                     <Plus size={16} className="mr-2" />
                                     New Package
@@ -561,7 +561,7 @@ const PackageEditor = ({
                     </aside>
                 </div>
 
-                <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+                <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
                     <WorkspaceHeader
                         title="Meal group builder"
                         text="Create the customer choice groups shown inside this catering package."
@@ -634,7 +634,7 @@ const MealGroupEditor = ({
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
             <button type="button" onClick={onToggle} className="flex min-w-0 items-center gap-3 text-left">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-white">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white">
                     <Layers3 size={17} />
                 </span>
                 <span className="min-w-0">
@@ -658,7 +658,7 @@ const MealGroupEditor = ({
         </div>
 
         {expanded && (
-            <div className="border-t border-slate-100 bg-[#fbfaf7] p-4">
+            <div className="border-t border-slate-100 bg-(--brand-surface-ivory) p-4">
                 <div className="grid gap-4 lg:grid-cols-3">
                     <InputBlock label="Group name (NL)" value={cat.nameTranslations?.nl || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, nl: value })} />
                     <InputBlock label="Group name (EN)" value={cat.nameTranslations?.en || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, en: value })} />
@@ -727,7 +727,7 @@ const PackageGrid = ({
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
 }) => (
-    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
         <WorkspaceHeader
             title="Package board"
             text="Review public package cards, pricing, guest ranges and included choice groups."
@@ -754,22 +754,22 @@ const PackageCard = ({
     const itemCount = getPackageItemCount(pkg);
 
     return (
-        <article className="group flex min-h-[360px] flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
-            <div className="bg-[#1d1216] p-4 text-white">
+        <article className="group flex min-h-[360px] flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_var(--brand-slate-a10)]">
+            <div className="bg-(--brand-night) p-4 text-white">
                 <div className="flex items-start justify-between gap-3">
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-white shadow-sm">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white shadow-sm">
                         <UtensilsCrossed size={18} />
                     </div>
                     <StatusBadge available={pkg.available} variant="dark" />
                 </div>
-                <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#d8c7ad]">
+                <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-(--brand-stone)">
                     From
                 </p>
                 <div className="mt-1 flex items-end gap-2">
                     <span className="text-3xl font-extrabold leading-none text-white">
                         {formatPrice(pkg.basePrice)}
                     </span>
-                    <span className="pb-1 text-xs font-bold text-[#d8c7ad]">per person</span>
+                    <span className="pb-1 text-xs font-bold text-(--brand-stone)">per person</span>
                 </div>
             </div>
 
@@ -888,7 +888,7 @@ const MetricCard = ({
                 : 'border border-slate-200 bg-white'
         }`}
     >
-        <div className={`flex items-center gap-2 ${tone === 'dark' ? 'text-[#d8c7ad]' : 'text-slate-400'}`}>
+        <div className={`flex items-center gap-2 ${tone === 'dark' ? 'text-(--brand-stone)' : 'text-slate-400'}`}>
             {icon}
             <p className="text-[11px] font-bold uppercase tracking-[0.18em]">{label}</p>
         </div>
@@ -1015,10 +1015,10 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
     if (!pkg) {
         return (
             <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#d8c7ad]">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                     Featured package
                 </p>
-                <p className="mt-2 text-sm font-bold leading-6 text-[#efe2d0]">
+                <p className="mt-2 text-sm font-bold leading-6 text-(--brand-surface-beige-soft)">
                     Create a package to see the main catering offer here.
                 </p>
             </div>
@@ -1029,7 +1029,7 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#d8c7ad]">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                         Featured package
                     </p>
                     <p className="mt-2 truncate text-lg font-extrabold text-white">
@@ -1049,7 +1049,7 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
 
 const DarkMiniStat = ({ label, value }: { label: string; value: string }) => (
     <div className="rounded-xl border border-white/10 bg-black/10 px-3 py-2">
-        <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#d8c7ad]">{label}</p>
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-(--brand-stone)">{label}</p>
         <p className="mt-1 truncate text-sm font-extrabold text-white">{value}</p>
     </div>
 );
@@ -1112,7 +1112,7 @@ const StatusBadge = ({
         <span
             className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${
                 variant === 'dark'
-                    ? 'border-white/15 bg-white/10 text-[#efe2d0]'
+                    ? 'border-white/15 bg-white/10 text-(--brand-surface-beige-soft)'
                     : 'border-slate-200 bg-stone-50 text-slate-600'
             }`}
         >
@@ -1151,7 +1151,7 @@ const InputBlock = ({ label, value, onChange }: { label: string; value: string; 
         <input
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            className="h-11 min-w-0 rounded-xl border border-slate-200 bg-[#fbfaf7] px-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+            className="h-11 min-w-0 rounded-xl border border-slate-200 bg-(--brand-surface-ivory) px-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
         />
     </label>
 );
@@ -1176,7 +1176,7 @@ const NumberBlock = ({
             step={step}
             value={value}
             onChange={(event) => onChange(Number(event.target.value) || 0)}
-            className="h-11 min-w-0 rounded-xl border border-slate-200 bg-[#fbfaf7] px-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+            className="h-11 min-w-0 rounded-xl border border-slate-200 bg-(--brand-surface-ivory) px-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
         />
         {helper && <span className="text-xs font-semibold leading-5 text-slate-500">{helper}</span>}
     </label>
@@ -1189,7 +1189,7 @@ const TextAreaBlock = ({ label, value, onChange }: { label: string; value: strin
             value={value}
             onChange={(event) => onChange(event.target.value)}
             rows={4}
-            className="min-h-[110px] min-w-0 rounded-xl border border-slate-200 bg-[#fbfaf7] px-4 py-3 text-sm font-semibold leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
+            className="min-h-[110px] min-w-0 rounded-xl border border-slate-200 bg-(--brand-surface-ivory) px-4 py-3 text-sm font-semibold leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
         />
     </label>
 );

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -360,7 +360,7 @@ const MetricCard = ({
 }) => {
     return (
         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-[#d8c7ad]">
+            <div className="flex items-center gap-2 text-(--brand-stone)">
                 {icon}
                 <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
@@ -475,7 +475,7 @@ const CategoryGrid = ({
     onDelete: (id: string) => void;
 }) => {
     return (
-        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-3 shadow-sm">
+        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
             <WorkspaceHeader
                 title="Category board"
                 text="Review each menu section, translations and display order in a visual workspace."
@@ -508,10 +508,10 @@ const CategoryCard = ({
     const config = typeConfig[categoryType];
 
     return (
-        <article className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
+        <article className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_var(--brand-slate-a10)]">
             <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-white shadow-sm">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white shadow-sm">
                         {config.icon}
                     </div>
                     <div className="min-w-0">
@@ -619,7 +619,7 @@ const CategoryRow = ({
         <tr className="transition hover:bg-amber-50/50">
             <td className="border-b border-slate-100 px-4 py-4">
                 <div className="flex min-w-0 items-center gap-3">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-white shadow-sm">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white shadow-sm">
                         {config.icon}
                     </div>
                     <div className="min-w-0">
@@ -771,7 +771,7 @@ const CategoryModal = ({
                 </div>
 
                 <form onSubmit={onSubmit} className="space-y-5 px-6 py-6">
-                    <div className="rounded-2xl border border-slate-200 bg-[#fbfaf7] p-4">
+                    <div className="rounded-2xl border border-slate-200 bg-(--brand-surface-ivory) p-4">
                         <p className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
                             <Languages size={13} />
                             Menu labels

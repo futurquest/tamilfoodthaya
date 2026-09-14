@@ -1,51 +1,5 @@
-@import "tailwindcss";
-
-@theme {
-  --color-tamil-maroon: #6f1d1b;
-  --color-accent-gold: #c9972b;
-  --color-charcoal: #221917;
-  --color-primary-50: #fff8ed;
-  --color-primary-100: #f7ead2;
-  --color-primary-200: #ead0a7;
-  --color-primary-300: #d9ad68;
-  --color-primary-400: #c9972b;
-  --color-primary-500: #a86f1f;
-  --color-primary-600: #854b1b;
-  --color-primary-700: #6f1d1b;
-  --color-primary-800: #451516;
-  --color-primary-900: #24100f;
-  --color-gold-400: #d8a23a;
-  --color-gold-500: #b98121;
-  --color-dark-50: #fbf6ed;
-  --color-dark-100: #eee2d0;
-  --color-dark-200: #dcc8ad;
-  --color-dark-300: #bba386;
-  --color-dark-400: #927b64;
-  --color-dark-500: #705b4a;
-  --color-dark-600: #544035;
-  --color-dark-700: #392a25;
-  --color-dark-800: #251917;
-  --color-dark-900: #15100f;
-  --color-dark-950: #0b0807;
-  --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-tamil: 'Noto Sans Tamil', 'Manrope', system-ui, sans-serif;
-}
-
-:root {
-  --ink: #251917;
-  --muted: #705b4a;
-  --paper: #fbf6ed;
-  --paper-deep: #f1e2ca;
-  --leaf: #39533b;
-  --leaf-dark: #1e3327;
-  --spice: #8a2e1d;
-  --brass: #c9972b;
-  --brass-soft: #f0d79c;
-  --aubergine: #1d1216;
-  --line: rgba(37, 25, 23, 0.12);
-  --shadow: 0 24px 70px rgba(83, 46, 26, 0.13);
-}
+﻿@import "tailwindcss";
+@import "./styles/theme.css";
 
 * { box-sizing: border-box; }
 
@@ -59,8 +13,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 12% 10%, rgba(201, 151, 43, 0.12), transparent 28rem),
-    linear-gradient(180deg, #fffaf1 0%, var(--paper) 52%, #f5ebdc 100%);
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 28rem),
+    linear-gradient(180deg, var(--brand-surface) 0%, var(--paper) 52%, var(--brand-surface-bloom) 100%);
   color: var(--ink);
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
@@ -69,7 +23,7 @@ body {
 }
 
 body::selection {
-  background: rgba(201, 151, 43, 0.34);
+  background: color-mix(in srgb, var(--brand-accent) 34%, transparent);
   color: var(--ink);
 }
 
@@ -97,7 +51,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid rgba(201, 151, 43, 0.55);
+  outline: 3px solid color-mix(in srgb, var(--brand-accent) 55%, transparent);
   outline-offset: 3px;
 }
 
@@ -109,7 +63,7 @@ select:focus-visible {
   transform: translateY(-140%);
   border-radius: 0.75rem;
   background: var(--ink);
-  color: #fff8ed;
+  color: var(--brand-cream);
   padding: 0.75rem 1rem;
   text-decoration: none;
   transition: transform 0.2s ease;
@@ -169,7 +123,7 @@ select:focus-visible {
 }
 
 .fine {
-  color: rgba(37, 25, 23, 0.56);
+  color: color-mix(in srgb, var(--brand-text) 56%, transparent);
   font-size: 0.92rem;
   line-height: 1.55;
   font-weight: 500;
@@ -197,23 +151,23 @@ select:focus-visible {
 
 .btn-primary,
 .btn-gold {
-  border: 1px solid rgba(99, 53, 20, 0.2);
-  background: linear-gradient(135deg, #d8a23a, #b46f24 72%, #8a2e1d);
-  color: #fffaf1;
-  box-shadow: 0 14px 32px rgba(138, 46, 29, 0.22);
+  border: 1px solid color-mix(in srgb, var(--brand-accent-dark) 20%, transparent);
+  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary));
+  color: var(--brand-surface);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
 
 .btn-ink {
-  border: 1px solid rgba(255, 248, 237, 0.12);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
   background: var(--ink);
-  color: #fffaf1;
-  box-shadow: 0 16px 34px rgba(37, 25, 23, 0.2);
+  color: var(--brand-surface);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-text) 20%, transparent);
 }
 
 .btn-secondary,
 .btn-outline {
-  border: 1px solid rgba(37, 25, 23, 0.18);
-  background: rgba(255, 250, 241, 0.7);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 18%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
   color: var(--ink);
 }
 
@@ -256,26 +210,26 @@ select:focus-visible {
 .surface,
 .card,
 .card-glow {
-  border: 1px solid rgba(37, 25, 23, 0.1);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.82);
-  box-shadow: 0 16px 46px rgba(83, 46, 26, 0.08);
+  background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
+  box-shadow: 0 16px 46px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
   transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
 }
 
 .card:hover,
 .card-glow:hover {
   transform: translateY(-3px);
-  border-color: rgba(201, 151, 43, 0.34);
-  box-shadow: 0 24px 58px rgba(83, 46, 26, 0.13);
+  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent);
+  box-shadow: 0 24px 58px color-mix(in srgb, var(--brand-shadow-warm) 13%, transparent);
 }
 
 .input-field,
 .admin-input {
   width: 100%;
-  border: 1px solid rgba(37, 25, 23, 0.16);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 16%, transparent);
   border-radius: 0.8rem;
-  background: rgba(255, 250, 241, 0.78);
+  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
   color: var(--ink);
   padding: 0.82rem 0.95rem;
   outline: none;
@@ -284,14 +238,14 @@ select:focus-visible {
 
 .input-field::placeholder,
 .admin-input::placeholder {
-  color: rgba(112, 91, 74, 0.58);
+  color: color-mix(in srgb, var(--brand-muted) 58%, transparent);
 }
 
 .input-field:focus,
 .admin-input:focus {
-  border-color: rgba(201, 151, 43, 0.8);
-  background: #fffaf1;
-  box-shadow: 0 0 0 4px rgba(201, 151, 43, 0.12);
+  border-color: color-mix(in srgb, var(--brand-accent) 80%, transparent);
+  background: var(--brand-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
 }
 
 .label-text,
@@ -320,23 +274,23 @@ select:focus-visible {
 }
 
 .badge-veg {
-  border: 1px solid rgba(57, 83, 59, 0.18);
-  background: rgba(57, 83, 59, 0.1);
-  color: #2e5b37;
+  border: 1px solid color-mix(in srgb, var(--brand-leaf) 18%, transparent);
+  background: color-mix(in srgb, var(--brand-leaf) 10%, transparent);
+  color: var(--brand-success);
 }
 
 .badge-nonveg,
 .badge-spicy {
-  border: 1px solid rgba(138, 46, 29, 0.2);
-  background: rgba(138, 46, 29, 0.09);
-  color: #8a2e1d;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 9%, transparent);
+  color: var(--brand-primary);
 }
 
 .badge-premium,
 .badge-halal {
-  border: 1px solid rgba(201, 151, 43, 0.25);
-  background: rgba(201, 151, 43, 0.13);
-  color: #8a611d;
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 25%, transparent);
+  background: color-mix(in srgb, var(--brand-accent) 13%, transparent);
+  color: var(--brand-accent-deep);
 }
 
 .page-hero {
@@ -348,9 +302,9 @@ select:focus-visible {
   align-items: center;
   padding: clamp(5.5rem, 10vw, 7.5rem) 1.25rem clamp(2.75rem, 6vw, 4.5rem);
   background:
-    linear-gradient(105deg, rgba(29, 18, 22, 0.92), rgba(29, 18, 22, 0.74)),
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 92%, transparent), color-mix(in srgb, var(--brand-night) 74%, transparent)),
     var(--page-image, url('/hero-catering.jpg')) center/cover;
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .page-hero .container {
@@ -373,7 +327,7 @@ select:focus-visible {
 
 .page-hero h1 {
   max-width: 760px;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-size: clamp(2.6rem, 6.4vw, 4.45rem);
   line-height: 1.12;
 }
@@ -381,7 +335,7 @@ select:focus-visible {
 .page-hero p {
   max-width: 58ch;
   margin-top: 1.35rem;
-  color: rgba(255, 248, 237, 0.78);
+  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
   font-size: 1.06rem;
   line-height: 1.65;
   font-weight: 500;
@@ -396,8 +350,8 @@ select:focus-visible {
 }
 
 .site-header--solid {
-  background: rgba(255, 250, 241, 0.97);
-  box-shadow: 0 12px 38px rgba(83, 46, 26, 0.1);
+  background: color-mix(in srgb, var(--brand-surface) 97%, transparent);
+  box-shadow: 0 12px 38px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
 }
 
 .site-header__inner {
@@ -424,14 +378,14 @@ select:focus-visible {
   height: 2.65rem;
   place-items: center;
   overflow: hidden;
-  border: 1.5px solid rgba(255, 248, 237, 0.5);
+  border: 1.5px solid color-mix(in srgb, var(--brand-cream) 50%, transparent);
   border-radius: 0.85rem;
-  background: linear-gradient(145deg, #d8a23a, #8a2e1d);
-  color: #fffaf1;
+  background: linear-gradient(145deg, var(--brand-accent-strong), var(--brand-primary));
+  color: var(--brand-surface);
   font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 700;
-  box-shadow: 0 14px 32px rgba(75, 28, 18, 0.22);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-umber) 22%, transparent);
 }
 
 .brand-mark__seal img {
@@ -443,8 +397,8 @@ select:focus-visible {
 }
 
 .site-header--solid .brand-mark__seal {
-  border-color: rgba(37, 25, 23, 0.22);
-  box-shadow: 0 6px 18px rgba(75, 28, 18, 0.12);
+  border-color: color-mix(in srgb, var(--brand-text) 22%, transparent);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-umber) 12%, transparent);
 }
 
 /* Error boundary fallback */
@@ -454,15 +408,15 @@ select:focus-visible {
   place-items: center;
   padding: 1.5rem;
   background:
-    radial-gradient(circle at 50% 32%, rgba(201, 151, 43, 0.14), transparent 18rem),
-    #fffaf1;
+    radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 18rem),
+    var(--brand-surface);
 }
 
 .fatal-panel__card {
   width: min(30rem, 100%);
-  border: 1px solid rgba(37, 25, 23, 0.1);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
   border-radius: 1.25rem;
-  background: rgba(255, 250, 241, 0.9);
+  background: color-mix(in srgb, var(--brand-surface) 90%, transparent);
   padding: clamp(1.6rem, 4vw, 3rem);
   box-shadow: var(--shadow);
   text-align: center;
@@ -498,9 +452,9 @@ select:focus-visible {
   max-width: 100%;
   overflow: auto;
   border-radius: 0.75rem;
-  background: rgba(37, 25, 23, 0.06);
+  background: color-mix(in srgb, var(--brand-text) 6%, transparent);
   padding: 0.6rem 0.8rem;
-  color: #8a2e1d;
+  color: var(--brand-primary);
   font-size: 0.75rem;
   text-align: left;
 }
@@ -527,8 +481,8 @@ select:focus-visible {
 .page-loader--full {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 50% 38%, rgba(201, 151, 43, 0.12), transparent 16rem),
-    #fffaf1;
+    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 16rem),
+    var(--brand-surface);
 }
 
 .page-loader__spinner {
@@ -543,8 +497,8 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  border: 3px solid rgba(201, 151, 43, 0.16);
-  border-top-color: #c9972b;
+  border: 3px solid color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  border-top-color: var(--brand-accent);
   border-radius: 999px;
   animation: page-loader-spin 0.9s linear infinite;
 }
@@ -554,7 +508,7 @@ select:focus-visible {
   height: 3.5rem;
   border-radius: 0.95rem;
   object-fit: cover;
-  box-shadow: 0 10px 26px rgba(75, 28, 18, 0.18);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-umber) 18%, transparent);
 }
 
 .page-loader__brand {
@@ -584,7 +538,7 @@ select:focus-visible {
 }
 
 .brand-mark__copy strong {
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-size: 1rem;
   font-weight: 800;
 }
@@ -594,7 +548,7 @@ select:focus-visible {
 }
 
 .brand-mark__copy span {
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
   font-size: 0.72rem;
   font-weight: 600;
 }
@@ -613,7 +567,7 @@ select:focus-visible {
 .site-login,
 .icon-action {
   border-radius: 0.75rem;
-  color: rgba(255, 248, 237, 0.82);
+  color: color-mix(in srgb, var(--brand-cream) 82%, transparent);
   font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
@@ -626,8 +580,8 @@ select:focus-visible {
 
 .site-nav__link:hover,
 .site-nav__link.active {
-  background: rgba(255, 248, 237, 0.12);
-  color: #fff8ed;
+  background: color-mix(in srgb, var(--brand-cream) 12%, transparent);
+  color: var(--brand-cream);
 }
 
 .site-header--solid .site-nav__link,
@@ -638,7 +592,7 @@ select:focus-visible {
 
 .site-header--solid .site-nav__link:hover,
 .site-header--solid .site-nav__link.active {
-  background: rgba(201, 151, 43, 0.14);
+  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
   color: var(--spice);
 }
 
@@ -649,12 +603,12 @@ select:focus-visible {
 }
 
 .site-login {
-  border: 1px solid rgba(255, 248, 237, 0.3);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 30%, transparent);
   padding: 0.72rem 0.9rem;
 }
 
 .site-header--solid .site-login {
-  border-color: rgba(37, 25, 23, 0.15);
+  border-color: color-mix(in srgb, var(--brand-text) 15%, transparent);
 }
 
 .icon-action,
@@ -663,15 +617,15 @@ select:focus-visible {
   width: 2.65rem;
   height: 2.65rem;
   place-items: center;
-  border: 1px solid rgba(255, 248, 237, 0.24);
-  background: rgba(255, 248, 237, 0.08);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 24%, transparent);
+  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
   cursor: pointer;
 }
 
 .site-header--solid .icon-action,
 .site-header--solid .mobile-toggle {
-  border-color: rgba(37, 25, 23, 0.12);
-  background: rgba(255, 250, 241, 0.72);
+  border-color: color-mix(in srgb, var(--brand-text) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
 }
 
 .mobile-toggle {
@@ -685,18 +639,18 @@ select:focus-visible {
   inset: 0;
   z-index: 80;
   padding: 5.7rem 1rem 1rem;
-  background: rgba(13, 8, 9, 0.64);
+  background: color-mix(in srgb, var(--brand-overlay) 64%, transparent);
   backdrop-filter: blur(10px);
 }
 
 .mobile-menu__panel {
   margin-left: auto;
   width: min(24rem, 100%);
-  border: 1px solid rgba(255, 248, 237, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
   border-radius: 1rem;
-  background: #fffaf1;
+  background: var(--brand-surface);
   padding: 0.8rem;
-  box-shadow: 0 28px 70px rgba(13, 8, 9, 0.22);
+  box-shadow: 0 28px 70px color-mix(in srgb, var(--brand-overlay) 22%, transparent);
 }
 
 .mobile-menu__link,
@@ -716,7 +670,7 @@ select:focus-visible {
 .mobile-menu__link.active,
 .mobile-menu__link:hover,
 .mobile-menu__button:hover {
-  background: rgba(201, 151, 43, 0.13);
+  background: color-mix(in srgb, var(--brand-accent) 13%, transparent);
   color: var(--spice);
 }
 
@@ -730,7 +684,7 @@ select:focus-visible {
   position: relative;
   overflow: hidden;
   background: var(--aubergine);
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
   padding: 5rem 1.25rem 1.4rem;
 }
 
@@ -739,8 +693,8 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 78% 0%, rgba(201, 151, 43, 0.16), transparent 24rem),
-    linear-gradient(90deg, rgba(57, 83, 59, 0.16), transparent 52%);
+    radial-gradient(circle at 78% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 24rem),
+    linear-gradient(90deg, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 52%);
   pointer-events: none;
 }
 
@@ -758,16 +712,16 @@ select:focus-visible {
 }
 
 .brand-mark--footer .brand-mark__copy strong {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .brand-mark--footer .brand-mark__copy span {
-  color: rgba(255, 248, 237, 0.58);
+  color: color-mix(in srgb, var(--brand-cream) 58%, transparent);
 }
 
 .site-footer h3 {
   margin-bottom: 1rem;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-family: var(--font-sans);
   font-size: 0.92rem;
   font-weight: 800;
@@ -776,7 +730,7 @@ select:focus-visible {
 .site-footer p,
 .site-footer a,
 .site-footer span {
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
   font-size: 0.94rem;
   line-height: 1.75;
 }
@@ -810,9 +764,9 @@ select:focus-visible {
   width: 2.6rem;
   height: 2.6rem;
   place-items: center;
-  border: 1px solid rgba(255, 248, 237, 0.12);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
   border-radius: 0.8rem;
-  background: rgba(255, 248, 237, 0.06);
+  background: color-mix(in srgb, var(--brand-cream) 6%, transparent);
 }
 
 .footer-line {
@@ -825,13 +779,13 @@ select:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 1.5rem;
-  border-top: 1px solid rgba(255, 248, 237, 0.11);
+  border-top: 1px solid color-mix(in srgb, var(--brand-cream) 11%, transparent);
   padding-top: 1.25rem;
 }
 
 .site-footer__bottom span {
   font-size: 0.82rem;
-  color: rgba(255, 248, 237, 0.48);
+  color: color-mix(in srgb, var(--brand-cream) 48%, transparent);
 }
 
 .home-hero {
@@ -840,7 +794,7 @@ select:focus-visible {
   min-height: 100dvh;
   padding: clamp(7.8rem, 13vw, 11rem) 1.25rem 2rem;
   background: var(--aubergine);
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .home-hero::before {
@@ -848,8 +802,8 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(110deg, rgba(29, 18, 22, 0.96) 0%, rgba(29, 18, 22, 0.86) 45%, rgba(29, 18, 22, 0.45) 100%),
-    radial-gradient(circle at 12% 22%, rgba(201, 151, 43, 0.22), transparent 26rem);
+    linear-gradient(110deg, color-mix(in srgb, var(--brand-night) 96%, transparent) 0%, color-mix(in srgb, var(--brand-night) 86%, transparent) 45%, color-mix(in srgb, var(--brand-night) 45%, transparent) 100%),
+    radial-gradient(circle at 12% 22%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem);
   z-index: 1;
 }
 
@@ -873,12 +827,12 @@ select:focus-visible {
 
 .home-hero .display {
   max-width: 850px;
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .home-hero .lead {
   margin-top: 1.45rem;
-  color: rgba(255, 248, 237, 0.78);
+  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
 }
 
 .home-hero__actions {
@@ -899,10 +853,10 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid rgba(255, 248, 237, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
   border-radius: 0.75rem;
-  background: rgba(255, 248, 237, 0.08);
-  color: rgba(255, 248, 237, 0.78);
+  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
+  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
   padding: 0.55rem 0.7rem;
   font-size: 0.86rem;
   font-weight: 600;
@@ -911,17 +865,17 @@ select:focus-visible {
 .hero-menu-board {
   display: grid;
   gap: 0.75rem;
-  border: 1px solid rgba(255, 248, 237, 0.16);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 248, 237, 0.1);
+  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
   padding: 1rem;
-  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-black) 28%, transparent);
   backdrop-filter: blur(16px);
 }
 
 .hero-menu-board > div {
   border-radius: 0.85rem;
-  background: rgba(255, 248, 237, 0.9);
+  background: color-mix(in srgb, var(--brand-cream) 90%, transparent);
   padding: 1rem;
   color: var(--ink);
 }
@@ -955,7 +909,7 @@ select:focus-visible {
   gap: 0.6rem;
   border-radius: 0.85rem;
   background: var(--leaf);
-  color: #fff8ed;
+  color: var(--brand-cream);
   padding: 1rem;
   font-weight: 800;
   text-decoration: none;
@@ -969,14 +923,14 @@ select:focus-visible {
   gap: 1px;
   margin-top: 1.25rem;
   overflow: hidden;
-  border: 1px solid rgba(255, 248, 237, 0.16);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 248, 237, 0.12);
+  background: color-mix(in srgb, var(--brand-cream) 12%, transparent);
 }
 
 .home-hero__proof div {
   padding: 0.95rem 1.1rem;
-  background: rgba(255, 248, 237, 0.07);
+  background: color-mix(in srgb, var(--brand-cream) 7%, transparent);
 }
 
 .home-hero__proof strong {
@@ -990,7 +944,7 @@ select:focus-visible {
 .home-hero__proof span {
   display: block;
   margin-top: 0.35rem;
-  color: rgba(255, 248, 237, 0.72);
+  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
   font-size: 0.84rem;
 }
 
@@ -1037,8 +991,8 @@ select:focus-visible {
 .dish-row {
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.76);
-  box-shadow: 0 14px 44px rgba(83, 46, 26, 0.06);
+  background: color-mix(in srgb, var(--brand-surface) 76%, transparent);
+  box-shadow: 0 14px 44px color-mix(in srgb, var(--brand-shadow-warm) 6%, transparent);
 }
 
 .journey-strip div {
@@ -1055,7 +1009,7 @@ select:focus-visible {
   place-items: center;
   border-radius: 0.65rem;
   background: var(--leaf);
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-weight: 800;
 }
 
@@ -1082,7 +1036,7 @@ select:focus-visible {
   height: 3.2rem;
   place-items: center;
   border-radius: 0.85rem;
-  background: rgba(57, 83, 59, 0.1);
+  background: color-mix(in srgb, var(--brand-leaf) 10%, transparent);
   color: var(--leaf);
 }
 
@@ -1106,9 +1060,9 @@ select:focus-visible {
 
 .package-section {
   background:
-    radial-gradient(circle at 18% 0%, rgba(201, 151, 43, 0.18), transparent 28rem),
-    linear-gradient(180deg, rgba(57, 83, 59, 0.1), transparent 42%),
-    #fffaf1;
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-accent) 18%, transparent), transparent 28rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-leaf) 10%, transparent), transparent 42%),
+    var(--brand-surface);
 }
 
 .package-section--primary {
@@ -1125,14 +1079,14 @@ select:focus-visible {
   justify-content: space-between;
   gap: clamp(1rem, 4vw, 3rem);
   margin-bottom: 1.1rem;
-  border: 1px solid rgba(37, 25, 23, 0.1);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
   border-radius: 1rem;
   background:
-    linear-gradient(135deg, rgba(37, 25, 23, 0.96), rgba(74, 45, 34, 0.94)),
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-text) 96%, transparent), color-mix(in srgb, var(--brand-mocha-deep) 94%, transparent)),
     var(--ink);
-  color: #fff8ed;
+  color: var(--brand-cream);
   padding: clamp(1rem, 3vw, 1.5rem);
-  box-shadow: 0 26px 70px rgba(37, 25, 23, 0.2);
+  box-shadow: 0 26px 70px color-mix(in srgb, var(--brand-text) 20%, transparent);
 }
 
 .package-spotlight span {
@@ -1147,7 +1101,7 @@ select:focus-visible {
 .package-spotlight strong {
   display: block;
   margin-top: 0.35rem;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-size: clamp(1.35rem, 3vw, 2rem);
   line-height: 1.05;
 }
@@ -1155,7 +1109,7 @@ select:focus-visible {
 .package-spotlight p {
   max-width: 68ch;
   margin-top: 0.45rem;
-  color: rgba(255, 248, 237, 0.72);
+  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
   line-height: 1.6;
 }
 
@@ -1173,8 +1127,8 @@ select:focus-visible {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: #fffaf1;
-  box-shadow: 0 18px 50px rgba(83, 46, 26, 0.11);
+  background: var(--brand-surface);
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand-shadow-warm) 11%, transparent);
 }
 
 .package-card__image {
@@ -1198,7 +1152,7 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 46%, rgba(21, 16, 15, 0.58));
+  background: linear-gradient(180deg, transparent 46%, color-mix(in srgb, var(--brand-night-deep) 58%, transparent));
   pointer-events: none;
 }
 
@@ -1208,12 +1162,12 @@ select:focus-visible {
   bottom: 1rem;
   z-index: 1;
   border-radius: 0.55rem;
-  background: rgba(255, 250, 241, 0.94);
+  background: color-mix(in srgb, var(--brand-surface) 94%, transparent);
   color: var(--spice);
   padding: 0.42rem 0.65rem;
   font-size: 0.74rem;
   font-weight: 900;
-  box-shadow: 0 10px 30px rgba(21, 16, 15, 0.18);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--brand-night-deep) 18%, transparent);
 }
 
 .package-card__body {
@@ -1281,7 +1235,7 @@ select:focus-visible {
 .menu-loading span {
   min-height: 26rem;
   border-radius: 1rem;
-  background: linear-gradient(90deg, #efe2cf, #fff8ed, #efe2cf);
+  background: linear-gradient(90deg, var(--brand-surface-beige), var(--brand-cream), var(--brand-surface-beige));
   background-size: 220% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
@@ -1292,9 +1246,9 @@ select:focus-visible {
 
 .empty-panel {
   max-width: 720px;
-  border: 1px dashed rgba(138, 46, 29, 0.28);
+  border: 1px dashed color-mix(in srgb, var(--brand-primary) 28%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.78);
+  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
   padding: 2rem;
 }
 
@@ -1324,7 +1278,7 @@ select:focus-visible {
 .menu-tabs button {
   border: 1px solid var(--line);
   border-radius: 0.75rem;
-  background: rgba(255, 250, 241, 0.7);
+  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
   color: var(--ink);
   padding: 0.74rem 0.95rem;
   font-weight: 800;
@@ -1335,7 +1289,7 @@ select:focus-visible {
 .menu-tabs button:hover,
 .menu-tabs button.active {
   background: var(--ink);
-  color: #fff8ed;
+  color: var(--brand-cream);
   transform: translateY(-1px);
 }
 
@@ -1352,7 +1306,7 @@ select:focus-visible {
   min-height: 31rem;
   border-radius: 1rem;
   background: var(--aubergine);
-  color: #fff8ed;
+  color: var(--brand-cream);
   box-shadow: var(--shadow);
 }
 
@@ -1369,7 +1323,7 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent, rgba(29, 18, 22, 0.92));
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--brand-night) 92%, transparent));
 }
 
 .menu-category-panel div {
@@ -1381,11 +1335,11 @@ select:focus-visible {
 
 .menu-category-panel h3,
 .menu-category-panel p {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .menu-category-panel p {
-  color: rgba(255, 248, 237, 0.75);
+  color: color-mix(in srgb, var(--brand-cream) 75%, transparent);
 }
 
 .dish-list {
@@ -1403,7 +1357,7 @@ select:focus-visible {
 }
 
 .dish-row:hover {
-  border-color: rgba(201, 151, 43, 0.36);
+  border-color: color-mix(in srgb, var(--brand-accent) 36%, transparent);
   transform: translateY(-2px);
 }
 
@@ -1437,7 +1391,7 @@ select:focus-visible {
   z-index: 120;
   display: grid;
   place-items: center;
-  background: rgba(13, 8, 9, 0.72);
+  background: color-mix(in srgb, var(--brand-overlay) 72%, transparent);
   padding: 1rem;
   backdrop-filter: blur(10px);
 }
@@ -1445,10 +1399,10 @@ select:focus-visible {
 .dish-modal {
   width: min(32rem, 100%);
   overflow: hidden;
-  border: 1px solid rgba(255, 248, 237, 0.12);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
   border-radius: 1rem;
-  background: #fffaf1;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+  background: var(--brand-surface);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-black) 28%, transparent);
 }
 
 .dish-modal img {
@@ -1467,7 +1421,7 @@ select:focus-visible {
 }
 
 .menu-browser {
-  background: #fffaf1;
+  background: var(--brand-surface);
 }
 
 .menu-toolbar {
@@ -1484,7 +1438,7 @@ select:focus-visible {
   gap: 0.7rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
-  background: rgba(255, 250, 241, 0.86);
+  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
   padding: 0.25rem 0.9rem;
 }
 
@@ -1503,7 +1457,7 @@ select:focus-visible {
   gap: 0.55rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
-  background: rgba(255, 250, 241, 0.86);
+  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
   padding: 0.9rem 1rem;
   color: var(--muted);
   font-weight: 800;
@@ -1520,8 +1474,8 @@ select:focus-visible {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.84);
-  box-shadow: 0 16px 44px rgba(83, 46, 26, 0.08);
+  background: color-mix(in srgb, var(--brand-surface) 84%, transparent);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
 }
 
 .menu-page-card img {
@@ -1567,7 +1521,7 @@ select:focus-visible {
 
 .menu-page-card__meta strong {
   border-radius: 0.45rem;
-  background: rgba(57, 83, 59, 0.1);
+  background: color-mix(in srgb, var(--brand-leaf) 10%, transparent);
   color: var(--leaf);
   padding: 0.3rem 0.55rem;
   font-size: 0.74rem;
@@ -1578,9 +1532,9 @@ select:focus-visible {
   overflow: hidden;
   padding: clamp(7.2rem, 11vw, 9.2rem) 1.25rem clamp(2.8rem, 5vw, 4.2rem);
   background:
-    radial-gradient(circle at 82% 18%, rgba(201, 151, 43, 0.2), transparent 26rem),
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 26rem),
     var(--aubergine);
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .catering-hero--packages {
@@ -1599,20 +1553,20 @@ select:focus-visible {
 
 .catering-hero .display,
 .catering-hero .lead {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .catering-hero .lead {
   margin-top: 1.45rem;
-  color: rgba(255, 248, 237, 0.78);
+  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
 }
 
 .catering-hero__panel {
   overflow: hidden;
-  border: 1px solid rgba(255, 248, 237, 0.16);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 248, 237, 0.1);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.26);
+  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-black) 26%, transparent);
 }
 
 .catering-hero__panel img {
@@ -1628,7 +1582,7 @@ select:focus-visible {
 
 .catering-hero__panel strong {
   display: block;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-family: var(--font-display);
   font-size: 1.6rem;
 }
@@ -1636,7 +1590,7 @@ select:focus-visible {
 .catering-hero__panel span {
   display: block;
   margin-top: 0.3rem;
-  color: rgba(255, 248, 237, 0.72);
+  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
 }
 
 .process-section {
@@ -1654,9 +1608,9 @@ select:focus-visible {
   height: 100%;
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.8);
+  background: color-mix(in srgb, var(--brand-surface) 80%, transparent);
   padding: 1.2rem;
-  box-shadow: 0 16px 44px rgba(83, 46, 26, 0.08);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
 }
 
 .process-grid article > span,
@@ -1666,23 +1620,23 @@ select:focus-visible {
   height: 3.1rem;
   place-items: center;
   border-radius: 0.85rem;
-  background: rgba(201, 151, 43, 0.14);
+  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
   color: var(--spice);
   margin-bottom: 1rem;
 }
 
 .addons-section {
   background: var(--aubergine);
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .addons-section .section-title,
 .addons-section .lead {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .addons-section .lead {
-  color: rgba(255, 248, 237, 0.72);
+  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
 }
 
 .addons-grid {
@@ -1692,18 +1646,18 @@ select:focus-visible {
 }
 
 .addon-card {
-  border-color: rgba(255, 248, 237, 0.12);
-  background: rgba(255, 248, 237, 0.08);
+  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
   box-shadow: none;
 }
 
 .addon-card h3,
 .addon-card p {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .addon-card p {
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
 }
 
 .addon-card div:not(.addon-card__icon) {
@@ -1724,12 +1678,12 @@ select:focus-visible {
   align-items: center;
   gap: 0.4rem;
   margin-top: 1rem;
-  color: rgba(255, 248, 237, 0.7);
+  color: color-mix(in srgb, var(--brand-cream) 70%, transparent);
   font-weight: 700;
 }
 
 .contact-section {
-  background: #fffaf1;
+  background: var(--brand-surface);
 }
 
 .contact-grid {
@@ -1755,7 +1709,7 @@ select:focus-visible {
   gap: 0.2rem 0.75rem;
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.8);
+  background: color-mix(in srgb, var(--brand-surface) 80%, transparent);
   padding: 1rem;
 }
 
@@ -1802,7 +1756,7 @@ select:focus-visible {
 }
 
 .contact-form small {
-  color: #a73528;
+  color: var(--brand-error);
   font-weight: 700;
 }
 
@@ -1866,7 +1820,7 @@ select:focus-visible {
 }
 
 .checkout-field small {
-  color: #a73528;
+  color: var(--brand-error);
   font-weight: 700;
 }
 
@@ -1882,9 +1836,9 @@ select:focus-visible {
 .checkout-assurance {
   display: flex;
   gap: 0.8rem;
-  border: 1px solid rgba(57, 83, 59, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-leaf) 14%, transparent);
   border-radius: 0.9rem;
-  background: rgba(57, 83, 59, 0.08);
+  background: color-mix(in srgb, var(--brand-leaf) 8%, transparent);
   margin-top: 1rem;
   padding: 1rem;
   color: var(--leaf);
@@ -1916,7 +1870,7 @@ select:focus-visible {
   gap: 1rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: rgba(255, 250, 241, 0.75);
+  background: color-mix(in srgb, var(--brand-surface) 75%, transparent);
   padding: 0.9rem;
 }
 
@@ -1961,7 +1915,7 @@ select:focus-visible {
   place-items: center;
   padding: 7rem 1.25rem 3rem;
   background:
-    linear-gradient(105deg, rgba(29, 18, 22, 0.82), rgba(29, 18, 22, 0.44)),
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 82%, transparent), color-mix(in srgb, var(--brand-night) 44%, transparent)),
     url('/login-side.jpg') center/cover;
 }
 
@@ -1970,7 +1924,7 @@ select:focus-visible {
   width: min(920px, 100%);
   grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1fr);
   overflow: hidden;
-  background: rgba(255, 250, 241, 0.92);
+  background: color-mix(in srgb, var(--brand-surface) 92%, transparent);
   backdrop-filter: blur(16px);
 }
 
@@ -1984,15 +1938,15 @@ select:focus-visible {
   flex-direction: column;
   justify-content: flex-end;
   background:
-    linear-gradient(180deg, rgba(29, 18, 22, 0.18), rgba(29, 18, 22, 0.92)),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-night) 18%, transparent), color-mix(in srgb, var(--brand-night) 92%, transparent)),
     url('/hero-catering.jpg') center/cover;
   padding: clamp(1.2rem, 4vw, 2rem);
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .auth-copy h1 {
   margin-top: 1rem;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-size: clamp(2.3rem, 5vw, 4.2rem);
   line-height: 0.95;
 }
@@ -2000,7 +1954,7 @@ select:focus-visible {
 .auth-copy p {
   max-width: 36ch;
   margin-top: 1rem;
-  color: rgba(255, 248, 237, 0.76);
+  color: color-mix(in srgb, var(--brand-cream) 76%, transparent);
   line-height: 1.65;
 }
 
@@ -2029,9 +1983,9 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border: 1px solid rgba(37, 25, 23, 0.15);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 15%, transparent);
   border-radius: 0.85rem;
-  background: rgba(255, 250, 241, 0.7);
+  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
   padding: 0 0.75rem;
 }
 
@@ -2045,8 +1999,8 @@ select:focus-visible {
 }
 
 .auth-form label > span:focus-within {
-  border-color: rgba(201, 151, 43, 0.85);
-  box-shadow: 0 0 0 4px rgba(201, 151, 43, 0.12);
+  border-color: color-mix(in srgb, var(--brand-accent) 85%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
 }
 
 .auth-form label button {
@@ -2058,15 +2012,15 @@ select:focus-visible {
 
 .auth-form small,
 .auth-error {
-  color: #a73528;
+  color: var(--brand-error);
   font-size: 0.82rem;
   font-weight: 700;
 }
 
 .auth-error {
-  border: 1px solid rgba(167, 53, 40, 0.16);
+  border: 1px solid color-mix(in srgb, var(--brand-error) 16%, transparent);
   border-radius: 0.75rem;
-  background: rgba(167, 53, 40, 0.08);
+  background: color-mix(in srgb, var(--brand-error) 8%, transparent);
   padding: 0.75rem;
 }
 
@@ -2083,7 +2037,7 @@ select:focus-visible {
 
 .catering-checkout {
   background:
-    radial-gradient(circle at 12% 0%, rgba(201, 151, 43, 0.14), transparent 25rem),
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 25rem),
     var(--paper) !important;
   color: var(--ink) !important;
   padding-top: 7rem !important;
@@ -2091,12 +2045,12 @@ select:focus-visible {
 
 .catering-checkout .bg-white,
 .catering-checkout .bg-gray-50 {
-  background-color: rgba(255, 250, 241, 0.84) !important;
+  background-color: color-mix(in srgb, var(--brand-surface) 84%, transparent) !important;
 }
 
 .catering-checkout .border-gray-200,
 .catering-checkout .border-gray-300 {
-  border-color: rgba(37, 25, 23, 0.12) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
 }
 
 .catering-checkout .text-gray-900,
@@ -2112,7 +2066,7 @@ select:focus-visible {
 
 .catering-checkout .bg-black {
   background: var(--ink) !important;
-  color: #fff8ed !important;
+  color: var(--brand-cream) !important;
 }
 
 .catering-checkout .focus\:border-black:focus {
@@ -2134,20 +2088,20 @@ select:focus-visible {
   max-width: 100%;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 16% 0%, rgba(201, 151, 43, 0.14), transparent 28rem),
-    linear-gradient(180deg, #fffaf1 0%, #f4eadb 100%);
+    radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 28rem),
+    linear-gradient(180deg, var(--brand-surface) 0%, var(--brand-surface-part-c) 100%);
   color: var(--ink);
 }
 
 .admin-sidebar-panel {
   position: relative;
   isolation: isolate;
-  border-right: 1px solid rgba(255, 248, 237, 0.11);
+  border-right: 1px solid color-mix(in srgb, var(--brand-cream) 11%, transparent);
   background:
-    radial-gradient(circle at 14% 0%, rgba(201, 151, 43, 0.22), transparent 18rem),
-    linear-gradient(180deg, #2a1a18 0%, #1a1110 48%, #0f0b0a 100%);
-  color: rgba(255, 248, 237, 0.74);
-  box-shadow: 18px 0 60px rgba(37, 25, 23, 0.2);
+    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 18rem),
+    linear-gradient(180deg, var(--brand-outline) 0%, var(--brand-night-part) 48%, var(--brand-ink-soot) 100%);
+  color: color-mix(in srgb, var(--brand-cream) 74%, transparent);
+  box-shadow: 18px 0 60px color-mix(in srgb, var(--brand-text) 20%, transparent);
 }
 
 .admin-sidebar-panel::before {
@@ -2156,18 +2110,18 @@ select:focus-visible {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255, 248, 237, 0.055), transparent 14rem),
-    linear-gradient(90deg, transparent, rgba(255, 248, 237, 0.035));
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-cream) 5.5%, transparent), transparent 14rem),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--brand-cream) 3.5%, transparent));
   pointer-events: none;
 }
 
 .admin-brand-block,
 .admin-user-block {
-  border-color: rgba(255, 248, 237, 0.1);
+  border-color: color-mix(in srgb, var(--brand-cream) 10%, transparent);
 }
 
 .admin-brand-block {
-  border-bottom: 1px solid rgba(255, 248, 237, 0.1);
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
 }
 
 .admin-brand-link {
@@ -2175,10 +2129,10 @@ select:focus-visible {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.65rem;
-  border: 1px solid rgba(255, 248, 237, 0.12);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
   border-radius: 1rem;
   background:
-    linear-gradient(135deg, rgba(255, 248, 237, 0.105), rgba(255, 248, 237, 0.035));
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 10.5%, transparent), color-mix(in srgb, var(--brand-cream) 3.5%, transparent));
   padding: 0.5rem;
   text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
@@ -2186,9 +2140,9 @@ select:focus-visible {
 
 .admin-brand-link:hover {
   transform: translateY(-1px);
-  border-color: rgba(240, 215, 156, 0.28);
+  border-color: color-mix(in srgb, var(--brand-accent-soft) 28%, transparent);
   background:
-    linear-gradient(135deg, rgba(255, 248, 237, 0.14), rgba(255, 248, 237, 0.055));
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 14%, transparent), color-mix(in srgb, var(--brand-cream) 5.5%, transparent));
 }
 
 .admin-brand-seal {
@@ -2197,10 +2151,10 @@ select:focus-visible {
   height: 3.5rem;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(255, 248, 237, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
   border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  background: var(--brand-white);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-black) 20%, transparent);
 }
 
 .admin-brand-seal img {
@@ -2213,7 +2167,7 @@ select:focus-visible {
 }
 
 .admin-brand-arrow {
-  color: rgba(255, 248, 237, 0.34);
+  color: color-mix(in srgb, var(--brand-cream) 34%, transparent);
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -2223,12 +2177,12 @@ select:focus-visible {
 }
 
 .admin-brand-block h2 {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .admin-brand-block p,
 .admin-user-card p:last-child {
-  color: rgba(255, 248, 237, 0.52);
+  color: color-mix(in srgb, var(--brand-cream) 52%, transparent);
 }
 
 .admin-sidebar-status {
@@ -2237,15 +2191,15 @@ select:focus-visible {
   justify-content: space-between;
   gap: 0.8rem;
   margin-top: 0.75rem;
-  border: 1px solid rgba(255, 248, 237, 0.1);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
   border-radius: 0.9rem;
-  background: rgba(255, 248, 237, 0.055);
+  background: color-mix(in srgb, var(--brand-cream) 5.5%, transparent);
   padding: 0.72rem 0.78rem;
 }
 
 .admin-sidebar-status span {
   display: block;
-  color: rgba(255, 248, 237, 0.45);
+  color: color-mix(in srgb, var(--brand-cream) 45%, transparent);
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -2255,7 +2209,7 @@ select:focus-visible {
 .admin-sidebar-status strong {
   display: block;
   margin-top: 0.12rem;
-  color: rgba(255, 248, 237, 0.86);
+  color: color-mix(in srgb, var(--brand-cream) 86%, transparent);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -2264,16 +2218,16 @@ select:focus-visible {
   display: inline-flex !important;
   align-items: center;
   gap: 0.35rem;
-  border: 1px solid rgba(57, 83, 59, 0.5);
+  border: 1px solid color-mix(in srgb, var(--brand-leaf) 50%, transparent);
   border-radius: 999px;
-  background: rgba(57, 83, 59, 0.28);
-  color: #d9f0cd !important;
+  background: color-mix(in srgb, var(--brand-leaf) 28%, transparent);
+  color: var(--brand-success-soft) !important;
   padding: 0.32rem 0.55rem;
   font-size: 0.68rem !important;
 }
 
 .admin-nav-label {
-  color: rgba(240, 215, 156, 0.62);
+  color: color-mix(in srgb, var(--brand-accent-soft) 62%, transparent);
 }
 
 .admin-nav-group-header {
@@ -2283,7 +2237,7 @@ select:focus-visible {
 }
 
 .admin-nav-group-header span {
-  color: rgba(255, 248, 237, 0.36);
+  color: color-mix(in srgb, var(--brand-cream) 36%, transparent);
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -2293,14 +2247,14 @@ select:focus-visible {
   border: 1px solid transparent;
   min-height: 2.8rem;
   min-width: 0;
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
   overflow: hidden;
 }
 
 .admin-nav-link:hover {
-  border-color: rgba(255, 248, 237, 0.12);
-  background: rgba(255, 248, 237, 0.075);
-  color: #fff8ed;
+  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-cream) 7.5%, transparent);
+  color: var(--brand-cream);
 }
 
 .admin-nav-icon {
@@ -2309,20 +2263,20 @@ select:focus-visible {
   height: 1.85rem;
   place-items: center;
   border-radius: 0.65rem;
-  background: rgba(255, 248, 237, 0.06);
-  color: rgba(255, 248, 237, 0.62);
+  background: color-mix(in srgb, var(--brand-cream) 6%, transparent);
+  color: color-mix(in srgb, var(--brand-cream) 62%, transparent);
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .admin-nav-link:hover .admin-nav-icon {
-  background: rgba(255, 248, 237, 0.1);
+  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
   color: var(--brass-soft);
 }
 
 .admin-nav-chevron {
   margin-left: auto;
   flex-shrink: 0;
-  color: rgba(255, 248, 237, 0.22);
+  color: color-mix(in srgb, var(--brand-cream) 22%, transparent);
   opacity: 0;
   transform: translateX(-0.25rem);
   transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
@@ -2334,13 +2288,13 @@ select:focus-visible {
 }
 
 .admin-nav-link--active {
-  border-color: rgba(240, 215, 156, 0.28);
+  border-color: color-mix(in srgb, var(--brand-accent-soft) 28%, transparent);
   background:
-    linear-gradient(135deg, rgba(201, 151, 43, 0.22), rgba(138, 46, 29, 0.16));
-  color: #fff8ed;
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 22%, transparent), color-mix(in srgb, var(--brand-primary) 16%, transparent));
+  color: var(--brand-cream);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 248, 237, 0.055),
-    0 14px 28px rgba(0, 0, 0, 0.14);
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-cream) 5.5%, transparent),
+    0 14px 28px color-mix(in srgb, var(--brand-black) 14%, transparent);
 }
 
 .admin-nav-link--active::before {
@@ -2352,7 +2306,7 @@ select:focus-visible {
 }
 
 .admin-nav-link--active .admin-nav-icon {
-  background: rgba(255, 248, 237, 0.15);
+  background: color-mix(in srgb, var(--brand-cream) 15%, transparent);
   color: var(--brass-soft);
 }
 
@@ -2363,48 +2317,48 @@ select:focus-visible {
 }
 
 .admin-user-block {
-  border-top: 1px solid rgba(255, 248, 237, 0.1);
+  border-top: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
 }
 
 .admin-user-card {
-  border: 1px solid rgba(255, 248, 237, 0.1);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
   background:
-    linear-gradient(135deg, rgba(255, 248, 237, 0.095), rgba(255, 248, 237, 0.045));
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 9.5%, transparent), color-mix(in srgb, var(--brand-cream) 4.5%, transparent));
 }
 
 .admin-user-avatar {
   background: linear-gradient(135deg, var(--brass), var(--spice));
-  color: #fff8ed;
-  box-shadow: 0 12px 24px rgba(138, 46, 29, 0.22);
+  color: var(--brand-cream);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
 
 .admin-user-card p:first-child {
-  color: #fff8ed;
+  color: var(--brand-cream);
 }
 
 .admin-user-shield {
-  color: rgba(240, 215, 156, 0.75);
+  color: color-mix(in srgb, var(--brand-accent-soft) 75%, transparent);
 }
 
 .admin-language-slot {
-  border: 1px solid rgba(255, 248, 237, 0.08);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 8%, transparent);
   border-radius: 0.85rem;
-  background: rgba(255, 248, 237, 0.04);
+  background: color-mix(in srgb, var(--brand-cream) 4%, transparent);
 }
 
 .admin-logout {
-  color: rgba(255, 248, 237, 0.68);
+  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
 }
 
 .admin-logout:hover {
-  background: rgba(167, 53, 40, 0.16);
-  color: #ffd7cf;
+  background: color-mix(in srgb, var(--brand-error) 16%, transparent);
+  color: var(--brand-error-soft);
 }
 
 .admin-main {
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 88% 0%, rgba(57, 83, 59, 0.12), transparent 24rem),
+    radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 24rem),
     transparent;
 }
 
@@ -2416,8 +2370,8 @@ select:focus-visible {
   min-height: 100%;
   padding: clamp(1rem, 2.6vw, 2rem);
   background:
-    radial-gradient(circle at 8% 0%, rgba(201, 151, 43, 0.16), transparent 23rem),
-    radial-gradient(circle at 96% 14%, rgba(57, 83, 59, 0.1), transparent 22rem),
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 23rem),
+    radial-gradient(circle at 96% 14%, color-mix(in srgb, var(--brand-leaf) 10%, transparent), transparent 22rem),
     transparent;
 }
 
@@ -2440,12 +2394,12 @@ select:focus-visible {
   place-items: center;
   align-content: center;
   gap: 0.9rem;
-  border: 1px solid rgba(37, 25, 23, 0.08);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 8%, transparent);
   border-radius: 1rem;
   background:
-    linear-gradient(105deg, rgba(255, 250, 241, 0.9), rgba(255, 248, 237, 0.76)),
-    radial-gradient(circle at 100% 0%, rgba(201, 151, 43, 0.16), transparent 18rem);
-  box-shadow: 0 24px 70px rgba(83, 46, 26, 0.1);
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 90%, transparent), color-mix(in srgb, var(--brand-cream) 76%, transparent)),
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 18rem);
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
   color: var(--muted);
   font-weight: 700;
 }
@@ -2453,12 +2407,12 @@ select:focus-visible {
 .admin-page-container > div:first-child {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(37, 25, 23, 0.08) !important;
+  border: 1px solid color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
   border-radius: 1rem !important;
   background:
-    linear-gradient(105deg, rgba(255, 250, 241, 0.94), rgba(255, 248, 237, 0.84)),
-    radial-gradient(circle at 100% 0%, rgba(201, 151, 43, 0.16), transparent 18rem) !important;
-  box-shadow: 0 24px 70px rgba(83, 46, 26, 0.12) !important;
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 94%, transparent), color-mix(in srgb, var(--brand-cream) 84%, transparent)),
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 18rem) !important;
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent) !important;
 }
 
 .admin-page-container > div:first-child::before {
@@ -2490,7 +2444,7 @@ select:focus-visible {
 }
 
 .admin-page-container > div:first-child p:first-child {
-  color: #8a611d !important;
+  color: var(--brand-accent-deep) !important;
   letter-spacing: 0.08em !important;
 }
 
@@ -2502,10 +2456,10 @@ select:focus-visible {
 
 .admin-panel-font .grid > div.rounded-2xl.border.bg-white,
 .admin-panel-font .grid > div.rounded-2xl.border.border-slate-200.bg-white {
-  border-color: rgba(37, 25, 23, 0.08) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
   background:
-    linear-gradient(180deg, rgba(255, 250, 241, 0.96), rgba(255, 248, 237, 0.82)) !important;
-  box-shadow: 0 14px 36px rgba(83, 46, 26, 0.08) !important;
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface) 96%, transparent), color-mix(in srgb, var(--brand-cream) 82%, transparent)) !important;
+  box-shadow: 0 14px 36px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent) !important;
 }
 
 .admin-panel-font .overflow-x-auto {
@@ -2533,9 +2487,9 @@ select:focus-visible {
 .admin-panel-font .w-full.max-w-xl,
 .admin-panel-font .w-full.max-w-2xl,
 .admin-panel-font .w-full.max-w-3xl {
-  border-color: rgba(37, 25, 23, 0.1) !important;
-  background-color: #fffaf1 !important;
-  box-shadow: 0 34px 90px rgba(13, 8, 9, 0.28) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 10%, transparent) !important;
+  background-color: var(--brand-surface) !important;
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-overlay) 28%, transparent) !important;
 }
 
 .admin-panel-font .font-mono {
@@ -2554,22 +2508,22 @@ select:focus-visible {
 }
 
 .admin-panel-font .bg-white {
-  background-color: rgba(255, 250, 241, 0.9) !important;
+  background-color: color-mix(in srgb, var(--brand-surface) 90%, transparent) !important;
 }
 
 .admin-panel-font .admin-dropdown-menu {
-  background-color: #fffdf9 !important;
+  background-color: var(--brand-surface-soft) !important;
   backdrop-filter: none !important;
 }
 
 .admin-panel-font .admin-page-container .admin-tab-strip {
-  background-color: #f6efe2 !important;
+  background-color: var(--brand-surface-part-b) !important;
   backdrop-filter: none !important;
 }
 
 .admin-panel-font .admin-page-container .admin-tab-strip .bg-white {
-  background-color: rgba(255, 253, 249, 0.97) !important;
-  box-shadow: 0 8px 22px rgba(37, 25, 23, 0.12) !important;
+  background-color: color-mix(in srgb, var(--brand-surface-soft) 97%, transparent) !important;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
 }
 
 .admin-panel-font .admin-dropdown-menu .hover\:bg-amber-50:hover,
@@ -2580,11 +2534,11 @@ select:focus-visible {
 .admin-panel-font .admin-dropdown-menu .hover\:bg-purple-50:hover,
 .admin-panel-font .admin-dropdown-menu .hover\:bg-stone-50:hover,
 .admin-panel-font .admin-dropdown-menu .hover\:bg-red-50:hover {
-  background-color: rgba(37, 25, 23, 0.06) !important;
+  background-color: color-mix(in srgb, var(--brand-text) 6%, transparent) !important;
 }
 
 .admin-panel-font .admin-dropdown-menu .bg-stone-50 {
-  background-color: rgba(37, 25, 23, 0.06) !important;
+  background-color: color-mix(in srgb, var(--brand-text) 6%, transparent) !important;
 }
 
 .admin-panel-font .bg-slate-900 {
@@ -2593,7 +2547,7 @@ select:focus-visible {
 
 .admin-panel-font .border-slate-200,
 .admin-panel-font .border-stone-200 {
-  border-color: rgba(37, 25, 23, 0.1) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 10%, transparent) !important;
 }
 
 .admin-panel-font .text-slate-900,
@@ -2608,43 +2562,43 @@ select:focus-visible {
 }
 
 .admin-panel-font .text-slate-400 {
-  color: rgba(112, 91, 74, 0.58) !important;
+  color: color-mix(in srgb, var(--brand-muted) 58%, transparent) !important;
 }
 
 .admin-panel-font .shadow-sm {
-  box-shadow: 0 18px 50px rgba(83, 46, 26, 0.08) !important;
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent) !important;
 }
 
 .admin-panel-font .shadow-md {
-  box-shadow: 0 24px 58px rgba(83, 46, 26, 0.12) !important;
+  box-shadow: 0 24px 58px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent) !important;
 }
 
 .admin-panel-font .shadow-2xl {
-  box-shadow: 0 34px 90px rgba(37, 25, 23, 0.2) !important;
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-text) 20%, transparent) !important;
 }
 
 .admin-panel-font input,
 .admin-panel-font textarea,
 .admin-panel-font select {
-  border-color: rgba(37, 25, 23, 0.14) !important;
-  background-color: rgba(255, 250, 241, 0.82) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 14%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-surface) 82%, transparent) !important;
   color: var(--ink) !important;
 }
 
 .admin-panel-font input:focus,
 .admin-panel-font textarea:focus,
 .admin-panel-font select:focus {
-  border-color: rgba(201, 151, 43, 0.72) !important;
-  box-shadow: 0 0 0 4px rgba(201, 151, 43, 0.12) !important;
+  border-color: color-mix(in srgb, var(--brand-accent) 72%, transparent) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent) !important;
 }
 
 .admin-panel-font table thead,
 .admin-panel-font .bg-slate-50 {
-  background-color: rgba(241, 226, 202, 0.72) !important;
+  background-color: color-mix(in srgb, var(--brand-surface-deep) 72%, transparent) !important;
 }
 
 .admin-panel-font tr:hover {
-  background-color: rgba(255, 248, 237, 0.64) !important;
+  background-color: color-mix(in srgb, var(--brand-cream) 64%, transparent) !important;
 }
 
 .admin-card,
@@ -2673,49 +2627,49 @@ select:focus-visible {
 
 .admin-panel-font .bg-stone-50,
 .admin-panel-font .bg-gray-50 {
-  background-color: rgba(241, 226, 202, 0.5) !important;
+  background-color: color-mix(in srgb, var(--brand-surface-deep) 50%, transparent) !important;
 }
 
 .admin-panel-font .border-gray-200,
 .admin-panel-font .border-gray-300,
 .admin-panel-font .border-slate-300 {
-  border-color: rgba(37, 25, 23, 0.12) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
 }
 
 .admin-panel-font .bg-slate-900,
 .admin-panel-font .border-slate-900 {
-  border-color: rgba(99, 53, 20, 0.2) !important;
-  background: linear-gradient(135deg, #d8a23a, #b46f24 72%, #8a2e1d) !important;
-  color: #fffaf1 !important;
-  box-shadow: 0 14px 30px rgba(138, 46, 29, 0.18);
+  border-color: color-mix(in srgb, var(--brand-accent-dark) 20%, transparent) !important;
+  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary)) !important;
+  color: var(--brand-surface) !important;
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 18%, transparent);
 }
 
 .admin-panel-font .hover\:bg-slate-800:hover,
 .admin-panel-font .hover\:bg-gray-900:hover {
-  background: linear-gradient(135deg, #c9972b, #8a2e1d) !important;
-  color: #fffaf1 !important;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-primary)) !important;
+  color: var(--brand-surface) !important;
 }
 
 .admin-panel-font .hover\:bg-stone-50:hover,
 .admin-panel-font .hover\:bg-gray-50:hover {
-  background-color: rgba(201, 151, 43, 0.1) !important;
+  background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent) !important;
 }
 
 .admin-panel-font .bg-amber-50,
 .admin-panel-font .bg-orange-50,
 .admin-panel-font .bg-yellow-50 {
-  background-color: rgba(201, 151, 43, 0.13) !important;
+  background-color: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
 }
 
 .admin-panel-font .text-amber-600,
 .admin-panel-font .text-amber-700,
 .admin-panel-font .text-orange-600 {
-  color: #8a611d !important;
+  color: var(--brand-accent-deep) !important;
 }
 
 .admin-panel-font .bg-emerald-50,
 .admin-panel-font .bg-green-50 {
-  background-color: rgba(57, 83, 59, 0.1) !important;
+  background-color: color-mix(in srgb, var(--brand-leaf) 10%, transparent) !important;
 }
 
 .admin-panel-font .text-emerald-600,
@@ -2726,17 +2680,17 @@ select:focus-visible {
 }
 
 .admin-panel-font .bg-red-50 {
-  background-color: rgba(167, 53, 40, 0.08) !important;
+  background-color: color-mix(in srgb, var(--brand-error) 8%, transparent) !important;
 }
 
 .admin-panel-font .text-red-600,
 .admin-panel-font .text-red-700 {
-  color: #a73528 !important;
+  color: var(--brand-error) !important;
 }
 
 .admin-panel-font .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
 .admin-panel-font .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgba(37, 25, 23, 0.08) !important;
+  border-color: color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
 }
 
 .admin-panel-font table {
@@ -2759,7 +2713,7 @@ select:focus-visible {
 }
 
 .admin-panel-font ::placeholder {
-  color: rgba(112, 91, 74, 0.56) !important;
+  color: color-mix(in srgb, var(--brand-muted) 56%, transparent) !important;
 }
 
 .admin-panel-font button,
@@ -2772,7 +2726,7 @@ select:focus-visible {
 }
 
 .admin-panel-font .bg-blue-50 {
-  background-color: rgba(57, 83, 59, 0.1) !important;
+  background-color: color-mix(in srgb, var(--brand-leaf) 10%, transparent) !important;
 }
 
 .admin-panel-font .bg-blue-500 {
@@ -2785,7 +2739,7 @@ select:focus-visible {
 }
 
 .admin-panel-font .border-blue-200 {
-  border-color: rgba(57, 83, 59, 0.2) !important;
+  border-color: color-mix(in srgb, var(--brand-leaf) 20%, transparent) !important;
 }
 
 .admin-panel-font .bg-amber-500,
@@ -2800,20 +2754,20 @@ select:focus-visible {
 
 .admin-panel-font .ring-slate-100,
 .admin-panel-font .focus\:ring-slate-100:focus {
-  --tw-ring-color: rgba(201, 151, 43, 0.14) !important;
+  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
 }
 
 .admin-panel-font .fixed.inset-0 {
-  background-color: rgba(13, 8, 9, 0.68);
+  background-color: color-mix(in srgb, var(--brand-overlay) 68%, transparent);
   backdrop-filter: blur(10px);
 }
 
 .admin-panel-font .admin-package-hero-title {
-  color: #fff8ed !important;
+  color: var(--brand-cream) !important;
 }
 
 .admin-panel-font .admin-package-hero-copy {
-  color: rgba(255, 248, 237, 0.78) !important;
+  color: color-mix(in srgb, var(--brand-cream) 78%, transparent) !important;
 }
 
 .admin-login-page {
@@ -2823,7 +2777,7 @@ select:focus-visible {
   overflow: hidden;
   padding: clamp(1rem, 3vw, 2rem);
   background:
-    linear-gradient(105deg, rgba(29, 18, 22, 0.88), rgba(29, 18, 22, 0.54)),
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 88%, transparent), color-mix(in srgb, var(--brand-night) 54%, transparent)),
     url('/hero-catering.jpg') center/cover;
   color: var(--ink);
   font-family: var(--font-sans);
@@ -2834,8 +2788,8 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 18%, rgba(201, 151, 43, 0.22), transparent 28rem),
-    linear-gradient(180deg, rgba(255, 250, 241, 0.08), rgba(29, 18, 22, 0.42));
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 28rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface) 8%, transparent), color-mix(in srgb, var(--brand-night) 42%, transparent));
   pointer-events: none;
 }
 
@@ -2847,10 +2801,10 @@ select:focus-visible {
   min-height: 560px;
   grid-template-columns: minmax(0, 0.92fr) minmax(21rem, 1.08fr);
   overflow: hidden;
-  border: 1px solid rgba(255, 248, 237, 0.22);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 22%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 250, 241, 0.94);
-  box-shadow: 0 34px 90px rgba(13, 8, 9, 0.28);
+  background: color-mix(in srgb, var(--brand-surface) 94%, transparent);
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-overlay) 28%, transparent);
 }
 
 .admin-login-form {
@@ -2865,10 +2819,10 @@ select:focus-visible {
   width: fit-content;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid rgba(201, 151, 43, 0.26);
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 26%, transparent);
   border-radius: 0.65rem;
-  background: rgba(201, 151, 43, 0.12);
-  color: #8a611d;
+  background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
+  color: var(--brand-accent-deep);
   padding: 0.42rem 0.72rem;
   font-size: 0.72rem;
   font-weight: 800;
@@ -2923,18 +2877,18 @@ select:focus-visible {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.65rem;
-  border: 1px solid rgba(37, 25, 23, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 14%, transparent);
   border-radius: 0.85rem;
-  background: rgba(255, 250, 241, 0.78);
+  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
   padding: 0 0.85rem;
-  color: rgba(112, 91, 74, 0.7);
+  color: color-mix(in srgb, var(--brand-muted) 70%, transparent);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .admin-login-field > div:focus-within {
-  border-color: rgba(201, 151, 43, 0.78);
-  background: #fffaf1;
-  box-shadow: 0 0 0 4px rgba(201, 151, 43, 0.12);
+  border-color: color-mix(in srgb, var(--brand-accent) 78%, transparent);
+  background: var(--brand-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
 }
 
 .admin-login-field input {
@@ -2947,7 +2901,7 @@ select:focus-visible {
 }
 
 .admin-login-field input.is-error {
-  color: #a73528;
+  color: var(--brand-error);
 }
 
 .admin-login-field button {
@@ -2962,12 +2916,12 @@ select:focus-visible {
 }
 
 .admin-login-field button:hover {
-  background: rgba(201, 151, 43, 0.1);
+  background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
   color: var(--spice);
 }
 
 .admin-login-field small {
-  color: #a73528;
+  color: var(--brand-error);
   font-size: 0.76rem;
   font-weight: 700;
 }
@@ -2976,10 +2930,10 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border: 1px solid rgba(167, 53, 40, 0.18);
+  border: 1px solid color-mix(in srgb, var(--brand-error) 18%, transparent);
   border-radius: 0.8rem;
-  background: rgba(167, 53, 40, 0.08);
-  color: #a73528;
+  background: color-mix(in srgb, var(--brand-error) 8%, transparent);
+  color: var(--brand-error);
   padding: 0.72rem 0.85rem;
   font-size: 0.84rem;
   font-weight: 700;
@@ -2991,21 +2945,21 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  border: 1px solid rgba(99, 53, 20, 0.2);
+  border: 1px solid color-mix(in srgb, var(--brand-accent-dark) 20%, transparent);
   border-radius: 0.85rem;
-  background: linear-gradient(135deg, #d8a23a, #b46f24 72%, #8a2e1d);
-  color: #fffaf1;
+  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary));
+  color: var(--brand-surface);
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.03em;
-  box-shadow: 0 14px 32px rgba(138, 46, 29, 0.22);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 22%, transparent);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .admin-login-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 20px 42px rgba(138, 46, 29, 0.28);
+  box-shadow: 0 20px 42px color-mix(in srgb, var(--brand-primary) 28%, transparent);
 }
 
 .admin-login-submit:disabled {
@@ -3018,8 +2972,8 @@ select:focus-visible {
   width: 1rem;
   height: 1rem;
   flex: 0 0 auto;
-  border: 2px solid rgba(255, 250, 241, 0.32);
-  border-top-color: #fffaf1;
+  border: 2px solid color-mix(in srgb, var(--brand-surface) 32%, transparent);
+  border-top-color: var(--brand-surface);
   border-radius: 999px;
   animation: admin-login-spin 0.75s linear infinite;
 }
@@ -3062,7 +3016,7 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(29, 18, 22, 0.18), rgba(29, 18, 22, 0.88));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand-night) 18%, transparent), color-mix(in srgb, var(--brand-night) 88%, transparent));
 }
 
 .admin-login-image > div {
@@ -3074,9 +3028,9 @@ select:focus-visible {
 
 .admin-login-image span {
   display: inline-flex;
-  border: 1px solid rgba(201, 151, 43, 0.3);
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent);
   border-radius: 0.65rem;
-  background: rgba(201, 151, 43, 0.15);
+  background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
   color: var(--brass-soft);
   padding: 0.38rem 0.62rem;
   font-size: 0.72rem;
@@ -3088,13 +3042,13 @@ select:focus-visible {
 .admin-login-image h2 {
   max-width: 24rem;
   margin-top: 0.9rem;
-  color: #fff8ed;
+  color: var(--brand-cream);
   font-size: clamp(1.8rem, 3.6vw, 3.1rem);
   line-height: 1.05;
 }
 
 .admin-sidebar-panel h2 {
-  color: #fff8ed !important;
+  color: var(--brand-cream) !important;
 }
 
 .admin-sidebar-panel p,
@@ -3116,8 +3070,8 @@ select:focus-visible {
   align-items: center;
   gap: 0.8rem;
   padding: 0.65rem clamp(1rem, 2.6vw, 2rem);
-  border-bottom: 1px solid rgba(37, 25, 23, 0.07);
-  background: rgba(255, 250, 241, 0.97);
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-text) 7%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 97%, transparent);
 }
 
 .admin-topbar-page {
@@ -3126,7 +3080,7 @@ select:focus-visible {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6b4a1f;
+  color: var(--brand-warning-deep);
 }
 
 .admin-sidebar-toggle {
@@ -3136,11 +3090,11 @@ select:focus-visible {
   flex-shrink: 0;
   width: 2.4rem;
   height: 2.4rem;
-  border: 1px solid rgba(37, 25, 23, 0.14);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 14%, transparent);
   border-radius: 0.8rem;
-  background: #2a1a18;
-  color: #f4d38b;
-  box-shadow: 0 10px 24px rgba(37, 25, 23, 0.18);
+  background: var(--brand-outline);
+  color: var(--brand-accent-haze);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--brand-text) 18%, transparent);
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
@@ -3151,12 +3105,12 @@ select:focus-visible {
 
 .admin-sidebar-toggle:hover {
   transform: translateY(-1px);
-  border-color: rgba(216, 162, 58, 0.55);
-  background: #36211d;
+  border-color: color-mix(in srgb, var(--brand-accent-strong) 55%, transparent);
+  background: var(--brand-outline-tone);
 }
 
 .admin-sidebar-toggle:focus-visible {
-  outline: 2px solid #c9962b;
+  outline: 2px solid var(--brand-accent-aisle);
   outline-offset: 2px;
 }
 
@@ -3271,8 +3225,8 @@ select:focus-visible {
     height: 2.1rem;
     overflow: hidden;
     border-radius: 0.6rem;
-    background: #fff;
-    box-shadow: 0 6px 16px rgba(37, 25, 23, 0.18);
+    background: var(--brand-white);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-text) 18%, transparent);
     animation: adminTopbarLogoIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
@@ -3295,8 +3249,8 @@ select:focus-visible {
     left: 0;
     z-index: 80;
     width: min(17.5rem, 84vw) !important;
-    border-right: 1px solid rgba(255, 248, 237, 0.12);
-    box-shadow: 24px 0 70px rgba(37, 25, 23, 0.4);
+    border-right: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
+    box-shadow: 24px 0 70px color-mix(in srgb, var(--brand-text) 40%, transparent);
     transform: translateX(-102%);
     transition: transform 0.26s ease;
     overflow-y: auto;
@@ -3311,7 +3265,7 @@ select:focus-visible {
     position: fixed;
     inset: 0;
     z-index: 75;
-    background: rgba(15, 10, 9, 0.5);
+    background: color-mix(in srgb, var(--brand-night-soft) 50%, transparent);
     backdrop-filter: blur(3px);
   }
 
@@ -3408,11 +3362,11 @@ select:focus-visible {
 .admin-panel-font .admin-command-hero {
   position: relative;
   overflow: hidden;
-  border-color: #2f211f !important;
+  border-color: var(--brand-outline-dark) !important;
   border-radius: 1.75rem !important;
-  background: #1d1216 !important;
-  color: #fff8ed;
-  box-shadow: 0 28px 80px rgba(37, 25, 23, 0.24) !important;
+  background: var(--brand-night) !important;
+  color: var(--brand-cream);
+  box-shadow: 0 28px 80px color-mix(in srgb, var(--brand-text) 24%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero::before {
@@ -3420,14 +3374,14 @@ select:focus-visible {
   position: absolute;
   inset: 0 0 auto;
   height: 3px;
-  background: linear-gradient(90deg, #d8a23a, #8a2e1d, #39533b);
+  background: linear-gradient(90deg, var(--brand-accent-strong), var(--brand-primary), var(--brand-leaf));
 }
 
 .admin-panel-font .admin-command-hero h1,
 .admin-panel-font .admin-command-hero h2,
 .admin-panel-font .admin-command-hero .text-slate-900,
 .admin-panel-font .admin-command-hero .text-slate-950 {
-  color: #fff8ed !important;
+  color: var(--brand-cream) !important;
 }
 
 .admin-panel-font .admin-command-hero p,
@@ -3435,41 +3389,41 @@ select:focus-visible {
 .admin-panel-font .admin-command-hero .text-slate-500,
 .admin-panel-font .admin-command-hero .text-slate-600,
 .admin-panel-font .admin-command-hero .text-slate-700 {
-  color: #d8c7ad !important;
+  color: var(--brand-stone) !important;
 }
 
 .admin-panel-font .admin-command-hero [class*="border-slate-200"][class*="bg-white"],
 .admin-panel-font .admin-command-hero [class*="bg-white/70"] {
-  border-color: rgba(255, 248, 237, 0.12) !important;
-  background: rgba(255, 248, 237, 0.08) !important;
+  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent) !important;
+  background: color-mix(in srgb, var(--brand-cream) 8%, transparent) !important;
   box-shadow: none !important;
 }
 
 .admin-panel-font .admin-command-hero [class*="bg-stone-50"],
 .admin-panel-font .admin-command-hero [class*="bg-stone-100"] {
-  background: rgba(0, 0, 0, 0.14) !important;
+  background: color-mix(in srgb, var(--brand-black) 14%, transparent) !important;
 }
 
-.admin-panel-font .admin-command-hero [class*="bg-[#fbf6ed]"] {
-  border-color: rgba(255, 248, 237, 0.1) !important;
-  background: rgba(255, 248, 237, 0.08) !important;
+.admin-panel-font .admin-command-hero [class*="bg-[var(--brand-surface-dim)]"] {
+  border-color: color-mix(in srgb, var(--brand-cream) 10%, transparent) !important;
+  background: color-mix(in srgb, var(--brand-cream) 8%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero [class*="border-slate-200"] {
-  border-color: rgba(255, 248, 237, 0.12) !important;
+  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero button.bg-slate-900,
-.admin-panel-font .admin-command-hero button[class*="bg-[#251917]"] {
-  border-color: #d8a23a !important;
-  background: linear-gradient(135deg, #d8a23a, #8a2e1d) !important;
-  color: #fff !important;
-  box-shadow: 0 12px 28px rgba(138, 46, 29, 0.22) !important;
+.admin-panel-font .admin-command-hero button[class*="bg-[var(--brand-text)]"] {
+  border-color: var(--brand-accent-strong) !important;
+  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-primary)) !important;
+  color: var(--brand-white) !important;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 22%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero a:hover,
 .admin-panel-font .admin-command-hero button:hover {
-  border-color: rgba(216, 162, 58, 0.48);
+  border-color: color-mix(in srgb, var(--brand-accent-strong) 48%, transparent);
 }
 
 @media (max-width: 560px) {
@@ -3479,23 +3433,23 @@ select:focus-visible {
 }
 
 /* Warm rice-paper remaps for the shared admin workspace layer. */
-.admin-panel-font [class*="bg-[#fbfaf7]"] {
-  background-color: #f6ecdb !important;
+.admin-panel-font [class*="bg-[var(--brand-surface-ivory)]"] {
+  background-color: var(--brand-surface-part) !important;
 }
 
 .admin-panel-font .bg-white\/60,
 .admin-panel-font .bg-white\/70,
 .admin-panel-font .bg-white\/75,
 .admin-panel-font .bg-white\/80 {
-  background-color: rgba(255, 250, 241, 0.62) !important;
+  background-color: color-mix(in srgb, var(--brand-surface) 62%, transparent) !important;
 }
 
-.admin-panel-font section[class*="135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%"] {
-  background-image: linear-gradient(135deg, #fffaf0 0%, #fff6e7 42%, #f6ecdb 100%) !important;
+.admin-panel-font section[class*="135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,#f8fafc_100%"] {
+  background-image: linear-gradient(135deg, var(--brand-surface-warm) 0%, var(--brand-cream-warm) 42%, var(--brand-surface-part) 100%) !important;
 }
 
-.admin-panel-font [class*="shadow-[0_18px_45px_rgba(15,23,42,0.10)"]:hover {
-  box-shadow: 0 18px 45px rgba(83, 46, 26, 0.14) !important;
+.admin-panel-font [class*="shadow-[0_18px_45px_color-mix(in srgb, var(--brand-slate) 10%, transparent)"]:hover {
+  box-shadow: 0 18px 45px color-mix(in srgb, var(--brand-shadow-warm) 14%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero h1 {
@@ -3504,7 +3458,7 @@ select:focus-visible {
 }
 
 .admin-panel-font .admin-command-hero p.text-white {
-  color: #fff !important;
+  color: var(--brand-white) !important;
 }
 
 /* Fluid (viewport-responsive) typography for admin pages. */
@@ -3522,7 +3476,7 @@ select:focus-visible {
   position: relative;
   overflow: hidden;
   border-radius: 0.9rem;
-  background-color: rgba(199, 168, 138, 0.2);
+  background-color: color-mix(in srgb, var(--brand-tan) 20%, transparent);
 }
 
 .admin-skeleton::after {
@@ -3530,7 +3484,7 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 250, 241, 0.65), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--brand-surface) 65%, transparent), transparent);
   animation: admin-shimmer 1.4s ease-in-out infinite;
 }
 
@@ -3560,11 +3514,11 @@ select:focus-visible {
 }
 
 ::-webkit-scrollbar { width: 0.7rem; }
-::-webkit-scrollbar-track { background: #efe2cf; }
+::-webkit-scrollbar-track { background: var(--brand-surface-beige); }
 ::-webkit-scrollbar-thumb {
-  border: 3px solid #efe2cf;
+  border: 3px solid var(--brand-surface-beige);
   border-radius: 999px;
-  background: #9f8060;
+  background: var(--brand-sand);
 }
 
 @media (prefers-reduced-motion: reduce) {

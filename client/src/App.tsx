@@ -28,6 +28,7 @@ import { UserProtectedRoute } from './components/UserProtectedRoute';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -79,14 +80,16 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Toaster position="top-center" />
-        <Router>
-          <AppRoutes />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Toaster position="top-center" />
+          <Router>
+            <AppRoutes />
+          </Router>
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

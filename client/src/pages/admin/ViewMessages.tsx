@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+﻿import { useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
@@ -318,7 +318,7 @@ const MetricCard = ({
 }) => {
     return (
         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-[#d8c7ad]">
+            <div className="flex items-center gap-2 text-(--brand-stone)">
                 {icon}
                 <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
                     {label}
@@ -393,7 +393,7 @@ const InboxWorkspace = ({
     onDelete: (id: string) => void;
 }) => {
     return (
-        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_42%,#f8fafc_100%)] p-2.5 shadow-sm sm:p-3">
+        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-2.5 shadow-sm sm:p-3">
             <WorkspaceHeader
                 title={filterConfig[filter].title}
                 text={filterConfig[filter].helper}
@@ -576,7 +576,7 @@ const MessageDetail = ({
                 <ContactBlock icon={<Phone size={15} />} label="Phone" value={message.phone || 'No phone'} href={message.phone ? `tel:${message.phone}` : undefined} />
             </div>
 
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-[#fbfaf7] p-5">
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-(--brand-surface-ivory) p-5">
                 <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
                     <MessageSquare size={13} />
                     Customer message
@@ -602,7 +602,7 @@ const Avatar = ({
         <div
             className={`grid shrink-0 place-items-center rounded-2xl text-sm font-extrabold shadow-sm ${
                 unread
-                    ? 'bg-gradient-to-br from-[#d8a23a] to-[#8a2e1d] text-white'
+                    ? 'bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white'
                     : 'border border-slate-200 bg-stone-50 text-slate-500'
             } ${large ? 'h-12 w-12' : 'h-10 w-10'}`}
         >
