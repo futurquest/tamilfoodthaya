@@ -116,6 +116,10 @@ export const Header = () => {
               ) : (
                 <NavLink to="/login" className="mobile-menu__link">{t('nav.login', 'Log in')}</NavLink>
               )}
+              <Link to="/menu" className="btn-primary mobile-menu__order">
+                <ShoppingBag size={17} />
+                {t('nav.orderFood', 'Order food')}
+              </Link>
             </div>
           </nav>
         </div>

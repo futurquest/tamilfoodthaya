@@ -137,6 +137,20 @@
       },
       "selectButton": "Select Package"
     },
+    "packagesSection": {
+      "title": "Catering packages shaped around your guest list.",
+      "lead": "Start with a tested package, then add service, drinks, decoration, or a special dish. The goal is less guessing and a better event table.",
+      "altPhoto": "Catering package",
+      "mostRequested": "Most requested",
+      "eventPackage": "Event package",
+      "guests": "guests",
+      "hours": "hrs",
+      "book": "Book",
+      "refreshTitle": "Packages are being refreshed",
+      "refreshDesc": "Send us your event date, guest count, and the dishes you want. We can still prepare a quote.",
+      "requestQuote": "Request a quote",
+      "viewAll": "View all catering options"
+    },
     "quote": {
       "title": "Get a quote now?",
       "capacity": {
@@ -320,7 +334,25 @@
     "lead": "From weekday takeaway to celebration spreads, the menu keeps the staples easy to find and the details close at hand.",
     "categories": "Menu categories",
     "viewFull": "View the full menu",
-    "close": "Close"
+    "close": "Close",
+    "fallback": {
+      "cat": {
+        "breakfast": { "name": "Tamil breakfast", "description": "Soft idli, crisp dosai, pongal, sambar, and fresh chutneys." },
+        "mains": { "name": "Rice meals and curries", "description": "Hearty lunch and dinner plates built around rice, rasam, sambar, and curry." },
+        "snacks": { "name": "Snacks and sweets", "description": "Starters, street snacks, and traditional sweet finishes." }
+      },
+      "item": {
+        "idli": { "name": "Idli sambar", "description": "Steamed rice cakes with sambar and coconut chutney." },
+        "dosa": { "name": "Masala dosai", "description": "Crisp fermented crepe with potato masala and chutneys." },
+        "pongal": { "name": "Ven pongal", "description": "Rice and lentils finished with pepper, cumin, ghee, and cashew." },
+        "thali": { "name": "Tamil meals", "description": "Rice, sambar, rasam, poriyal, kootu, appalam, and pickle." },
+        "biryani": { "name": "Chicken biryani", "description": "Fragrant rice layered with masala, herbs, and tender chicken." },
+        "chettinad": { "name": "Chettinad curry", "description": "Deep peppery curry with roasted spices and curry leaves." },
+        "vada": { "name": "Medhu vadai", "description": "Crisp lentil fritters served with chutney and sambar." },
+        "pakoda": { "name": "Onion pakoda", "description": "Golden onion fritters with chilli, curry leaf, and gram flour." },
+        "payasam": { "name": "Payasam", "description": "Creamy milk pudding with cardamom, cashew, raisins, and jaggery." }
+      }
+    }
   },
   "catering2": {
     "seoTitle": "Catering",

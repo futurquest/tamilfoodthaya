@@ -153,7 +153,7 @@ select:focus-visible {
 .btn-gold {
   border: 1px solid color-mix(in srgb, var(--brand-accent-dark) 20%, transparent);
   background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary));
-  color: var(--brand-surface);
+  color: var(--brand-primary-deep);
   box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
 
@@ -678,6 +678,13 @@ select:focus-visible {
   margin-top: 0.6rem;
   border-top: 1px solid var(--line);
   padding-top: 0.6rem;
+}
+
+.mobile-menu__order {
+  display: flex;
+  width: 100%;
+  margin-top: 0.75rem;
+  justify-content: center;
 }
 
 .site-footer {
@@ -3353,8 +3360,8 @@ select:focus-visible {
 }
 
 .scroll-reveal {
-  opacity: 1;
-  transform: none;
+  opacity: 0;
+  transform: translateY(20px);
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -3499,6 +3506,7 @@ select:focus-visible {
   transform: translateY(0);
 }
 
+.scroll-reveal-fade-in,
 .scroll-reveal-fade-down,
 .scroll-reveal-slide-left,
 .scroll-reveal-slide-right,

@@ -9,7 +9,6 @@ i18n
     .use(initReactI18next)
     .init({
         fallbackLng: 'nl',
-        debug: true, // Turn off in production
         supportedLngs: ['en', 'nl', 'ta'],
         interpolation: {
             escapeValue: false, // React already safes from XSS

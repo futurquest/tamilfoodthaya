@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../hooks/useApi';
-import { FALLBACK_CATEGORIES } from '../components/MenuSection';
+import { localizeFallbackCategories } from '../components/MenuSection';
 import { SEO } from '../components/SEO';
 
 interface MenuItem {
@@ -50,7 +50,7 @@ export const MenuPage = () => {
           items: itemArr.filter((item: any) => item.categoryId === cat._id || item.categoryId?._id === cat._id),
         })));
       } else {
-        setCategories(FALLBACK_CATEGORIES);
+        setCategories(localizeFallbackCategories(t));
       }
     }).finally(() => setLoading(false));
   }, []);

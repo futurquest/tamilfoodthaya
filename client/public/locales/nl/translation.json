@@ -137,6 +137,20 @@
       },
       "selectButton": "Pakket Kiezen"
     },
+    "packagesSection": {
+      "title": "Cateringpakketten vormgegeven rond uw gastenlijst.",
+      "lead": "Begin met een beproefd pakket en voeg vervolgens service, drankjes, decoratie of een speciaal gerecht toe. Het doel is minder gokken en een betere feesttafel.",
+      "altPhoto": "Cateringpakket",
+      "mostRequested": "Meest gevraagd",
+      "eventPackage": "Evenementpakket",
+      "guests": "gasten",
+      "hours": "uur",
+      "book": "Boeken",
+      "refreshTitle": "Pakketten worden vernieuwd",
+      "refreshDesc": "Stuur ons uw eventdatum, aantal gasten en de gerechten die u wenst. We kunnen alsnog een offerte voorbereiden.",
+      "requestQuote": "Offerte aanvragen",
+      "viewAll": "Bekijk alle cateringopties"
+    },
     "quote": {
       "title": "Direct een offerte?",
       "capacity": {
@@ -320,7 +334,25 @@
     "lead": "Van takeaway doordeweeks tot feestelijke spreads: het menu houdt de klassiekers makkelijk vindbaar en de details dichtbij.",
     "categories": "Menu categorieen",
     "viewFull": "Bekijk het volledige menu",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "fallback": {
+      "cat": {
+        "breakfast": { "name": "Tamil ontbijt", "description": "Zachte idli, knapperige dosa, pongal, sambar en verse chutneys." },
+        "mains": { "name": "Rijstmaaltijden en curry's", "description": "Stevige lunch- en dinerborden rond rijst, rasam, sambar en curry." },
+        "snacks": { "name": "Snacks en zoetigheden", "description": "Hapjes, streetfood en traditionele zoete afsluiters." }
+      },
+      "item": {
+        "idli": { "name": "Idli sambar", "description": "Gestoomde rijstcakes met sambar en kokoschutney." },
+        "dosa": { "name": "Masala dosa", "description": "Krokante gefermenteerde crêpe met aardappelmasala en chutneys." },
+        "pongal": { "name": "Ven pongal", "description": "Rijst en linzen afgemaakt met peper, komijn, ghee en cashew." },
+        "thali": { "name": "Tamil maaltijd", "description": "Rijst, sambar, rasam, poriyal, kootu, appalam en augurk." },
+        "biryani": { "name": "Kip biryani", "description": "Geurige rijst met masala, kruiden en malse kip." },
+        "chettinad": { "name": "Chettinad curry", "description": "Diep pittige curry met geroosterde kruiden en kerriebladeren." },
+        "vada": { "name": "Medhu vadai", "description": "Knapperige linzenbeignets met chutney en sambar." },
+        "pakoda": { "name": "Ui pakoda", "description": "Gouden uienbeignets met chili, kerrieblad en kikkererwtenmeel." },
+        "payasam": { "name": "Payasam", "description": "Rijke melkpudding met kardemom, cashew, rozijnen en jaggery." }
+      }
+    }
   },
   "catering2": {
     "seoTitle": "Catering",

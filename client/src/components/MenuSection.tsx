@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Leaf } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -62,13 +62,61 @@ export const FALLBACK_CATEGORIES: Category[] = [
 const getLabel = (translations: any, fallback: string | undefined, lang: string) =>
   translations?.[lang] || translations?.nl || fallback || '';
 
+export const localizeFallbackCategories = (t: (key: string, defaultValue: string) => string): Category[] =>
+  FALLBACK_CATEGORIES.map((cat) => ({
+    ...cat,
+    name: t(`menuPreview.fallback.cat.${cat._id}.name`, cat.name),
+    description: t(`menuPreview.fallback.cat.${cat._id}.description`, cat.description || ''),
+    items: cat.items.map((item) => ({
+      ...item,
+      name: t(`menuPreview.fallback.item.${item._id}.name`, item.name),
+      description: item.description ? t(`menuPreview.fallback.item.${item._id}.description`, item.description) : undefined,
+    })),
+  }));
+
 export default function MenuSection({ showViewMore = true }: { showViewMore?: boolean }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language?.split('-')[0] || 'nl';
-  const [categories, setCategories] = useState<Category[]>([]);
+const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState('');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!selectedItem) return;
+    const previous = document.activeElement as HTMLElement | null;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSelectedItem(null);
+        return;
+      }
+      if (event.key !== 'Tab' || !modalRef.current) return;
+      const focusables = modalRef.current.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])');
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    modalRef.current?.focus();
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+      previous?.focus?.();
+    };
+  }, [selectedItem]);
 
   useEffect(() => {
     Promise.all([
@@ -88,7 +136,7 @@ export default function MenuSection({ showViewMore = true }: { showViewMore?: bo
         setCategories(built);
         setActiveCategory(built[0]?._id || '');
       } else {
-        setCategories(FALLBACK_CATEGORIES);
+        setCategories(localizeFallbackCategories(t));
         setActiveCategory(FALLBACK_CATEGORIES[0]._id);
       }
     }).finally(() => setLoading(false));
@@ -172,7 +220,7 @@ export default function MenuSection({ showViewMore = true }: { showViewMore?: bo
 
         {selectedItem && (
           <div className="modal-backdrop" role="dialog" aria-modal="true" onClick={() => setSelectedItem(null)}>
-            <div className="dish-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="dish-modal" ref={modalRef} tabIndex={-1} onClick={(event) => event.stopPropagation()}>
               {selectedItem.image && <img src={selectedItem.image} alt={selectedItem.name} />}
               <div>
                 <h3>{getLabel((selectedItem as any).nameTranslations, selectedItem.name, currentLang)}</h3>
