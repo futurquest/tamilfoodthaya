@@ -73,7 +73,7 @@
 
 /* ================================================================
    LIGHT THEME (default)
-   TERRE — Kitchen & Fire: terracotta, soft terracotta, sage & pine
+   TERRE — Kitchen & Fire: terracotta, soft terracotta, olive
    on warm paper and cream. Type: Outfit (display), Figtree (body),
    JetBrains Mono (labels / meta / prices).
    ================================================================ */
@@ -106,7 +106,7 @@
   --brand-accent-warm: #ba6c3c;
   --brand-accent-dark: #8a4b27;
   --brand-accent-deep: #a05d33;
-  --brand-accent-olive: #a8883f;
+  --brand-accent-olive: #8c933f;
   --brand-accent-soft: #f7e3cc;
   --brand-accent-haze: #faeedc;
 
@@ -174,13 +174,13 @@
   --brand-outline-tone: #b6a58a;
   --brand-char-deep: #241b14;
 
-  /* leaf / status — sage & pine */
-  --brand-leaf: #5f7d60;
-  --brand-leaf-deep: #3f5c42;
-  --brand-success: #4f7c52;
-  --brand-success-bright: #61a565;
-  --brand-success-mid: #4d9252;
-  --brand-success-soft: #e3ede1;
+  /* leaf / status — olive */
+  --brand-leaf: #6b7a3b;
+  --brand-leaf-deep: #47542a;
+  --brand-success: #63753a;
+  --brand-success-bright: #7d9147;
+  --brand-success-mid: #5f7436;
+  --brand-success-soft: #ebeed8;
   --brand-warning: #b8763c;
   --brand-warning-deep: #8a4b27;
   --brand-error: #b4442b;
@@ -188,7 +188,7 @@
 
   /* misc */
   --brand-shadow-warm: #2e2720;
-  --brand-slate: #26332c;
+  --brand-slate: #2b331f;
   --brand-tan: #c7aa95;
   --brand-sand: #b9a58b;
   --brand-mocha-deep: #4a4036;
@@ -219,7 +219,7 @@
 
 /* ================================================================
    DARK THEME
-   Pine-charcoal canvas with ember terracotta and sage. Opt-in via
+   Pine-charcoal canvas with ember terracotta and olive. Opt-in via
    <html data-theme="dark">.
    ================================================================ */
 [data-theme='dark'] {
@@ -250,7 +250,7 @@
   --brand-accent-warm: #9c5731;
   --brand-accent-dark: #6e3a1f;
   --brand-accent-deep: #bd7a48;
-  --brand-accent-olive: #b09850;
+  --brand-accent-olive: #98a14b;
   --brand-accent-soft: #3a2c1f;
   --brand-accent-haze: #2a2218;
 
@@ -315,12 +315,12 @@
   --brand-char-deep: #1d150f;
 
   /* status */
-  --brand-leaf: #93ac93;
-  --brand-leaf-deep: #5e7d60;
-  --brand-success: #7ec07c;
-  --brand-success-bright: #96d494;
-  --brand-success-mid: #63ac62;
-  --brand-success-soft: #1a2d1b;
+  --brand-leaf: #a9b274;
+  --brand-leaf-deep: #6f7c3c;
+  --brand-success: #93a655;
+  --brand-success-bright: #aec27a;
+  --brand-success-mid: #7f9250;
+  --brand-success-soft: #262b15;
   --brand-warning: #e0ab7d;
   --brand-warning-deep: #bd7a48;
   --brand-error: #f0805c;
@@ -328,7 +328,7 @@
 
   /* misc */
   --brand-shadow-warm: #000000;
-  --brand-slate: #20281f;
+  --brand-slate: #2a3120;
   --brand-tan: #a9876c;
   --brand-sand: #947a5f;
   --brand-mocha-deep: #5b4636;
