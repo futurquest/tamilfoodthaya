@@ -85,7 +85,7 @@ export const CateringPage = () => {
       <section id="packages-section" className="section package-section package-section--primary">
         <div className="container">
           <div className="section-heading split package-heading">
-            <h2 className="section-title">{t('catering2.packagesTitle')}</h2>
+            <h2 className="section-title"><span className="eyebrow">{t('catering2.packagesEyebrow', 'Catering — On A Mission')}</span>{t('catering2.packagesTitle')}</h2>
             <p className="lead">{t('catering2.packagesLead')}</p>
           </div>
 
@@ -153,7 +153,7 @@ export const CateringPage = () => {
       <section className="section process-section">
         <div className="container">
           <div className="section-heading split">
-            <h2 className="section-title">{t('catering2.processTitle')}</h2>
+            <h2 className="section-title"><span className="eyebrow">{t('catering2.processEyebrow', 'Kitchen & Fire')}</span>{t('catering2.processTitle')}</h2>
             <p className="lead">{t('catering2.processLead')}</p>
           </div>
           <div className="process-grid">

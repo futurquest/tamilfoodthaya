@@ -19,10 +19,11 @@ export const Hero = () => {
             <Container className="relative z-20">
                 <div className="max-w-2xl py-20 sm:py-0">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
+                        <p className="eyebrow text-tamil-gold/80 mb-3 rise-in">{t('nav.brand', 'Tamil Food Thaya')}</p>
                         <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight">
                             {t('hero.title')} <span className="text-tamil-gold">{t('hero.titleHighlight')}</span>
                         </h1>
@@ -31,12 +32,12 @@ export const Hero = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Link to="/menu">
-                                <Button size="lg" className="shadow-lg shadow-tamil-maroon/20">
+                                <Button variant="gold" size="lg" className="shadow-lg">
                                     {t('hero.pButton')}
                                 </Button>
                             </Link>
                             <Link to="/catering">
-                                <Button variant="secondary" size="lg" className="shadow-lg shadow-tamil-gold/20">
+                                <Button variant="secondary" size="lg" className="shadow-lg">
                                     {t('hero.sButton')}
                                 </Button>
                             </Link>

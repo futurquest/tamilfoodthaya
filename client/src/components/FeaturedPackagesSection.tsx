@@ -33,6 +33,7 @@ export default function FeaturedPackagesSection({ packages = [], loading = false
       <div className="container">
         <div className="section-heading split">
           <div>
+            <span className="eyebrow">{t('catering.packagesSection.eyebrow', 'Catering — Tamil Food Thaya')}</span>
             <h2 className="section-title">{t('catering.packagesSection.title', 'Catering packages shaped around your guest list.')}</h2>
           </div>
           <p className="lead">

@@ -148,7 +148,8 @@ const [categories, setCategories] = useState<Category[]>([]);
     <section id="our_menu" className="section menu-preview">
       <div className="container">
         <div className="section-heading split">
-          <div>
+<div>
+            <span className="eyebrow">{t('menuPreview.eyebrow', 'Restaurant Menu — Daily Specials')}</span>
             <h2 className="section-title">{t('menuPreview.title')}</h2>
           </div>
           <p className="lead">{t('menuPreview.lead')}</p>

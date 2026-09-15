@@ -52,7 +52,7 @@ export default function AddonsSection() {
     <section className="section addons-section">
       <div className="container">
         <div className="section-heading split">
-          <h2 className="section-title">{t('addons.title')}</h2>
+          <h2 className="section-title"><span className="eyebrow">{t('addons.eyebrow', 'Kitchen & Fire')}</span>{t('addons.title')}</h2>
           <p className="lead">{t('addons.lead')}</p>
         </div>
 

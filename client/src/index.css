@@ -34,8 +34,8 @@ h1, h2, h3, h4 {
   margin: 0;
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-weight: 800;
-  letter-spacing: 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
@@ -129,6 +129,33 @@ select:focus-visible {
   font-weight: 500;
 }
 
+/* TERRE-style helper utilities */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 600;
+  color: var(--brand-text-muted);
+}
+
+.panel {
+  border-radius: calc(var(--radius, 1rem) + 0.5rem);
+  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 7%, transparent),
+    0 18px 50px -30px color-mix(in srgb, var(--brand-shadow-warm) 45%, transparent);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.rise-in { animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 .btn-primary,
 .btn-secondary,
 .btn-gold,
@@ -139,35 +166,40 @@ select:focus-visible {
   min-height: 2.9rem;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  border-radius: 0.75rem;
-  padding: 0.78rem 1.15rem;
-  font-size: 0.95rem;
-  font-weight: 700;
+  gap: 0.55rem;
+  border-radius: 9999px;
+  padding: 0.78rem 1.35rem;
+  font-size: 0.925rem;
+  font-weight: 600;
   text-decoration: none;
   transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
   cursor: pointer;
 }
 
-.btn-primary,
+.btn-primary {
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
 .btn-gold {
-  border: 1px solid color-mix(in srgb, var(--brand-accent-dark) 20%, transparent);
-  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary));
-  color: var(--brand-primary-deep);
-  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
+  background: var(--brand-primary);
+  color: var(--paper);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-primary) 26%, transparent);
 }
 
 .btn-ink {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
-  background: var(--ink);
-  color: var(--brand-surface);
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-text) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
+  background: var(--brand-leaf-deep);
+  color: var(--brand-cream);
 }
 
 .btn-secondary,
 .btn-outline {
   border: 1px solid color-mix(in srgb, var(--brand-text) 18%, transparent);
-  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
+  background: color-mix(in srgb, var(--brand-surface-warm) 65%, transparent);
   color: var(--ink);
 }
 
@@ -175,7 +207,7 @@ select:focus-visible {
   min-height: auto;
   border: 0;
   background: transparent;
-  color: var(--spice);
+  color: var(--brand-primary);
   padding: 0.25rem 0;
 }
 
@@ -186,6 +218,16 @@ select:focus-visible {
 .btn-outline:hover,
 .btn-text:hover {
   transform: translateY(-2px);
+}
+
+.btn-primary:hover { background: var(--brand-primary); }
+.btn-gold:hover    { background: var(--brand-leaf-deep); }
+.btn-ink:hover     { background: var(--brand-leaf); }
+
+.btn-secondary:hover,
+.btn-outline:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 .btn-primary:active,
@@ -1232,8 +1274,9 @@ select:focus-visible {
 }
 
 .package-card__footer strong {
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  font-family: var(--font-mono);
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 600;
   line-height: 1;
   color: var(--spice);
 }
@@ -1384,6 +1427,21 @@ select:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
+}
+
+/* TERRE accent stroke — sage "earth" line ties the fire palette together */
+.package-card {
+  border-top: 3px solid var(--brand-leaf);
+}
+
+.dish-row {
+  border-left: 3px solid color-mix(in srgb, var(--brand-leaf) 72%, transparent);
+}
+
+.section-heading .eyebrow {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--brand-primary);
 }
 
 .menu-loading {
