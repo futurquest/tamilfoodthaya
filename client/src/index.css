@@ -1630,32 +1630,81 @@ select:focus-visible {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 1.1rem;
-  background: var(--brand-surface);
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 46%),
+    color-mix(in srgb, var(--brand-surface) 92%, transparent);
+  padding: clamp(1.15rem, 2.6vw, 1.6rem);
   box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-umber) 20%, transparent);
 }
 
-.catering-hero__panel img {
+.catering-hero__panel-kicker {
   display: block;
-  width: 100%;
-  height: clamp(20rem, 38vw, 25rem);
-  object-fit: cover;
+  color: var(--brand-primary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
-.catering-hero__panel div {
-  padding: 1.1rem;
+.catering-hero__panel-title {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.06;
 }
 
-.catering-hero__panel strong {
+.catering-hero__panel-lede {
+  max-width: 36ch;
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.catering-hero__steps {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.15rem;
+}
+
+.catering-hero__step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem 0.9rem;
+  align-items: start;
+}
+
+.catering-hero__step > span {
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  place-items: center;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.catering-hero__step strong {
   display: block;
   color: var(--ink);
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.05rem;
+  line-height: 1.15;
 }
 
-.catering-hero__panel span {
-  display: block;
-  margin-top: 0.3rem;
+.catering-hero__step p {
+  margin-top: 0.15rem;
   color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
 }
 
 .process-section {

@@ -73,11 +73,20 @@ export const CateringPage = () => {
               </button>
             </div>
           </div>
-          <div className="catering-hero__panel catering-hero__panel--package">
-            <img src="/hero-catering2.jpg" alt="Tamil catering spread served for an event" />
-            <div>
-              <strong>{t('catering2.panelTitle')}</strong>
-              <span>{t('catering2.panelText')}</span>
+          <div className="catering-hero__panel">
+            <span className="catering-hero__panel-kicker">{t('catering2.panelKicker', 'How it works')}</span>
+            <strong className="catering-hero__panel-title">{t('catering2.panelTitle')}</strong>
+            <p className="catering-hero__panel-lede">{t('catering2.panelText')}</p>
+            <div className="catering-hero__steps">
+              {process.map((item, index) => (
+                <div className="catering-hero__step" key={item.title}>
+                  <span>{`0${index + 1}`}</span>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <p>{item.copy}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
