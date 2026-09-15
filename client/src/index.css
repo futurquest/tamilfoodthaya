@@ -1105,8 +1105,7 @@ select:focus-visible {
 
 .package-section {
   background:
-    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-accent) 18%, transparent), transparent 28rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--brand-leaf) 10%, transparent), transparent 42%),
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 28rem),
     var(--brand-surface);
 }
 
@@ -1124,29 +1123,33 @@ select:focus-visible {
   justify-content: space-between;
   gap: clamp(1rem, 4vw, 3rem);
   margin-bottom: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
-  border-radius: 1rem;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 0 0 1rem 1rem;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-text) 96%, transparent), color-mix(in srgb, var(--brand-mocha-deep) 94%, transparent)),
-    var(--ink);
-  color: var(--brand-cream);
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 10%, transparent), transparent 52%),
+    color-mix(in srgb, var(--brand-surface) 90%, transparent);
+  color: var(--ink);
   padding: clamp(1rem, 3vw, 1.5rem);
-  box-shadow: 0 26px 70px color-mix(in srgb, var(--brand-text) 20%, transparent);
+  box-shadow: 0 24px 64px color-mix(in srgb, var(--brand-umber) 16%, transparent);
 }
 
 .package-spotlight span {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--brass-soft);
-  font-size: 0.8rem;
-  font-weight: 800;
+  color: var(--brand-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .package-spotlight strong {
   display: block;
   margin-top: 0.35rem;
-  color: var(--brand-cream);
+  color: var(--ink);
   font-size: clamp(1.35rem, 3vw, 2rem);
   line-height: 1.05;
 }
@@ -1154,7 +1157,7 @@ select:focus-visible {
 .package-spotlight p {
   max-width: 68ch;
   margin-top: 0.45rem;
-  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
+  color: var(--muted);
   line-height: 1.6;
 }
 
@@ -1591,18 +1594,15 @@ select:focus-visible {
 .catering-hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(7.2rem, 11vw, 9.2rem) 1.25rem clamp(2.8rem, 5vw, 4.2rem);
+  padding: clamp(7rem, 10vw, 8.5rem) 1.25rem clamp(3rem, 5vw, 4rem);
   background:
-    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 26rem),
-    var(--aubergine);
-  color: var(--brand-cream);
+    radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 26rem),
+    linear-gradient(180deg, var(--brand-surface), var(--paper) 76%, color-mix(in srgb, var(--brand-surface-bloom) 60%, var(--paper)));
+  color: var(--ink);
 }
 
 .catering-hero--packages {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
+  display: block;
 }
 
 .catering-hero__grid {
@@ -1612,22 +1612,23 @@ select:focus-visible {
   align-items: center;
 }
 
-.catering-hero .display,
-.catering-hero .lead {
-  color: var(--brand-cream);
+.catering-hero .eyebrow {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--brand-primary);
 }
 
 .catering-hero .lead {
   margin-top: 1.45rem;
-  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
+  color: var(--muted);
 }
 
 .catering-hero__panel {
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
-  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-black) 26%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--brand-surface);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-umber) 20%, transparent);
 }
 
 .catering-hero__panel img {
@@ -1643,7 +1644,7 @@ select:focus-visible {
 
 .catering-hero__panel strong {
   display: block;
-  color: var(--brand-cream);
+  color: var(--ink);
   font-family: var(--font-display);
   font-size: 1.6rem;
 }
@@ -1651,7 +1652,7 @@ select:focus-visible {
 .catering-hero__panel span {
   display: block;
   margin-top: 0.3rem;
-  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
+  color: var(--muted);
 }
 
 .process-section {
@@ -1687,17 +1688,11 @@ select:focus-visible {
 }
 
 .addons-section {
-  background: var(--aubergine);
-  color: var(--brand-cream);
+  background: var(--brand-surface);
 }
 
-.addons-section .section-title,
-.addons-section .lead {
-  color: var(--brand-cream);
-}
-
-.addons-section .lead {
-  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
+.addons-section .eyebrow {
+  color: var(--brand-primary);
 }
 
 .addons-grid {
@@ -1707,18 +1702,17 @@ select:focus-visible {
 }
 
 .addon-card {
-  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent);
-  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
-  box-shadow: none;
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--brand-surface) 85%, transparent);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
 }
 
-.addon-card h3,
-.addon-card p {
-  color: var(--brand-cream);
+.addon-card h3 {
+  color: var(--ink);
 }
 
 .addon-card p {
-  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
+  color: var(--muted);
 }
 
 .addon-card div:not(.addon-card__icon) {
@@ -1728,10 +1722,16 @@ select:focus-visible {
   margin-top: 1.2rem;
 }
 
+.addon-card div:not(.addon-card__icon) span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .addon-card strong {
-  color: var(--brass-soft);
-  font-family: var(--font-display);
-  font-size: 1.7rem;
+  color: var(--spice);
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
+  font-weight: 600;
 }
 
 .addon-card small {
@@ -1739,7 +1739,7 @@ select:focus-visible {
   align-items: center;
   gap: 0.4rem;
   margin-top: 1rem;
-  color: color-mix(in srgb, var(--brand-cream) 70%, transparent);
+  color: var(--muted);
   font-weight: 700;
 }
 

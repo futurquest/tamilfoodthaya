@@ -60,6 +60,7 @@ export const CateringPage = () => {
       <section className="catering-hero catering-hero--packages">
         <div className="container catering-hero__grid">
           <div>
+            <span className="eyebrow">{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
             <h1 className="display">{t('catering2.heroTitle')}</h1>
             <p className="lead">{t('catering2.heroLead')}</p>
             <div className="home-hero__actions">
@@ -96,7 +97,7 @@ export const CateringPage = () => {
                 <strong>{getLabel(featuredPackage.name, currentLang, 'Catering package')}</strong>
                 <p>{getLabel(featuredPackage.description, currentLang)}</p>
               </div>
-              <button type="button" className="btn-ink" onClick={() => navigate(`/catering/checkout/${featuredPackage._id}`)}>
+              <button type="button" className="btn-gold" onClick={() => navigate(`/catering/checkout/${featuredPackage._id}`)}>
                 {t('catering2.customiseThis')}
                 <ArrowRight size={18} />
               </button>
