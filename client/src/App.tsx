@@ -31,6 +31,8 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
+import MotionFX from './motion/MotionFX';
+import { useRef } from 'react';
 
 function AppRoutes() {
   const location = useLocation();
@@ -93,13 +95,17 @@ function App() {
   );
 }
 
-const PublicLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="site-shell">
-    <a className="skip-link" href="#main-content">Skip to content</a>
-    <Header />
-    <main id="main-content" className="site-main">{children}</main>
-    <Footer />
-  </div>
-);
+const PublicLayout = ({ children }: { children: React.ReactNode }) => {
+  const mainRef = useRef<HTMLElement | null>(null);
+  return (
+    <div className="site-shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <Header />
+      <main id="main-content" className="site-main" ref={mainRef}>{children}</main>
+      <MotionFX scopeRef={mainRef} />
+      <Footer />
+    </div>
+  );
+};
 
 export default App;

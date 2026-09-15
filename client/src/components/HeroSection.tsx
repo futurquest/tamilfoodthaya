@@ -19,8 +19,9 @@ export default function HeroSection() {
         schema={restaurantSchema}
       />
 <section className="home-hero">
+      <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
       <div className="container home-hero__grid">
-          <div className="home-hero__copy">
+          <div className="home-hero__copy" data-para="7">
             <h1 className="display">{t('home2.title')}</h1>
             <p className="lead">{t('home2.lead')}</p>
             <div className="home-hero__actions">
@@ -39,7 +40,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="hero-menu-board" aria-label={t('home2.boardLabel')}>
+          <div className="hero-menu-board" data-cur="13" aria-label={t('home2.boardLabel')}>
             <div>
               <span>{t('home2.today')}</span>
               <strong>{t('home2.dish1')}</strong>
@@ -62,7 +63,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="container home-hero__proof">
+        <div className="container home-hero__proof" data-para="6">
           {proof.map((item) => (
             <div key={item.label}>
               <strong>{item.value}</strong>

@@ -71,6 +71,7 @@ export const MenuPage = () => {
     <div className="menu-page">
       <SEO title={t('menuPage.seoTitle')} description={t('menuPage.seoDescription')} />
       <section className="page-hero">
+        <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
         <div className="container">
           <h1>{t('menuPage.heroTitle')}</h1>
           <p>{t('menuPage.heroDesc')}</p>

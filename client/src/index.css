@@ -3468,9 +3468,7 @@ select:focus-visible {
 }
 
 .scroll-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 /* Shared Packages-style command surface for operational admin pages. */
@@ -3609,24 +3607,38 @@ select:focus-visible {
   }
 }
 
-.scroll-reveal.scroll-reveal-visible {
-  opacity: 1;
-  transform: translateY(0);
+/* --- GSAP motion utilities --- */
+.fx-aura {
+  position: absolute;
+  top: 10%;
+  left: 4%;
+  z-index: 0;
+  width: min(36rem, 62vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 64%);
+  filter: blur(8px);
+  will-change: transform;
 }
 
-.scroll-reveal-fade-in,
-.scroll-reveal-fade-down,
-.scroll-reveal-slide-left,
-.scroll-reveal-slide-right,
-.scroll-reveal-zoom {
-  transform: none;
+.fx-aura--right {
+  left: auto;
+  right: 6%;
+  top: 6%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 18%, transparent), transparent 62%);
 }
 
-.scroll-reveal-fade-down.scroll-reveal-visible,
-.scroll-reveal-slide-left.scroll-reveal-visible,
-.scroll-reveal-slide-right.scroll-reveal-visible,
-.scroll-reveal-zoom.scroll-reveal-visible {
-  transform: none;
+.home-hero__grid,
+.catering-hero__grid,
+.page-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+[data-para],
+[data-cur] {
+  will-change: transform;
 }
 
 ::-webkit-scrollbar { width: 0.7rem; }
@@ -3643,6 +3655,10 @@ select:focus-visible {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+  [data-para], [data-cur], .fx-aura {
+    transform: none !important;
+    will-change: auto;
   }
 }
 

@@ -24,6 +24,7 @@
     "fontsource-inter": "^4.0.0",
     "fontsource-poppins": "^4.0.0",
     "framer-motion": "^12.23.26",
+    "gsap": "^3.15.0",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",

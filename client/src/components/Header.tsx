@@ -39,7 +39,7 @@ export const Header = () => {
     <>
       <header className={`site-header ${solid ? 'site-header--solid' : ''}`}>
         <div className="site-header__inner">
-          <NavLink to="/" className="brand-mark" aria-label="Tamil Food Thaya home">
+          <NavLink to="/" className="brand-mark" data-cur="7" aria-label="Tamil Food Thaya home">
             <Logo />
             <span className="brand-mark__copy">
               <strong>Tamil Food Thaya</strong>

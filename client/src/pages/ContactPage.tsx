@@ -26,6 +26,7 @@ export const ContactPage = () => {
       <SEO title={t('contactPage.seoTitle')} description={t('contactPage.seoDescription')} />
 
       <section className="page-hero">
+        <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
         <div className="container">
           <h1>{t('contactPage.heroTitle')}</h1>
           <p>{t('contactPage.heroDesc')}</p>

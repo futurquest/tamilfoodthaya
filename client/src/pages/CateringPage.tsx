@@ -58,6 +58,7 @@ export const CateringPage = () => {
       <SEO title={t('catering2.seoTitle')} description={t('catering2.seoDescription')} />
 
       <section className="catering-hero catering-hero--packages">
+        <span className="fx-aura fx-aura--right" data-para="22" data-cur="10" aria-hidden="true" />
         <div className="container catering-hero__grid">
           <div>
             <span className="eyebrow">{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
@@ -73,7 +74,7 @@ export const CateringPage = () => {
               </button>
             </div>
           </div>
-          <div className="catering-hero__panel">
+          <div className="catering-hero__panel" data-cur="11">
             <span className="catering-hero__panel-kicker">{t('catering2.panelKicker', 'How it works')}</span>
             <strong className="catering-hero__panel-title">{t('catering2.panelTitle')}</strong>
             <p className="catering-hero__panel-lede">{t('catering2.panelText')}</p>
