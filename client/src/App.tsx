@@ -101,6 +101,7 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="site-shell">
       <a className="skip-link" href="#main-content">Skip to content</a>
       <Header />
+      <div className="fx-progress" aria-hidden="true" />
       <main id="main-content" className="site-main" ref={mainRef}>{children}</main>
       <MotionFX scopeRef={mainRef} />
       <Footer />

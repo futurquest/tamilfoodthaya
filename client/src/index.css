@@ -3641,6 +3641,23 @@ select:focus-visible {
   will-change: transform;
 }
 
+.fx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--brand-accent-strong), var(--brand-primary));
+}
+
+.package-card {
+  will-change: transform;
+}
+
 ::-webkit-scrollbar { width: 0.7rem; }
 ::-webkit-scrollbar-track { background: var(--brand-surface-beige); }
 ::-webkit-scrollbar-thumb {
@@ -3659,6 +3676,9 @@ select:focus-visible {
   [data-para], [data-cur], .fx-aura {
     transform: none !important;
     will-change: auto;
+  }
+  .fx-progress {
+    transform: none !important;
   }
 }
 
