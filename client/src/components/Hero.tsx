@@ -9,10 +9,12 @@ export const Hero = () => {
 
     return (
         <section className="relative min-h-[100svh] sm:min-h-[700px] flex items-center overflow-hidden bg-tamil-charcoal">
-            {/* Background with overlay */}
+            {/* Ambient glow field instead of a background photo */}
             <div
-                className="absolute inset-0 bg-cover bg-center z-0 opacity-60"
-                style={{ backgroundImage: 'url("/C:/Users/abith/.gemini/antigravity/brain/cd119a66-ad05-4d71-9897-1de9d8cb7d80/tamil_food_thaya_hero_mockup_1766599207905.png")' }}
+                className="absolute inset-0 z-0"
+                style={{
+                    background: 'radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--brand-accent) 26%, transparent), transparent 26rem), radial-gradient(circle at 85% 80%, color-mix(in srgb, var(--brand-leaf) 18%, transparent), transparent 24rem), radial-gradient(circle at 60% 40%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 32rem)',
+                }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10" />
 

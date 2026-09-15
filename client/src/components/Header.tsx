@@ -128,8 +128,8 @@ export const Header = () => {
   );
 };
 
-export const PageHeader = ({ title, subtitle, description, image }: { title: string; subtitle?: string; description?: string; image?: string }) => (
-  <section className="page-hero" style={image ? ({ '--page-image': `url('${image}')` } as React.CSSProperties) : undefined}>
+export const PageHeader = ({ title, subtitle, description }: { title: string; subtitle?: string; description?: string }) => (
+  <section className="page-hero">
     <div className="container">
       <h1>{title}</h1>
       {(subtitle || description) && <p>{subtitle || description}</p>}

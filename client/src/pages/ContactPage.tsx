@@ -25,7 +25,7 @@ export const ContactPage = () => {
     <div className="contact-page">
       <SEO title={t('contactPage.seoTitle')} description={t('contactPage.seoDescription')} />
 
-      <section className="page-hero" style={{ '--page-image': "url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=82&w=1600')" } as React.CSSProperties}>
+      <section className="page-hero">
         <div className="container">
           <h1>{t('contactPage.heroTitle')}</h1>
           <p>{t('contactPage.heroDesc')}</p>

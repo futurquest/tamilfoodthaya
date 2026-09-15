@@ -18,9 +18,8 @@ export default function HeroSection() {
         description={t('home2.seoDescription')}
         schema={restaurantSchema}
       />
-      <section className="home-hero">
-        <div className="home-hero__image" aria-hidden />
-        <div className="container home-hero__grid">
+<section className="home-hero">
+      <div className="container home-hero__grid">
           <div className="home-hero__copy">
             <h1 className="display">{t('home2.title')}</h1>
             <p className="lead">{t('home2.lead')}</p>

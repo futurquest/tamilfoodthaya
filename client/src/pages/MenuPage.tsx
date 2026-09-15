@@ -70,7 +70,7 @@ export const MenuPage = () => {
   return (
     <div className="menu-page">
       <SEO title={t('menuPage.seoTitle')} description={t('menuPage.seoDescription')} />
-      <section className="page-hero" style={{ '--page-image': "url('/hero-catering2.jpg')" } as React.CSSProperties}>
+      <section className="page-hero">
         <div className="container">
           <h1>{t('menuPage.heroTitle')}</h1>
           <p>{t('menuPage.heroDesc')}</p>

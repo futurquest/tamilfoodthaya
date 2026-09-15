@@ -344,8 +344,9 @@ select:focus-visible {
   align-items: center;
   padding: clamp(5.5rem, 10vw, 7.5rem) 1.25rem clamp(2.75rem, 6vw, 4.5rem);
   background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 92%, transparent), color-mix(in srgb, var(--brand-night) 74%, transparent)),
-    var(--page-image, url('/hero-catering.jpg')) center/cover;
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 94%, transparent), color-mix(in srgb, var(--brand-night) 72%, transparent)),
+    radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 28rem),
+    radial-gradient(circle at 12% 88%, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 26rem);
   color: var(--brand-cream);
 }
 
@@ -852,16 +853,9 @@ select:focus-visible {
   inset: 0;
   background:
     linear-gradient(110deg, color-mix(in srgb, var(--brand-night) 96%, transparent) 0%, color-mix(in srgb, var(--brand-night) 86%, transparent) 45%, color-mix(in srgb, var(--brand-night) 45%, transparent) 100%),
-    radial-gradient(circle at 12% 22%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem);
+    radial-gradient(circle at 12% 22%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem),
+    radial-gradient(circle at 88% 70%, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 24rem);
   z-index: 1;
-}
-
-.home-hero__image {
-  position: absolute;
-  inset: 0;
-  background: url('/hero-catering.jpg') center/cover;
-  transform: scale(1.03);
-  filter: saturate(0.95) contrast(1.02);
 }
 
 .home-hero__grid {
@@ -1980,8 +1974,9 @@ select:focus-visible {
   place-items: center;
   padding: 7rem 1.25rem 3rem;
   background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 82%, transparent), color-mix(in srgb, var(--brand-night) 44%, transparent)),
-    url('/login-side.jpg') center/cover;
+    linear-gradient(115deg, color-mix(in srgb, var(--brand-night) 84%, transparent), color-mix(in srgb, var(--brand-night) 46%, transparent) 62%, color-mix(in srgb, var(--brand-surface-deep) 92%, transparent)),
+    radial-gradient(circle at 14% 20%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem),
+    radial-gradient(circle at 90% 78%, color-mix(in srgb, var(--brand-leaf) 18%, transparent), transparent 30rem);
 }
 
 .auth-card {
@@ -2003,8 +1998,9 @@ select:focus-visible {
   flex-direction: column;
   justify-content: flex-end;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--brand-night) 18%, transparent), color-mix(in srgb, var(--brand-night) 92%, transparent)),
-    url('/hero-catering.jpg') center/cover;
+    radial-gradient(circle at 72% 12%, color-mix(in srgb, var(--brand-accent) 26%, transparent), transparent 24rem),
+    radial-gradient(circle at 18% 96%, color-mix(in srgb, var(--brand-leaf) 20%, transparent), transparent 22rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-night) 55%, transparent), color-mix(in srgb, var(--brand-night) 92%, transparent));
   padding: clamp(1.2rem, 4vw, 2rem);
   color: var(--brand-cream);
 }
@@ -2842,8 +2838,8 @@ select:focus-visible {
   overflow: hidden;
   padding: clamp(1rem, 3vw, 2rem);
   background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 88%, transparent), color-mix(in srgb, var(--brand-night) 54%, transparent)),
-    url('/hero-catering.jpg') center/cover;
+    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 90%, transparent), color-mix(in srgb, var(--brand-night) 56%, transparent)),
+    radial-gradient(circle at 88% 14%, color-mix(in srgb, var(--brand-leaf) 18%, transparent), transparent 28rem);
   color: var(--ink);
   font-family: var(--font-sans);
 }
