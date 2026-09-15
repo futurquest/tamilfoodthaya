@@ -344,10 +344,10 @@ select:focus-visible {
   align-items: center;
   padding: clamp(5.5rem, 10vw, 7.5rem) 1.25rem clamp(2.75rem, 6vw, 4.5rem);
   background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-night) 94%, transparent), color-mix(in srgb, var(--brand-night) 72%, transparent)),
-    radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 28rem),
-    radial-gradient(circle at 12% 88%, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 26rem);
-  color: var(--brand-cream);
+    radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 28rem),
+    radial-gradient(circle at 10% 86%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 24rem),
+    linear-gradient(180deg, var(--brand-surface) 0%, var(--paper) 80%, var(--brand-surface-bloom) 100%);
+  color: var(--ink);
 }
 
 .page-hero .container {
@@ -370,7 +370,7 @@ select:focus-visible {
 
 .page-hero h1 {
   max-width: 760px;
-  color: var(--brand-cream);
+  color: var(--ink);
   font-size: clamp(2.6rem, 6.4vw, 4.45rem);
   line-height: 1.12;
 }
@@ -378,7 +378,7 @@ select:focus-visible {
 .page-hero p {
   max-width: 58ch;
   margin-top: 1.35rem;
-  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
+  color: var(--muted);
   font-size: 1.06rem;
   line-height: 1.65;
   font-weight: 500;
@@ -581,7 +581,7 @@ select:focus-visible {
 }
 
 .brand-mark__copy strong {
-  color: var(--brand-cream);
+  color: var(--ink);
   font-size: 1rem;
   font-weight: 800;
 }
@@ -591,7 +591,7 @@ select:focus-visible {
 }
 
 .brand-mark__copy span {
-  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
+  color: var(--muted);
   font-size: 0.72rem;
   font-weight: 600;
 }
@@ -610,7 +610,7 @@ select:focus-visible {
 .site-login,
 .icon-action {
   border-radius: 0.75rem;
-  color: color-mix(in srgb, var(--brand-cream) 82%, transparent);
+  color: var(--ink);
   font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
@@ -623,8 +623,8 @@ select:focus-visible {
 
 .site-nav__link:hover,
 .site-nav__link.active {
-  background: color-mix(in srgb, var(--brand-cream) 12%, transparent);
-  color: var(--brand-cream);
+  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
+  color: var(--spice);
 }
 
 .site-header--solid .site-nav__link,
@@ -646,7 +646,7 @@ select:focus-visible {
 }
 
 .site-login {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 15%, transparent);
   padding: 0.72rem 0.9rem;
 }
 
@@ -660,8 +660,8 @@ select:focus-visible {
   width: 2.65rem;
   height: 2.65rem;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 24%, transparent);
-  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
   cursor: pointer;
 }
 
@@ -843,8 +843,7 @@ select:focus-visible {
   overflow: hidden;
   min-height: 100dvh;
   padding: clamp(7.8rem, 13vw, 11rem) 1.25rem 2rem;
-  background: var(--aubergine);
-  color: var(--brand-cream);
+  color: var(--ink);
 }
 
 .home-hero::before {
@@ -852,9 +851,9 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(110deg, color-mix(in srgb, var(--brand-night) 96%, transparent) 0%, color-mix(in srgb, var(--brand-night) 86%, transparent) 45%, color-mix(in srgb, var(--brand-night) 45%, transparent) 100%),
-    radial-gradient(circle at 12% 22%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem),
-    radial-gradient(circle at 88% 70%, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 24rem);
+    radial-gradient(circle at 86% 4%, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 30rem),
+    radial-gradient(circle at 6% 32%, color-mix(in srgb, var(--brand-leaf) 11%, transparent), transparent 24rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface-warm) 58%, transparent), transparent 74%);
   z-index: 1;
 }
 
@@ -870,12 +869,12 @@ select:focus-visible {
 
 .home-hero .display {
   max-width: 850px;
-  color: var(--brand-cream);
+  color: var(--ink);
 }
 
 .home-hero .lead {
   margin-top: 1.45rem;
-  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
+  color: var(--muted);
 }
 
 .home-hero__actions {
@@ -896,10 +895,10 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 14%, transparent);
   border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--brand-cream) 8%, transparent);
-  color: color-mix(in srgb, var(--brand-cream) 78%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 62%, transparent);
+  color: var(--muted);
   padding: 0.55rem 0.7rem;
   font-size: 0.86rem;
   font-weight: 600;
@@ -908,17 +907,17 @@ select:focus-visible {
 .hero-menu-board {
   display: grid;
   gap: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
   padding: 1rem;
-  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-black) 28%, transparent);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(16px);
 }
 
 .hero-menu-board > div {
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand-cream) 90%, transparent);
+  background: color-mix(in srgb, var(--brand-surface-soft) 82%, transparent);
   padding: 1rem;
   color: var(--ink);
 }
@@ -966,19 +965,19 @@ select:focus-visible {
   gap: 1px;
   margin-top: 1.25rem;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 13%, transparent);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-cream) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
 }
 
 .home-hero__proof div {
   padding: 0.95rem 1.1rem;
-  background: color-mix(in srgb, var(--brand-cream) 7%, transparent);
+  background: color-mix(in srgb, var(--brand-surface-warm) 42%, transparent);
 }
 
 .home-hero__proof strong {
   display: block;
-  color: var(--brass-soft);
+  color: var(--spice);
   font-family: var(--font-display);
   font-size: 2rem;
   line-height: 1;
@@ -987,7 +986,7 @@ select:focus-visible {
 .home-hero__proof span {
   display: block;
   margin-top: 0.35rem;
-  color: color-mix(in srgb, var(--brand-cream) 72%, transparent);
+  color: var(--muted);
   font-size: 0.84rem;
 }
 
