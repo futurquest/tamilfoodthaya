@@ -74,7 +74,7 @@ export default function AddonsSection() {
         </div>
 
         <div className="section-cta">
-          <Link to="/catering" className="btn-secondary">{t('addons.browse')}</Link>
+          <Link to="/catering#packages-section" className="btn-secondary">{t('addons.browse')}</Link>
         </div>
       </div>
     </section>

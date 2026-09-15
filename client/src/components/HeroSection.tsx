@@ -25,7 +25,7 @@ export default function HeroSection() {
             <h1 className="display">{t('home2.title')}</h1>
             <p className="lead">{t('home2.lead')}</p>
             <div className="home-hero__actions">
-              <Link to="/catering" className="btn-primary">
+              <Link to="/catering#packages-section" className="btn-primary">
                 {t('home2.cateringCta')}
                 <ArrowRight size={18} />
               </Link>
@@ -56,7 +56,7 @@ export default function HeroSection() {
               <strong>{t('home2.dish3')}</strong>
               <p>{t('home2.dish3Desc')}</p>
             </div>
-            <Link to="/catering" className="hero-menu-board__cta">
+            <Link to="/catering#packages-section" className="hero-menu-board__cta">
               <CalendarCheck size={18} />
               {t('home2.eventCta')}
             </Link>

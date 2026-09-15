@@ -69,7 +69,7 @@ export const CateringPage = () => {
                 {t('catering2.viewPackages')}
                 <ArrowRight size={18} />
               </button>
-              <button type="button" className="btn-secondary" onClick={() => navigate('/contact')}>
+              <button type="button" className="btn-secondary" onClick={() => navigate('/contact#inquiry')}>
                 {t('catering2.requestGuidance')}
               </button>
             </div>
@@ -120,7 +120,7 @@ export const CateringPage = () => {
             <div className="empty-panel">
               <h3>{t('catering2.refreshTitle')}</h3>
               <p>{t('catering2.refreshText')}</p>
-              <button type="button" className="btn-primary" onClick={() => navigate('/contact')}>{t('catering2.quote')}</button>
+              <button type="button" className="btn-primary" onClick={() => navigate('/contact#inquiry')}>{t('catering2.quote')}</button>
             </div>
           ) : (
             <div className="package-grid package-grid--priority">

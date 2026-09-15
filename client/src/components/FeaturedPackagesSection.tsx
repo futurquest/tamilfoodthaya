@@ -81,12 +81,12 @@ export default function FeaturedPackagesSection({ packages = [], loading = false
           <div className="empty-panel">
             <h3>{t('catering.packagesSection.refreshTitle', 'Packages are being refreshed')}</h3>
             <p>{t('catering.packagesSection.refreshDesc', 'Send us your event date, guest count, and the dishes you want. We can still prepare a quote.')}</p>
-            <Link to="/contact" className="btn-primary">{t('catering.packagesSection.requestQuote', 'Request a quote')}</Link>
+            <Link to="/contact#inquiry" className="btn-primary">{t('catering.packagesSection.requestQuote', 'Request a quote')}</Link>
           </div>
         )}
 
         <div className="section-cta">
-          <Link to="/catering" className="btn-ink">
+          <Link to="/catering#packages-section" className="btn-ink">
             {t('catering.packagesSection.viewAll', 'View all catering options')}
             <ArrowRight size={18} />
           </Link>

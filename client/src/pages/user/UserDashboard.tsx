@@ -503,7 +503,7 @@ export const UserDashboard = () => {
                                 <p className="mt-2 text-sm leading-relaxed text-slate-600">
                                     Need to cancel or make urgent changes? Our support team is here to help.
                                 </p>
-                                <Link to="/contact">
+                                <Link to="/contact#inquiry">
                                     <Button
                                         variant="outline"
                                         size="sm"

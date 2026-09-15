@@ -28,7 +28,7 @@ export default function EventTypesSection() {
               </div>
             ))}
           </div>
-          <Link to="/contact" className="btn-ink">{t('story.cta')}</Link>
+          <Link to="/contact#inquiry" className="btn-ink">{t('story.cta')}</Link>
         </ScrollReveal>
 
         <div className="event-list">

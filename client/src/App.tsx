@@ -32,6 +32,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import MotionFX from './motion/MotionFX';
+import ScrollToTop from './components/ScrollToTop';
 import { useRef } from 'react';
 
 function AppRoutes() {
@@ -100,6 +101,7 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="site-shell">
       <a className="skip-link" href="#main-content">Skip to content</a>
+      <ScrollToTop />
       <Header />
       <div className="fx-progress" aria-hidden="true" />
       <main id="main-content" className="site-main" ref={mainRef}>{children}</main>

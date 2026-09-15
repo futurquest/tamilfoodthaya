@@ -183,7 +183,7 @@ export const Footer = () => {
           <p>{t('footer.monFri', 'Mon - Fri')} <strong>12:00 - 22:00</strong></p>
           <p>{t('footer.saturday', 'Saturday')} <strong>11:00 - 23:00</strong></p>
           <p>{t('footer.sunday', 'Sunday')} <strong>12:00 - 21:00</strong></p>
-          <Link to="/contact" className="btn-primary">{t('footer.cateringCta', 'Ask about catering')}</Link>
+          <Link to="/contact#inquiry" className="btn-primary">{t('footer.cateringCta', 'Ask about catering')}</Link>
         </div>
       </div>
       <div className="container site-footer__bottom">

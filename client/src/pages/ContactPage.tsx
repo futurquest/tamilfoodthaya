@@ -33,7 +33,7 @@ export const ContactPage = () => {
         </div>
       </section>
 
-      <section className="section contact-section">
+      <section id="inquiry" className="section contact-section">
         <div className="container contact-grid">
           <aside className="contact-aside">
             <h2 className="section-title">{t('contactPage.asideTitle')}</h2>
