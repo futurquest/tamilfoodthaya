@@ -424,7 +424,7 @@ export const CateringCheckoutPage = () => {
 
 if (loading) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-white pt-24 pb-16">
+            <div className="catering-checkout flex min-h-screen items-center justify-center bg-white pt-24 pb-16">
                 <PageLoader full={false} hint={t('cateringCheckout.loading')} />
             </div>
         );
@@ -1360,7 +1360,7 @@ if (loading) {
                             </h4>
                             {dishPreview.price > 0 ? (
                                 <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-800">
-                                    +â‚¬{dishPreview.price.toFixed(2)}
+                                    +€{dishPreview.price.toFixed(2)}
                                 </span>
                             ) : (
                                 <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700">
@@ -1389,7 +1389,7 @@ if (loading) {
                                         {choice.name}
                                         {choice.priceModifier !== 0 && (
                                             <span className="ml-1 opacity-70">
-                                                {choice.priceModifier > 0 ? '+' : '-'}â‚¬
+{choice.priceModifier > 0 ? '+' : '-'}€
                                                 {Math.abs(choice.priceModifier).toFixed(2)}
                                             </span>
                                         )}

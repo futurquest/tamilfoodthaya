@@ -153,7 +153,7 @@ export const UserDashboard = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 pt-32 pb-24 flex items-center justify-center">
+            <div className="user-dashboard-font min-h-screen bg-slate-50 pt-32 pb-24 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="h-12 w-12 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin" />
                     <p className="font-medium text-slate-500">Preparing your dashboard...</p>

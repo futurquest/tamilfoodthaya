@@ -2150,6 +2150,40 @@ select:focus-visible {
   text-decoration: none;
 }
 
+.auth-switch button {
+  border: 0;
+  background: none;
+  color: var(--spice);
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.verify-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 26%, transparent);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  padding: 0.7rem 0.9rem;
+  color: color-mix(in srgb, var(--brand-cream) 88%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.verify-hint svg {
+  color: var(--brand-accent-bright);
+}
+
+.verify-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: -0.2rem;
+}
+
 .catering-checkout {
   background:
     radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 25rem),
@@ -2177,6 +2211,83 @@ select:focus-visible {
 .catering-checkout .text-gray-600,
 .catering-checkout .text-gray-500 {
   color: var(--muted) !important;
+}
+
+.catering-checkout .text-gray-400 {
+  color: color-mix(in srgb, var(--brand-muted) 62%, transparent) !important;
+}
+
+.catering-checkout .bg-white { background-color: color-mix(in srgb, var(--brand-surface) 90%, transparent) !important; }
+
+.catering-checkout .bg-white\/95,
+.catering-checkout .bg-white\/15 {
+  background-color: color-mix(in srgb, var(--brand-surface) 80%, transparent) !important;
+}
+
+.catering-checkout .ring-black\/10 {
+  --tw-ring-color: color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--brand-text) 18%, transparent) !important;
+}
+
+.catering-checkout .hover\:bg-gray-50:hover,
+.catering-checkout .hover\:bg-white:hover {
+  background-color: color-mix(in srgb, var(--brand-accent) 12%, transparent) !important;
+}
+
+.catering-checkout .bg-gray-100 {
+  background-color: color-mix(in srgb, var(--brand-surface-deep) 46%, transparent) !important;
+}
+
+.catering-checkout .hover\:border-gray-400:hover {
+  border-color: color-mix(in srgb, var(--brand-accent) 42%, transparent) !important;
+}
+
+.catering-checkout .text-purple-500,
+.catering-checkout .text-pink-500,
+.catering-checkout .text-amber-500 {
+  color: var(--brand-accent-strong) !important;
+}
+
+.catering-checkout .text-blue-500,
+.catering-checkout .text-green-500 {
+  color: var(--leaf) !important;
+}
+
+.catering-checkout .bg-green-50,
+.catering-checkout .border-green-50 {
+  background-color: color-mix(in srgb, var(--brand-leaf) 10%, transparent) !important;
+}
+
+.catering-checkout .border-green-200 {
+  border-color: color-mix(in srgb, var(--brand-leaf) 24%, transparent) !important;
+}
+
+.catering-checkout .border-green-500 {
+  border-color: var(--leaf) !important;
+}
+
+.catering-checkout .text-green-600,
+.catering-checkout .text-green-700,
+.catering-checkout .text-green-800 {
+  color: var(--leaf) !important;
+}
+
+.catering-checkout .bg-green-100 {
+  background-color: color-mix(in srgb, var(--brand-leaf) 16%, transparent) !important;
+}
+
+.catering-checkout .border-red-200 {
+  border-color: color-mix(in srgb, var(--brand-error) 22%, transparent) !important;
+}
+
+.catering-checkout .bg-red-50 {
+  background-color: color-mix(in srgb, var(--brand-error) 8%, transparent) !important;
+}
+
+.catering-checkout .text-red-500,
+.catering-checkout .text-red-600,
+.catering-checkout .text-red-700 {
+  color: var(--brand-error) !important;
 }
 
 .catering-checkout .bg-black {
@@ -2862,6 +2973,47 @@ select:focus-visible {
   background-color: var(--brass) !important;
 }
 
+.admin-panel-font .hover\:bg-amber-600:hover,
+.admin-panel-font .hover\:bg-orange-600:hover {
+  background-color: var(--brand-accent-warm) !important;
+  color: var(--brand-surface) !important;
+}
+
+.admin-panel-font .hover\:bg-emerald-600:hover,
+.admin-panel-font .hover\:bg-green-600:hover {
+  background-color: var(--leaf) !important;
+  color: var(--brand-surface) !important;
+}
+
+.admin-panel-font .hover\:text-amber-800:hover {
+  color: var(--brand-accent-deep) !important;
+}
+
+.admin-panel-font .focus\:ring-amber-400:focus,
+.admin-panel-font .focus\:ring-amber-500:focus {
+  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 26%, transparent) !important;
+}
+
+.admin-panel-font .focus\:border-amber-400:focus,
+.admin-panel-font .focus\:border-amber-500:focus {
+  border-color: var(--brand-accent-strong) !important;
+}
+
+.admin-panel-font .bg-emerald-600,
+.admin-panel-font .bg-green-600 {
+  background-color: var(--leaf) !important;
+  color: var(--brand-surface) !important;
+}
+
+.admin-panel-font .bg-amber-100,
+.admin-panel-font .bg-amber-200 {
+  background-color: color-mix(in srgb, var(--brand-accent) 16%, transparent) !important;
+}
+
+.admin-panel-font .border-amber-100 {
+  border-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+}
+
 .admin-panel-font .bg-emerald-500,
 .admin-panel-font .bg-green-500 {
   background-color: var(--leaf) !important;
@@ -2870,6 +3022,104 @@ select:focus-visible {
 .admin-panel-font .ring-slate-100,
 .admin-panel-font .focus\:ring-slate-100:focus {
   --tw-ring-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+}
+
+.admin-panel-font .text-slate-950 {
+  color: var(--ink) !important;
+}
+
+.admin-panel-font .text-slate-300 {
+  color: color-mix(in srgb, var(--brand-muted) 52%, transparent) !important;
+}
+
+.admin-panel-font .border-slate-100 {
+  border-color: color-mix(in srgb, var(--brand-text) 7%, transparent) !important;
+}
+
+.admin-panel-font .divide-slate-100 {
+  border-color: color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
+}
+
+.admin-panel-font .border-amber-300,
+.admin-panel-font .border-amber-400 {
+  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent) !important;
+}
+
+.admin-panel-font .border-amber-200 {
+  border-color: color-mix(in srgb, var(--brand-accent) 26%, transparent) !important;
+}
+
+.admin-panel-font .text-amber-800,
+.admin-panel-font .text-yellow-800 {
+  color: var(--brand-accent-deep) !important;
+}
+
+.admin-panel-font .ring-amber-100,
+.admin-panel-font .ring-amber-200,
+.admin-panel-font .ring-amber-300,
+.admin-panel-font .focus\:ring-amber-100:focus,
+.admin-panel-font .focus\:ring-amber-200:focus {
+  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 22%, transparent) !important;
+}
+
+.admin-panel-font .border-emerald-200,
+.admin-panel-font .border-emerald-300,
+.admin-panel-font .border-green-200 {
+  border-color: color-mix(in srgb, var(--brand-leaf) 28%, transparent) !important;
+}
+
+.admin-panel-font .border-emerald-300\/40 {
+  border-color: color-mix(in srgb, var(--brand-leaf) 40%, transparent) !important;
+}
+
+.admin-panel-font .bg-emerald-300\/15 {
+  background-color: color-mix(in srgb, var(--brand-leaf) 15%, transparent) !important;
+}
+
+.admin-panel-font .text-emerald-100,
+.admin-panel-font .text-emerald-800,
+.admin-panel-font .text-green-800 {
+  color: var(--leaf) !important;
+}
+
+.admin-panel-font .border-red-300 {
+  border-color: color-mix(in srgb, var(--brand-error) 28%, transparent) !important;
+}
+
+.admin-panel-font .ring-red-100,
+.admin-panel-font .ring-red-50,
+.admin-panel-font .ring-red-200 {
+  --tw-ring-color: color-mix(in srgb, var(--brand-error) 14%, transparent) !important;
+}
+
+.admin-panel-font .bg-purple-50,
+.admin-panel-font .bg-indigo-50 {
+  background-color: color-mix(in srgb, var(--brand-accent-olive) 13%, transparent) !important;
+}
+
+.admin-panel-font .bg-purple-500,
+.admin-panel-font .bg-indigo-500 {
+  background-color: var(--leaf) !important;
+  color: var(--brand-surface) !important;
+}
+
+.admin-panel-font .text-purple-700,
+.admin-panel-font .text-indigo-700 {
+  color: var(--leaf) !important;
+}
+
+.admin-panel-font .border-purple-200,
+.admin-panel-font .border-indigo-200 {
+  border-color: color-mix(in srgb, var(--brand-leaf) 30%, transparent) !important;
+}
+
+.admin-panel-font .text-stone-200 {
+  color: color-mix(in srgb, var(--brand-muted) 46%, transparent) !important;
+}
+
+.admin-panel-font .bg-slate-400,
+.admin-panel-font .bg-slate-300 {
+  background-color: color-mix(in srgb, var(--brand-muted) 40%, transparent) !important;
 }
 
 .admin-panel-font .fixed.inset-0 {
@@ -3557,8 +3807,54 @@ select:focus-visible {
   background-color: color-mix(in srgb, var(--brand-surface) 62%, transparent) !important;
 }
 
-.admin-panel-font section[class*="135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,#f8fafc_100%"] {
+.admin-panel-font section[class*="135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%"] {
   background-image: linear-gradient(135deg, var(--brand-surface-warm) 0%, var(--brand-cream-warm) 42%, var(--brand-surface-part) 100%) !important;
+}
+
+.admin-panel-font .hover\:border-amber-200:hover,
+.admin-panel-font .hover\:border-amber-300:hover,
+.admin-panel-font .hover\:border-amber-400:hover {
+  border-color: color-mix(in srgb, var(--brand-accent) 52%, transparent) !important;
+}
+
+.admin-panel-font .hover\:bg-amber-100:hover {
+  background-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+}
+
+.admin-panel-font .hover\:bg-amber-50:hover,
+.admin-panel-font .hover\:bg-amber-50\/40:hover,
+.admin-panel-font .hover\:bg-amber-50\/60:hover {
+  background-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+}
+
+.admin-panel-font .group:hover .group-hover\:bg-amber-50 {
+  background-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+}
+
+.admin-panel-font .group:hover .group-hover\:bg-white {
+  background-color: var(--brand-surface-soft) !important;
+}
+
+.admin-panel-font .group:hover .group-hover\:text-amber-800 {
+  color: var(--brand-accent-deep) !important;
+}
+
+.admin-panel-font .from-amber-400 {
+  --tw-gradient-from: var(--brand-accent-strong) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
+}
+
+.admin-panel-font .to-orange-700 {
+  --tw-gradient-to: var(--brand-accent-warm) !important;
+}
+
+.admin-panel-font .from-slate-700 {
+  --tw-gradient-from: var(--brand-leaf-deep) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
+}
+
+.admin-panel-font .to-stone-400 {
+  --tw-gradient-to: var(--brand-accent) !important;
 }
 
 .admin-panel-font [class*="shadow-[0_18px_45px_color-mix(in srgb, var(--brand-slate) 10%, transparent)"]:hover {
@@ -3785,4 +4081,200 @@ select:focus-visible {
   .auth-copy {
     min-height: 18rem;
   }
+}
+
+/* === User Dashboard === */
+.user-dashboard-font,
+.user-dashboard-font .min-h-screen {
+  color: var(--ink) !important;
+}
+
+.user-dashboard-font .bg-slate-50 {
+  background-color: var(--brand-surface) !important;
+}
+
+.user-dashboard-font .bg-slate-900,
+.user-dashboard-font .bg-slate-800 {
+  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary)) !important;
+  border-color: color-mix(in srgb, var(--brand-accent-dark) 20%, transparent) !important;
+  color: var(--brand-surface) !important;
+}
+
+.user-dashboard-font .hover\:bg-slate-800:hover {
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-primary)) !important;
+  color: var(--brand-surface) !important;
+}
+
+.user-dashboard-font .bg-white {
+  background-color: color-mix(in srgb, var(--brand-surface) 93%, transparent) !important;
+}
+
+.user-dashboard-font .border-slate-200,
+.user-dashboard-font .border-slate-300,
+.user-dashboard-font .border-slate-400,
+.user-dashboard-font .border-indigo-200,
+.user-dashboard-font .border-violet-200,
+.user-dashboard-font .border-cyan-200,
+.user-dashboard-font .border-orange-200 {
+  border-color: color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
+}
+
+.user-dashboard-font .border-amber-200 {
+  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent) !important;
+}
+
+.user-dashboard-font .border-amber-500,
+.user-dashboard-font .border-t-amber-500 {
+  border-color: var(--brand-accent-strong) !important;
+}
+
+.user-dashboard-font .border-green-200,
+.user-dashboard-font .border-emerald-200,
+.user-dashboard-font .border-blue-200 {
+  border-color: color-mix(in srgb, var(--brand-leaf) 28%, transparent) !important;
+}
+
+.user-dashboard-font .text-slate-900,
+.user-dashboard-font .text-slate-800,
+.user-dashboard-font .text-slate-700 {
+  color: var(--ink) !important;
+}
+
+.user-dashboard-font .text-slate-600,
+.user-dashboard-font .text-slate-500,
+.user-dashboard-font .text-slate-400 {
+  color: color-mix(in srgb, var(--brand-muted) 72%, transparent) !important;
+}
+
+.user-dashboard-font .text-slate-300 {
+  color: color-mix(in srgb, var(--brand-muted) 48%, transparent) !important;
+}
+
+.user-dashboard-font .text-amber-500,
+.user-dashboard-font .text-amber-600,
+.user-dashboard-font .text-amber-700,
+.user-dashboard-font .text-orange-700 {
+  color: var(--brand-accent-deep) !important;
+}
+
+.user-dashboard-font .bg-amber-50,
+.user-dashboard-font .bg-orange-50 {
+  background-color: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
+}
+
+.user-dashboard-font .bg-amber-100 {
+  background-color: color-mix(in srgb, var(--brand-accent) 16%, transparent) !important;
+}
+
+.user-dashboard-font .bg-amber-500,
+.user-dashboard-font .bg-amber-600 {
+  background-color: var(--brand-accent-strong) !important;
+  color: var(--brand-surface) !important;
+}
+
+.user-dashboard-font .hover\:bg-amber-600:hover {
+  background-color: var(--brand-accent-warm) !important;
+  color: var(--brand-surface) !important;
+}
+
+.user-dashboard-font .text-green-600,
+.user-dashboard-font .text-green-700,
+.user-dashboard-font .text-emerald-600,
+.user-dashboard-font .text-emerald-700,
+.user-dashboard-font .text-blue-700,
+.user-dashboard-font .text-blue-600,
+.user-dashboard-font .text-indigo-700,
+.user-dashboard-font .text-violet-700,
+.user-dashboard-font .text-cyan-700 {
+  color: var(--leaf) !important;
+}
+
+.user-dashboard-font .bg-green-50,
+.user-dashboard-font .bg-emerald-50,
+.user-dashboard-font .bg-blue-50,
+.user-dashboard-font .bg-indigo-50,
+.user-dashboard-font .bg-violet-50,
+.user-dashboard-font .bg-cyan-50 {
+  background-color: color-mix(in srgb, var(--brand-leaf) 11%, transparent) !important;
+}
+
+.user-dashboard-font .bg-green-100,
+.user-dashboard-font .bg-emerald-100,
+.user-dashboard-font .bg-blue-100 {
+  background-color: color-mix(in srgb, var(--brand-leaf) 18%, transparent) !important;
+}
+
+.user-dashboard-font .bg-red-50 {
+  background-color: color-mix(in srgb, var(--brand-error) 8%, transparent) !important;
+}
+
+.user-dashboard-font .text-red-500 {
+  color: var(--brand-error) !important;
+}
+
+.user-dashboard-font .ring-amber-100 {
+  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+}
+
+.user-dashboard-font .hover\:border-amber-200:hover,
+.user-dashboard-font .hover\:border-amber-300:hover {
+  border-color: var(--brand-accent) !important;
+}
+
+.user-dashboard-font .hover\:text-amber-600:hover {
+  color: var(--brand-accent-deep) !important;
+}
+
+.user-dashboard-font .hover\:bg-white:hover {
+  background-color: color-mix(in srgb, var(--brand-surface-soft) 96%, transparent) !important;
+}
+
+.user-dashboard-font .hover\:shadow-md:hover {
+  box-shadow: 0 18px 46px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent) !important;
+}
+
+.user-dashboard-font .border-dashed {
+  border-color: color-mix(in srgb, var(--brand-text) 18%, transparent) !important;
+}
+
+.user-dashboard-font .bg-slate-900\/40 {
+  background-color: color-mix(in srgb, var(--brand-overlay) 62%, transparent) !important;
+  backdrop-filter: blur(10px);
+}
+
+.user-dashboard-font .hover\:bg-slate-50:hover {
+  background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent) !important;
+}
+
+.user-dashboard-font .hover\:bg-red-50:hover {
+  background-color: color-mix(in srgb, var(--brand-error) 10%, transparent) !important;
+}
+
+.user-dashboard-font .rounded-3xl {
+  border-radius: 1.1rem !important;
+}
+
+.user-dashboard-font .focus\:border-amber-500:focus {
+  border-color: var(--brand-accent-strong) !important;
+}
+
+.user-dashboard-font .focus\:bg-white:focus {
+  background-color: var(--brand-surface-soft) !important;
+}
+
+.user-dashboard-font .bg-gradient-to-br {
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 14%, transparent), var(--brand-surface-soft)) !important;
+}
+
+.user-dashboard-font .from-amber-50 {
+  --tw-gradient-from: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
+}
+
+.user-dashboard-font .to-white {
+  --tw-gradient-to: var(--brand-surface-soft) !important;
+}
+
+.user-dashboard-font .shadow-2xl {
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-overlay) 26%, transparent) !important;
 }

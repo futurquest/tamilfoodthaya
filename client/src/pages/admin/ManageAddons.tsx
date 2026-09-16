@@ -599,7 +599,7 @@ export const ManageAddons = () => {
 
                                     <div className="text-right">
                                         <p className="text-base font-semibold text-slate-900">
-                                            â‚¬ {Number(addon.price || 0).toFixed(2)}
+                                            € {Number(addon.price || 0).toFixed(2)}
                                         </p>
                                         <p className="text-xs text-slate-500">
                                             {addon.pricingType === 'per_person'
@@ -808,7 +808,7 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
 
                                         <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                             <NumberBlock
-                                                label="Price (â‚¬)"
+                                                label="Price (€)"
                                                 value={form.price}
                                                 onChange={(value) =>
                                                     setForm((prev) => ({

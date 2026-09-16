@@ -1376,7 +1376,7 @@ const getCategoryName = (item: MenuItem, categoryMap: Map<string, string>) => {
     return categoryMap.get(item.categoryId || '') || 'Unassigned';
 };
 
-const formatPrice = (price?: number) => `â‚¬ ${Number(price || 0).toFixed(2)}`;
+const formatPrice = (price?: number) => `€ ${Number(price || 0).toFixed(2)}`;
 
 const isValidImageUrl = (url?: string) =>
     !!url && (/^(https?:|data:image\/|blob:)/.test(url)) && !url.startsWith('/');

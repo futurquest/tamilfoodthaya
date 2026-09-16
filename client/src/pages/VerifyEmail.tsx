@@ -1,14 +1,15 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyEmail } from '../hooks/useApi';
-import { Button } from '../components/ui/Button';
-import { Container } from '../components/ui/Container';
-import { Card, CardContent } from '../components/ui/Card';
+import { SEO } from '../components/SEO';
+import { ShieldCheck, Mail } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export const VerifyEmail = () => {
     const [pin, setPin] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const email = location.state?.email;
@@ -23,61 +24,83 @@ export const VerifyEmail = () => {
         setIsLoading(true);
         try {
             await verifyEmail({ email, pin });
-            toast.success('Email successfully verified! You can now login.');
+            toast.success(t('auth.verify.success', 'Email successfully verified! You can now login.'));
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            toast.error(error.response?.data?.message || 'Verification failed');
+            toast.error(error.response?.data?.message || t('auth.verify.failed', 'Verification failed'));
         } finally {
             setIsLoading(false);
         }
     };
 
-    if (!email) {
-        return (
-            <Container className="pt-32 pb-12 flex justify-center">
-                <Card>
-                    <CardContent className="p-8 text-center">
-                        <h2 className="text-xl font-bold mb-4">Error</h2>
-                        <p className="mb-4">No email provided for verification.</p>
-                        <Button onClick={() => navigate('/register')}>Go to Register</Button>
-                    </CardContent>
-                </Card>
-            </Container>
-        );
-    }
+    const back = !email ? (
+        <div className="auth-page">
+            <SEO title="Verify Email" description="Verify your Tamil Food Thaya email address." />
+            <div className="auth-card surface">
+                <div className="auth-copy">
+                    <span className="brand-mark__seal">T</span>
+                    <h1>Nothing to verify.</h1>
+                    <p>No email address was provided. Head back to registration to create your account.</p>
+                </div>
+                <div className="auth-form">
+                    <p className="auth-error">No email provided for verification.</p>
+                    <button type="button" className="btn-primary" onClick={() => navigate('/register')}>
+                        {t('auth.verify.goRegister', 'Go to Register')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    ) : null;
+
+    if (back) return back;
 
     return (
-        <Container className="pt-32 pb-12 flex justify-center">
-            <Card className="w-full max-w-md">
-                <CardContent className="p-8">
-                    <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-tamil-charcoal">Verify Email</h1>
-                        <p className="text-gray-500 text-sm mt-2">
-                            Enter the 6-digit PIN sent to {email}.<br />
-                            (Check the server console for the mock PIN)
-                        </p>
-                    </div>
+        <div className="auth-page">
+            <SEO title="Verify Email" description="Verify your Tamil Food Thaya email address." />
+            <div className="auth-card auth-card--wide surface">
+                <div className="auth-copy">
+                    <span className="brand-mark__seal">T</span>
+                    <h1>Check your inbox.</h1>
+                    <p>We sent a 6-digit PIN to confirm your email. Enter it below to unlock the kitchen.</p>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Verification PIN</label>
+                    <div className="verify-hint">
+                        <Mail size={16} />
+                        <span>{email}</span>
+                    </div>
+                </div>
+
+                <form className="auth-form" onSubmit={handleSubmit} noValidate>
+                    <label>
+                        {t('auth.verify.pinLabel', 'Verification PIN')}
+                        <span>
+                            <ShieldCheck size={17} />
                             <input
                                 type="text"
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-tamil-maroon outline-none"
                                 maxLength={6}
                                 placeholder="123456"
                                 required
+                                autoComplete="one-time-code"
                             />
-                        </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Verifying...' : 'Verify'}
-                        </Button>
-                    </form>
-                </CardContent>
-            </Card>
-        </Container>
+                        </span>
+                    </label>
+
+                    <p className="verify-note">{t('auth.verify.pinHint', 'Check the server console for the mock PIN.')}</p>
+
+                    <button type="submit" className="btn-primary" disabled={isLoading}>
+                        {isLoading ? t('auth.verify.verifying', 'Verifying...') : t('auth.verify.submit', 'Verify')}
+                    </button>
+
+                    <p className="auth-switch">
+                        {t('auth.verify.rightEmail', 'Wrong address?')}{' '}
+                        <button type="button" onClick={() => navigate('/register')}>
+                            {t('auth.verify.registerAgain', 'Register again')}
+                        </button>
+                    </p>
+                </form>
+            </div>
+        </div>
     );
 };
