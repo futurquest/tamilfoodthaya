@@ -17,6 +17,19 @@
 /* ---------- Semantic utility mapping (Tailwind) ----------
    Re-exports every color utility used across the app onto the
    semantic variables below, so utilities track the active theme. */
+
+/* Corner-radius scale — 1rem base, +0.5rem steps for cards/panels. */
+:root {
+  --radius: 1rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
 @theme inline {
   /* brand / primary ramp */
   --color-primary-50: var(--brand-primary-50);
@@ -214,7 +227,12 @@
   --brass-soft: var(--brand-accent-soft);
   --aubergine: var(--brand-night);
   --line: color-mix(in srgb, var(--brand-text) 12%, transparent);
+
+  /* sculpted, diffused shadows (form follows depth) */
   --shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent);
+  --shadow-soft: 0 18px 50px -30px color-mix(in srgb, var(--brand-shadow-warm) 45%, transparent);
+  --shadow-lift: 0 26px 70px -34px color-mix(in srgb, var(--brand-shadow-warm) 55%, transparent);
+  --shadow-ring: inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 7%, transparent);
 }
 
 /* ================================================================
@@ -333,6 +351,10 @@
   --brand-sand: #947a5f;
   --brand-mocha-deep: #5b4636;
   --brand-black: #000000;
+
+  --shadow-soft: 0 18px 50px -30px color-mix(in srgb, var(--brand-shadow-warm) 55%, transparent);
+  --shadow-lift: 0 26px 70px -34px color-mix(in srgb, var(--brand-shadow-warm) 68%, transparent);
+  --shadow-ring: inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 9%, transparent);
 
   --brand-text-a09: color-mix(in srgb, var(--brand-text) 9%, transparent);
   --brand-text-a18: color-mix(in srgb, var(--brand-text) 18%, transparent);

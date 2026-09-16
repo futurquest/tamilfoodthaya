@@ -141,12 +141,11 @@ select:focus-visible {
 }
 
 .panel {
-  border-radius: calc(var(--radius, 1rem) + 0.5rem);
-  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 68%, transparent);
   backdrop-filter: blur(20px);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 7%, transparent),
-    0 18px 50px -30px color-mix(in srgb, var(--brand-shadow-warm) 45%, transparent);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
 }
 
 @keyframes rise {
@@ -180,14 +179,14 @@ select:focus-visible {
   border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
   background: var(--ink);
   color: var(--paper);
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 22%, transparent);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 18%, transparent);
 }
 
 .btn-gold {
   border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
   background: var(--brand-primary);
   color: var(--paper);
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
 
 .btn-ink {
@@ -252,30 +251,33 @@ select:focus-visible {
 .surface,
 .card,
 .card-glow {
-  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
-  box-shadow: 0 16px 46px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
+  border-radius: calc(var(--radius, 1rem) + 0.5rem);
+  background: color-mix(in srgb, var(--brand-surface) 64%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
   transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
 }
 
 .card:hover,
 .card-glow:hover {
   transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent);
-  box-shadow: 0 24px 58px color-mix(in srgb, var(--brand-shadow-warm) 13%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 36%, transparent),
+    var(--shadow-lift);
 }
 
 .input-field,
 .admin-input {
   width: 100%;
-  border: 1px solid color-mix(in srgb, var(--brand-text) 16%, transparent);
-  border-radius: 0.8rem;
-  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
+  border: 0;
+  border-radius: calc(var(--radius, 1rem) - 0.2rem);
+  background: color-mix(in srgb, var(--brand-surface-warm) 58%, transparent);
   color: var(--ink);
   padding: 0.82rem 0.95rem;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 10%, transparent);
+  transition: box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .input-field::placeholder,
@@ -285,9 +287,8 @@ select:focus-visible {
 
 .input-field:focus,
 .admin-input:focus {
-  border-color: color-mix(in srgb, var(--brand-accent) 80%, transparent);
-  background: var(--brand-surface);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
+  background: color-mix(in srgb, var(--brand-surface-soft) 82%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand-accent) 80%, transparent), var(--shadow-soft);
 }
 
 .label-text,
@@ -308,8 +309,8 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  border-radius: 0.45rem;
-  padding: 0.28rem 0.55rem;
+  border-radius: 9999px;
+  padding: 0.32rem 0.66rem;
   font-size: 0.72rem;
   font-weight: 800;
   line-height: 1;
@@ -393,8 +394,12 @@ select:focus-visible {
 }
 
 .site-header--solid {
-  background: color-mix(in srgb, var(--brand-surface) 97%, transparent);
-  box-shadow: 0 12px 38px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
+  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.1);
+  -webkit-backdrop-filter: blur(20px) saturate(1.1);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--brand-text) 8%, transparent),
+    0 18px 46px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
 }
 
 .site-header__inner {
@@ -689,11 +694,12 @@ select:focus-visible {
 .mobile-menu__panel {
   margin-left: auto;
   width: min(24rem, 100%);
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
-  border-radius: 1rem;
-  background: var(--brand-surface);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
   padding: 0.8rem;
-  box-shadow: 0 28px 70px color-mix(in srgb, var(--brand-overlay) 22%, transparent);
+  box-shadow: var(--shadow-ring), 0 28px 70px color-mix(in srgb, var(--brand-overlay) 22%, transparent);
 }
 
 .mobile-menu__link,
