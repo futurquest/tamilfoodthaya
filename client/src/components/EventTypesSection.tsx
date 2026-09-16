@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Briefcase, HeartHandshake, Home, PartyPopper, UsersRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ScrollReveal from './ScrollReveal';
+import FluidBackground from './FluidBackground';
 
 export default function EventTypesSection() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function EventTypesSection() {
 
   return (
     <section className="section story-section">
+      <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container story-grid">
         <ScrollReveal variant="fadeUp" className="story-copy">
           <p className="eyebrow">{t('story.eyebrow', 'Kitchen & Fire — What we do')}</p>

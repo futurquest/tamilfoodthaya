@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../hooks/useApi';
 import { SEO } from '../components/SEO';
+import FluidBackground from '../components/FluidBackground';
 
 const createCheckoutSchema = (t: (key: string) => string) => z.object({
   name: z.string().min(2, t('checkout.nameRequired')),
@@ -77,6 +78,7 @@ export const CheckoutPage = () => {
     <div className="checkout-page">
       <SEO title={t('checkout.seoTitle')} description={t('checkout.seoDescription')} />
       <section className="page-hero">
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">
           <h1>{t('checkout.heroTitle')}</h1>
           <p>{t('checkout.heroDesc')}</p>
@@ -84,6 +86,7 @@ export const CheckoutPage = () => {
       </section>
 
       <section className="section">
+        <FluidBackground intensity={0.42} parallaxStrength={6} deepParallax={10} />
         <div className="container checkout-grid">
           <form className="checkout-card surface" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="checkout-card__heading">

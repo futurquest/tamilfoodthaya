@@ -4,6 +4,7 @@ import { ArrowRight, Flame, Leaf } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../hooks/useApi';
 import ScrollReveal from './ScrollReveal';
+import FluidBackground from './FluidBackground';
 
 interface MenuItem {
   _id: string;
@@ -146,6 +147,7 @@ const [categories, setCategories] = useState<Category[]>([]);
 
   return (
     <section id="our_menu" className="section menu-preview">
+      <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container">
         <div className="section-heading split">
 <div>

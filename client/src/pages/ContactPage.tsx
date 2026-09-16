@@ -5,6 +5,7 @@ import { CalendarDays, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createLead, getSettings } from '../hooks/useApi';
 import { SEO } from '../components/SEO';
+import FluidBackground from '../components/FluidBackground';
 
 export const ContactPage = () => {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export const ContactPage = () => {
 
       <section className="page-hero">
         <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">
           <h1>{t('contactPage.heroTitle')}</h1>
           <p>{t('contactPage.heroDesc')}</p>
@@ -34,6 +36,7 @@ export const ContactPage = () => {
       </section>
 
       <section id="inquiry" className="section contact-section">
+        <FluidBackground intensity={0.42} parallaxStrength={6} deepParallax={10} />
         <div className="container contact-grid">
           <aside className="contact-aside">
             <p className="eyebrow">{t('contactPage.asideEyebrow', 'Kitchen & Fire — Say hello')}</p>

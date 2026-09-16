@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
+import FluidBackground from '../../components/FluidBackground';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export const LoginPage = () => {
   return (
     <div className="auth-page">
       <SEO title="Log in" description="Log in to your Tamil Food Thaya account." />
+      <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
       <div className="auth-card surface">
         <div className="auth-copy">
           <span className="brand-mark__seal">T</span>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ScrollReveal from './ScrollReveal';
+import FluidBackground from './FluidBackground';
 
 const PLACEHOLDER_IMG = '/hero-catering.jpg';
 
@@ -30,6 +31,7 @@ export default function FeaturedPackagesSection({ packages = [], loading = false
 
   return (
     <section className="section package-section">
+      <FluidBackground intensity={0.42} parallaxStrength={6} deepParallax={10} />
       <div className="container">
         <div className="section-heading split">
           <div>

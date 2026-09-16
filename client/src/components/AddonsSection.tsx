@@ -4,6 +4,7 @@ import { Camera, Check, Flower2, Music, Plus, Wine } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../hooks/useApi';
 import ScrollReveal from './ScrollReveal';
+import FluidBackground from './FluidBackground';
 
 interface Addon {
   _id: string;
@@ -50,6 +51,7 @@ export default function AddonsSection() {
 
   return (
     <section className="section addons-section">
+      <FluidBackground intensity={0.38} parallaxStrength={5} deepParallax={8} />
       <div className="container">
         <div className="section-heading split">
           <h2 className="section-title"><span className="eyebrow">{t('addons.eyebrow', 'Kitchen & Fire')}</span>{t('addons.title')}</h2>

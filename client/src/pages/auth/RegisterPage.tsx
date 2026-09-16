@@ -6,6 +6,7 @@ import { Eye, EyeOff, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { registerUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
+import FluidBackground from '../../components/FluidBackground';
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export const RegisterPage = () => {
   return (
     <div className="auth-page">
       <SEO title="Create account" description="Create a Tamil Food Thaya account for orders and catering requests." />
+      <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
       <div className="auth-card auth-card--wide surface">
         <div className="auth-copy">
           <span className="brand-mark__seal">T</span>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarCheck, ChefHat, Leaf, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SEO, restaurantSchema } from './SEO';
+import FluidBackground from './FluidBackground';
 
 export default function HeroSection() {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export default function HeroSection() {
       />
 <section className="home-hero">
       <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
+      <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
       <div className="container home-hero__grid">
           <div className="home-hero__copy" data-para="7">
             <p className="eyebrow home-hero__eyebrow">

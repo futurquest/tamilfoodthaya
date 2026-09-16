@@ -6,6 +6,7 @@ import { getCateringPackages } from '../hooks/useApi';
 import { SEO } from '../components/SEO';
 import AddonsSection from '../components/AddonsSection';
 import ScrollReveal from '../components/ScrollReveal';
+import FluidBackground from '../components/FluidBackground';
 
 interface CateringPackageData {
   _id: string;
@@ -59,6 +60,7 @@ export const CateringPage = () => {
 
       <section className="catering-hero catering-hero--packages">
         <span className="fx-aura fx-aura--right" data-para="22" data-cur="10" aria-hidden="true" />
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container catering-hero__grid">
           <div>
             <span className="eyebrow">{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
@@ -94,6 +96,7 @@ export const CateringPage = () => {
       </section>
 
       <section id="packages-section" className="section package-section package-section--primary">
+        <FluidBackground intensity={0.45} parallaxStrength={6} deepParallax={10} />
         <div className="container">
           <div className="section-heading split package-heading">
             <h2 className="section-title"><span className="eyebrow">{t('catering2.packagesEyebrow', 'Catering — On A Mission')}</span>{t('catering2.packagesTitle')}</h2>
@@ -162,6 +165,7 @@ export const CateringPage = () => {
       </section>
 
       <section className="section process-section">
+        <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
         <div className="container">
           <div className="section-heading split">
             <h2 className="section-title"><span className="eyebrow">{t('catering2.processEyebrow', 'Kitchen & Fire')}</span>{t('catering2.processTitle')}</h2>

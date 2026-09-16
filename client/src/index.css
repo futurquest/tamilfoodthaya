@@ -2129,6 +2129,8 @@ select:focus-visible {
 }
 
 .auth-page {
+  position: relative;
+  overflow: hidden;
   min-height: 100dvh;
   display: grid;
   place-items: center;
@@ -2140,6 +2142,8 @@ select:focus-visible {
 }
 
 .auth-card {
+  position: relative;
+  z-index: 1;
   display: grid;
   width: min(920px, 100%);
   grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1fr);
@@ -4073,6 +4077,123 @@ select:focus-visible {
   will-change: transform;
 }
 
+/* --------------------------------------------------------------------------
+   FluidBackground — living surface layer.
+   Sits at z-index 0 inside a positioned section, above its base background
+   and below the z-indexed content (`.container`, hero grids, cards).
+   All motion is driven by CSS custom properties written once per frame by
+   the shared fluidEngine loop. Transforms only — no reflow.
+   -------------------------------------------------------------------------- */
+.fx-fluid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout style;
+  isolation: isolate;
+  /* defaults — engine overwrites these per frame on fine pointers */
+  --fb-x: 0px;
+  --fb-y: 0px;
+  --fb-x2: 0px;
+  --fb-y2: 0px;
+  --fb-x3: 0px;
+  --fb-y3: 0px;
+  --fb-lx: 0px;
+  --fb-ly: 0px;
+  --fb-glow: 0;
+  --fb-grain-alpha: 0.035;
+  --fb-kolam-alpha: 0.042;
+  --fb-light-radius: 560px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.fx-fluid--fixed {
+  position: fixed;
+}
+
+.fx-fluid[data-fb-visible='1'] {
+  opacity: 1;
+}
+
+.fx-fluid__ambient,
+.fx-fluid__texture,
+.fx-fluid__light,
+.fx-fluid__kolam {
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.fx-fluid__ambient {
+  transform: translate3d(var(--fb-x, 0px), var(--fb-y, 0px), 0);
+}
+
+.fx-fluid__blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  will-change: transform;
+}
+
+.fx-fluid__blob--a {
+  width: 62vmax;
+  height: 62vmax;
+  top: -14%;
+  left: -10%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 66%);
+}
+
+.fx-fluid__blob--b {
+  width: 48vmax;
+  height: 48vmax;
+  right: -14%;
+  bottom: -16%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 13%, transparent), transparent 64%);
+}
+
+.fx-fluid__blob--c {
+  width: 34vmax;
+  height: 34vmax;
+  top: 22%;
+  left: 40%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-leaf) 9%, transparent), transparent 62%);
+}
+
+.fx-fluid__light {
+  left: 50%;
+  top: 50%;
+  width: var(--fb-light-radius);
+  height: var(--fb-light-radius);
+  margin: calc(var(--fb-light-radius) / -2) 0 0 calc(var(--fb-light-radius) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 11%, transparent), transparent 68%);
+  filter: blur(40px);
+  transform: translate3d(var(--fb-lx, 0px), var(--fb-ly, 0px), 0);
+  opacity: var(--fb-glow, 0);
+  transition: opacity 0.7s ease;
+}
+
+.fx-fluid__texture {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 180px 180px;
+  opacity: var(--fb-grain-alpha, 0.035);
+  transform: translate3d(var(--fb-x2, 0px), var(--fb-y2, 0px), 0);
+}
+
+.fx-fluid__kolam {
+  background:
+    repeating-radial-gradient(circle at 50% 118%, transparent 0 44px, color-mix(in srgb, var(--brand-accent-olive) 9%, transparent) 44px 45px, transparent 45px 88px),
+    repeating-radial-gradient(circle at 8% -12%, transparent 0 58px, color-mix(in srgb, var(--brand-accent) 8%, transparent) 58px 59px, transparent 59px 116px);
+  mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 62%);
+  opacity: var(--fb-kolam-alpha, 0.042);
+  transform: translate3d(var(--fb-x3, 0px), var(--fb-y3, 0px), 0);
+}
+
 ::-webkit-scrollbar { width: 0.7rem; }
 ::-webkit-scrollbar-track { background: var(--brand-surface-beige); }
 ::-webkit-scrollbar-thumb {
@@ -4094,6 +4215,16 @@ select:focus-visible {
   }
   .fx-progress {
     transform: none !important;
+  }
+  .fx-fluid__ambient,
+  .fx-fluid__texture,
+  .fx-fluid__light,
+  .fx-fluid__kolam {
+    transform: none !important;
+    will-change: auto;
+  }
+  .fx-fluid__light {
+    opacity: 0 !important;
   }
 }
 

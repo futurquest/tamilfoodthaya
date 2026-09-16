@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../hooks/useApi';
 import { localizeFallbackCategories } from '../components/MenuSection';
 import { SEO } from '../components/SEO';
+import FluidBackground from '../components/FluidBackground';
 
 interface MenuItem {
   _id: string;
@@ -72,6 +73,7 @@ export const MenuPage = () => {
       <SEO title={t('menuPage.seoTitle')} description={t('menuPage.seoDescription')} />
       <section className="page-hero">
         <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">
           <h1>{t('menuPage.heroTitle')}</h1>
           <p>{t('menuPage.heroDesc')}</p>
@@ -79,6 +81,7 @@ export const MenuPage = () => {
       </section>
 
       <section className="section menu-browser">
+        <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
         <div className="container">
           <div className="menu-toolbar">
             <label className="menu-search">
