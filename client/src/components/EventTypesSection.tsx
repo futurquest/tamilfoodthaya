@@ -18,6 +18,7 @@ export default function EventTypesSection() {
     <section className="section story-section">
       <div className="container story-grid">
         <ScrollReveal variant="fadeUp" className="story-copy">
+          <p className="eyebrow">{t('story.eyebrow', 'Kitchen & Fire — What we do')}</p>
           <h2 className="section-title">{t('story.title')}</h2>
           <p className="lead">{t('story.lead')}</p>
           <div className="journey-strip">

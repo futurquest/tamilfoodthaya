@@ -22,6 +22,10 @@ export default function HeroSection() {
       <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
       <div className="container home-hero__grid">
           <div className="home-hero__copy" data-para="7">
+            <p className="eyebrow home-hero__eyebrow">
+              <span className="home-hero__eyebrow-dot" aria-hidden="true" />
+              {t('home2.eyebrow', 'Kitchen & Fire — Traditional Tamil catering')}
+            </p>
             <h1 className="display">{t('home2.title')}</h1>
             <p className="lead">{t('home2.lead')}</p>
             <div className="home-hero__actions">

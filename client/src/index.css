@@ -871,9 +871,26 @@ select:focus-visible {
   gap: clamp(2rem, 5vw, 4rem);
 }
 
+.home-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+  color: color-mix(in srgb, var(--brand-text) 62%, transparent);
+}
+
+.home-hero__eyebrow-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--brand-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 18%, transparent);
+}
+
 .home-hero .display {
   max-width: 850px;
   color: var(--ink);
+  letter-spacing: -0.025em;
 }
 
 .home-hero .lead {
@@ -899,11 +916,13 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--brand-text) 14%, transparent);
-  border-radius: 0.75rem;
+  border-radius: 9999px;
   background: color-mix(in srgb, var(--brand-surface) 62%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-ring);
   color: var(--muted);
-  padding: 0.55rem 0.7rem;
+  padding: 0.55rem 0.9rem;
   font-size: 0.86rem;
   font-weight: 600;
 }
@@ -911,19 +930,26 @@ select:focus-visible {
 .hero-menu-board {
   display: grid;
   gap: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--brand-text) 10%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 74%, transparent);
   padding: 1rem;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .hero-menu-board > div {
-  border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand-surface-soft) 82%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--brand-surface-soft) 78%, transparent);
   padding: 1rem;
   color: var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 7%, transparent);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.hero-menu-board > div:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 28%, transparent);
 }
 
 .hero-menu-board span,
@@ -953,7 +979,7 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-radius: 0.85rem;
+  border-radius: var(--radius-lg);
   background: var(--brand-primary);
   color: var(--brand-cream);
   padding: 1rem;
@@ -974,22 +1000,25 @@ select:focus-visible {
   gap: 1px;
   margin-top: 1.25rem;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--brand-text) 13%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-text) 12%, transparent);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .home-hero__proof div {
-  padding: 0.95rem 1.1rem;
-  background: color-mix(in srgb, var(--brand-surface-warm) 42%, transparent);
+  padding: 1.15rem 1.3rem;
+  background: color-mix(in srgb, var(--brand-surface) 78%, transparent);
 }
 
 .home-hero__proof strong {
   display: block;
   color: var(--spice);
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .home-hero__proof span {
@@ -1041,9 +1070,11 @@ select:focus-visible {
 .event-row,
 .dish-row {
   border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 76%, transparent);
-  box-shadow: 0 14px 44px color-mix(in srgb, var(--brand-shadow-warm) 6%, transparent);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--brand-surface) 72%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-ring), 0 14px 44px color-mix(in srgb, var(--brand-shadow-warm) 6%, transparent);
 }
 
 .journey-strip div {
@@ -1058,7 +1089,7 @@ select:focus-visible {
   width: 2rem;
   height: 2rem;
   place-items: center;
-  border-radius: 0.65rem;
+  border-radius: var(--radius-md);
   background: var(--leaf);
   color: var(--brand-cream);
   font-weight: 800;
@@ -1078,7 +1109,15 @@ select:focus-visible {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.1rem;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.26s ease;
+}
+
+.event-row:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-leaf) 30%, transparent),
+    var(--shadow-lift);
 }
 
 .event-row__icon {
@@ -1086,8 +1125,8 @@ select:focus-visible {
   width: 3.2rem;
   height: 3.2rem;
   place-items: center;
-  border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand-leaf) 10%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--brand-leaf) 12%, transparent);
   color: var(--leaf);
 }
 
@@ -1180,9 +1219,17 @@ select:focus-visible {
   height: 100%;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--brand-surface);
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand-shadow-warm) 11%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 84%, transparent);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.package-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-ring), var(--shadow-lift);
 }
 
 .package-card__image {
@@ -1215,10 +1262,12 @@ select:focus-visible {
   left: 1rem;
   bottom: 1rem;
   z-index: 1;
-  border-radius: 0.55rem;
-  background: color-mix(in srgb, var(--brand-surface) 94%, transparent);
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--brand-surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--spice);
-  padding: 0.42rem 0.65rem;
+  padding: 0.42rem 0.8rem;
   font-size: 0.74rem;
   font-weight: 900;
   box-shadow: 0 10px 30px color-mix(in srgb, var(--brand-night-deep) 18%, transparent);
@@ -1332,13 +1381,18 @@ select:focus-visible {
 
 .menu-tabs button {
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: 9999px;
   background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
   color: var(--ink);
-  padding: 0.74rem 0.95rem;
+  padding: 0.66rem 1.1rem;
   font-weight: 800;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-tabs button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
 }
 
 .menu-tabs button:hover,
@@ -1469,10 +1523,11 @@ select:focus-visible {
 .dish-modal {
   width: min(32rem, 100%);
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
-  border-radius: 1rem;
-  background: var(--brand-surface);
-  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-black) 28%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 96%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-ring), 0 30px 90px color-mix(in srgb, var(--brand-black) 28%, transparent);
 }
 
 .dish-modal img {
@@ -1506,10 +1561,16 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--brand-surface) 68%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-ring), inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 9%, transparent);
   padding: 0.25rem 0.9rem;
+}
+
+.menu-search:focus-within {
+  box-shadow: var(--shadow-ring), inset 0 0 0 2px color-mix(in srgb, var(--brand-accent) 55%, transparent), var(--shadow-soft);
 }
 
 .menu-search input {
@@ -1525,10 +1586,12 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
-  padding: 0.9rem 1rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--brand-surface) 68%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-ring), inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 9%, transparent);
+  padding: 0.7rem 1.05rem;
   color: var(--muted);
   font-weight: 800;
 }
@@ -1543,9 +1606,15 @@ select:focus-visible {
 .menu-page-card {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-2xl);
   background: color-mix(in srgb, var(--brand-surface) 84%, transparent);
-  box-shadow: 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+}
+
+.menu-page-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-ring), var(--shadow-lift);
 }
 
 .menu-page-card img {
@@ -1590,10 +1659,10 @@ select:focus-visible {
 }
 
 .menu-page-card__meta strong {
-  border-radius: 0.45rem;
+  border-radius: 9999px;
   background: color-mix(in srgb, var(--brand-leaf) 10%, transparent);
   color: var(--leaf);
-  padding: 0.3rem 0.55rem;
+  padding: 0.3rem 0.62rem;
   font-size: 0.74rem;
 }
 
@@ -1634,13 +1703,14 @@ select:focus-visible {
 
 .catering-hero__panel {
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 1.1rem;
+  border-radius: var(--radius-2xl);
   background:
     linear-gradient(150deg, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 46%),
-    color-mix(in srgb, var(--brand-surface) 92%, transparent);
+    color-mix(in srgb, var(--brand-surface) 74%, transparent);
+  backdrop-filter: blur(20px) saturate(1.1);
+  -webkit-backdrop-filter: blur(20px) saturate(1.1);
   padding: clamp(1.15rem, 2.6vw, 1.6rem);
-  box-shadow: 0 30px 90px color-mix(in srgb, var(--brand-umber) 20%, transparent);
+  box-shadow: var(--shadow-ring), var(--shadow-lift);
 }
 
 .catering-hero__panel-kicker {
@@ -1690,7 +1760,7 @@ select:focus-visible {
   width: 2.1rem;
   height: 2.1rem;
   place-items: center;
-  border-radius: 0.6rem;
+  border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
   color: var(--brand-primary);
   font-family: var(--font-mono);
@@ -1727,10 +1797,21 @@ select:focus-visible {
 .addon-card {
   height: 100%;
   border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 80%, transparent);
-  padding: 1.2rem;
-  box-shadow: 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in srgb, var(--brand-surface) 74%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 1.3rem;
+  box-shadow: var(--shadow-ring), 0 16px 44px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+}
+
+.process-grid article:hover,
+.addon-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 34%, transparent),
+    var(--shadow-lift);
 }
 
 .process-grid article > span,
@@ -1739,7 +1820,7 @@ select:focus-visible {
   width: 3.1rem;
   height: 3.1rem;
   place-items: center;
-  border-radius: 0.85rem;
+  border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
   color: var(--spice);
   margin-bottom: 1rem;
@@ -1812,13 +1893,18 @@ select:focus-visible {
   align-items: start;
 }
 
+.contact-aside {
+  position: sticky;
+  top: 7rem;
+}
+
 .contact-aside .lead {
   margin-top: 1.2rem;
 }
 
 .contact-cards {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.85rem;
   margin-top: 1.6rem;
 }
 
@@ -1826,10 +1912,20 @@ select:focus-visible {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.2rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--brand-surface) 80%, transparent);
-  padding: 1rem;
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-ring), inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 8%, transparent);
+  padding: 1.1rem;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+}
+
+.contact-cards div:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 32%, transparent),
+    var(--shadow-soft);
 }
 
 .contact-cards svg {
@@ -1955,11 +2051,13 @@ select:focus-visible {
 .checkout-assurance {
   display: flex;
   gap: 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--brand-leaf) 14%, transparent);
-  border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--brand-leaf) 8%, transparent);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--brand-leaf) 9%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-leaf) 22%, transparent);
   margin-top: 1rem;
-  padding: 1rem;
+  padding: 1.1rem;
   color: var(--leaf);
 }
 
@@ -1987,10 +2085,12 @@ select:focus-visible {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand-surface) 75%, transparent);
-  padding: 0.9rem;
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-text) 8%, transparent);
+  padding: 0.95rem;
 }
 
 .checkout-items span {
@@ -2044,8 +2144,11 @@ select:focus-visible {
   width: min(920px, 100%);
   grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1fr);
   overflow: hidden;
-  background: color-mix(in srgb, var(--brand-surface) 92%, transparent);
-  backdrop-filter: blur(16px);
+  border-radius: var(--radius-3xl);
+  background: color-mix(in srgb, var(--brand-surface) 88%, transparent);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  box-shadow: var(--shadow-ring), var(--shadow-lift);
 }
 
 .auth-card--wide {
@@ -2305,9 +2408,16 @@ select:focus-visible {
   border-color: var(--brass) !important;
 }
 
-.catering-checkout .rounded-3xl,
+.catering-checkout .rounded-3xl {
+  border-radius: var(--radius-3xl) !important;
+}
+
 .catering-checkout .rounded-2xl {
-  border-radius: 1rem !important;
+  border-radius: var(--radius-2xl) !important;
+}
+
+.catering-checkout .rounded-xl {
+  border-radius: var(--radius-xl) !important;
 }
 
 .catering-checkout h1,
@@ -2806,7 +2916,7 @@ select:focus-visible {
 }
 
 .admin-panel-font .shadow-2xl {
-  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-text) 20%, transparent) !important;
+  box-shadow: var(--shadow-ring), 0 34px 90px color-mix(in srgb, var(--brand-text) 20%, transparent) !important;
 }
 
 .admin-panel-font input,
@@ -2836,7 +2946,7 @@ select:focus-visible {
 .admin-card,
 .admin-panel-font .rounded-\[28px\],
 .admin-panel-font .rounded-\[30px\] {
-  border-radius: 1rem !important;
+  border-radius: var(--radius-2xl) !important;
 }
 
 .admin-panel-font h1 {
@@ -2852,9 +2962,12 @@ select:focus-visible {
 
 .admin-panel-font .rounded-\[24px\],
 .admin-panel-font .rounded-\[26px\],
-.admin-panel-font .rounded-3xl,
+.admin-panel-font .rounded-3xl {
+  border-radius: var(--radius-3xl) !important;
+}
+
 .admin-panel-font .rounded-2xl {
-  border-radius: 1rem !important;
+  border-radius: var(--radius-2xl) !important;
 }
 
 .admin-panel-font .bg-stone-50,
@@ -4257,7 +4370,11 @@ select:focus-visible {
 }
 
 .user-dashboard-font .rounded-3xl {
-  border-radius: 1.1rem !important;
+  border-radius: var(--radius-3xl) !important;
+}
+
+.user-dashboard-font .rounded-2xl {
+  border-radius: var(--radius-2xl) !important;
 }
 
 .user-dashboard-font .focus\:border-amber-500:focus {
@@ -4282,5 +4399,5 @@ select:focus-visible {
 }
 
 .user-dashboard-font .shadow-2xl {
-  box-shadow: 0 34px 90px color-mix(in srgb, var(--brand-overlay) 26%, transparent) !important;
+  box-shadow: var(--shadow-ring), 0 34px 90px color-mix(in srgb, var(--brand-overlay) 26%, transparent) !important;
 }

@@ -36,6 +36,7 @@ export const ContactPage = () => {
       <section id="inquiry" className="section contact-section">
         <div className="container contact-grid">
           <aside className="contact-aside">
+            <p className="eyebrow">{t('contactPage.asideEyebrow', 'Kitchen & Fire — Say hello')}</p>
             <h2 className="section-title">{t('contactPage.asideTitle')}</h2>
             <p className="lead">{t('contactPage.asideLead')}</p>
             <div className="contact-cards">
