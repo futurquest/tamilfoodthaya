@@ -102,9 +102,10 @@ export default function EventGallery() {
       const [numerator, denominator] = FRAME.split('/').map(Number);
       const ratio = numerator / denominator;
       const viewportH = window.innerHeight;
-      const narrow = viewportW < 720;
-      const reserved = narrow ? Math.round(viewportH * 0.42) : 420;
-      const budget = Math.max(180, viewportH - reserved);
+      // Cards grow with the screen; cap a single row at roughly half the
+      // viewport height so large screens get big, clearly visible photos
+      // without the block out-growing the device height.
+      const budget = Math.max(220, Math.round(viewportH * 0.5));
       // One card is exactly budget*tall at the native ratio; add the gaps back
       // so the whole row fits within the viewport budget.
       const cardW = budget / ratio;
