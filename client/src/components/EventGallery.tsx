@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import FluidBackground from './FluidBackground';
 
 const IMAGE_COUNT = 14;
-const DWELL = 5000;
+const DWELL = 1800;
 
 // Smart frame per source photo (used in single-card mode) so the full
 // composition is always shown.
@@ -23,7 +23,10 @@ const perPageFor = (vw: number) => (vw >= 1180 ? 3 : vw >= 720 ? 2 : 1);
 export default function EventGallery() {
   const { t } = useTranslation();
   const id = useId();
-  const [active, setActive] = useState(0);
+  // Slide position in card units. Runs 0..IMAGE_COUNT; slot IMAGE_COUNT is a
+  // seamless duplicate of slot 0 used to hide the loop-back.
+  const [pos, setPos] = useState(0);
+  const [instant, setInstant] = useState(false);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
@@ -33,17 +36,17 @@ export default function EventGallery() {
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [stageWidth, setStageWidth] = useState(0);
 
-  const maxIndex = IMAGE_COUNT - perPage;
+  const active = pos % IMAGE_COUNT;
   const imageNumber = String(active + 1).padStart(2, '0');
   const caption = t(`eventGallery.captions.${active}`);
   const frameRatio = perPage === 1 ? FRAMES[active] : '3/2';
-  const move = (direction: number) =>
-    setActive(index => {
-      const next = index + direction;
-      if (next > maxIndex) return 0;
-      if (next < 0) return maxIndex;
-      return next;
-    });
+  const slots = IMAGE_COUNT + perPage;
+
+  const move = (direction: number) => setPos(current => {
+    if (direction > 0) return current >= IMAGE_COUNT ? 0 : current + 1;
+    if (current <= 0) return IMAGE_COUNT - 1;
+    return current - 1;
+  });
 
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -62,17 +65,29 @@ export default function EventGallery() {
   useEffect(() => {
     if (paused || reducedMotion) return;
     const timer = window.setInterval(() => {
-      setActive(index => (index + 1 > maxIndex ? 0 : index + 1));
+      setPos(current => (current >= IMAGE_COUNT ? 0 : current + 1));
     }, DWELL);
     return () => window.clearInterval(timer);
-  }, [paused, reducedMotion, maxIndex]);
+  }, [paused, reducedMotion, pos]);
+
+  // Seamless loop-back: once the glide reaches the duplicated end, snap to
+  // position 0 with no transition (identical visuals) and keep scrolling.
+  useEffect(() => {
+    if (pos !== IMAGE_COUNT) return;
+    const snap = requestAnimationFrame(() => {
+      setInstant(true);
+      setPos(0);
+      requestAnimationFrame(() => setInstant(false));
+    });
+    return () => cancelAnimationFrame(snap);
+  }, [pos]);
 
   useEffect(() => {
-    [active, active + 1, active + perPage].forEach(index => {
+    [(pos + 1) % IMAGE_COUNT, (pos + perPage) % IMAGE_COUNT].forEach(index => {
       const img = new Image();
       img.src = slideSrc(index);
     });
-  }, [active, perPage]);
+  }, [pos, perPage]);
 
   // Responsive items-per-slide + viewport fit: pick how many photos the row
   // shows, then size the stage width so the row never grows past the screen.
@@ -83,9 +98,8 @@ export default function EventGallery() {
       const viewportW = window.innerWidth;
       const nextPerPage = perPageFor(viewportW);
       setPerPage(prev => (prev === nextPerPage ? prev : nextPerPage));
-      setActive(index => Math.min(index, IMAGE_COUNT - nextPerPage));
 
-      const [numerator, denominator] = (nextPerPage === 1 ? FRAMES[active] : '3/2').split('/').map(Number);
+      const [numerator, denominator] = (nextPerPage === 1 ? FRAMES[pos % IMAGE_COUNT] : '3/2').split('/').map(Number);
       const ratio = numerator / denominator;
       const viewportH = window.innerHeight;
       const narrow = viewportW < 720;
@@ -102,7 +116,7 @@ export default function EventGallery() {
       ro?.disconnect();
       window.removeEventListener('resize', compute);
     };
-  }, [active]);
+  }, [pos, perPage]);
 
   const shellStyle = {
     '--frame': frameRatio,
@@ -145,7 +159,10 @@ export default function EventGallery() {
                   move(event.key === 'ArrowRight' ? 1 : -1);
                 } else if (event.key === 'Home' || event.key === 'End') {
                   event.preventDefault();
-                  setActive(event.key === 'Home' ? 0 : maxIndex);
+                  setInstant(true);
+                  setPos(event.key === 'Home' ? 0 : IMAGE_COUNT - 1);
+                } else if (event.key === 'Escape') {
+                  setPaused(false);
                 }
               }}
               onTouchStart={event => {
@@ -167,28 +184,32 @@ export default function EventGallery() {
             >
               <div
                 className="event-gallery__track"
-                style={{ transform: `translate3d(-${(100 * active) / perPage}%, 0, 0)` }}
+                style={{
+                  transform: `translate3d(-${(100 * pos) / perPage}%, 0, 0)`,
+                  transition: instant ? 'none' : undefined,
+                }}
               >
-                {Array.from({ length: IMAGE_COUNT }, (_, index) => {
-                  const position = t('eventGallery.position', { current: index + 1, total: IMAGE_COUNT });
-                  const cardImage = t(`eventGallery.captions.${index}`);
+                {Array.from({ length: slots }, (_, index) => {
+                  const imageIndex = index % IMAGE_COUNT;
+                  const position = t('eventGallery.position', { current: imageIndex + 1, total: IMAGE_COUNT });
+                  const cardImage = t(`eventGallery.captions.${imageIndex}`);
                   return (
                     <figure
                       key={index}
-                      className={`event-gallery__card${index === active ? ' is-active' : ''}`}
+                      className={`event-gallery__card${index === pos ? ' is-active' : ''}`}
                       role="group"
                       aria-roledescription={t('eventGallery.slide')}
                       aria-label={position}
                     >
                       <img
-                        src={slideSrc(index)}
+                        src={slideSrc(imageIndex)}
                         alt={cardImage}
-                        loading={index === 0 ? 'eager' : 'lazy'}
+                        loading={imageIndex === 0 ? 'eager' : 'lazy'}
                         decoding="async"
                         draggable={false}
                       />
                       <figcaption className="sr-only">{cardImage}</figcaption>
-                      {index === active && (
+                      {index === pos && (
                         <span className="event-gallery__chip" aria-hidden="true">
                           <span className="event-gallery__chip-dot" />
                           {t('eventGallery.badge', 'Gathering')} · {imageNumber} / {IMAGE_COUNT}
@@ -206,14 +227,14 @@ export default function EventGallery() {
             </div>
 
             <div className="event-gallery__segments" aria-label={t('eventGallery.selector', 'Browse slides')}>
-              {Array.from({ length: maxIndex + 1 }, (_, index) => (
+              {Array.from({ length: IMAGE_COUNT }, (_, index) => (
                 <button
                   key={index}
                   type="button"
                   aria-label={t('eventGallery.position', { current: index + 1, total: IMAGE_COUNT })}
                   aria-current={index === active ? 'true' : undefined}
                   className={`event-gallery__segment${index === active ? ' is-active' : ''}${index < active ? ' is-done' : ''}`}
-                  onClick={() => setActive(index)}
+                  onClick={() => setPos(index)}
                 >
                   <span />
                 </button>

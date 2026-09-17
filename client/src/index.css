@@ -4617,7 +4617,7 @@ select:focus-visible {
 .event-gallery__heading .lead { margin-top: 1rem; }
 .event-gallery__heading > a { flex-shrink: 0; }
 
-.event-gallery__carousel { min-width: 0; --dwell: 5000ms; --gutter: 1.25rem; }
+.event-gallery__carousel { min-width: 0; --dwell: 1800ms; --gutter: 1.25rem; }
 .event-gallery__shell {
   position: relative;
   isolation: isolate;
