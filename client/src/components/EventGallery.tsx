@@ -39,6 +39,17 @@ export default function EventGallery() {
   const caption = t(`eventGallery.captions.${active}`);
   const slots = IMAGE_COUNT + perPage;
 
+  // Stage ratio that keeps every card at the photo's native ratio: height is
+  // derived from the stage's aspect-ratio, so the row can never collapse.
+  const stageRatio = (() => {
+    const [numerator, denominator] = FRAME.split('/').map(Number);
+    const ratio = numerator / denominator;
+    if (!stageWidth) return ratio;
+    const cardW = (stageWidth - gap * (perPage - 1)) / perPage;
+    const cardH = cardW / ratio;
+    return stageWidth / cardH;
+  })();
+
   const move = (direction: number) => setPos(current => {
     if (direction > 0) return current >= IMAGE_COUNT ? 0 : current + 1;
     if (current <= 0) return IMAGE_COUNT - 1;
@@ -125,7 +136,7 @@ export default function EventGallery() {
   }, [pos, perPage]);
 
   const shellStyle = {
-    '--frame': FRAME,
+    '--frame': String(stageRatio),
     width: stageWidth > 0 ? `${stageWidth}px` : undefined,
   } as CSSProperties;
 

@@ -4638,13 +4638,14 @@ select:focus-visible {
 .event-gallery__stage {
   position: relative;
   width: 100%;
+  aspect-ratio: var(--frame, 1672/941);
   overflow: hidden;
   touch-action: pan-y pinch-zoom;
 }
 .event-gallery__stage:focus-visible { outline: 3px solid var(--brand-accent); outline-offset: 8px; }
 .event-gallery__track {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   transition: transform 900ms cubic-bezier(.19, 1, .22, 1);
   will-change: transform;
 }
@@ -4653,7 +4654,6 @@ select:focus-visible {
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
-  aspect-ratio: var(--frame, 1672/941);
   border-radius: var(--radius-2xl);
   transform: scale(.955);
   filter: saturate(.78) brightness(.985);
