@@ -31,6 +31,8 @@ export default function EventGallery() {
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [stageWidth, setStageWidth] = useState(0);
+  const [gap, setGap] = useState(20);
+  const [step, setStep] = useState(0);
 
   const active = pos % IMAGE_COUNT;
   const imageNumber = String(active + 1).padStart(2, '0');
@@ -94,14 +96,22 @@ export default function EventGallery() {
       const nextPerPage = perPageFor(viewportW);
       setPerPage(prev => (prev === nextPerPage ? prev : nextPerPage));
 
+      const gapPx = parseFloat(window.getComputedStyle(shell).getPropertyValue('--gutter')) || 20;
+      setGap(gapPx);
+
       const [numerator, denominator] = FRAME.split('/').map(Number);
       const ratio = numerator / denominator;
       const viewportH = window.innerHeight;
       const narrow = viewportW < 720;
       const reserved = narrow ? Math.round(viewportH * 0.42) : 420;
       const budget = Math.max(180, viewportH - reserved);
-      const fitted = Math.min(shell.clientWidth, budget * ratio * nextPerPage);
+      // One card is exactly budget*tall at the native ratio; add the gaps back
+      // so the whole row fits within the viewport budget.
+      const cardW = budget / ratio;
+      const totalW = cardW * nextPerPage + gapPx * (nextPerPage - 1);
+      const fitted = Math.min(shell.clientWidth, totalW);
       setStageWidth(Math.round(fitted));
+      setStep((fitted + gapPx * (nextPerPage - 1)) / nextPerPage);
     };
     compute();
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(compute) : null;
@@ -115,7 +125,6 @@ export default function EventGallery() {
 
   const shellStyle = {
     '--frame': FRAME,
-    '--per-page': perPage,
     width: stageWidth > 0 ? `${stageWidth}px` : undefined,
   } as CSSProperties;
 
@@ -180,8 +189,9 @@ export default function EventGallery() {
               <div
                 className="event-gallery__track"
                 style={{
-                  transform: `translate3d(-${(100 * pos) / perPage}%, 0, 0)`,
+                  transform: `translate3d(${-pos * step}px, 0, 0)`,
                   transition: instant ? 'none' : undefined,
+                  gap: `${gap}px`,
                 }}
               >
                 {Array.from({ length: slots }, (_, index) => {
