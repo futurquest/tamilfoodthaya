@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,6 @@ export default function EventGallery() {
 
   const imageNumber = String(active + 1).padStart(2, '0');
   const caption = t(`eventGallery.captions.${active}`);
-  const frameStyle = { '--frame': FRAMES[active] } as CSSProperties;
   const move = (direction: number) =>
     setActive(index => (index + direction + IMAGE_COUNT) % IMAGE_COUNT);
 
@@ -61,6 +60,40 @@ export default function EventGallery() {
     });
   }, [active]);
 
+  // Fit the whole gallery (stage + segments + caption) inside the device
+  // height. Each slide's stage width is derived from its frame ratio and the
+  // viewport budget, so no photo ever grows taller than the screen.
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const [stageWidth, setStageWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+    const compute = () => {
+      const [numerator, denominator] = FRAMES[active].split('/').map(Number);
+      const ratio = numerator / denominator;
+      const viewportH = window.innerHeight;
+      const narrow = window.innerWidth < 720;
+      const reserved = narrow ? Math.round(viewportH * 0.42) : 420;
+      const budget = Math.max(180, viewportH - reserved);
+      const fitted = Math.min(shell.clientWidth, budget * ratio);
+      setStageWidth(Math.round(fitted));
+    };
+    compute();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(compute) : null;
+    ro?.observe(shell);
+    window.addEventListener('resize', compute);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', compute);
+    };
+  }, [active]);
+
+  const shellStyle = {
+    '--frame': FRAMES[active],
+    width: stageWidth > 0 ? `${stageWidth}px` : undefined,
+  } as CSSProperties;
+
   return (
     <section className="section event-gallery" aria-labelledby={`${id}-title`}>
       <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
@@ -84,7 +117,8 @@ export default function EventGallery() {
           onFocusCapture={() => setPaused(true)}
           onBlurCapture={() => setPaused(false)}
         >
-          <div className="event-gallery__stage" style={frameStyle}>
+          <div className="event-gallery__shell" ref={shellRef} style={shellStyle}>
+            <div className="event-gallery__stage">
             <div
               className="event-gallery__stage-inner"
               tabIndex={0}
@@ -157,6 +191,7 @@ export default function EventGallery() {
               <button type="button" aria-label={t('eventGallery.previous')} aria-controls={`${id}-slide`} onClick={() => move(-1)}><ArrowLeft size={20} aria-hidden="true" /></button>
               <button type="button" aria-label={t('eventGallery.next')} aria-controls={`${id}-slide`} onClick={() => move(1)}><ArrowRight size={20} aria-hidden="true" /></button>
             </div>
+          </div>
           </div>
         </div>
       </div>

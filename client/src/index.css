@@ -4618,8 +4618,14 @@ select:focus-visible {
 .event-gallery__heading > a { flex-shrink: 0; }
 
 .event-gallery__carousel { min-width: 0; --dwell: 5000ms; }
+.event-gallery__shell {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
 .event-gallery__stage {
   position: relative;
+  width: 100%;
   aspect-ratio: var(--frame, 3/2);
   overflow: hidden;
   border-radius: var(--radius-3xl);
