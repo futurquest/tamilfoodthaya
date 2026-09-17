@@ -6,13 +6,7 @@ import FluidBackground from './FluidBackground';
 
 const IMAGE_COUNT = 14;
 const DWELL = 1800;
-
-// Smart frame per source photo (used in single-card mode) so the full
-// composition is always shown.
-const FRAMES: string[] = [
-  '3/2', '3/4', '3/4', '3/2', '3/2', '3/2', '16/9',
-  '16/9', '16/9', '16/9', '3/4', '3/2', '16/9', '3/2',
-];
+const FRAME = '16/9';
 
 const slideSrc = (index: number) =>
   `/events/event-${String((index % IMAGE_COUNT) + 1).padStart(2, '0')}.png`;
@@ -39,7 +33,6 @@ export default function EventGallery() {
   const active = pos % IMAGE_COUNT;
   const imageNumber = String(active + 1).padStart(2, '0');
   const caption = t(`eventGallery.captions.${active}`);
-  const frameRatio = perPage === 1 ? FRAMES[active] : '3/2';
   const slots = IMAGE_COUNT + perPage;
 
   const move = (direction: number) => setPos(current => {
@@ -99,7 +92,7 @@ export default function EventGallery() {
       const nextPerPage = perPageFor(viewportW);
       setPerPage(prev => (prev === nextPerPage ? prev : nextPerPage));
 
-      const [numerator, denominator] = (nextPerPage === 1 ? FRAMES[pos % IMAGE_COUNT] : '3/2').split('/').map(Number);
+      const [numerator, denominator] = FRAME.split('/').map(Number);
       const ratio = numerator / denominator;
       const viewportH = window.innerHeight;
       const narrow = viewportW < 720;
@@ -119,7 +112,7 @@ export default function EventGallery() {
   }, [pos, perPage]);
 
   const shellStyle = {
-    '--frame': frameRatio,
+    '--frame': FRAME,
     '--per-page': perPage,
     width: stageWidth > 0 ? `${stageWidth}px` : undefined,
   } as CSSProperties;
