@@ -136,6 +136,7 @@ export default function EventGallery() {
           <div className="event-gallery__shell" ref={shellRef} style={shellStyle}>
             <div
               className="event-gallery__stage"
+              id={`${id}-stage`}
               tabIndex={0}
               aria-label={t('eventGallery.keyboardHint')}
               onKeyDown={event => {
@@ -174,7 +175,7 @@ export default function EventGallery() {
                   return (
                     <figure
                       key={index}
-                      className="event-gallery__card"
+                      className={`event-gallery__card${index === active ? ' is-active' : ''}`}
                       role="group"
                       aria-roledescription={t('eventGallery.slide')}
                       aria-label={position}
@@ -199,6 +200,11 @@ export default function EventGallery() {
               </div>
             </div>
 
+            <div className="event-gallery__controls">
+              <button type="button" aria-label={t('eventGallery.previous')} aria-controls={`${id}-stage`} onClick={() => move(-1)}><ArrowLeft size={20} aria-hidden="true" /></button>
+              <button type="button" aria-label={t('eventGallery.next')} aria-controls={`${id}-stage`} onClick={() => move(1)}><ArrowRight size={20} aria-hidden="true" /></button>
+            </div>
+
             <div className="event-gallery__segments" aria-label={t('eventGallery.selector', 'Browse slides')}>
               {Array.from({ length: maxIndex + 1 }, (_, index) => (
                 <button
@@ -216,12 +222,8 @@ export default function EventGallery() {
 
             <div className="event-gallery__footer">
               <div className="event-gallery__caption" aria-live="polite" aria-atomic="true">
-                <span className="event-gallery__count">{imageNumber} / {IMAGE_COUNT}</span>
+                <span className="event-gallery__count">{imageNumber}</span>
                 <p>{caption}</p>
-              </div>
-              <div className="event-gallery__controls">
-                <button type="button" aria-label={t('eventGallery.previous')} aria-controls={`${id}-stage`} onClick={() => move(-1)}><ArrowLeft size={20} aria-hidden="true" /></button>
-                <button type="button" aria-label={t('eventGallery.next')} aria-controls={`${id}-stage`} onClick={() => move(1)}><ArrowRight size={20} aria-hidden="true" /></button>
               </div>
             </div>
           </div>
