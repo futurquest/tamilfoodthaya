@@ -71,16 +71,25 @@ export default function EventGallery() {
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
+  // Autoplay: one glide per dwell. At the duplicate slot (pos === IMAGE_COUNT,
+  // visually a twin of slot 0) the next advance resets to 0 with no transition
+  // - the identical visuals make the wrap invisible, so the row just keeps
+  // gliding forward. Keyboard/touch/jump moves that cross the seam snap the
+  // same way.
   useEffect(() => {
     if (paused || reducedMotion) return;
-    const timer = window.setInterval(() => {
-      setPos(current => (current >= IMAGE_COUNT ? 0 : current + 1));
+    const timer = window.setTimeout(() => {
+      // Advance until the duplicate seam slot; the rAF snap below is the only
+      // thing allowed to reset to 0, so the row never reverse-glides.
+      setPos(current => (current >= IMAGE_COUNT ? IMAGE_COUNT : current + 1));
     }, DWELL);
-    return () => window.clearInterval(timer);
-  }, [paused, reducedMotion, pos]);
+    return () => window.clearTimeout(timer);
+  }, [pos, paused, reducedMotion]);
 
-  // Seamless loop-back: once the glide reaches the duplicated end, snap to
-  // position 0 with no transition (identical visuals) and keep scrolling.
+  // The one true reset: once autoplay parks on the duplicate seam slot
+  // (visually a twin of slot 0), snap to 0 with no transition. Because slot
+  // IMAGE_COUNT looks identical to slot 0, wrapping here carries no visual
+  // trace - the row continues gliding onward, never gliding back.
   useEffect(() => {
     if (pos !== IMAGE_COUNT) return;
     const snap = requestAnimationFrame(() => {
