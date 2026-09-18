@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getCateringPackages } from '../hooks/useApi';
 import HeroSection from '../components/HeroSection';
+import OurStorySection from '../components/OurStorySection';
 import EventTypesSection from '../components/EventTypesSection';
 import MenuSection from '../components/MenuSection';
 import FeaturedPackagesSection from '../components/FeaturedPackagesSection';
+import EventGallery from '../components/EventGallery';
 
 interface Package {
     _id: string;
@@ -41,7 +43,9 @@ export const HomePage = () => {
     return (
         <div className="animate-fadeIn">
             <HeroSection />
+            <OurStorySection />
             <EventTypesSection />
+            <EventGallery />
             <FeaturedPackagesSection packages={packages} loading={loadingPackages} />
             <MenuSection />
         </div>

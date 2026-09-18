@@ -1148,6 +1148,90 @@ select:focus-visible {
   line-height: 1.65;
 }
 
+.about-section {
+  background:
+    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 30rem),
+    var(--brand-surface);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.9fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.about-subhead {
+  margin-top: 0.7rem;
+  color: var(--brand-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.about-body {
+  margin-top: 1.4rem;
+  max-width: 58ch;
+}
+
+.about-body p {
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.about-body p + p {
+  margin-top: 0.9rem;
+}
+
+.about-body strong,
+.about-tagline strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.about-tagline {
+  margin-top: 1.7rem;
+  padding: 1.05rem 1.25rem;
+  border-left: 3px solid var(--brand-primary);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
+  color: var(--ink);
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+.about-image {
+  display: flex;
+  justify-content: center;
+}
+
+.about-image figure {
+  margin: 0;
+  width: min(100%, 26rem);
+  border-radius: var(--radius-2xl);
+  background: var(--brand-surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-ring), var(--shadow-lift);
+  overflow: hidden;
+}
+
+.about-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.about-image__caption {
+  padding: 0.8rem 1.1rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
 .package-section {
   background:
     radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 28rem),
@@ -4263,6 +4347,7 @@ select:focus-visible {
   .catering-hero__grid,
   .section-heading.split,
   .story-grid,
+  .about-grid,
   .menu-feature-grid,
   .contact-grid,
   .checkout-grid {
