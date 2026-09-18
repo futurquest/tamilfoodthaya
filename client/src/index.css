@@ -4651,8 +4651,7 @@ select:focus-visible {
 }
 .event-gallery__card {
   position: relative;
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
   margin: 0;
   border-radius: var(--radius-2xl);
   transform: scale(.955);

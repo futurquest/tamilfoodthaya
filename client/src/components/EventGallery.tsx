@@ -32,6 +32,7 @@ export default function EventGallery() {
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [stageWidth, setStageWidth] = useState(0);
   const [gap, setGap] = useState(20);
+  const [cardW, setCardW] = useState(0);
   const [step, setStep] = useState(0);
 
   const active = pos % IMAGE_COUNT;
@@ -122,7 +123,9 @@ export default function EventGallery() {
         ? shell.clientWidth
         : Math.min(shell.clientWidth, targetCardW * nextPerPage + gapPx * (nextPerPage - 1));
       setStageWidth(Math.round(fitted));
-      setStep((fitted + gapPx * (nextPerPage - 1)) / nextPerPage);
+      const width = (fitted - gapPx * (nextPerPage - 1)) / nextPerPage;
+      setCardW(width);
+      setStep(width + gapPx);
     };
     compute();
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(compute) : null;
@@ -213,6 +216,7 @@ export default function EventGallery() {
                     <figure
                       key={index}
                       className={`event-gallery__card${index === pos ? ' is-active' : ''}`}
+                      style={{ width: cardW > 0 ? `${cardW}px` : 0 }}
                       role="group"
                       aria-roledescription={t('eventGallery.slide')}
                       aria-label={position}
