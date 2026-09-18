@@ -114,10 +114,10 @@ export default function EventGallery() {
       const [numerator, denominator] = FRAME.split('/').map(Number);
       const ratio = numerator / denominator;
       const viewportH = window.innerHeight;
-      // Each photo renders at a quarter of the device height (height follows
-      // the native ratio), scaling with the actual screen. Single-photo rows
-      // simply fill the container width.
-      const targetCardH = Math.max(180, Math.round(viewportH * 0.25));
+      // Each photo renders at 35% of the device height (25% + 10%), with the
+      // width following the native 1672:941 ratio. Single-photo rows simply
+      // fill the container width.
+      const targetCardH = Math.max(200, Math.round(viewportH * 0.35));
       const targetCardW = targetCardH * ratio;
       const fitted = nextPerPage === 1
         ? shell.clientWidth
