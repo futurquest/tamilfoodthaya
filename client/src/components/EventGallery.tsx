@@ -34,6 +34,7 @@ export default function EventGallery() {
   const [gap, setGap] = useState(20);
   const [cardW, setCardW] = useState(0);
   const [step, setStep] = useState(0);
+  const posRef = useRef(0);
 
   const active = pos % IMAGE_COUNT;
   const imageNumber = String(active + 1).padStart(2, '0');
@@ -76,28 +77,33 @@ export default function EventGallery() {
   // - the identical visuals make the wrap invisible, so the row just keeps
   // gliding forward. Keyboard/touch/jump moves that cross the seam snap the
   // same way.
+  // Autoplay, one dwell per glide. Slot 14 is a seamless twin of slot 0.
+  // At the seam the timer waits a full dwell so the 13→14 glide lands on that
+  // twin, then resets to 0 with NO transition mid-glide already finished - the
+  // identical visual is the only reason the reset leaves no trace storyboard.
+  // One timing source, so there's never a competing rAF snap mid-glide.
+  // Autoplay: one constant-cadence interval, keyed ONLY on pause state - never
+  // on pos, so the timing never re-arms or stretches. Each tick advances one
+  // just-glide. Slot IMAGE_COUNT is a seamless twin of slot 0 (identical twin
+  // photo), so when the row parks there the next glide resets to 0 with NO
+  // transition: the identical visuals carry no wrap trace, and because the
+  // interval never re-keys on pos, cadence stays perfectly constant across the
+  // seam - the row just keeps gliding forward forever, never pausing, never
+  // gliding back. Keyboard/touch moves that cross the seam snap the same way.
   useEffect(() => {
     if (paused || reducedMotion) return;
-    const timer = window.setTimeout(() => {
-      // Advance until the duplicate seam slot; the rAF snap below is the only
-      // thing allowed to reset to 0, so the row never reverse-glides.
-      setPos(current => (current >= IMAGE_COUNT ? IMAGE_COUNT : current + 1));
+    const timer = window.setInterval(() => {
+      setInstant(posRef.current >= IMAGE_COUNT);
+      setPos(current => (current >= IMAGE_COUNT ? 0 : current + 1));
     }, DWELL);
-    return () => window.clearTimeout(timer);
-  }, [pos, paused, reducedMotion]);
+    return () => window.clearInterval(timer);
+  }, [paused, reducedMotion]);
 
-  // The one true reset: once autoplay parks on the duplicate seam slot
-  // (visually a twin of slot 0), snap to 0 with no transition. Because slot
-  // IMAGE_COUNT looks identical to slot 0, wrapping here carries no visual
-  // trace - the row continues gliding onward, never gliding back.
+  // Keep posRef in lockstep with real pos so the interval above reads the seam
+  // state synchronously (setInterval fires before React re-renders the new pos,
+  // so we cannot rely on `pos` in the interval closure).
   useEffect(() => {
-    if (pos !== IMAGE_COUNT) return;
-    const snap = requestAnimationFrame(() => {
-      setInstant(true);
-      setPos(0);
-      requestAnimationFrame(() => setInstant(false));
-    });
-    return () => cancelAnimationFrame(snap);
+    posRef.current = pos;
   }, [pos]);
 
   useEffect(() => {
