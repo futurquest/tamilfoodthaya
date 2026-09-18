@@ -160,8 +160,6 @@ export default function EventGallery() {
           role="region"
           aria-roledescription={t('eventGallery.carousel')}
           aria-label={t('eventGallery.title')}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
           onFocusCapture={() => setPaused(true)}
           onBlurCapture={() => setPaused(false)}
         >
