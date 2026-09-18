@@ -4618,7 +4618,7 @@ select:focus-visible {
 .event-gallery__heading .lead { margin-top: 1rem; }
 .event-gallery__heading > a { flex-shrink: 0; }
 
-.event-gallery__carousel { min-width: 0; --dwell: 1800ms; --gutter: 3rem; }
+.event-gallery__carousel { min-width: 0; --dwell: 1800ms; --gutter: 3rem; --mat: clamp(.6rem, 1.4vw, 1rem); }
 .event-gallery__shell {
   position: relative;
   isolation: isolate;
@@ -4653,6 +4653,7 @@ select:focus-visible {
   position: relative;
   flex: 0 0 auto;
   margin: 0;
+  padding: var(--mat);
   border-radius: var(--radius-2xl);
   filter: saturate(.78) brightness(.985);
   transition: filter 900ms cubic-bezier(.19, 1, .22, 1);
@@ -4666,18 +4667,18 @@ select:focus-visible {
 .event-gallery__card::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: var(--mat);
   z-index: 3;
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-2xl) - var(--mat));
   box-shadow: 0 24px 50px -30px color-mix(in srgb, var(--brand-night) 60%, transparent);
   pointer-events: none;
 }
 .event-gallery__card::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: var(--mat);
   z-index: 3;
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-2xl) - var(--mat));
   pointer-events: none;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, #fff 14%, transparent),
@@ -4688,12 +4689,12 @@ select:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-2xl) - var(--mat));
 }
 .event-gallery__chip {
   position: absolute;
-  top: 1.1rem;
-  left: 1.1rem;
+  top: var(--mat);
+  left: var(--mat);
   z-index: 4;
   display: inline-flex;
   align-items: center;
@@ -4796,10 +4797,10 @@ select:focus-visible {
   .event-gallery__controls { left: .1rem; right: .1rem; }
 }
 @media (max-width: 640px) {
-  .event-gallery__chip { top: .75rem; left: .75rem; padding: .35rem .7rem; font-size: .74rem; }
+  .event-gallery__chip { padding: .35rem .7rem; font-size: .74rem; }
   .event-gallery__controls button { width: 44px; height: 44px; }
   .event-gallery__caption { flex-direction: column; align-items: flex-start; gap: .45rem; }
-  .event-gallery__carousel { --gutter: 1.25rem; }
+  .event-gallery__carousel { --gutter: 1.25rem; --mat: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .event-gallery__track { transition: none; }

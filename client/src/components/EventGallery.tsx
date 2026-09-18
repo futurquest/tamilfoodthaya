@@ -4,11 +4,11 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import FluidBackground from './FluidBackground';
 
+const FRAME = '1672/941';
 const IMAGE_COUNT = 14;
 const DWELL = 1800;
 // Native size of every photo in /events (1672x941) - cards use this exact
 // ratio so object-fit cover never crops or distorts the composition.
-const FRAME = '1672/941';
 
 const slideSrc = (index: number) =>
   `/events/event-${String((index % IMAGE_COUNT) + 1).padStart(2, '0')}.png`;
