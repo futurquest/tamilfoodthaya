@@ -110,18 +110,11 @@ export default function EventGallery() {
       const gapPx = parseFloat(window.getComputedStyle(shell).getPropertyValue('--gutter')) || 20;
       setGap(gapPx);
 
-      const [numerator, denominator] = FRAME.split('/').map(Number);
-      const ratio = numerator / denominator;
-      const viewportH = window.innerHeight;
-      // Cards grow with the screen; cap a single row at roughly half the
-      // viewport height so large screens get big, clearly visible photos
-      // without the block out-growing the device height.
-      const budget = Math.max(220, Math.round(viewportH * 0.5));
-      // One card is exactly budget*tall at the native ratio; add the gaps back
-      // so the whole row fits within the viewport budget.
-      const cardW = budget / ratio;
-      const totalW = cardW * nextPerPage + gapPx * (nextPerPage - 1);
-      const fitted = Math.min(shell.clientWidth, totalW);
+      // Use the full (1600px) container: the responsive per-page grid already
+      // keeps rows proportional, so photos render as large and clear as the
+      // screen allows - 3-up ~510px wide on desktop, 2-up on tablet, 1-up
+      // full-width on phones.
+      const fitted = shell.clientWidth;
       setStageWidth(Math.round(fitted));
       setStep((fitted + gapPx * (nextPerPage - 1)) / nextPerPage);
     };
