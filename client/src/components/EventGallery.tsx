@@ -110,11 +110,17 @@ export default function EventGallery() {
       const gapPx = parseFloat(window.getComputedStyle(shell).getPropertyValue('--gutter')) || 20;
       setGap(gapPx);
 
-      // Use the full (1600px) container: the responsive per-page grid already
-      // keeps rows proportional, so photos render as large and clear as the
-      // screen allows - 3-up ~510px wide on desktop, 2-up on tablet, 1-up
-      // full-width on phones.
-      const fitted = shell.clientWidth;
+      const [numerator, denominator] = FRAME.split('/').map(Number);
+      const ratio = numerator / denominator;
+      const viewportH = window.innerHeight;
+      // Each photo renders at a quarter of the device height (height follows
+      // the native ratio), scaling with the actual screen. Single-photo rows
+      // simply fill the container width.
+      const targetCardH = Math.max(180, Math.round(viewportH * 0.25));
+      const targetCardW = targetCardH * ratio;
+      const fitted = nextPerPage === 1
+        ? shell.clientWidth
+        : Math.min(shell.clientWidth, targetCardW * nextPerPage + gapPx * (nextPerPage - 1));
       setStageWidth(Math.round(fitted));
       setStep((fitted + gapPx * (nextPerPage - 1)) / nextPerPage);
     };

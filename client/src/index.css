@@ -4611,7 +4611,7 @@ select:focus-visible {
 /* Event photography: responsive multi-photo carousel with autoplay, depth-of-
    field focus on the active card, and an editorial caption rail. */
 .event-gallery { background: var(--brand-surface-warm); }
-.event-gallery .container { width: min(1600px, calc(100vw - 2.5rem)); }
+.event-gallery .container { width: min(1920px, calc(100vw - 2.5rem)); }
 .event-gallery__heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
 .event-gallery__heading > div { max-width: 46rem; }
 .event-gallery__heading .section-title { max-width: 23ch; }
