@@ -204,7 +204,7 @@ export default function EventGallery() {
                 className="event-gallery__track"
                 style={{
                   transform: `translate3d(${-pos * step}px, 0, 0)`,
-                  transition: instant ? 'none' : `transform ${DWELL - 40}ms cubic-bezier(.25, 0, .2, 1)`,
+                  transition: instant ? 'none' : `transform ${DWELL}ms linear`,
                   gap: `${gap}px`,
                 }}
               >
