@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -30,16 +29,6 @@ import { NotificationModule } from './notification/notification.module';
       ttl: 60000, // 60 seconds
       limit: 60, // 60 requests per minute
     }]),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    // Postgres (TypeORM) root — live during the transition; Mongoose above
-    // remains only until the last module is converted. `autoLoadEntities`
-    // registers each module's entities via `TypeOrmModule.forFeature(...)`.
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
