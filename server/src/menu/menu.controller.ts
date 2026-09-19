@@ -8,6 +8,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../auth/schemas/user.schema';
 import { CreateMenuItemDto, UpdateMenuItemDto } from './dto/create-menu-item.dto';
+import { MenuItemEntity } from './entities/menu-item.entity';
 
 const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -97,7 +98,7 @@ export class MenuController {
             const host = req.get('host');
             itemData.image = `${protocol}://${host}/uploads/menu/${file.filename}`;
         }
-        return this.menuService.createMenuItem(itemData);
+        return this.menuService.createMenuItem(itemData as Partial<MenuItemEntity>);
     }
 
     @Patch('items/:id')
@@ -120,7 +121,7 @@ export class MenuController {
             const host = req.get('host');
             itemData.image = `${protocol}://${host}/uploads/menu/${file.filename}`;
         }
-        return this.menuService.updateMenuItem(id, itemData);
+        return this.menuService.updateMenuItem(id, itemData as Partial<MenuItemEntity>);
     }
 
     @Delete('items/:id')

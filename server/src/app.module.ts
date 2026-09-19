@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WinstonModule } from 'nest-winston';
@@ -33,6 +34,24 @@ import { NotificationModule } from './notification/notification.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    // Postgres (TypeORM) root — live during the transition; Mongoose above
+    // remains only until the last module is converted. `autoLoadEntities`
+    // registers each module's entities via `TypeOrmModule.forFeature(...)`.
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('POSTGRES_HOST'),
+        port: configService.get<number>('POSTGRES_PORT'),
+        username: configService.get<string>('POSTGRES_USER'),
+        password: configService.get<string>('POSTGRES_PASSWORD'),
+        database: configService.get<string>('POSTGRES_DB'),
+        autoLoadEntities: true,
+        synchronize: true, // dev/sandbox only; replaced by migrations before prod
+        ssl: false,
       }),
       inject: [ConfigService],
     }),

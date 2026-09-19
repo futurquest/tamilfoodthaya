@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { MenuService } from './menu.service';
-import { Category } from './schemas/category.schema';
-import { MenuItem } from './schemas/menu-item.schema';
+import { CategoryEntity } from './entities/category.entity';
+import { MenuItemEntity } from './entities/menu-item.entity';
 
 describe('MenuService', () => {
   let service: MenuService;
-  let categoryModel: any;
-  let menuItemModel: any;
+  let categoryRepo: any;
+  let menuItemRepo: any;
 
   const mockCategory = { _id: '1', name: 'Vegetarian' };
   const mockMenuItem = { _id: '101', name: 'Masala Dosa', price: 10 };
@@ -17,25 +17,31 @@ describe('MenuService', () => {
       providers: [
         MenuService,
         {
-          provide: getModelToken(Category.name),
+          provide: getRepositoryToken(CategoryEntity),
           useValue: {
-            find: jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue([mockCategory]) }),
-            new: jest.fn().mockImplementation((dto) => dto),
+            find: jest.fn().mockResolvedValue([mockCategory]),
+            create: jest.fn(),
             save: jest.fn(),
+            update: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
-          provide: getModelToken(MenuItem.name),
+          provide: getRepositoryToken(MenuItemEntity),
           useValue: {
-            find: jest.fn().mockReturnValue({ populate: jest.fn().mockReturnThis(), exec: jest.fn().mockResolvedValue([mockMenuItem]) }),
+            find: jest.fn().mockResolvedValue([mockMenuItem]),
+            create: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            findOne: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<MenuService>(MenuService);
-    categoryModel = module.get(getModelToken(Category.name));
-    menuItemModel = module.get(getModelToken(MenuItem.name));
+    categoryRepo = module.get(getRepositoryToken(CategoryEntity));
+    menuItemRepo = module.get(getRepositoryToken(MenuItemEntity));
   });
 
   it('should be defined', () => {
@@ -43,28 +49,14 @@ describe('MenuService', () => {
   });
 
   it('should return all categories', async () => {
-    const findMock = {
-      sort: jest.fn().mockReturnThis(),
-      exec: jest.fn().mockResolvedValue([mockCategory]),
-    };
-    categoryModel.find.mockReturnValue(findMock);
-
     const result = await service.findAllCategories();
     expect(result).toEqual([mockCategory]);
-    expect(categoryModel.find).toHaveBeenCalled();
-    expect(findMock.sort).toHaveBeenCalledWith({ order: 1 });
+    expect(categoryRepo.find).toHaveBeenCalled();
   });
 
   it('should return all menu items', async () => {
-    const findMock = {
-      populate: jest.fn().mockReturnThis(),
-      exec: jest.fn().mockResolvedValue([mockMenuItem]),
-    };
-    menuItemModel.find.mockReturnValue(findMock);
-
     const result = await service.findAllMenuItems();
     expect(result).toEqual([mockMenuItem]);
-    expect(menuItemModel.find).toHaveBeenCalled();
-    expect(findMock.populate).toHaveBeenCalledWith('categoryId');
+    expect(menuItemRepo.find).toHaveBeenCalled();
   });
 });

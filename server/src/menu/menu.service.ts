@@ -1,63 +1,79 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Category } from './schemas/category.schema';
-import { MenuItem } from './schemas/menu-item.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CategoryEntity } from './entities/category.entity';
+import { MenuItemEntity } from './entities/menu-item.entity';
+
+/**
+ * ObjectId-shaped hex string generator. Replaces Mongo's `new Types.ObjectId()`.
+ * Produces the same 24-hex shape so `_id` values remain client-compatible.
+ */
+function newObjectIdLike(): string {
+    const bytes = new Uint8Array(12);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+import * as crypto from 'crypto';
 
 @Injectable()
 export class MenuService {
     constructor(
-        @InjectModel(Category.name) private categoryModel: Model<Category>,
-        @InjectModel(MenuItem.name) private menuItemModel: Model<MenuItem>,
+        @InjectRepository(CategoryEntity)
+        private readonly categoryRepo: Repository<CategoryEntity>,
+        @InjectRepository(MenuItemEntity)
+        private readonly menuItemRepo: Repository<MenuItemEntity>,
     ) { }
 
-    // Cateogry Methods
-    async findAllCategories(): Promise<Category[]> {
-        return this.categoryModel.find({ isActive: true }).sort({ order: 1 }).exec();
+    // Category Methods
+    async findAllCategories(): Promise<CategoryEntity[]> {
+        return this.categoryRepo.find({ where: { isActive: true }, order: { order: 'ASC' } });
     }
 
-    async createCategory(data: any): Promise<Category> {
-        const newCategory = new this.categoryModel(data);
-        return newCategory.save();
+    async createCategory(data: Partial<CategoryEntity>): Promise<CategoryEntity> {
+        const entity = this.categoryRepo.create({ _id: newObjectIdLike(), ...data });
+        return this.categoryRepo.save(entity);
     }
 
-    async updateCategory(id: string, data: any): Promise<Category> {
-        const updated = await this.categoryModel.findByIdAndUpdate(id, data, { new: true }).exec();
-        if (!updated || !updated.isActive) throw new NotFoundException('Category not found');
-        return updated;
+    async updateCategory(id: string, data: Partial<CategoryEntity>): Promise<CategoryEntity> {
+        await this.categoryRepo.update({ _id: id }, data);
+        const category = await this.categoryRepo.findOne({ where: { _id: id } });
+        if (!category || !category.isActive) throw new NotFoundException('Category not found');
+        return category;
     }
 
-    async deleteCategory(id: string): Promise<any> {
-        const result = await this.categoryModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
-        if (!result) throw new NotFoundException('Category not found');
-        return result;
+    async deleteCategory(id: string): Promise<CategoryEntity> {
+        const category = await this.categoryRepo.findOne({ where: { _id: id } });
+        if (!category) throw new NotFoundException('Category not found');
+        category.isActive = false;
+        return this.categoryRepo.save(category);
     }
-
-
 
     // MenuItem Methods
-    async findAllMenuItems(): Promise<MenuItem[]> {
-        return this.menuItemModel.find({ isActive: true }).populate('categoryId').exec();
+    async findAllMenuItems(): Promise<MenuItemEntity[]> {
+        return this.menuItemRepo.find({ where: { isActive: true } });
     }
 
-    async findByCategoryId(categoryId: string): Promise<MenuItem[]> {
-        return this.menuItemModel.find({ categoryId: new Types.ObjectId(categoryId), isActive: true }).exec();
+    async findByCategoryId(categoryId: string): Promise<MenuItemEntity[]> {
+        return this.menuItemRepo.find({ where: { categoryId, isActive: true } });
     }
 
-    async createMenuItem(data: any): Promise<MenuItem> {
-        const newItem = new this.menuItemModel(data);
-        return newItem.save();
+    async createMenuItem(data: Partial<MenuItemEntity>): Promise<MenuItemEntity> {
+        const entity = this.menuItemRepo.create({ _id: newObjectIdLike(), ...data });
+        return this.menuItemRepo.save(entity);
     }
 
-    async updateMenuItem(id: string, data: any): Promise<MenuItem> {
-        const updated = await this.menuItemModel.findByIdAndUpdate(id, data, { new: true }).exec();
-        if (!updated || !updated.isActive) throw new NotFoundException('Menu item not found');
-        return updated;
+    async updateMenuItem(id: string, data: Partial<MenuItemEntity>): Promise<MenuItemEntity> {
+        await this.menuItemRepo.update({ _id: id }, data);
+        const item = await this.menuItemRepo.findOne({ where: { _id: id } });
+        if (!item || !item.isActive) throw new NotFoundException('Menu item not found');
+        return item;
     }
 
-    async deleteMenuItem(id: string): Promise<any> {
-        const result = await this.menuItemModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
-        if (!result) throw new NotFoundException('Menu item not found');
-        return result;
+    async deleteMenuItem(id: string): Promise<MenuItemEntity> {
+        const item = await this.menuItemRepo.findOne({ where: { _id: id } });
+        if (!item) throw new NotFoundException('Menu item not found');
+        item.isActive = false;
+        return this.menuItemRepo.save(item);
     }
 }
