@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "./styles/theme.css";
 
 * { box-sizing: border-box; }
@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 28rem),
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 28rem),
     linear-gradient(180deg, var(--brand-surface) 0%, var(--paper) 52%, var(--brand-surface-bloom) 100%);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -23,7 +23,7 @@ body {
 }
 
 body::selection {
-  background: color-mix(in srgb, var(--brand-accent) 34%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 34%, transparent);
   color: var(--ink);
 }
 
@@ -51,7 +51,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--brand-accent) 55%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--brand-primary) 55%, transparent);
   outline-offset: 3px;
 }
 
@@ -175,24 +175,13 @@ select:focus-visible {
   cursor: pointer;
 }
 
-.btn-primary {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
-  background: var(--ink);
-  color: var(--paper);
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 18%, transparent);
-}
-
-.btn-gold {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
-  background: var(--brand-primary);
-  color: var(--paper);
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--brand-primary) 22%, transparent);
-}
-
+.btn-primary,
+.btn-gold,
 .btn-ink {
   border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
-  background: var(--brand-leaf-deep);
+  background: var(--brand-night);
   color: var(--brand-cream);
+  box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--brand-night) 35%, transparent);
 }
 
 .btn-secondary,
@@ -219,14 +208,18 @@ select:focus-visible {
   transform: translateY(-2px);
 }
 
-.btn-primary:hover { background: var(--brand-primary); }
-.btn-gold:hover    { background: var(--brand-leaf-deep); }
-.btn-ink:hover     { background: var(--brand-leaf); }
+.btn-primary:hover,
+.btn-gold:hover,
+.btn-ink:hover {
+  background: var(--brand-primary);
+  color: #ffffff;
+}
 
 .btn-secondary:hover,
 .btn-outline:hover {
   border-color: var(--brand-primary);
-  color: var(--brand-primary);
+  color: var(--brand-text);
+  background: color-mix(in srgb, var(--brand-surface-warm) 92%, transparent);
 }
 
 .btn-primary:active,
@@ -263,7 +256,7 @@ select:focus-visible {
 .card-glow:hover {
   transform: translateY(-3px);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 36%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-primary) 36%, transparent),
     var(--shadow-lift);
 }
 
@@ -288,7 +281,7 @@ select:focus-visible {
 .input-field:focus,
 .admin-input:focus {
   background: color-mix(in srgb, var(--brand-surface-soft) 82%, transparent);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand-accent) 80%, transparent), var(--shadow-soft);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand-primary) 80%, transparent), var(--shadow-soft);
 }
 
 .label-text,
@@ -331,9 +324,9 @@ select:focus-visible {
 
 .badge-premium,
 .badge-halal {
-  border: 1px solid color-mix(in srgb, var(--brand-accent) 25%, transparent);
-  background: color-mix(in srgb, var(--brand-accent) 13%, transparent);
-  color: var(--brand-accent-deep);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 13%, transparent);
+  color: var(--brand-primary-deep);
 }
 
 .page-hero {
@@ -345,7 +338,7 @@ select:focus-visible {
   align-items: center;
   padding: clamp(5.5rem, 10vw, 7.5rem) 1.25rem clamp(2.75rem, 6vw, 4.5rem);
   background:
-    radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 28rem),
+    radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 28rem),
     radial-gradient(circle at 10% 86%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 24rem),
     linear-gradient(180deg, var(--brand-surface) 0%, var(--paper) 80%, var(--brand-surface-bloom) 100%);
   color: var(--ink);
@@ -428,7 +421,7 @@ select:focus-visible {
   overflow: hidden;
   border: 1.5px solid color-mix(in srgb, var(--brand-cream) 50%, transparent);
   border-radius: 0.85rem;
-  background: linear-gradient(145deg, var(--brand-accent-strong), var(--brand-primary));
+  background: linear-gradient(145deg, var(--brand-primary-strong), var(--brand-primary));
   color: var(--brand-surface);
   font-family: var(--font-display);
   font-size: 1.35rem;
@@ -456,7 +449,7 @@ select:focus-visible {
   place-items: center;
   padding: 1.5rem;
   background:
-    radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 18rem),
+    radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 18rem),
     var(--brand-surface);
 }
 
@@ -529,7 +522,7 @@ select:focus-visible {
 .page-loader--full {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 16rem),
+    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 16rem),
     var(--brand-surface);
 }
 
@@ -545,8 +538,8 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  border: 3px solid color-mix(in srgb, var(--brand-accent) 16%, transparent);
-  border-top-color: var(--brand-accent);
+  border: 3px solid color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  border-top-color: var(--brand-primary);
   border-radius: 999px;
   animation: page-loader-spin 0.9s linear infinite;
 }
@@ -628,7 +621,7 @@ select:focus-visible {
 
 .site-nav__link:hover,
 .site-nav__link.active {
-  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
   color: var(--spice);
 }
 
@@ -640,7 +633,7 @@ select:focus-visible {
 
 .site-header--solid .site-nav__link:hover,
 .site-header--solid .site-nav__link.active {
-  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
   color: var(--spice);
 }
 
@@ -719,7 +712,7 @@ select:focus-visible {
 .mobile-menu__link.active,
 .mobile-menu__link:hover,
 .mobile-menu__button:hover {
-  background: color-mix(in srgb, var(--brand-accent) 13%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 13%, transparent);
   color: var(--spice);
 }
 
@@ -749,7 +742,7 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 78% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 24rem),
+    radial-gradient(circle at 78% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 24rem),
     linear-gradient(90deg, color-mix(in srgb, var(--brand-leaf) 16%, transparent), transparent 52%);
   pointer-events: none;
 }
@@ -856,7 +849,7 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 82% 0%, color-mix(in srgb, var(--brand-accent) 17%, transparent), transparent 30rem),
+    radial-gradient(circle at 82% 0%, color-mix(in srgb, var(--brand-primary) 17%, transparent), transparent 30rem),
     linear-gradient(180deg, color-mix(in srgb, var(--brand-surface-warm) 58%, transparent), transparent 74%);
   z-index: 1;
 }
@@ -883,8 +876,8 @@ select:focus-visible {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
-  background: var(--brand-accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 18%, transparent);
+  background: var(--brand-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-primary) 18%, transparent);
 }
 
 .home-hero .display {
@@ -949,7 +942,7 @@ select:focus-visible {
 
 .hero-menu-board > div:hover {
   transform: translateY(-2px);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 28%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-primary) 28%, transparent);
 }
 
 .hero-menu-board span,
@@ -1149,23 +1142,36 @@ select:focus-visible {
 }
 
 .about-section {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+.about-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 30rem),
-    var(--brand-surface);
+    radial-gradient(circle at 82% 0%, color-mix(in srgb, var(--brand-primary) 17%, transparent), transparent 30rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface-warm) 58%, transparent), transparent 74%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.9fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
+  position: relative;
+  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.62fr);
+  gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
+  z-index: 1;
 }
 
 .about-subhead {
   margin-top: 0.7rem;
   color: var(--brand-primary);
-  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
-  line-height: 1.3;
+  font-size: clamp(1.08rem, 2vw, 1.28rem);
+  line-height: 1.32;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -1195,7 +1201,7 @@ select:focus-visible {
   padding: 1.05rem 1.25rem;
   border-left: 3px solid var(--brand-primary);
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
   color: var(--ink);
   line-height: 1.5;
   max-width: 46ch;
@@ -1234,7 +1240,7 @@ select:focus-visible {
 
 .package-section {
   background:
-    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 28rem),
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 28rem),
     var(--brand-surface);
 }
 
@@ -1256,7 +1262,7 @@ select:focus-visible {
   border-top: 3px solid var(--brand-primary);
   border-radius: 0 0 1rem 1rem;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 10%, transparent), transparent 52%),
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 10%, transparent), transparent 52%),
     color-mix(in srgb, var(--brand-surface) 90%, transparent);
   color: var(--ink);
   padding: clamp(1rem, 3vw, 1.5rem);
@@ -1479,11 +1485,25 @@ select:focus-visible {
   box-shadow: var(--shadow-soft);
 }
 
-.menu-tabs button:hover,
+.menu-tabs button:hover:not(.active) {
+  background: var(--brand-primary);
+  color: var(--brand-night-deep);
+}
+
 .menu-tabs button.active {
-  background: var(--ink);
-  color: var(--brand-cream);
+  background: var(--brand-tab-pill-bg);
+  color: var(--brand-tab-pill-fg);
   transform: translateY(-1px);
+}
+
+/* Dark mode: soften photography so it recedes behind the warm ink surfaces */
+[data-theme='dark'] img {
+  filter: brightness(0.78) saturate(0.92);
+}
+
+[data-theme='dark'] .brand-mark__seal img,
+[data-theme='dark'] .admin-brand-seal img {
+  filter: none;
 }
 
 .menu-feature-grid {
@@ -1550,7 +1570,7 @@ select:focus-visible {
 }
 
 .dish-row:hover {
-  border-color: color-mix(in srgb, var(--brand-accent) 36%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 36%, transparent);
   transform: translateY(-2px);
 }
 
@@ -1654,7 +1674,7 @@ select:focus-visible {
 }
 
 .menu-search:focus-within {
-  box-shadow: var(--shadow-ring), inset 0 0 0 2px color-mix(in srgb, var(--brand-accent) 55%, transparent), var(--shadow-soft);
+  box-shadow: var(--shadow-ring), inset 0 0 0 2px color-mix(in srgb, var(--brand-primary) 55%, transparent), var(--shadow-soft);
 }
 
 .menu-search input {
@@ -1755,7 +1775,7 @@ select:focus-visible {
   overflow: hidden;
   padding: clamp(7rem, 10vw, 8.5rem) 1.25rem clamp(3rem, 5vw, 4rem);
   background:
-    radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 26rem),
+    radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-primary) 15%, transparent), transparent 26rem),
     linear-gradient(180deg, var(--brand-surface), var(--paper) 76%, color-mix(in srgb, var(--brand-surface-bloom) 60%, var(--paper)));
   color: var(--ink);
 }
@@ -1789,7 +1809,7 @@ select:focus-visible {
   overflow: hidden;
   border-radius: var(--radius-2xl);
   background:
-    linear-gradient(150deg, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 46%),
+    linear-gradient(150deg, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 46%),
     color-mix(in srgb, var(--brand-surface) 74%, transparent);
   backdrop-filter: blur(20px) saturate(1.1);
   -webkit-backdrop-filter: blur(20px) saturate(1.1);
@@ -1894,7 +1914,7 @@ select:focus-visible {
 .addon-card:hover {
   transform: translateY(-3px);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 34%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-primary) 34%, transparent),
     var(--shadow-lift);
 }
 
@@ -1905,7 +1925,7 @@ select:focus-visible {
   height: 3.1rem;
   place-items: center;
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--brand-accent) 14%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
   color: var(--spice);
   margin-bottom: 1rem;
 }
@@ -2008,7 +2028,7 @@ select:focus-visible {
 .contact-cards div:hover {
   transform: translateY(-2px);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--brand-accent) 32%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--brand-primary) 32%, transparent),
     var(--shadow-soft);
 }
 
@@ -2029,6 +2049,14 @@ select:focus-visible {
 
 .contact-form {
   padding: clamp(1.2rem, 3vw, 2rem);
+}
+
+.contact-form .input-field::placeholder {
+  color: color-mix(in srgb, var(--brand-text) 46%, transparent);
+}
+
+.contact-form .input-field--empty {
+  color: color-mix(in srgb, var(--brand-text) 46%, transparent);
 }
 
 .contact-form__title {
@@ -2221,7 +2249,7 @@ select:focus-visible {
   padding: 7rem 1.25rem 3rem;
   background:
     linear-gradient(115deg, color-mix(in srgb, var(--brand-night) 84%, transparent), color-mix(in srgb, var(--brand-night) 46%, transparent) 62%, color-mix(in srgb, var(--brand-surface-deep) 92%, transparent)),
-    radial-gradient(circle at 14% 20%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 26rem),
+    radial-gradient(circle at 14% 20%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 26rem),
     radial-gradient(circle at 90% 78%, color-mix(in srgb, var(--brand-leaf) 18%, transparent), transparent 30rem);
 }
 
@@ -2249,11 +2277,17 @@ select:focus-visible {
   flex-direction: column;
   justify-content: flex-end;
   background:
-    radial-gradient(circle at 72% 12%, color-mix(in srgb, var(--brand-accent) 26%, transparent), transparent 24rem),
+    radial-gradient(circle at 72% 12%, color-mix(in srgb, var(--brand-primary) 26%, transparent), transparent 24rem),
     radial-gradient(circle at 18% 96%, color-mix(in srgb, var(--brand-leaf) 20%, transparent), transparent 22rem),
     linear-gradient(180deg, color-mix(in srgb, var(--brand-night) 55%, transparent), color-mix(in srgb, var(--brand-night) 92%, transparent));
   padding: clamp(1.2rem, 4vw, 2rem);
   color: var(--brand-cream);
+}
+
+.auth-copy .brand-mark__seal {
+  width: clamp(4rem, 7vw, 5.25rem);
+  height: clamp(4rem, 7vw, 5.25rem);
+  border-radius: 1.15rem;
 }
 
 .auth-copy h1 {
@@ -2311,8 +2345,8 @@ select:focus-visible {
 }
 
 .auth-form label > span:focus-within {
-  border-color: color-mix(in srgb, var(--brand-accent) 85%, transparent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 85%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .auth-form label button {
@@ -2372,7 +2406,7 @@ select:focus-visible {
 }
 
 .verify-hint svg {
-  color: var(--brand-accent-bright);
+  color: var(--brand-primary-bright);
 }
 
 .verify-note {
@@ -2383,7 +2417,7 @@ select:focus-visible {
 
 .catering-checkout {
   background:
-    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 25rem),
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 25rem),
     var(--paper) !important;
   color: var(--ink) !important;
   padding-top: 7rem !important;
@@ -2428,7 +2462,7 @@ select:focus-visible {
 
 .catering-checkout .hover\:bg-gray-50:hover,
 .catering-checkout .hover\:bg-white:hover {
-  background-color: color-mix(in srgb, var(--brand-accent) 12%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
 }
 
 .catering-checkout .bg-gray-100 {
@@ -2436,13 +2470,13 @@ select:focus-visible {
 }
 
 .catering-checkout .hover\:border-gray-400:hover {
-  border-color: color-mix(in srgb, var(--brand-accent) 42%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 42%, transparent) !important;
 }
 
 .catering-checkout .text-purple-500,
 .catering-checkout .text-pink-500,
 .catering-checkout .text-amber-500 {
-  color: var(--brand-accent-strong) !important;
+  color: var(--brand-primary-strong) !important;
 }
 
 .catering-checkout .text-blue-500,
@@ -2518,7 +2552,7 @@ select:focus-visible {
   max-width: 100%;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 28rem),
+    radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 28rem),
     linear-gradient(180deg, var(--brand-surface) 0%, var(--brand-surface-part-c) 100%);
   color: var(--ink);
 }
@@ -2528,7 +2562,7 @@ select:focus-visible {
   isolation: isolate;
   border-right: 1px solid color-mix(in srgb, var(--brand-cream) 11%, transparent);
   background:
-    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 18rem),
+    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 18rem),
     linear-gradient(180deg, var(--brand-outline) 0%, var(--brand-night-part) 48%, var(--brand-ink-soot) 100%);
   color: color-mix(in srgb, var(--brand-cream) 74%, transparent);
   box-shadow: 18px 0 60px color-mix(in srgb, var(--brand-text) 20%, transparent);
@@ -2570,7 +2604,7 @@ select:focus-visible {
 
 .admin-brand-link:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--brand-accent-soft) 28%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-soft) 28%, transparent);
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 14%, transparent), color-mix(in srgb, var(--brand-cream) 5.5%, transparent));
 }
@@ -2657,7 +2691,7 @@ select:focus-visible {
 }
 
 .admin-nav-label {
-  color: color-mix(in srgb, var(--brand-accent-soft) 62%, transparent);
+  color: color-mix(in srgb, var(--brand-primary-soft) 62%, transparent);
 }
 
 .admin-nav-group-header {
@@ -2718,9 +2752,9 @@ select:focus-visible {
 }
 
 .admin-nav-link--active {
-  border-color: color-mix(in srgb, var(--brand-accent-soft) 28%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-soft) 28%, transparent);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 22%, transparent), color-mix(in srgb, var(--brand-primary) 16%, transparent));
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 22%, transparent), color-mix(in srgb, var(--brand-primary) 16%, transparent));
   color: var(--brand-cream);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--brand-cream) 5.5%, transparent),
@@ -2767,7 +2801,7 @@ select:focus-visible {
 }
 
 .admin-user-shield {
-  color: color-mix(in srgb, var(--brand-accent-soft) 75%, transparent);
+  color: color-mix(in srgb, var(--brand-primary-soft) 75%, transparent);
 }
 
 .admin-language-slot {
@@ -2800,7 +2834,7 @@ select:focus-visible {
   min-height: 100%;
   padding: clamp(1rem, 2.6vw, 2rem);
   background:
-    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 23rem),
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 23rem),
     radial-gradient(circle at 96% 14%, color-mix(in srgb, var(--brand-leaf) 10%, transparent), transparent 22rem),
     transparent;
 }
@@ -2828,7 +2862,7 @@ select:focus-visible {
   border-radius: 1rem;
   background:
     linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 90%, transparent), color-mix(in srgb, var(--brand-cream) 76%, transparent)),
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 18rem);
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 18rem);
   box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
   color: var(--muted);
   font-weight: 700;
@@ -2841,7 +2875,7 @@ select:focus-visible {
   border-radius: 1rem !important;
   background:
     linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 94%, transparent), color-mix(in srgb, var(--brand-cream) 84%, transparent)),
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-accent) 16%, transparent), transparent 18rem) !important;
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 18rem) !important;
   box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent) !important;
 }
 
@@ -2874,7 +2908,7 @@ select:focus-visible {
 }
 
 .admin-page-container > div:first-child p:first-child {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
   letter-spacing: 0.08em !important;
 }
 
@@ -3018,8 +3052,8 @@ select:focus-visible {
 .admin-panel-font input:focus,
 .admin-panel-font textarea:focus,
 .admin-panel-font select:focus {
-  border-color: color-mix(in srgb, var(--brand-accent) 72%, transparent) !important;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 72%, transparent) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
 }
 
 .admin-panel-font table thead,
@@ -3071,33 +3105,33 @@ select:focus-visible {
 
 .admin-panel-font .bg-slate-900,
 .admin-panel-font .border-slate-900 {
-  border-color: color-mix(in srgb, var(--brand-accent-dark) 20%, transparent) !important;
-  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary)) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-dark) 20%, transparent) !important;
+  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary-warm) 72%, var(--brand-primary)) !important;
   color: var(--brand-surface) !important;
   box-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 18%, transparent);
 }
 
 .admin-panel-font .hover\:bg-slate-800:hover,
 .admin-panel-font .hover\:bg-gray-900:hover {
-  background: linear-gradient(135deg, var(--brand-accent), var(--brand-primary)) !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary)) !important;
   color: var(--brand-surface) !important;
 }
 
 .admin-panel-font .hover\:bg-stone-50:hover,
 .admin-panel-font .hover\:bg-gray-50:hover {
-  background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent) !important;
 }
 
 .admin-panel-font .bg-amber-50,
 .admin-panel-font .bg-orange-50,
 .admin-panel-font .bg-yellow-50 {
-  background-color: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 13%, transparent) !important;
 }
 
 .admin-panel-font .text-amber-600,
 .admin-panel-font .text-amber-700,
 .admin-panel-font .text-orange-600 {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .admin-panel-font .bg-emerald-50,
@@ -3182,7 +3216,7 @@ select:focus-visible {
 
 .admin-panel-font .hover\:bg-amber-600:hover,
 .admin-panel-font .hover\:bg-orange-600:hover {
-  background-color: var(--brand-accent-warm) !important;
+  background-color: var(--brand-primary-warm) !important;
   color: var(--brand-surface) !important;
 }
 
@@ -3193,17 +3227,17 @@ select:focus-visible {
 }
 
 .admin-panel-font .hover\:text-amber-800:hover {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .admin-panel-font .focus\:ring-amber-400:focus,
 .admin-panel-font .focus\:ring-amber-500:focus {
-  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 26%, transparent) !important;
+  --tw-ring-color: color-mix(in srgb, var(--brand-primary) 26%, transparent) !important;
 }
 
 .admin-panel-font .focus\:border-amber-400:focus,
 .admin-panel-font .focus\:border-amber-500:focus {
-  border-color: var(--brand-accent-strong) !important;
+  border-color: var(--brand-primary-strong) !important;
 }
 
 .admin-panel-font .bg-emerald-600,
@@ -3214,11 +3248,11 @@ select:focus-visible {
 
 .admin-panel-font .bg-amber-100,
 .admin-panel-font .bg-amber-200 {
-  background-color: color-mix(in srgb, var(--brand-accent) 16%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
 }
 
 .admin-panel-font .border-amber-100 {
-  border-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 18%, transparent) !important;
 }
 
 .admin-panel-font .bg-emerald-500,
@@ -3228,7 +3262,7 @@ select:focus-visible {
 
 .admin-panel-font .ring-slate-100,
 .admin-panel-font .focus\:ring-slate-100:focus {
-  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+  --tw-ring-color: color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
 }
 
 .admin-panel-font .text-slate-950 {
@@ -3249,16 +3283,16 @@ select:focus-visible {
 
 .admin-panel-font .border-amber-300,
 .admin-panel-font .border-amber-400 {
-  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 34%, transparent) !important;
 }
 
 .admin-panel-font .border-amber-200 {
-  border-color: color-mix(in srgb, var(--brand-accent) 26%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 26%, transparent) !important;
 }
 
 .admin-panel-font .text-amber-800,
 .admin-panel-font .text-yellow-800 {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .admin-panel-font .ring-amber-100,
@@ -3266,7 +3300,7 @@ select:focus-visible {
 .admin-panel-font .ring-amber-300,
 .admin-panel-font .focus\:ring-amber-100:focus,
 .admin-panel-font .focus\:ring-amber-200:focus {
-  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 22%, transparent) !important;
+  --tw-ring-color: color-mix(in srgb, var(--brand-primary) 22%, transparent) !important;
 }
 
 .admin-panel-font .border-emerald-200,
@@ -3301,7 +3335,7 @@ select:focus-visible {
 
 .admin-panel-font .bg-purple-50,
 .admin-panel-font .bg-indigo-50 {
-  background-color: color-mix(in srgb, var(--brand-accent-olive) 13%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary-olive) 13%, transparent) !important;
 }
 
 .admin-panel-font .bg-purple-500,
@@ -3360,7 +3394,7 @@ select:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--brand-accent) 22%, transparent), transparent 28rem),
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 28rem),
     linear-gradient(180deg, color-mix(in srgb, var(--brand-surface) 8%, transparent), color-mix(in srgb, var(--brand-night) 42%, transparent));
   pointer-events: none;
 }
@@ -3391,10 +3425,10 @@ select:focus-visible {
   width: fit-content;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--brand-accent) 26%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 26%, transparent);
   border-radius: 0.65rem;
-  background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
-  color: var(--brand-accent-deep);
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary-deep);
   padding: 0.42rem 0.72rem;
   font-size: 0.72rem;
   font-weight: 800;
@@ -3458,9 +3492,9 @@ select:focus-visible {
 }
 
 .admin-login-field > div:focus-within {
-  border-color: color-mix(in srgb, var(--brand-accent) 78%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 78%, transparent);
   background: var(--brand-surface);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-accent) 12%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .admin-login-field input {
@@ -3488,7 +3522,7 @@ select:focus-visible {
 }
 
 .admin-login-field button:hover {
-  background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
   color: var(--spice);
 }
 
@@ -3517,9 +3551,9 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  border: 1px solid color-mix(in srgb, var(--brand-accent-dark) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary-dark) 20%, transparent);
   border-radius: 0.85rem;
-  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary));
+  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary-warm) 72%, var(--brand-primary));
   color: var(--brand-surface);
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
@@ -3600,9 +3634,9 @@ select:focus-visible {
 
 .admin-login-image span {
   display: inline-flex;
-  border: 1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
   border-radius: 0.65rem;
-  background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
   color: var(--brass-soft);
   padding: 0.38rem 0.62rem;
   font-size: 0.72rem;
@@ -3665,7 +3699,7 @@ select:focus-visible {
   border: 1px solid color-mix(in srgb, var(--brand-text) 14%, transparent);
   border-radius: 0.8rem;
   background: var(--brand-outline);
-  color: var(--brand-accent-haze);
+  color: var(--brand-primary-haze);
   box-shadow: 0 10px 24px color-mix(in srgb, var(--brand-text) 18%, transparent);
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
@@ -3677,12 +3711,12 @@ select:focus-visible {
 
 .admin-sidebar-toggle:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--brand-accent-strong) 55%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-strong) 55%, transparent);
   background: var(--brand-outline-tone);
 }
 
 .admin-sidebar-toggle:focus-visible {
-  outline: 2px solid var(--brand-accent-aisle);
+  outline: 2px solid var(--brand-primary-aisle);
   outline-offset: 2px;
 }
 
@@ -3944,7 +3978,7 @@ select:focus-visible {
   position: absolute;
   inset: 0 0 auto;
   height: 3px;
-  background: linear-gradient(90deg, var(--brand-accent-strong), var(--brand-primary), var(--brand-leaf));
+  background: linear-gradient(90deg, var(--brand-primary-strong), var(--brand-primary), var(--brand-leaf));
 }
 
 .admin-panel-font .admin-command-hero h1,
@@ -3985,15 +4019,15 @@ select:focus-visible {
 
 .admin-panel-font .admin-command-hero button.bg-slate-900,
 .admin-panel-font .admin-command-hero button[class*="bg-[var(--brand-text)]"] {
-  border-color: var(--brand-accent-strong) !important;
-  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-primary)) !important;
+  border-color: var(--brand-primary-strong) !important;
+  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary)) !important;
   color: var(--brand-white) !important;
   box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 22%, transparent) !important;
 }
 
 .admin-panel-font .admin-command-hero a:hover,
 .admin-panel-font .admin-command-hero button:hover {
-  border-color: color-mix(in srgb, var(--brand-accent-strong) 48%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-strong) 48%, transparent);
 }
 
 @media (max-width: 560px) {
@@ -4021,21 +4055,21 @@ select:focus-visible {
 .admin-panel-font .hover\:border-amber-200:hover,
 .admin-panel-font .hover\:border-amber-300:hover,
 .admin-panel-font .hover\:border-amber-400:hover {
-  border-color: color-mix(in srgb, var(--brand-accent) 52%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 52%, transparent) !important;
 }
 
 .admin-panel-font .hover\:bg-amber-100:hover {
-  background-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 18%, transparent) !important;
 }
 
 .admin-panel-font .hover\:bg-amber-50:hover,
 .admin-panel-font .hover\:bg-amber-50\/40:hover,
 .admin-panel-font .hover\:bg-amber-50\/60:hover {
-  background-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
 }
 
 .admin-panel-font .group:hover .group-hover\:bg-amber-50 {
-  background-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
 }
 
 .admin-panel-font .group:hover .group-hover\:bg-white {
@@ -4043,16 +4077,16 @@ select:focus-visible {
 }
 
 .admin-panel-font .group:hover .group-hover\:text-amber-800 {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .admin-panel-font .from-amber-400 {
-  --tw-gradient-from: var(--brand-accent-strong) !important;
+  --tw-gradient-from: var(--brand-primary-strong) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
 }
 
 .admin-panel-font .to-orange-700 {
-  --tw-gradient-to: var(--brand-accent-warm) !important;
+  --tw-gradient-to: var(--brand-primary-warm) !important;
 }
 
 .admin-panel-font .from-slate-700 {
@@ -4061,7 +4095,7 @@ select:focus-visible {
 }
 
 .admin-panel-font .to-stone-400 {
-  --tw-gradient-to: var(--brand-accent) !important;
+  --tw-gradient-to: var(--brand-primary) !important;
 }
 
 .admin-panel-font [class*="shadow-[0_18px_45px_color-mix(in srgb, var(--brand-slate) 10%, transparent)"]:hover {
@@ -4120,7 +4154,7 @@ select:focus-visible {
   aspect-ratio: 1;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 20%, transparent), transparent 64%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 20%, transparent), transparent 64%);
   filter: blur(8px);
   will-change: transform;
 }
@@ -4154,7 +4188,7 @@ select:focus-visible {
   transform: scaleX(0);
   transform-origin: left center;
   pointer-events: none;
-  background: linear-gradient(90deg, var(--brand-accent-strong), var(--brand-primary));
+  background: linear-gradient(90deg, var(--brand-primary-strong), var(--brand-primary));
 }
 
 .package-card {
@@ -4228,7 +4262,7 @@ select:focus-visible {
   height: 62vmax;
   top: -14%;
   left: -10%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 66%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 15%, transparent), transparent 66%);
 }
 
 .fx-fluid__blob--b {
@@ -4254,7 +4288,7 @@ select:focus-visible {
   height: var(--fb-light-radius);
   margin: calc(var(--fb-light-radius) / -2) 0 0 calc(var(--fb-light-radius) / -2);
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--brand-accent) 11%, transparent), transparent 68%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 11%, transparent), transparent 68%);
   filter: blur(40px);
   transform: translate3d(var(--fb-lx, 0px), var(--fb-ly, 0px), 0);
   opacity: var(--fb-glow, 0);
@@ -4270,8 +4304,8 @@ select:focus-visible {
 
 .fx-fluid__kolam {
   background:
-    repeating-radial-gradient(circle at 50% 118%, transparent 0 44px, color-mix(in srgb, var(--brand-accent-olive) 9%, transparent) 44px 45px, transparent 45px 88px),
-    repeating-radial-gradient(circle at 8% -12%, transparent 0 58px, color-mix(in srgb, var(--brand-accent) 8%, transparent) 58px 59px, transparent 59px 116px);
+    repeating-radial-gradient(circle at 50% 118%, transparent 0 44px, color-mix(in srgb, var(--brand-primary-olive) 9%, transparent) 44px 45px, transparent 45px 88px),
+    repeating-radial-gradient(circle at 8% -12%, transparent 0 58px, color-mix(in srgb, var(--brand-primary) 8%, transparent) 58px 59px, transparent 59px 116px);
   mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 62%);
   -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 62%);
   opacity: var(--fb-kolam-alpha, 0.042);
@@ -4430,13 +4464,13 @@ select:focus-visible {
 
 .user-dashboard-font .bg-slate-900,
 .user-dashboard-font .bg-slate-800 {
-  background: linear-gradient(135deg, var(--brand-accent-strong), var(--brand-accent-warm) 72%, var(--brand-primary)) !important;
-  border-color: color-mix(in srgb, var(--brand-accent-dark) 20%, transparent) !important;
+  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary-warm) 72%, var(--brand-primary)) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-dark) 20%, transparent) !important;
   color: var(--brand-surface) !important;
 }
 
 .user-dashboard-font .hover\:bg-slate-800:hover {
-  background: linear-gradient(135deg, var(--brand-accent), var(--brand-primary)) !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary)) !important;
   color: var(--brand-surface) !important;
 }
 
@@ -4455,12 +4489,12 @@ select:focus-visible {
 }
 
 .user-dashboard-font .border-amber-200 {
-  border-color: color-mix(in srgb, var(--brand-accent) 34%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 34%, transparent) !important;
 }
 
 .user-dashboard-font .border-amber-500,
 .user-dashboard-font .border-t-amber-500 {
-  border-color: var(--brand-accent-strong) !important;
+  border-color: var(--brand-primary-strong) !important;
 }
 
 .user-dashboard-font .border-green-200,
@@ -4489,26 +4523,26 @@ select:focus-visible {
 .user-dashboard-font .text-amber-600,
 .user-dashboard-font .text-amber-700,
 .user-dashboard-font .text-orange-700 {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .user-dashboard-font .bg-amber-50,
 .user-dashboard-font .bg-orange-50 {
-  background-color: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 13%, transparent) !important;
 }
 
 .user-dashboard-font .bg-amber-100 {
-  background-color: color-mix(in srgb, var(--brand-accent) 16%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
 }
 
 .user-dashboard-font .bg-amber-500,
 .user-dashboard-font .bg-amber-600 {
-  background-color: var(--brand-accent-strong) !important;
+  background-color: var(--brand-primary-strong) !important;
   color: var(--brand-surface) !important;
 }
 
 .user-dashboard-font .hover\:bg-amber-600:hover {
-  background-color: var(--brand-accent-warm) !important;
+  background-color: var(--brand-primary-warm) !important;
   color: var(--brand-surface) !important;
 }
 
@@ -4548,16 +4582,16 @@ select:focus-visible {
 }
 
 .user-dashboard-font .ring-amber-100 {
-  --tw-ring-color: color-mix(in srgb, var(--brand-accent) 18%, transparent) !important;
+  --tw-ring-color: color-mix(in srgb, var(--brand-primary) 18%, transparent) !important;
 }
 
 .user-dashboard-font .hover\:border-amber-200:hover,
 .user-dashboard-font .hover\:border-amber-300:hover {
-  border-color: var(--brand-accent) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 .user-dashboard-font .hover\:text-amber-600:hover {
-  color: var(--brand-accent-deep) !important;
+  color: var(--brand-primary-deep) !important;
 }
 
 .user-dashboard-font .hover\:bg-white:hover {
@@ -4578,7 +4612,7 @@ select:focus-visible {
 }
 
 .user-dashboard-font .hover\:bg-slate-50:hover {
-  background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent) !important;
+  background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent) !important;
 }
 
 .user-dashboard-font .hover\:bg-red-50:hover {
@@ -4594,7 +4628,7 @@ select:focus-visible {
 }
 
 .user-dashboard-font .focus\:border-amber-500:focus {
-  border-color: var(--brand-accent-strong) !important;
+  border-color: var(--brand-primary-strong) !important;
 }
 
 .user-dashboard-font .focus\:bg-white:focus {
@@ -4602,11 +4636,11 @@ select:focus-visible {
 }
 
 .user-dashboard-font .bg-gradient-to-br {
-  background-image: linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 14%, transparent), var(--brand-surface-soft)) !important;
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 14%, transparent), var(--brand-surface-soft)) !important;
 }
 
 .user-dashboard-font .from-amber-50 {
-  --tw-gradient-from: color-mix(in srgb, var(--brand-accent) 13%, transparent) !important;
+  --tw-gradient-from: color-mix(in srgb, var(--brand-primary) 13%, transparent) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
 }
 
@@ -4717,7 +4751,7 @@ select:focus-visible {
   z-index: -1;
   inset: -14% -3% -12%;
   border-radius: var(--radius-4xl);
-  background: radial-gradient(60% 58% at 50% 46%, color-mix(in srgb, var(--brand-accent) 17%, transparent), transparent 72%);
+  background: radial-gradient(60% 58% at 50% 46%, color-mix(in srgb, var(--brand-primary) 17%, transparent), transparent 72%);
   filter: blur(14px);
 }
 .event-gallery__stage {
@@ -4727,7 +4761,7 @@ select:focus-visible {
   overflow: hidden;
   touch-action: pan-y pinch-zoom;
 }
-.event-gallery__stage:focus-visible { outline: 3px solid var(--brand-accent); outline-offset: 8px; }
+.event-gallery__stage:focus-visible { outline: 3px solid var(--brand-primary); outline-offset: 8px; }
 .event-gallery__track {
   display: flex;
   align-items: stretch;
@@ -4786,17 +4820,17 @@ select:focus-visible {
   gap: .5rem;
   padding: .45rem .9rem;
   border-radius: 999px;
-  color: #fdfaf4;
+  color: var(--brand-cream);
   font-size: .8rem;
   font-weight: 600;
   letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
-  background: color-mix(in srgb, var(--brand-night) 58%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 90%, transparent);
   border: 1px solid color-mix(in srgb, #fff 22%, transparent);
   backdrop-filter: blur(14px) saturate(1.1);
   -webkit-backdrop-filter: blur(14px) saturate(1.1);
 }
-.event-gallery__chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-accent); }
+.event-gallery__chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-cream); }
 
 .event-gallery__controls {
   position: absolute;
@@ -4831,7 +4865,7 @@ select:focus-visible {
   transform: translateY(-2px);
   box-shadow: 0 18px 36px -16px color-mix(in srgb, var(--brand-night) 75%, transparent);
 }
-.event-gallery__controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 3px; }
+.event-gallery__controls button:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 3px; }
 
 .event-gallery__segments { display: flex; gap: .45rem; margin-top: .8rem; }
 .event-gallery__segment {
@@ -4846,22 +4880,22 @@ select:focus-visible {
   cursor: pointer;
   transition: background .25s ease;
 }
-.event-gallery__segment:hover { background: color-mix(in srgb, var(--brand-accent) 40%, var(--line)); }
-.event-gallery__segment.is-done { background: color-mix(in srgb, var(--brand-accent) 55%, transparent); }
-.event-gallery__segment.is-active { background: color-mix(in srgb, var(--brand-accent) 28%, var(--line)); }
+.event-gallery__segment:hover { background: color-mix(in srgb, var(--brand-primary) 40%, var(--line)); }
+.event-gallery__segment.is-done { background: color-mix(in srgb, var(--brand-primary) 55%, transparent); }
+.event-gallery__segment.is-active { background: color-mix(in srgb, var(--brand-primary) 28%, var(--line)); }
 .event-gallery__segment span { display: none; }
 .event-gallery__segment.is-active span {
   display: block;
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: var(--brand-accent);
+  background: var(--brand-primary);
   transform: scaleX(0);
   transform-origin: left center;
   animation: event-segment-fill var(--dwell, 5000ms) linear forwards;
 }
 .event-gallery.is-paused .event-gallery__segment.is-active span { animation-play-state: paused; }
-.event-gallery__segment:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 3px; }
+.event-gallery__segment:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 3px; }
 @keyframes event-segment-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 .event-gallery__footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-top: 1.5rem; }
@@ -4873,7 +4907,7 @@ select:focus-visible {
   line-height: 1;
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--brand-accent) 62%, var(--ink));
+  color: var(--brand-primary);
 }
 .event-gallery__caption p { font-size: clamp(1.1rem, 1.6vw, 1.32rem); line-height: 1.55; font-weight: 600; max-width: 52ch; padding-bottom: .15rem; }
 @media (max-width: 980px) {
@@ -4893,3 +4927,199 @@ select:focus-visible {
   .event-gallery__card.is-active { transform: none; filter: none; transition: none; }
   .event-gallery__segment span { animation: none; }
 }
+
+/* ================================================================
+   CATERING CHECKOUT — Brand Harmonization
+   ================================================================ */
+.catering-checkout {
+  min-height: 100vh;
+  color: var(--brand-text);
+  background: var(--brand-surface);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.catering-checkout__card {
+  background: color-mix(in srgb, var(--brand-surface-soft) 85%, transparent);
+  border: 1px solid var(--brand-outline);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.catering-checkout__step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-warm) 50%, transparent);
+  color: var(--brand-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.catering-checkout__step.is-active {
+  border-color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-text);
+  box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+}
+
+.catering-checkout__step.is-completed {
+  border-color: var(--brand-leaf);
+  color: var(--brand-leaf);
+  background: color-mix(in srgb, var(--brand-leaf) 8%, transparent);
+}
+
+.catering-checkout__step-num {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--brand-text) 10%, transparent);
+  color: var(--brand-text);
+}
+
+.catering-checkout__step.is-active .catering-checkout__step-num {
+  background: var(--brand-primary);
+  color: #251917;
+}
+
+.catering-checkout__step.is-completed .catering-checkout__step-num {
+  background: var(--brand-leaf);
+  color: #ffffff;
+}
+
+.catering-checkout__item-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-warm) 45%, transparent);
+  padding: 1.15rem;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.catering-checkout__item-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-primary);
+  box-shadow: var(--shadow-soft);
+}
+
+.catering-checkout__item-card.is-selected {
+  border-color: var(--brand-primary-strong);
+  background: color-mix(in srgb, var(--brand-primary) 10%, var(--brand-surface-soft));
+  box-shadow: 0 8px 24px -6px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+}
+
+.catering-checkout__summary-box {
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-soft) 90%, transparent);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+}
+
+/* ================================================================
+   USER DASHBOARD — Brand Harmonization
+   ================================================================ */
+.user-dashboard {
+  min-height: 100vh;
+  color: var(--brand-text);
+  background: var(--brand-surface);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.user-dashboard__stat-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-soft) 85%, transparent);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-dashboard__stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+.user-dashboard__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-warm) 60%, transparent);
+}
+
+.user-dashboard__tab {
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--brand-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-dashboard__tab:hover {
+  color: var(--brand-text);
+}
+
+.user-dashboard__tab.is-active {
+  color: var(--brand-text);
+  background: var(--brand-surface-soft);
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--brand-shadow-warm) 14%, transparent);
+}
+
+.user-dashboard__order-card {
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--brand-outline);
+  background: color-mix(in srgb, var(--brand-surface-soft) 85%, transparent);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-ring), var(--shadow-soft);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.user-dashboard__order-card:hover {
+  border-color: color-mix(in srgb, var(--brand-primary) 45%, transparent);
+  transform: translateY(-2px);
+}
+
+.user-dashboard__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--brand-night) 75%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.user-dashboard__modal {
+  width: 100%;
+  max-width: 32rem;
+  border-radius: var(--radius-3xl);
+  border: 1px solid var(--brand-outline);
+  background: var(--brand-surface-soft);
+  color: var(--brand-text);
+  padding: 2rem;
+  box-shadow: 0 30px 80px -20px color-mix(in srgb, var(--brand-night) 60%, transparent);
+}
+

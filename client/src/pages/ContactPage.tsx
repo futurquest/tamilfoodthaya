@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
@@ -9,15 +10,21 @@ import FluidBackground from '../components/FluidBackground';
 
 export const ContactPage = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
+  const [result, setResult] = useState<'success' | 'error' | null>(null);
+  const today = new Date().toLocaleDateString('en-CA');
+  const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm();
+  const eventDate = watch('eventDate');
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: getSettings });
 
   const onSubmit = async (data: any) => {
+    setResult(null);
     try {
       await createLead(data);
+      setResult('success');
       toast.success(t('contactPage.success'));
       reset();
     } catch {
+      setResult('error');
       toast.error(t('contactPage.error'));
     }
   };
@@ -46,17 +53,17 @@ export const ContactPage = () => {
               <div>
                 <MapPin size={22} />
                 <span>{t('contactPage.visit')}</span>
-                <strong>{settings?.address || 'Hofplein 20, Rotterdam'}</strong>
+                <strong>{settings?.address || t('conversion.region')}</strong>
               </div>
               <div>
                 <Phone size={22} />
                 <span>{t('contactPage.call')}</span>
-                <strong>{settings?.phone || '+31 (0) 6 1234 5678'}</strong>
+                {settings?.phone ? <a href={`tel:${settings.phone.replace(/[^+0-9]/g, '')}`}>{settings.phone}</a> : <a href="#inquiry">{t('conversion.contactFallback')}</a>}
               </div>
               <div>
                 <Mail size={22} />
                 <span>{t('form.email')}</span>
-                <strong>{settings?.email || 'info@tamilfoodthaya.nl'}</strong>
+                {settings?.email ? <a href={`mailto:${settings.email}`}>{settings.email}</a> : <a href="#inquiry">{t('conversion.contactFallback')}</a>}
               </div>
               <div>
                 <CalendarDays size={22} />
@@ -77,15 +84,15 @@ export const ContactPage = () => {
 
             <label>
               {t('form.name')}
-              <input {...register('name', { required: t('contactPage.nameRequired') })} className="input-field" placeholder={t('contactPage.yourName')} />
-              {errors.name && <small>{String(errors.name.message)}</small>}
+              <input autoComplete="name" aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-error' : undefined} {...register('name', { required: t('contactPage.nameRequired') })} className="input-field" placeholder={t('contactPage.yourName')} />
+              {errors.name && <small role="alert" id="name-error">{String(errors.name.message)}</small>}
             </label>
 
             <div className="contact-form__row">
               <label>
                 {t('form.email')}
                 <input
-                  type="email"
+                  type="email" autoComplete="email" aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-error' : undefined}
                   {...register('email', {
                     required: t('contactPage.emailRequired'),
                     pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: t('contactPage.validEmail') },
@@ -93,19 +100,28 @@ export const ContactPage = () => {
                   className="input-field"
                   placeholder="name@email.com"
                 />
-                {errors.email && <small>{String(errors.email.message)}</small>}
+                {errors.email && <small role="alert" id="email-error">{String(errors.email.message)}</small>}
               </label>
               <label>
                 {t('form.phone')}
-                <input {...register('phone', { required: t('contactPage.phoneRequired') })} className="input-field" placeholder="+31 6 1234 5678" />
-                {errors.phone && <small>{String(errors.phone.message)}</small>}
+                <input type="tel" autoComplete="tel" aria-invalid={!!errors.phone} aria-describedby={errors.phone ? 'phone-error' : undefined} {...register('phone', { required: t('contactPage.phoneRequired') })} className="input-field" placeholder="+31 6 1234 5678" />
+                {errors.phone && <small role="alert" id="phone-error">{String(errors.phone.message)}</small>}
               </label>
             </div>
 
+            <fieldset className="event-details">
+              <legend>{t('conversion.optional')}</legend>
+              <div className="contact-form__row">
+                <label>{t('conversion.date')}<input type="date" className={`input-field${eventDate ? '' : ' input-field--empty'}`} min={today} {...register('eventDate', { validate: value => !value || value >= today || t('conversion.pastDate') })} aria-invalid={!!errors.eventDate} aria-describedby={errors.eventDate ? 'date-error' : undefined} />{errors.eventDate && <small id="date-error" role="alert">{String(errors.eventDate.message)}</small>}</label>
+                <label>{t('conversion.guests')}<input type="number" inputMode="numeric" min="1" step="1" className="input-field" {...register('guests', { validate: value => !value || (Number.isInteger(Number(value)) && Number(value) >= 1) || t('conversion.invalidGuests') })} aria-invalid={!!errors.guests} aria-describedby={errors.guests ? 'guests-error' : undefined} />{errors.guests && <small id="guests-error" role="alert">{String(errors.guests.message)}</small>}</label>
+              </div>
+              <label>{t('conversion.location')}<input className="input-field" autoComplete="address-level2" {...register('location')} /></label>
+            </fieldset>
+            {result && <p className={`form-result form-result--${result}`} role={result === 'error' ? 'alert' : 'status'}>{t(result === 'success' ? 'conversion.success' : 'conversion.retry')}</p>}
             <label>
               {t('form.message')}
-              <textarea {...register('message', { required: t('contactPage.messageRequired') })} className="input-field" placeholder={t('contactPage.messagePlaceholder')} />
-              {errors.message && <small>{String(errors.message.message)}</small>}
+              <textarea aria-invalid={!!errors.message} aria-describedby={errors.message ? 'message-error' : undefined} {...register('message', { required: t('contactPage.messageRequired') })} className="input-field" placeholder={t('contactPage.messagePlaceholder')} />
+              {errors.message && <small role="alert" id="message-error">{String(errors.message.message)}</small>}
             </label>
 
             <button type="submit" className="btn-primary" disabled={isSubmitting}>

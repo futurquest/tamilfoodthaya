@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
     Box,
     CheckCircle2,
@@ -561,7 +561,7 @@ const PackageEditor = ({
                     </aside>
                 </div>
 
-                <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
+                <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
                     <WorkspaceHeader
                         title="Meal group builder"
                         text="Create the customer choice groups shown inside this catering package."
@@ -727,7 +727,7 @@ const PackageGrid = ({
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
 }) => (
-    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
+    <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
         <WorkspaceHeader
             title="Package board"
             text="Review public package cards, pricing, guest ranges and included choice groups."

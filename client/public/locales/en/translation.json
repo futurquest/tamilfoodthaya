@@ -82,34 +82,67 @@
   },
   "auth": {
     "login": {
-      "welcome": "Welcome",
-      "back": "back",
-      "tagline": "We are happy to see you again at Tamil Food Thaya.",
+      "seoTitle": "Log In - Tamil Food Thaya",
+      "seoDesc": "Log in to your Tamil Food Thaya account to manage orders and catering.",
+      "welcome": "Welcome back to the kitchen.",
+      "welcomeDesc": "Sign in to reorder favourites, track requests, and keep catering details in one place.",
       "username": "Username",
       "password": "Password",
-      "loginBtn": "Sign In",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "togglePassword": "Toggle password visibility",
+      "loginBtn": "Sign in",
       "waiting": "Please wait...",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign up now",
-      "loginSuccess": "Welcome back, {username}!",
-      "loginError": "Login failed. Please check your credentials."
+      "signUp": "Create one",
+      "loginSuccess": "Welcome back, {username}",
+      "loginError": "Login failed. Please check your credentials.",
+      "usernameRequired": "Username is required",
+      "passwordRequired": "Password is required"
     },
     "register": {
-      "welcome": "Get Started",
-      "with": "with Tamil Food Thaya",
-      "tagline": "Create an account to order and track your events.",
+      "seoTitle": "Create Account - Tamil Food Thaya",
+      "seoDesc": "Create a Tamil Food Thaya account for orders and catering requests.",
+      "welcome": "Create your Tamil Food Thaya account.",
+      "welcomeDesc": "Save contact details, manage catering inquiries, and return to the dishes you already know you love.",
+      "name": "Full Name",
       "username": "Username",
-      "email": "Email",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "address": "Address",
       "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "agreeTerms": "I agree to the",
-      "termsOfService": "Terms of Service",
-      "registerBtn": "Create Account",
+      "registerBtn": "Create account",
       "registering": "Creating...",
       "haveAccount": "Already have an account?",
-      "signIn": "Sign in here",
-      "registerSuccess": "Account created successfully!",
+      "signIn": "Sign in",
+      "nameRequired": "Name is required",
+      "usernameRequired": "Username is required",
+      "phoneRequired": "Phone is required",
+      "emailRequired": "Email is required",
+      "validEmail": "Enter a valid email address",
+      "passwordRequired": "Password is required",
+      "minPassword": "Use at least 6 characters",
+      "registerSuccess": "Registration successful. Check your email for the PIN.",
       "registerError": "Registration failed. Please try again."
+    },
+    "verify": {
+      "seoTitle": "Verify Email - Tamil Food Thaya",
+      "seoDesc": "Verify your Tamil Food Thaya email address.",
+      "checkInbox": "Check your inbox.",
+      "pinDesc": "We sent a 6-digit PIN to confirm your email. Enter it below to unlock the kitchen.",
+      "pinLabel": "Verification PIN",
+      "pinPlaceholder": "123456",
+      "pinHint": "Check your email for the verification code.",
+      "submit": "Verify",
+      "verifying": "Verifying...",
+      "rightEmail": "Wrong address?",
+      "registerAgain": "Register again",
+      "success": "Email successfully verified! You can now login.",
+      "failed": "Verification failed. Please check your PIN.",
+      "noEmail": "No email provided for verification.",
+      "nothingToVerify": "Nothing to verify.",
+      "nothingDesc": "No email address was provided. Head back to registration to create your account.",
+      "goRegister": "Go to Register"
     }
   },
   "catering": {
@@ -260,9 +293,9 @@
     "dishes": "dishes"
   },
   "home2": {
-    "seoTitle": "Traditional Tamil food and catering",
+    "seoTitle": "Traditional Tamil catering in the Netherlands",
     "seoDescription": "Tamil Food Thaya serves authentic Tamil and Sri Lankan food, takeaway, and event catering in the Netherlands.",
-    "title": "Traditional Tamil food, cooked for the people who miss the real thing.",
+    "title": "Tamil food, made for your next gathering.",
     "lead": "Tamil Food Thaya brings deeply spiced curries, crisp dosai, fragrant biryani, warm rice meals, and generous catering spreads to homes, offices, weddings, and family celebrations across the Netherlands.",
     "menuCta": "Explore the menu",
     "cateringCta": "Plan catering",
@@ -318,10 +351,10 @@
     ]
   },
   "menuPage": {
-    "seoTitle": "Menu",
+    "seoTitle": "Tamil catering menu",
     "seoDescription": "Explore Tamil Food Thaya's traditional Tamil and Sri Lankan menu.",
-    "heroTitle": "Find the Tamil dish you came hungry for.",
-    "heroDesc": "Browse breakfast staples, rice meals, curries, snacks, sweets, and event favourites. Every path keeps ordering and catering close.",
+    "heroTitle": "Explore the flavours for your Tamil feast.",
+    "heroDesc": "Wedding, family celebration or a meal with colleagues: plan your Tamil catering in the Netherlands with Tamil Food Thaya.",
     "searchPlaceholder": "Search dosa, biryani, payasam...",
     "all": "All dishes",
     "categories": "Dish categories",
@@ -337,25 +370,61 @@
     "close": "Close",
     "fallback": {
       "cat": {
-        "breakfast": { "name": "Tamil breakfast", "description": "Soft idli, crisp dosai, pongal, sambar, and fresh chutneys." },
-        "mains": { "name": "Rice meals and curries", "description": "Hearty lunch and dinner plates built around rice, rasam, sambar, and curry." },
-        "snacks": { "name": "Snacks and sweets", "description": "Starters, street snacks, and traditional sweet finishes." }
+        "breakfast": {
+          "name": "Tamil breakfast",
+          "description": "Soft idli, crisp dosai, pongal, sambar, and fresh chutneys."
+        },
+        "mains": {
+          "name": "Rice meals and curries",
+          "description": "Hearty lunch and dinner plates built around rice, rasam, sambar, and curry."
+        },
+        "snacks": {
+          "name": "Snacks and sweets",
+          "description": "Starters, street snacks, and traditional sweet finishes."
+        }
       },
       "item": {
-        "idli": { "name": "Idli sambar", "description": "Steamed rice cakes with sambar and coconut chutney." },
-        "dosa": { "name": "Masala dosai", "description": "Crisp fermented crepe with potato masala and chutneys." },
-        "pongal": { "name": "Ven pongal", "description": "Rice and lentils finished with pepper, cumin, ghee, and cashew." },
-        "thali": { "name": "Tamil meals", "description": "Rice, sambar, rasam, poriyal, kootu, appalam, and pickle." },
-        "biryani": { "name": "Chicken biryani", "description": "Fragrant rice layered with masala, herbs, and tender chicken." },
-        "chettinad": { "name": "Chettinad curry", "description": "Deep peppery curry with roasted spices and curry leaves." },
-        "vada": { "name": "Medhu vadai", "description": "Crisp lentil fritters served with chutney and sambar." },
-        "pakoda": { "name": "Onion pakoda", "description": "Golden onion fritters with chilli, curry leaf, and gram flour." },
-        "payasam": { "name": "Payasam", "description": "Creamy milk pudding with cardamom, cashew, raisins, and jaggery." }
+        "idli": {
+          "name": "Idli sambar",
+          "description": "Steamed rice cakes with sambar and coconut chutney."
+        },
+        "dosa": {
+          "name": "Masala dosai",
+          "description": "Crisp fermented crepe with potato masala and chutneys."
+        },
+        "pongal": {
+          "name": "Ven pongal",
+          "description": "Rice and lentils finished with pepper, cumin, ghee, and cashew."
+        },
+        "thali": {
+          "name": "Tamil meals",
+          "description": "Rice, sambar, rasam, poriyal, kootu, appalam, and pickle."
+        },
+        "biryani": {
+          "name": "Chicken biryani",
+          "description": "Fragrant rice layered with masala, herbs, and tender chicken."
+        },
+        "chettinad": {
+          "name": "Chettinad curry",
+          "description": "Deep peppery curry with roasted spices and curry leaves."
+        },
+        "vada": {
+          "name": "Medhu vadai",
+          "description": "Crisp lentil fritters served with chutney and sambar."
+        },
+        "pakoda": {
+          "name": "Onion pakoda",
+          "description": "Golden onion fritters with chilli, curry leaf, and gram flour."
+        },
+        "payasam": {
+          "name": "Payasam",
+          "description": "Creamy milk pudding with cardamom, cashew, raisins, and jaggery."
+        }
       }
     }
   },
   "catering2": {
-    "seoTitle": "Catering",
+    "seoTitle": "Tamil wedding & event catering in the Netherlands",
     "seoDescription": "Traditional Tamil catering for weddings, family gatherings, corporate meals, and private events.",
     "heroTitle": "Choose a Tamil catering package your guests will remember.",
     "heroLead": "Start with the package. Then customise the dishes, guest count, add-ons, service notes, and event details in one clear checkout flow.",
@@ -394,16 +463,17 @@
     ]
   },
   "addons": {
-    "title": "Useful extras, added only when the event needs them.",
-    "lead": "Keep the meal focused, then add the pieces that reduce event-day work: drinks, decoration, music, kids meals, or service support.",
-    "addDuring": "Add during catering checkout",
-    "browse": "Browse catering packages"
+    "title": "Thoughtful touches for every gathering.",
+    "lead": "Elevate your celebration with curated entertainment, bespoke floral decor, welcoming refreshments, and dedicated hospitality.",
+    "addDuring": "Selectable during package checkout",
+    "browse": "Browse catering packages",
+    "eyebrow": "Kitchen & Fire — Add-ons"
   },
   "contactPage": {
-    "seoTitle": "Contact",
+    "seoTitle": "Contact us for Tamil catering in the Netherlands",
     "seoDescription": "Contact Tamil Food Thaya for menu questions, takeaway, and traditional Tamil catering requests.",
-    "heroTitle": "Tell us what you are planning.",
-    "heroDesc": "Ask about a dish, request catering, confirm dietary needs, or send the details for your next family celebration.",
+    "heroTitle": "Let’s plan your Tamil feast.",
+    "heroDesc": "Share your date, guest count and location. Tell us about favourite dishes and dietary needs so we can discuss a menu for your gathering.",
     "asideTitle": "The quickest route to the right meal.",
     "asideLead": "Share the occasion, guest count, date, and any must-have dishes. We will respond with the next practical step.",
     "visit": "Visit",
@@ -414,7 +484,7 @@
     "formLead": "Most catering requests are easier to quote with a few details up front.",
     "yourName": "Your name",
     "messagePlaceholder": "Tell us the occasion, guest count, date, and dishes you have in mind.",
-    "sendInquiry": "Send inquiry",
+    "sendInquiry": "Request a catering quote",
     "success": "Thank you. Your message has been sent.",
     "error": "We could not send your message. Please try again.",
     "nameRequired": "Name is required",
@@ -477,10 +547,166 @@
     "eventDetails": "Event Details",
     "back": "Back",
     "placing": "Placing Order...",
-    "placeOrder": "Place Order",
+    "placeOrder": "Place Catering Order",
     "priceSummary": "Price Summary",
     "basePrice": "Base price",
     "perPerson": "Per person",
-    "apply": "Apply"
+    "apply": "Apply",
+    "addonsHelp": "Enhance your event with sound, decorations, or extra service.",
+    "eventDate": "Event Date",
+    "guestsCount": "Number of Guests",
+    "eventLocation": "Event Location / Venue",
+    "contactInfo": "Contact Information",
+    "notes": "Special Dietary Needs or Notes",
+    "notesPlaceholder": "e.g. 5 vegetarian guests, mild spice preference, entrance timing at 18:00...",
+    "addonsTotal": "Add-ons total",
+    "couponCode": "Coupon Code",
+    "couponApplied": "Coupon applied",
+    "discount": "Discount",
+    "total": "Total",
+    "requiredItemsMissing": "Please complete all required items before moving to the next step.",
+    "minSelectionRequired": "\"{category}\" requires at least {min} selection(s)",
+    "maxSelectionAllowed": "Maximum {max} item(s) allowed for \"{category}\"",
+    "dishPreview": "Dish Preview",
+    "close": "Close",
+    "orderSuccess": "Your catering request has been placed! We will contact you to confirm.",
+    "orderError": "Failed to place catering order. Please try again.",
+    "packageNotFound": "Catering package not found.",
+    "invalidCoupon": "Invalid coupon code."
+  },
+  "conversion": {
+    "title": "Bring a taste of Tamil tradition to your table.",
+    "description": "Wedding, family celebration or a meal with colleagues: plan your Tamil catering in the Netherlands with Tamil Food Thaya.",
+    "details": "Share your date, guest count and location. Tell us about favourite dishes and dietary needs so we can discuss a menu for your gathering.",
+    "quote": "Request a catering quote",
+    "packages": "Explore catering packages",
+    "next": "Send your event details using the form above. We will discuss availability and your menu before you decide.",
+    "imageAlt": "A selection of traditional Tamil dishes for a shared meal",
+    "date": "Event date (optional)",
+    "guests": "Number of guests (optional)",
+    "location": "Event location (optional)",
+    "optional": "Not sure yet? Leave these details blank.",
+    "invalidGuests": "Enter a whole number of at least 1.",
+    "pastDate": "Choose today or a future date.",
+    "success": "Thank you. Your catering enquiry has been sent. We will contact you to discuss your event.",
+    "retry": "Your enquiry could not be sent. Please try again; your details are still here.",
+    "contactFallback": "Ask using the enquiry form",
+    "region": "Tamil catering in the Netherlands"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "eventGallery": {
+    "title": "Tamil hospitality, made for gathering.",
+    "description": "From celebration buffets to outdoor meals and the finishing touches. Explore our event catering in pictures.",
+    "carousel": "carousel",
+    "slide": "slide",
+    "keyboardHint": "Event photos. Use the left and right arrow keys to browse.",
+    "previous": "Previous event image",
+    "next": "Next event image",
+    "position": "Image {{current}} of {{total}}",
+    "captions": [
+      "A buffet for the whole family",
+      "Sharing a meal by the water",
+      "An outdoor buffet for a sunny gathering",
+      "A warm welcome around the buffet",
+      "A celebration with traditional Tamil flavours",
+      "Bringing guests together over food",
+      "Fruit carving and a colourful fruit display",
+      "The setting for a celebration",
+      "Family and friends gathered at the table",
+      "A buffet of rice dishes and curries",
+      "A family gathering around Tamil food",
+      "Fruit and chocolate for a sweet finish",
+      "Drinks ready to welcome your guests",
+      "Savoury snacks, sweets and refreshments"
+    ]
+  },
+  "ourStory": {
+    "eyebrow": "About Tamil Food Thaya",
+    "title": "Our Story",
+    "subhead": "Bringing the Taste of Home to the Netherlands",
+    "p1": "For more than 25 years, founder Thayapalan has shared the authentic flavours of Tamil home cooking with communities across Rotterdam and the Netherlands.",
+    "p2": "Tamil Food Thaya began with a simple idea: food should taste like home. Inspired by traditional Tamil cooking and the comforting meals made by mothers for generations, Thayapalan set out to preserve those flavours and share them with others.",
+    "p3": "From intimate family gatherings to weddings and large celebrations, every meal is prepared with the same values we started with — tradition, freshness, generosity and care.",
+    "tagline": "Tamil Food Thaya — traditional Tamil food, made with the warmth of home.",
+    "founderCaption": "Thayapalan — Founder",
+    "founderAlt": "Thayapalan, founder of Tamil Food Thaya"
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "subtitle": "Manage your active catering bookings, order history, and recent notifications in one place.",
+    "errorTitle": "We couldn’t load your bookings",
+    "errorDesc": "Your orders have not changed. Please try again.",
+    "tryAgain": "Try again",
+    "loading": "Preparing your dashboard...",
+    "stats": {
+      "pending": "Pending / Review",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "totalOrders": "Total Bookings"
+    },
+    "tabs": {
+      "all": "All Orders",
+      "active": "Active",
+      "catering": "Catering Requests",
+      "regular": "Takeaway Orders",
+      "history": "History"
+    },
+    "orderCard": {
+      "orderNum": "Order #",
+      "placedOn": "Placed on",
+      "eventDate": "Event Date",
+      "pickupTime": "Pickup Time",
+      "guests": "Guests",
+      "total": "Total",
+      "status": "Status",
+      "items": "Items",
+      "addons": "Add-ons",
+      "requestChange": "Request Change",
+      "changeRequested": "Change Requested",
+      "viewDetails": "View Details",
+      "notes": "Notes"
+    },
+    "modal": {
+      "title": "Request Changes to Order",
+      "desc": "Need to adjust your guest count, timing, dishes, or special notes? Let our kitchen know below.",
+      "notesLabel": "Describe your requested adjustments",
+      "placeholder": "e.g. Please increase guest count to 65, and add extra vegetarian starters...",
+      "submit": "Submit Request",
+      "cancel": "Cancel",
+      "submitting": "Submitting...",
+      "success": "Change request submitted successfully!",
+      "error": "Failed to submit request"
+    },
+    "notifications": {
+      "title": "Recent Notifications",
+      "clear": "Dismiss",
+      "cleared": "Notification cleared!",
+      "clearError": "Failed to clear notification"
+    },
+    "empty": {
+      "title": "No orders found",
+      "desc": "You have not placed any orders or catering bookings in this section yet.",
+      "browseMenu": "Browse Menu",
+      "bookCatering": "Explore Catering Packages"
+    },
+    "badges": {
+      "catering": "Catering",
+      "regular": "Takeaway",
+      "pending": "Pending",
+      "review": "In Review",
+      "confirmed": "Confirmed",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
   }
 }

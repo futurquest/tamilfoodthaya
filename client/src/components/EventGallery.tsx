@@ -239,12 +239,13 @@ export default function EventGallery() {
                         draggable={false}
                       />
                       <figcaption className="sr-only">{cardImage}</figcaption>
-                      {index === pos && (
+                      {/* {index === pos && (
                         <span className="event-gallery__chip" aria-hidden="true">
                           <span className="event-gallery__chip-dot" />
-                          {t('eventGallery.badge', 'Gathering')} · {imageNumber} / {IMAGE_COUNT}
+                          {t('eventGallery.badge', 'Gathering')} · {imageNumber} / {IMAGE_COUNT} 
+                          
                         </span>
-                      )}
+                      )} */}
                     </figure>
                   );
                 })}

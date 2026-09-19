@@ -24,7 +24,18 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => setMobileOpen(false), [location.pathname]);
+  useEffect(() => setMobileOpen(false), [location.pathname, location.hash]);
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileOpen(false);
+        document.querySelector<HTMLButtonElement>('.mobile-toggle')?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
 
   const navLinks = [
     { name: t('nav.home', 'Home'), path: '/' },
@@ -77,9 +88,9 @@ export const Header = () => {
                 {t('nav.login', 'Log in')}
               </NavLink>
             )}
-            <NavLink to="/menu" className="btn-primary site-order">
+            <NavLink to="/catering#packages-section" className="btn-primary site-order">
               <ShoppingBag size={17} />
-              {t('nav.orderFood', 'Order food')}
+              {t('conversion.packages')}
             </NavLink>
             <button
               type="button"
@@ -87,6 +98,7 @@ export const Header = () => {
               onClick={() => setMobileOpen((open) => !open)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -95,7 +107,7 @@ export const Header = () => {
       </header>
 
       {mobileOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu" id="mobile-navigation">
           <nav className="mobile-menu__panel" aria-label="Mobile navigation">
             {navLinks.map((link) => (
               <NavLink key={link.path} to={link.path} end={link.path === '/'} className="mobile-menu__link">
@@ -116,9 +128,9 @@ export const Header = () => {
               ) : (
                 <NavLink to="/login" className="mobile-menu__link">{t('nav.login', 'Log in')}</NavLink>
               )}
-              <Link to="/menu" className="btn-primary mobile-menu__order">
+              <Link to="/catering#packages-section" className="btn-primary mobile-menu__order">
                 <ShoppingBag size={17} />
-                {t('nav.orderFood', 'Order food')}
+                {t('conversion.packages')}
               </Link>
             </div>
           </nav>
@@ -154,12 +166,12 @@ export const Footer = () => {
           </Link>
           <p>{t('footer.description', 'Authentic Tamil and Sri Lankan dishes for everyday meals, family gatherings, weddings, and community celebrations.')}</p>
           <div className="site-footer__socials">
-            <a href={settings?.instagramUrl || 'https://instagram.com'} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            {settings?.instagramUrl && <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <SiInstagram width={18} height={18} />
-            </a>
-            <a href={settings?.facebookUrl || 'https://facebook.com'} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            </a>}
+            {settings?.facebookUrl && <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <SiFacebook width={18} height={18} />
-            </a>
+            </a>}
           </div>
         </div>
 
@@ -173,16 +185,16 @@ export const Footer = () => {
 
         <div className="site-footer__col">
           <h3>{t('footer.visit', 'Visit')}</h3>
-          <p className="footer-line"><MapPin size={16} /> {settings?.address || 'Hofplein 20, Rotterdam'}</p>
-          <p className="footer-line"><Phone size={16} /> {settings?.phone || '+31 (0) 6 1234 5678'}</p>
-          <p className="footer-line"><Mail size={16} /> {settings?.email || 'info@tamilfoodthaya.nl'}</p>
+          <p className="footer-line"><MapPin size={16} /> {settings?.address || t('conversion.region')}</p>
+          {settings?.phone && <a className="footer-line" href={`tel:${settings.phone.replace(/[^+0-9]/g, '')}`}><Phone size={16} />{settings.phone}</a>}
+          {settings?.email && <a className="footer-line" href={`mailto:${settings.email}`}><Mail size={16} />{settings.email}</a>}
         </div>
 
         <div className="site-footer__col">
           <h3>{t('footer.hours', 'Kitchen hours')}</h3>
-          <p>{t('footer.monFri', 'Mon - Fri')} <strong>12:00 - 22:00</strong></p>
-          <p>{t('footer.saturday', 'Saturday')} <strong>11:00 - 23:00</strong></p>
-          <p>{t('footer.sunday', 'Sunday')} <strong>12:00 - 21:00</strong></p>
+          {settings?.businessHours && Object.entries(settings.businessHours).filter(([, hours]) => typeof hours === 'string' && hours).map(([day, hours]) => (
+            <p key={day}><span>{t(`days.${day}`, day)}</span> <strong>{String(hours)}</strong></p>
+          ))}
           <Link to="/contact#inquiry" className="btn-primary">{t('footer.cateringCta', 'Ask about catering')}</Link>
         </div>
       </div>

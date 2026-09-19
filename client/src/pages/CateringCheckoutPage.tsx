@@ -314,7 +314,7 @@ export const CateringCheckoutPage = () => {
             window.innerHeight - cardHeight - viewportPadding
         );
 
-        setDishPreview({
+setDishPreview({
             image: item.image,
             name,
             description,
@@ -422,9 +422,9 @@ export const CateringCheckoutPage = () => {
         }
     };
 
-if (loading) {
+    if (loading) {
         return (
-            <div className="catering-checkout flex min-h-screen items-center justify-center bg-white pt-24 pb-16">
+            <div className="catering-checkout flex min-h-screen items-center justify-center pt-24 pb-16" style={{ background: 'var(--brand-surface)' }}>
                 <PageLoader full={false} hint={t('cateringCheckout.loading')} />
             </div>
         );
@@ -435,29 +435,29 @@ if (loading) {
     const activeCategory = pkg.categories[activeCatIdx];
 
     return (
-        <div className="catering-checkout min-h-screen bg-white font-sans pt-24 pb-16 text-gray-900">
+        <div className="catering-checkout min-h-screen font-sans pt-24 pb-16" style={{ background: 'var(--brand-surface)', color: 'var(--brand-text)' }}>
             <SEO
                 title={`${pkg.name} - Catering`}
                 description={`Customize your ${pkg.name} catering package.`}
             />
 
-            <section className="border-b border-gray-200 bg-white">
+            <section className="border-b" style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                 <Container>
                     <div className="mx-auto max-w-6xl py-8">
-                        <div className="rounded-3xl border border-gray-200 bg-white p-6 md:p-8">
-                            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        <div className="rounded-3xl border p-6 md:p-8" style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
+                            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--brand-text-muted)' }}>
                                 {t('cateringCheckout.packageLabel')}
                             </p>
 
-                            <h1 className="mt-2 text-3xl font-semibold text-gray-900 md:text-4xl">
+                            <h1 className="mt-2 text-3xl font-semibold md:text-4xl" style={{ color: 'var(--brand-text)' }}>
                                 {getLabel((pkg as any).nameTranslations, pkg.name)}
                             </h1>
 
-                            <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">
+                            <p className="mt-3 max-w-3xl text-sm leading-7" style={{ color: 'var(--brand-text-muted)' }}>
                                 {getLabel((pkg as any).descriptionTranslations, pkg.description)}
                             </p>
 
-                            <div className="mt-6 border-t border-gray-200 pt-5">
+                            <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--brand-outline)' }}>
                                 <div className="flex flex-wrap items-center gap-2">
                                     {stepLabels.map((label, i) => (
                                         <div
@@ -465,19 +465,18 @@ if (loading) {
                                             className="flex items-center gap-2 whitespace-nowrap"
                                         >
                                             <div
-                                                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium ${
-                                                    step >= i
-                                                        ? 'bg-black text-white'
-                                                        : 'border border-gray-300 bg-white text-gray-500'
-                                                }`}
+                                                className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors"
+                                                style={step >= i
+                                                    ? { background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+                                                    : { border: '1px solid var(--brand-outline)', background: 'var(--brand-surface)', color: 'var(--brand-text-muted)' }
+                                                }
                                             >
                                                 {step > i ? <CheckCircle size={18} /> : i + 1}
                                             </div>
 
                                             <span
-                                                className={`text-sm ${
-                                                    step >= i ? 'text-gray-900' : 'text-gray-500'
-                                                }`}
+                                                className="text-sm"
+                                                style={{ color: step >= i ? 'var(--brand-text)' : 'var(--brand-text-muted)' }}
                                             >
                                                 {label}
                                             </span>
@@ -485,7 +484,7 @@ if (loading) {
                                             {i < stepLabels.length - 1 && (
                                                 <ChevronRight
                                                     size={16}
-                                                    className="text-gray-400"
+                                                    style={{ color: 'var(--brand-text-muted)' }}
                                                 />
                                             )}
                                         </div>
@@ -503,18 +502,18 @@ if (loading) {
                         {step === 0 && activeCategory && (
                             <div className="space-y-4">
                                 <div className="space-y-4">
-                                    <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                    <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                         <CardContent className="p-4">
                                             <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                                                 <div>
-                                                    <h2 className="text-lg font-semibold text-gray-900">
+                                                    <h2 className="text-lg font-semibold" style={{ color: 'var(--brand-text)' }}>
                                                         {t('cateringCheckout.categoriesTitle')}
                                                     </h2>
-                                                    <p className="text-sm text-gray-600">
+                                                    <p className="text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                                         {t('cateringCheckout.categoriesHelp')}
                                                     </p>
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-500">
+                                                <span className="text-sm font-medium" style={{ color: 'var(--brand-text-muted)' }}>
                                                     {activeCatIdx + 1} of {pkg.categories.length}
                                                 </span>
                                             </div>
@@ -532,15 +531,13 @@ if (loading) {
                                                             aria-current={
                                                                 activeCatIdx === idx ? 'step' : undefined
                                                             }
-                                                            className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition ${
-                                                                activeCatIdx === idx
-                                                                    ? 'border-black bg-black text-white'
-                                                                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                                            } ${
-                                                                isValid && activeCatIdx !== idx
-                                                                    ? 'border-green-500 bg-green-50 text-green-800'
-                                                                    : ''
-                                                            }`}
+                                                            className="flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition"
+                                                            style={activeCatIdx === idx
+                                                                ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+: isValid
+                                                                        ? { borderColor: 'var(--leaf)', background: 'color-mix(in srgb, var(--brand-leaf) 10%, transparent)', color: 'var(--leaf)' }
+                                                                    : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)', color: 'var(--brand-text)' }
+                                                            }
                                                         >
                                                             <span>
                                                                 {getLabel(
@@ -548,13 +545,15 @@ if (loading) {
                                                                     cat.name
                                                                 )}
                                                             </span>
-                                                            <span className={`rounded-full px-2 py-1 text-xs ${
-                                                                activeCatIdx === idx
-                                                                    ? 'bg-white/15 text-white'
+                                                            <span
+                                                                className="rounded-full px-2 py-1 text-xs"
+                                                                style={activeCatIdx === idx
+                                                                    ? { background: 'rgba(255,255,255,0.15)', color: 'var(--brand-cream)' }
                                                                     : isValid
-                                                                      ? 'bg-green-100 text-green-800'
-                                                                      : 'bg-gray-100 text-gray-600'
-                                                            }`}>
+                                                                        ? { background: '#dcfce7', color: '#166534' }
+                                                                        : { background: 'var(--brand-surface-dim)', color: 'var(--brand-text-muted)' }
+                                                                }
+                                                            >
                                                                 {count}/{cat.maxSelect}
                                                             </span>
                                                         </button>
@@ -565,12 +564,12 @@ if (loading) {
                                     </Card>
 
                                     <div id="catering-items-panel" className="scroll-mt-28">
-                                        <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                        <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                             <CardContent className="p-6">
                                             <div>
                                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                                                     <div>
-                                                        <h2 className="text-2xl font-semibold text-gray-900">
+                                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                                             {getLabel(
                                                                 (activeCategory as any).nameTranslations,
                                                                 activeCategory.name
@@ -579,7 +578,7 @@ if (loading) {
                                                         {(activeCategory.description ||
                                                             (activeCategory as any)
                                                                 .descriptionTranslations) && (
-                                                            <p className="mt-1 text-sm text-gray-600">
+                                                            <p className="mt-1 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                                                 {getLabel(
                                                                     (activeCategory as any)
                                                                         .descriptionTranslations,
@@ -589,7 +588,7 @@ if (loading) {
                                                         )}
                                                     </div>
 
-                                                    <span className="text-sm text-gray-500">
+                                                    <span className="text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                                         Select {activeCategory.minSelect}
                                                         {activeCategory.minSelect !==
                                                         activeCategory.maxSelect
@@ -600,7 +599,7 @@ if (loading) {
                                                 </div>
 
                                                 {selectionErrors.length > 0 && (
-                                                    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
+                                                    <div className="mt-4 rounded-xl border border-red-200 p-3" style={{ background: 'color-mix(in srgb, #ef4444 10%, transparent)' }}>
                                                         <p className="text-sm font-medium text-red-700">
                                                             {t('cateringCheckout.completeRequired')}
                                                         </p>
@@ -634,11 +633,11 @@ if (loading) {
                                                         return (
                                                             <Card
                                                                 key={iIdx}
-                                                                className={`overflow-visible rounded-2xl border-2 bg-white shadow-none transition ${
-                                                                    selected
-                                                                        ? 'border-black bg-gray-50 ring-2 ring-black/10'
-                                                                        : 'border-gray-200 hover:border-gray-400'
-                                                                }`}
+                                                                className="overflow-visible rounded-2xl border-2 shadow-none transition"
+                                                                style={selected
+                                                                    ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-surface-dim)', boxShadow: '0 0 0 2px color-mix(in srgb, var(--brand-primary) 15%, transparent)' }
+                                                                    : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)' }
+                                                                }
                                                             >
                                                                 <CardContent className="p-4">
                                                                     <div
@@ -668,11 +667,11 @@ if (loading) {
                                                                                         );
                                                                                     }
                                                                                 }}
-                                                                                className={`mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border transition ${
-                                                                                    selected
-                                                                                        ? 'border-black bg-black text-white'
-                                                                                        : 'border-gray-300 bg-white text-transparent'
-                                                                                }`}
+                                                                                className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border transition"
+                                                                                style={selected
+                                                                                    ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+                                                                                    : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface)', color: 'transparent' }
+                                                                                }
                                                                             >
                                                                                 <CheckCircle size={14} />
                                                                             </button>
@@ -703,7 +702,7 @@ if (loading) {
                                                                                     tabIndex={0}
                                                                                     aria-label={`Preview ${itemName}`}
                                                                                 >
-                                                                                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-gray-200">
+                                                                                    <div className="h-14 w-14 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--brand-outline)' }}>
                                                                                         <img
                                                                                             src={item.image}
                                                                                             alt={itemName}
@@ -714,12 +713,12 @@ if (loading) {
                                                                             )}
 
                                                                             <div>
-                                                                                <h3 className="font-medium text-gray-900">
+                                                                                <h3 className="font-medium" style={{ color: 'var(--brand-text)' }}>
                                                                                     {itemName}
                                                                                 </h3>
 
                                                                                 {itemDescription && (
-                                                                                    <p className="mt-1 text-sm text-gray-600">
+                                                                                    <p className="mt-1 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                                                                         {itemDescription}
                                                                                     </p>
                                                                                 )}
@@ -728,7 +727,7 @@ if (loading) {
 
                                                                         <div className="shrink-0 text-right">
                                                                             {item.price > 0 ? (
-                                                                                <span className="text-sm font-medium text-gray-900">
+                                                                                <span className="text-sm font-medium" style={{ color: 'var(--brand-text)' }}>
                                                                                     +€{item.price.toFixed(2)} p.p.
                                                                                 </span>
                                                                             ) : (
@@ -752,13 +751,11 @@ if (loading) {
                                                                                             choice.name
                                                                                         )
                                                                                     }
-                                                                                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                                                                                        selected &&
-                                                                                        selectedChoice ===
-                                                                                            choice.name
-                                                                                            ? 'border-black bg-black text-white'
-                                                                                            : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                                                                    }`}
+                                                                                    className="rounded-full border px-3 py-1.5 text-xs font-medium transition"
+                                                                                    style={selected && selectedChoice === choice.name
+                                                                                        ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+                                                                                        : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)', color: 'var(--brand-text)' }
+                                                                                    }
                                                                                 >
                                                                                     {choice.name}
                                                                                     {choice.priceModifier > 0 && (
@@ -785,7 +782,7 @@ if (loading) {
                                                 </div>
                                             </div>
 
-                                            <div className="sticky bottom-3 z-10 mt-5 flex justify-between gap-3 rounded-2xl border border-gray-200 bg-white/95 p-3 shadow-lg backdrop-blur">
+                                            <div className="sticky bottom-3 z-10 mt-5 flex justify-between gap-3 rounded-2xl border p-3 shadow-lg backdrop-blur" style={{ borderColor: 'var(--brand-outline)', background: 'color-mix(in srgb, var(--brand-surface-ivory) 95%, transparent)' }}>
                                                 <Button
                                                     variant="outline"
                                                     disabled={activeCatIdx === 0}
@@ -801,7 +798,7 @@ if (loading) {
                                                         onClick={() =>
                                                             goToCategory(activeCatIdx + 1)
                                                         }
-                                                        className="gap-2 bg-black text-white hover:bg-gray-900"
+                                                        className="btn-primary gap-2"
                                                     >
                                                         {t('cateringCheckout.next')}
                                                         <ChevronRight size={18} />
@@ -810,7 +807,7 @@ if (loading) {
                                                     <Button
                                                         disabled={!canProceedFromSelections}
                                                         onClick={() => setStep(1)}
-                                                        className="gap-2 bg-black text-white hover:bg-gray-900"
+                                                        className="btn-primary gap-2"
                                                     >
                                                         {t('cateringCheckout.chooseAddons')}
                                                         <ArrowRight size={18} />
@@ -826,17 +823,17 @@ if (loading) {
 
                         {step === 1 && (
                             <div className="space-y-4">
-                                <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                     <CardContent className="p-6">
-                                        <h2 className="text-2xl font-semibold text-gray-900">
+                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             {t('cateringCheckout.optionalAddons')}
                                         </h2>
-                                        <p className="mt-2 text-sm text-gray-600">
+                                        <p className="mt-2 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                             Select any extras to make your event more special.
                                         </p>
 
                                         {availableAddons.length === 0 ? (
-                                            <div className="mt-6 rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-12 text-center text-gray-500">
+                                            <div className="mt-6 rounded-2xl border border-dashed py-12 text-center" style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)', color: 'var(--brand-text-muted)' }}>
                                                 <p className="font-medium">No add-ons available yet.</p>
                                                 <p className="mt-1 text-sm">
                                                     You can proceed without extras.
@@ -852,28 +849,28 @@ if (loading) {
                                                             key={addon._id}
                                                             type="button"
                                                             onClick={() => toggleAddon(addon._id)}
-                                                            className={`w-full rounded-2xl border-2 p-4 text-left transition ${
-                                                                selected
-                                                                    ? 'border-black bg-gray-50 ring-2 ring-black/10'
-                                                                    : 'border-gray-200 bg-white hover:border-gray-400'
-                                                            }`}
+                                                            className="w-full rounded-2xl border-2 p-4 text-left transition"
+                                                            style={selected
+                                                                ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-surface-dim)', boxShadow: '0 0 0 2px color-mix(in srgb, var(--brand-primary) 15%, transparent)' }
+                                                                : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)' }
+                                                            }
                                                         >
                                                             <div className="flex items-center justify-between gap-4">
                                                                 <div className="flex items-center gap-3">
-                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-gray-50">
+                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border" style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)' }}>
                                                                         {ADDON_ICONS[addon.category] ||
                                                                             ADDON_ICONS.other}
                                                                     </div>
 
                                                                     <div>
-                                                                        <h4 className="font-medium text-gray-900">
+                                                                        <h4 className="font-medium" style={{ color: 'var(--brand-text)' }}>
                                                                             {getLabel(
                                                                                 (addon as any)
                                                                                     .nameTranslations,
                                                                                 addon.name
                                                                             )}
                                                                         </h4>
-                                                                        <p className="mt-0.5 text-sm text-gray-600">
+                                                                        <p className="mt-0.5 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
                                                                             {getLabel(
                                                                                 (addon as any)
                                                                                     .descriptionTranslations,
@@ -885,10 +882,10 @@ if (loading) {
 
                                                                 <div className="ml-4 flex shrink-0 items-center gap-3">
                                                                     <div className="text-right">
-                                                                        <span className="font-medium text-gray-900">
+                                                                        <span className="font-medium" style={{ color: 'var(--brand-text)' }}>
                                                                             €{addon.price}
                                                                         </span>
-                                                                        <span className="ml-1 text-xs text-gray-500">
+                                                                        <span className="ml-1 text-xs" style={{ color: 'var(--brand-text-muted)' }}>
                                                                             {addon.pricingType === 'per_person'
                                                                                 ? '/pp'
                                                                                 : 'fixed'}
@@ -896,11 +893,11 @@ if (loading) {
                                                                     </div>
 
                                                                     <div
-                                                                        className={`flex h-6 w-6 items-center justify-center rounded-full border ${
-                                                                            selected
-                                                                                ? 'border-black bg-black text-white'
-                                                                                : 'border-gray-300 bg-white text-transparent'
-                                                                        }`}
+                                                                        className="flex h-6 w-6 items-center justify-center rounded-full border"
+                                                                        style={selected
+                                                                            ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+                                                                            : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface)', color: 'transparent' }
+                                                                        }
                                                                     >
                                                                         <CheckCircle size={14} />
                                                                     </div>
@@ -924,7 +921,7 @@ if (loading) {
 
                                             <Button
                                                 onClick={() => setStep(2)}
-                                                className="gap-2 bg-black text-white hover:bg-gray-900"
+                                                className="btn-primary gap-2"
                                             >
                                                 Continue to Details
                                                 <ArrowRight size={18} />
@@ -937,9 +934,9 @@ if (loading) {
 
                         {step === 2 && (
                             <div className="space-y-4">
-                                <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                     <CardContent className="space-y-5 p-6">
-                                        <h2 className="text-2xl font-semibold text-gray-900">
+                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             Event & Contact Details
                                         </h2>
 
@@ -1020,7 +1017,7 @@ if (loading) {
                                         </div>
 
                                         <div>
-                                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                                            <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand-text)' }}>
                                                 <FileText size={14} />
                                                 Notes
                                             </label>
@@ -1032,7 +1029,8 @@ if (loading) {
                                                         notes: e.target.value
                                                     })
                                                 }
-                                                className="min-h-[110px] w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-black"
+                                                className="min-h-[110px] w-full rounded-xl border px-4 py-3 text-sm outline-none"
+                                                style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }}
                                                 placeholder="Dietary requirements, special requests..."
                                             />
                                         </div>
@@ -1050,7 +1048,7 @@ if (loading) {
                                             <Button
                                                 disabled={!canSubmit}
                                                 onClick={() => setStep(3)}
-                                                className="gap-2 bg-black text-white hover:bg-gray-900"
+                                                className="btn-primary gap-2"
                                             >
                                                 {t('cateringCheckout.reviewOrder')}
                                                 <ArrowRight size={18} />
@@ -1063,15 +1061,15 @@ if (loading) {
 
                         {step === 3 && (
                             <div className="space-y-4">
-                                <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                                <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                     <CardContent className="p-6">
-                                        <h2 className="text-2xl font-semibold text-gray-900">
+                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             {t('cateringCheckout.reviewTitle')}
                                         </h2>
 
                                         <div className="mt-6 space-y-5">
                                             <div>
-                                                <h3 className="mb-3 text-lg font-medium text-gray-900">
+                                                <h3 className="mb-3 text-lg font-medium" style={{ color: 'var(--brand-text)' }}>
                                                     {t('cateringCheckout.yourSelections')}
                                                 </h3>
 
@@ -1080,7 +1078,7 @@ if (loading) {
                                                         ([catName, items]) =>
                                                             items.length > 0 && (
                                                                 <div key={catName}>
-                                                                    <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+                                                                    <h4 className="mb-2 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--brand-text-muted)' }}>
                                                                         {catName}
                                                                     </h4>
                                                                     <div className="space-y-1">
@@ -1089,15 +1087,15 @@ if (loading) {
                                                                                 key={i}
                                                                                 className="flex justify-between gap-3 py-1 text-sm"
                                                                             >
-                                                                                <span className="text-gray-800">
+                                                                                <span style={{ color: 'var(--brand-text)' }}>
                                                                                     {item.itemName}
                                                                                     {item.choiceName && (
-                                                                                        <span className="ml-1 text-gray-500">
+                                                                                        <span className="ml-1" style={{ color: 'var(--brand-text-muted)' }}>
                                                                                             ({item.choiceName})
                                                                                         </span>
                                                                                     )}
                                                                                 </span>
-                                                                                <span className="text-gray-700">
+                                                                                <span style={{ color: 'var(--brand-text-muted)' }}>
                                                                                     {item.price > 0
                                                                                         ? `+€${item.price.toFixed(2)} p.p.`
                                                                                         : 'Included'}
@@ -1111,41 +1109,41 @@ if (loading) {
                                                 </div>
                                             </div>
 
-                                            <div className="border-t border-gray-200 pt-5">
-                                                <h3 className="mb-3 text-lg font-medium text-gray-900">
+                                            <div className="border-t pt-5" style={{ borderColor: 'var(--brand-outline)' }}>
+                                                <h3 className="mb-3 text-lg font-medium" style={{ color: 'var(--brand-text)' }}>
                                                     {t('cateringCheckout.eventDetails')}
                                                 </h3>
 
-                                                <div className="grid grid-cols-1 gap-4 text-sm text-gray-700 sm:grid-cols-2">
+                                                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2" style={{ color: 'var(--brand-text)' }}>
                                                     <div>
-                                                        <span className="text-gray-500">Name:</span>{' '}
+                                                        <span style={{ color: 'var(--brand-text-muted)' }}>Name:</span>{' '}
                                                         <strong>
                                                             {customerInfo.name || user?.name || ''}
                                                         </strong>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-500">Email:</span>{' '}
+                                                        <span style={{ color: 'var(--brand-text-muted)' }}>Email:</span>{' '}
                                                         <strong>
                                                             {customerInfo.email || user?.email || ''}
                                                         </strong>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-500">Phone:</span>{' '}
+                                                        <span style={{ color: 'var(--brand-text-muted)' }}>Phone:</span>{' '}
                                                         <strong>
                                                             {customerInfo.phone || user?.phone || ''}
                                                         </strong>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-500">Guests:</span>{' '}
+                                                        <span style={{ color: 'var(--brand-text-muted)' }}>Guests:</span>{' '}
                                                         <strong>{guests}</strong>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-500">Date:</span>{' '}
+                                                        <span style={{ color: 'var(--brand-text-muted)' }}>Date:</span>{' '}
                                                         <strong>{eventDate}</strong>
                                                     </div>
                                                     {eventLocation && (
                                                         <div>
-                                                            <span className="text-gray-500">
+                                                            <span style={{ color: 'var(--brand-text-muted)' }}>
                                                                 Location:
                                                             </span>{' '}
                                                             <strong>{eventLocation}</strong>
@@ -1154,8 +1152,8 @@ if (loading) {
                                                 </div>
 
                                                 {customerInfo.notes && (
-                                                    <p className="mt-4 text-sm text-gray-600">
-                                                        <strong className="text-gray-800">Notes:</strong>{' '}
+                                                    <p className="mt-4 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
+                                                        <strong style={{ color: 'var(--brand-text)' }}>Notes:</strong>{' '}
                                                         {customerInfo.notes}
                                                     </p>
                                                 )}
@@ -1175,7 +1173,7 @@ if (loading) {
                                             <Button
                                                 onClick={handleSubmit}
                                                 disabled={submitting}
-                                                className="gap-2 bg-black px-8 text-white hover:bg-gray-900"
+                                                className="btn-primary gap-2 px-8"
                                             >
                                                 {submitting ? t('cateringCheckout.placing') : t('cateringCheckout.placeOrder')}
                                             </Button>
@@ -1187,16 +1185,16 @@ if (loading) {
                     </div>
 
                     <div className="self-start lg:sticky lg:top-24">
-                        <Card className="rounded-2xl border border-gray-200 bg-white shadow-none">
+                        <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                             <CardContent className="p-6">
-                                <h3 className="text-lg font-medium text-gray-900">
+                                <h3 className="text-lg font-medium" style={{ color: 'var(--brand-text)' }}>
                                     {t('cateringCheckout.priceSummary')}
                                 </h3>
 
                                 <div className="mt-5 space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{t('cateringCheckout.basePrice')}</span>
-                                        <span className="text-gray-900">
+                                        <span style={{ color: 'var(--brand-text-muted)' }}>{t('cateringCheckout.basePrice')}</span>
+                                        <span style={{ color: 'var(--brand-text)' }}>
                                             €{pkg.basePrice.toFixed(2)} p.p.
                                         </span>
                                     </div>
@@ -1226,13 +1224,13 @@ if (loading) {
                                                         key={`${catName}-${i}`}
                                                         className="flex justify-between text-xs"
                                                     >
-                                                        <span className="max-w-[180px] truncate text-gray-600">
+                                                        <span className="max-w-[180px] truncate" style={{ color: 'var(--brand-text-muted)' }}>
                                                             + {resolvedItemName}
                                                             {item.choiceName
                                                                 ? ` (${item.choiceName})`
                                                                 : ''}
                                                         </span>
-                                                        <span className="text-gray-700">
+                                                        <span style={{ color: 'var(--brand-text)' }}>
                                                             €{item.price.toFixed(2)}
                                                         </span>
                                                     </div>
@@ -1241,8 +1239,8 @@ if (loading) {
                                     )}
 
                                     {selectedAddons.length > 0 && (
-                                        <div className="mt-3 border-t border-gray-200 pt-3">
-                                            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+                                        <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>
+                                            <p className="mb-2 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--brand-text-muted)' }}>
                                                 Add-ons
                                             </p>
 
@@ -1251,10 +1249,10 @@ if (loading) {
                                                     key={a._id}
                                                     className="flex justify-between py-0.5 text-xs"
                                                 >
-                                                    <span className="max-w-[180px] truncate text-gray-600">
+                                                    <span className="max-w-[180px] truncate" style={{ color: 'var(--brand-text-muted)' }}>
                                                         {getLabel((a as any).nameTranslations, a.name)}
                                                     </span>
-                                                    <span className="text-gray-700">
+                                                    <span style={{ color: 'var(--brand-text)' }}>
                                                         €
                                                         {(
                                                             a.pricingType === 'per_person'
@@ -1267,18 +1265,18 @@ if (loading) {
                                         </div>
                                     )}
 
-                                    <div className="mt-3 border-t border-gray-200 pt-3">
-                                        <div className="flex justify-between font-medium text-gray-900">
+                                    <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>
+                                        <div className="flex justify-between font-medium" style={{ color: 'var(--brand-text)' }}>
                                             <span>{t('cateringCheckout.perPerson')}</span>
                                             <span>€{pricePerPerson.toFixed(2)}</span>
                                         </div>
                                     </div>
 
-                                    <div className="flex justify-between text-gray-500">
+                                    <div className="flex justify-between" style={{ color: 'var(--brand-text-muted)' }}>
                                         <span>× {guests} guests</span>
                                     </div>
 
-                                    <div className="mt-3 border-t border-gray-200 pt-3">
+                                    <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>
                                         {!couponApplied ? (
                                             <div className="flex gap-2">
                                                 <input
@@ -1286,7 +1284,8 @@ if (loading) {
                                                     onChange={(e) =>
                                                         setCouponCode(e.target.value.toUpperCase())
                                                     }
-                                                    className="flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs font-mono tracking-wider text-gray-900 outline-none focus:border-black"
+                                                    className="flex-1 rounded-xl border px-3 py-2 text-xs font-mono tracking-wider outline-none"
+                                                    style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }}
                                                     placeholder="COUPON CODE"
                                                     onKeyDown={(e) =>
                                                         e.key === 'Enter' && applyCoupon()
@@ -1296,7 +1295,8 @@ if (loading) {
                                                     type="button"
                                                     onClick={applyCoupon}
                                                     disabled={couponLoading}
-                                                    className="flex items-center gap-1 rounded-xl bg-black px-3 py-2 text-xs font-medium text-white hover:bg-gray-900"
+                                                    className="flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80"
+                                                    style={{ background: 'var(--brand-primary)', color: 'var(--brand-cream)' }}
                                                 >
                                                     <Tag size={12} />
                                                     {t('cateringCheckout.apply')}
@@ -1323,8 +1323,8 @@ if (loading) {
                                         )}
                                     </div>
 
-                                    <div className="mt-3 border-t border-gray-200 pt-3">
-                                        <div className="flex justify-between text-xl font-semibold text-gray-900">
+                                    <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>
+                                        <div className="flex justify-between text-xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             <span>{t('checkout.total')}</span>
                                             <span>€{totalPrice.toFixed(2)}</span>
                                         </div>
@@ -1345,8 +1345,8 @@ if (loading) {
 
             {dishPreview && (
                 <div
-                    className="pointer-events-none fixed z-[9999] hidden w-[340px] overflow-hidden rounded-2xl border border-gray-200 bg-white text-left shadow-2xl ring-1 ring-black/10 md:block"
-                    style={{ top: dishPreview.top, left: dishPreview.left }}
+                    className="pointer-events-none fixed z-[9999] hidden w-[340px] overflow-hidden rounded-2xl text-left shadow-2xl md:block"
+                    style={{ top: dishPreview.top, left: dishPreview.left, border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)', boxShadow: '0 24px 60px -12px rgba(0,0,0,0.35)' }}
                 >
                     <img
                         src={dishPreview.image}
@@ -1355,11 +1355,11 @@ if (loading) {
                     />
                     <div className="p-4">
                         <div className="flex items-start justify-between gap-3">
-                            <h4 className="text-lg font-extrabold leading-snug text-gray-900">
+                            <h4 className="text-lg font-extrabold leading-snug" style={{ color: 'var(--brand-text)' }}>
                                 {dishPreview.name}
                             </h4>
                             {dishPreview.price > 0 ? (
-                                <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-800">
+                                <span className="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold" style={{ background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }}>
                                     +€{dishPreview.price.toFixed(2)}
                                 </span>
                             ) : (
@@ -1370,7 +1370,7 @@ if (loading) {
                         </div>
 
                         {dishPreview.description && (
-                            <p className="mt-2 max-h-24 overflow-hidden text-sm leading-6 text-gray-600">
+                            <p className="mt-2 max-h-24 overflow-hidden text-sm leading-6" style={{ color: 'var(--brand-text-muted)' }}>
                                 {dishPreview.description}
                             </p>
                         )}
@@ -1380,16 +1380,16 @@ if (loading) {
                                 {dishPreview.choices.map((choice, cIdx) => (
                                     <span
                                         key={cIdx}
-                                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                                            dishPreview.selectedChoice === choice.name
-                                                ? 'bg-black text-white'
-                                                : 'bg-gray-100 text-gray-700'
-                                        }`}
+                                        className="rounded-full px-2.5 py-1 text-xs font-semibold"
+                                        style={dishPreview.selectedChoice === choice.name
+                                            ? { background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
+                                            : { background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }
+                                        }
                                     >
                                         {choice.name}
                                         {choice.priceModifier !== 0 && (
                                             <span className="ml-1 opacity-70">
-{choice.priceModifier > 0 ? '+' : '-'}€
+                                                {choice.priceModifier > 0 ? '+' : '-'}€
                                                 {Math.abs(choice.priceModifier).toFixed(2)}
                                             </span>
                                         )}
@@ -1425,7 +1425,7 @@ const DetailField = ({
 }) => {
     return (
         <div>
-            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand-text)' }}>
                 {icon}
                 {label}
             </label>
@@ -1436,7 +1436,10 @@ const DetailField = ({
                 placeholder={placeholder}
                 min={min}
                 max={max}
-                className="h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 outline-none focus:border-black"
+                className="h-11 w-full rounded-xl border px-4 text-sm outline-none transition-colors"
+                style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--brand-accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--brand-outline)'}
             />
         </div>
     );

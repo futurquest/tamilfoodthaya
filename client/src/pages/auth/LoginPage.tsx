@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
 import FluidBackground from '../../components/FluidBackground';
+import { Logo } from '../../components/Logo';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export const LoginPage = () => {
       <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
       <div className="auth-card surface">
         <div className="auth-copy">
-          <span className="brand-mark__seal">T</span>
+          <Logo />
           <h1>Welcome back to the kitchen.</h1>
           <p>Sign in to reorder favourites, track requests, and keep catering details in one place.</p>
         </div>

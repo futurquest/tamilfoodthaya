@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -77,6 +78,7 @@ export const MenuPage = () => {
         <div className="container">
           <h1>{t('menuPage.heroTitle')}</h1>
           <p>{t('menuPage.heroDesc')}</p>
+          <div className="home-hero__actions"><Link to="/catering#packages-section" className="btn-primary">{t('conversion.packages')}</Link><Link to="/contact#inquiry" className="btn-secondary">{t('conversion.quote')}</Link></div>
         </div>
       </section>
 
@@ -86,9 +88,9 @@ export const MenuPage = () => {
           <div className="menu-toolbar">
             <label className="menu-search">
               <Search size={18} />
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('menuPage.searchPlaceholder')} />
+              <input type="search" aria-label={t('menuPage.searchPlaceholder')} value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('menuPage.searchPlaceholder')} />
             </label>
-            <div className="menu-filter-label">
+            <div className="menu-filter-label" role="status">
               <SlidersHorizontal size={18} />
               {filteredItems.length} {t('common.dishes')}
             </div>
@@ -98,10 +100,10 @@ export const MenuPage = () => {
             <div className="menu-loading"><span /><span /><span /></div>
           ) : (
             <>
-              <div className="menu-tabs" role="tablist" aria-label={t('menuPage.categories')}>
-                <button type="button" className={activeCategory === 'all' ? 'active' : ''} onClick={() => setActiveCategory('all')}>{t('menuPage.all')}</button>
+              <div className="menu-tabs" role="group" aria-label={t('menuPage.categories')}>
+                <button type="button" aria-pressed={activeCategory === 'all'} className={activeCategory === 'all' ? 'active' : ''} onClick={() => setActiveCategory('all')}>{t('menuPage.all')}</button>
                 {categories.map((category) => (
-                  <button key={category._id} type="button" className={activeCategory === category._id ? 'active' : ''} onClick={() => setActiveCategory(category._id)}>
+                  <button key={category._id} type="button" aria-pressed={activeCategory === category._id} className={activeCategory === category._id ? 'active' : ''} onClick={() => setActiveCategory(category._id)}>
                     {getLabel((category as any).nameTranslations, category.name, currentLang)}
                   </button>
                 ))}

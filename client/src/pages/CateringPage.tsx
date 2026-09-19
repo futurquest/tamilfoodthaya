@@ -7,6 +7,7 @@ import { SEO } from '../components/SEO';
 import AddonsSection from '../components/AddonsSection';
 import ScrollReveal from '../components/ScrollReveal';
 import FluidBackground from '../components/FluidBackground';
+import EventGallery from '../components/EventGallery';
 
 interface CateringPackageData {
   _id: string;
@@ -67,7 +68,7 @@ export const CateringPage = () => {
             <h1 className="display">{t('catering2.heroTitle')}</h1>
             <p className="lead">{t('catering2.heroLead')}</p>
             <div className="home-hero__actions">
-              <button type="button" className="btn-primary" onClick={() => document.getElementById('packages-section')?.scrollIntoView({ behavior: 'smooth' })}>
+              <button type="button" className="btn-primary" onClick={() => document.getElementById('packages-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}>
                 {t('catering2.viewPackages')}
                 <ArrowRight size={18} />
               </button>
@@ -163,6 +164,8 @@ export const CateringPage = () => {
           )}
         </div>
       </section>
+
+      <EventGallery />
 
       <section className="section process-section">
         <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />

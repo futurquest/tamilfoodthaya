@@ -22,6 +22,6 @@ describe('Button Component', () => {
 
     it('applies variant classes correctly', () => {
         render(<Button variant="primary">Primary</Button>);
-        expect(screen.getByText('Primary')).toHaveClass('bg-tamil-maroon');
+        expect(screen.getByText('Primary')).toHaveClass('btn-primary');
     });
 });

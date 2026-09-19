@@ -11,12 +11,12 @@ const variants = {
 };
 
 const FROM = {
-    fadeUp: { autoAlpha: 0, y: 34 },
-    fadeDown: { autoAlpha: 0, y: -26 },
-    fadeIn: { autoAlpha: 0 },
-    slideLeft: { autoAlpha: 0, x: 34 },
-    slideRight: { autoAlpha: 0, x: -34 },
-    zoom: { autoAlpha: 0, scale: 0.94 },
+    fadeUp: { autoAlpha: 1, y: 34 },
+    fadeDown: { autoAlpha: 1, y: -26 },
+    fadeIn: { autoAlpha: 1 },
+    slideLeft: { autoAlpha: 1, x: 34 },
+    slideRight: { autoAlpha: 1, x: -34 },
+    zoom: { autoAlpha: 1, scale: 0.94 },
 } as const;
 
 type ScrollRevealProps = {
@@ -36,11 +36,13 @@ export default function ScrollReveal({ children, variant = 'fadeUp', className =
         if (!el) return;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-        const tween = gsap.fromTo(
+        const context = gsap.context(() => {});
+        let tween: gsap.core.Tween;
+        context.add(() => { tween = gsap.fromTo(
             el,
             FROM[variant] ?? FROM.fadeUp,
             { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: 'power3.out', delay: delay / 1000, paused: true },
-        );
+        ); });
         const trigger = ScrollTrigger.create({
             trigger: el,
             start: 'top 88%',
@@ -49,7 +51,7 @@ export default function ScrollReveal({ children, variant = 'fadeUp', className =
         });
         return () => {
             trigger.kill();
-            tween.kill();
+            context.revert();
         };
     }, [variant, delay]);
 

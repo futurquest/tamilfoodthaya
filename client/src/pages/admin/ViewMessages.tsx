@@ -1,4 +1,4 @@
-﻿import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
@@ -393,7 +393,7 @@ const InboxWorkspace = ({
     onDelete: (id: string) => void;
 }) => {
     return (
-        <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-2.5 shadow-sm sm:p-3">
+        <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-2.5 shadow-sm sm:p-3">
             <WorkspaceHeader
                 title={filterConfig[filter].title}
                 text={filterConfig[filter].helper}

@@ -67,7 +67,7 @@ const toTimestamp = (value?: string): number => {
 
 const formatLeadDate = (value?: string): string => {
     const t = value ? Date.parse(value) : NaN;
-    if (!Number.isFinite(t)) return 'â€”';
+    if (!Number.isFinite(t)) return '—';
     return new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
         month: 'short',
@@ -249,10 +249,10 @@ export const Dashboard = () => {
             .slice(0, 5)
             .map((lead) => ({
                 key: lead._id,
-                name: lead.name || 'â€”',
+                name: lead.name || '—',
                 event: lead.package || 'Enquiry',
                 date: formatLeadDate(lead.eventDate),
-                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : 'â€”',
+                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : '—',
                 status: leadStatusLabel(lead.status),
                 statusTone: leadStatusTone(lead.status)
             }));
@@ -274,7 +274,7 @@ export const Dashboard = () => {
                                 Restaurant Operations
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Booked catering value, enquiries and priority admin work â€” computed
+                                Booked catering value, enquiries and priority admin work — computed
                                 live from your records.
                             </p>
                         </div>
@@ -290,7 +290,7 @@ export const Dashboard = () => {
                 <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <MetricCard
                         label="Booked Revenue"
-                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.revenue}
+                        value={loading ? 'â€¦' : loadError ? '—' : kpis.revenue}
                         detail={loading || loadError ? 'Up to date figures' : kpis.revenueDetail}
                         icon={Euro}
                         tone="brass"
@@ -298,7 +298,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="New Leads"
-                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.newLeads}
+                        value={loading ? 'â€¦' : loadError ? '—' : kpis.newLeads}
                         detail={loading || loadError ? 'Up to date figures' : kpis.newLeadsDetail}
                         icon={Users}
                         tone="leaf"
@@ -306,7 +306,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="Catering Orders"
-                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.orders}
+                        value={loading ? 'â€¦' : loadError ? '—' : kpis.orders}
                         detail={loading || loadError ? 'Up to date figures' : kpis.ordersDetail}
                         icon={ClipboardList}
                         tone="spice"
@@ -314,7 +314,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label="Lead Conversion"
-                        value={loading ? 'â€¦' : loadError ? 'â€”' : kpis.conversion}
+                        value={loading ? 'â€¦' : loadError ? '—' : kpis.conversion}
                         detail={loading || loadError ? 'Up to date figures' : kpis.conversionDetail}
                         icon={TrendingUp}
                         tone="ink"
@@ -376,7 +376,7 @@ export const Dashboard = () => {
                                     Today&apos;s Priorities
                                 </h2>
                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
-                                    Counted from your live orders â€” updates yourself as statuses change.
+                                    Counted from your live orders — updates yourself as statuses change.
                                 </p>
                             </div>
                             <CheckCircle2 className="text-emerald-700" size={22} />
@@ -387,7 +387,7 @@ export const Dashboard = () => {
                                 <OperationItem
                                     key={item.label}
                                     label={item.label}
-                                    value={loading ? 'â€¦' : loadError ? 'â€”' : item.value}
+                                    value={loading ? 'â€¦' : loadError ? '—' : item.value}
                                     detail={item.detail}
                                     icon={item.icon}
                                     to="/admin/catering-orders"

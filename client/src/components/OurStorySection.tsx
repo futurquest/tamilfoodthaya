@@ -1,8 +1,11 @@
 import ScrollReveal from './ScrollReveal';
+import FluidBackground from './FluidBackground';
 
 export default function OurStorySection() {
   return (
     <section className="section about-section">
+      <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
+      <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
       <div className="container about-grid">
         <ScrollReveal variant="fadeUp" className="about-copy">
           <p className="eyebrow">About Tamil Food Thaya</p>

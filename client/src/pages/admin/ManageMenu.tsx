@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
@@ -568,7 +568,7 @@ const MenuGrid = ({
     onEdit: (item: MenuItem) => void;
     onDelete: (id: string) => void;
 }) => (
-    <section className="rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
+    <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
         <WorkspaceHeader
             title="Menu board"
             text="Review dish photography, pricing, stock, dietary flags and visibility in a visual workspace."
@@ -1376,7 +1376,7 @@ const getCategoryName = (item: MenuItem, categoryMap: Map<string, string>) => {
     return categoryMap.get(item.categoryId || '') || 'Unassigned';
 };
 
-const formatPrice = (price?: number) => `€ ${Number(price || 0).toFixed(2)}`;
+const formatPrice = (price?: number) => `� ${Number(price || 0).toFixed(2)}`;
 
 const isValidImageUrl = (url?: string) =>
     !!url && (/^(https?:|data:image\/|blob:)/.test(url)) && !url.startsWith('/');

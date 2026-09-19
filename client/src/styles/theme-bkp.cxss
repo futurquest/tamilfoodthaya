@@ -1,0 +1,314 @@
+/* 
+
+/* ================================================================
+   THEME TOKENS — single source of truth for the visual theme.
+   ----------------------------------------------------------------
+   Change a value once here (or add a `[data-theme="…"]` block) and
+   the whole app follows: CSS custom properties, index.css custom
+   classes, and every Tailwind color utility referenced by name.
+   ================================================================ */
+
+/* ---------- Fonts (raw, theme-independent) ---------- */
+@theme {
+  --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-tamil: 'Noto Sans Tamil', 'Manrope', system-ui, sans-serif;
+}
+
+/* ---------- Semantic utility mapping (Tailwind) ----------
+   Re-exports every color utility used across the app onto the
+   semantic variables below, so utilities track the active theme. */
+@theme inline {
+  /* brand / primary ramp */
+  --color-primary-50: var(--brand-primary-50);
+  --color-primary-100: var(--brand-primary-100);
+  --color-primary-200: var(--brand-primary-200);
+  --color-primary-300: var(--brand-primary-300);
+  --color-primary-400: var(--brand-primary-400);
+  --color-primary-500: var(--brand-primary-500);
+  --color-primary-600: var(--brand-primary-600);
+  --color-primary-700: var(--brand-primary-700);
+  --color-primary-800: var(--brand-primary-800);
+  --color-primary-900: var(--brand-primary-900);
+  --color-tamil-maroon: var(--brand-primary-700);
+  --color-tamil-charcoal: var(--brand-charcoal);
+  --color-tamil-gold: var(--brand-accent-strong);
+  --color-accent-gold: var(--brand-accent);
+  --color-gold-400: var(--brand-accent-strong);
+  --color-gold-500: var(--brand-warning);
+  --color-charcoal: var(--brand-charcoal);
+
+  /* neutral ramp */
+  --color-dark-50: var(--brand-neutral-50);
+  --color-dark-100: var(--brand-neutral-100);
+  --color-dark-200: var(--brand-neutral-200);
+  --color-dark-300: var(--brand-neutral-300);
+  --color-dark-400: var(--brand-neutral-400);
+  --color-dark-500: var(--brand-neutral-500);
+  --color-dark-600: var(--brand-neutral-600);
+  --color-dark-700: var(--brand-neutral-700);
+  --color-dark-800: var(--brand-neutral-800);
+  --color-dark-900: var(--brand-neutral-900);
+  --color-dark-950: var(--brand-neutral-950);
+
+  /* semantic, reusable roles */
+  --color-primary: var(--brand-primary);
+  --color-primary-deep: var(--brand-primary-deep);
+  --color-accent: var(--brand-accent);
+  --color-accent-strong: var(--brand-accent-strong);
+  --color-accent-soft: var(--brand-accent-soft);
+  --color-surface: var(--brand-surface);
+  --color-surface-dim: var(--brand-surface-dim);
+  --color-surface-deep: var(--brand-surface-deep);
+  --color-on-accent: var(--brand-cream);
+  --color-ink: var(--brand-text);
+  --color-muted: var(--brand-text-muted);
+  --color-leaf: var(--brand-leaf);
+  --color-night: var(--brand-night);
+  --color-success: var(--brand-success);
+  --color-success-soft: var(--brand-success-soft);
+  --color-warning: var(--brand-warning);
+  --color-error: var(--brand-error);
+  --color-error-soft: var(--brand-error-soft);
+}
+
+/* ================================================================
+   LIGHT THEME (default)
+   ================================================================ */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  /* primary ramp - change the brand here */
+  --brand-primary-50: #fff8ed;
+  --brand-primary-100: #f7ead2;
+  --brand-primary-200: #ead0a7;
+  --brand-primary-300: #d9ad68;
+  --brand-primary-400: #c9972b;
+  --brand-primary-500: #a86f1f;
+  --brand-primary-600: #854b1b;
+  --brand-primary-700: #6f1d1b;
+  --brand-primary-800: #451516;
+  --brand-primary-900: #24100f;
+  --brand-primary: #8a2e1d;
+  --brand-primary-deep: #6f1d1b;
+  --brand-primary-mid: #854b1b;
+  --brand-primary-strong: #451516;
+  --brand-primary-ink: #24100f;
+
+  /* accent (gold) ramp */
+  --brand-accent: #c9972b;
+  --brand-accent-aisle: #c9962b;
+  --brand-accent-strong: #d8a23a;
+  --brand-accent-bright: #e8a020;
+  --brand-accent-warm: #b46f24;
+  --brand-accent-dark: #633514;
+  --brand-accent-deep: #8a611d;
+  --brand-accent-olive: #b87a10;
+  --brand-accent-soft: #f0d79c;
+  --brand-accent-haze: #f4d38b;
+
+  /* cream "on top of accent/dark" */
+  --brand-cream: #fff8ed;
+  --brand-cream-warm: #fff6e7;
+
+  /* text / surfaces */
+  --brand-text: #251917;
+  --brand-text-muted: #705b4a;
+  --brand-charcoal: #221917;
+  --brand-white: #ffffff;
+  --brand-surface: #fffaf1;
+  --brand-surface-dim: #fbf6ed;
+  --brand-surface-warm: #fffaf0;
+  --brand-surface-deep: #f1e2ca;
+  --brand-surface-mist: #f0ece4;
+  --brand-surface-ivory: #fbfaf7;
+  --brand-surface-soft: #fffdf9;
+  --brand-surface-cream: #f5ead8;
+  --brand-surface-tint: #f5efe4;
+  --brand-surface-parchment: #fff6e7;
+  --brand-surface-beige: #efe2cf;
+  --brand-surface-beige-soft: #efe2d0;
+  --brand-surface-part: #f6ecdb;
+  --brand-surface-part-b: #f6efe2;
+  --brand-surface-part-c: #f4eadb;
+  --brand-surface-bloom: #f5ebdc;
+  --brand-slate-soft: #f8fafc;
+  --brand-stone: #d8c7ad;
+
+  /* neutral ramp (dark-* scale) */
+  --brand-neutral-50: #fbf6ed;
+  --brand-neutral-100: #eee2d0;
+  --brand-neutral-200: #dcc8ad;
+  --brand-neutral-300: #bba386;
+  --brand-neutral-400: #927b64;
+  --brand-neutral-500: #705b4a;
+  --brand-neutral-600: #544035;
+  --brand-neutral-700: #392a25;
+  --brand-neutral-800: #251917;
+  --brand-neutral-900: #15100f;
+  --brand-neutral-950: #0b0807;
+
+  /* night / overlay inks */
+  --brand-night: #1d1216;
+  --brand-night-deep: #15100f;
+  --brand-night-soft: #0f0a09;
+  --brand-night-part: #1a1110;
+  --brand-overlay: #0d0809;
+  --brand-ink-deep: #0a0806;
+  --brand-ink-deep-b: #0c0a08;
+  --brand-ink-char: #1a1209;
+  --brand-ink-char-soft: #0f0d0a;
+  --brand-ink-warm: #2f2214;
+  --brand-ink-coal: #3a2825;
+  --brand-ink-mocha: #4a3728;
+  --brand-muted-warm: #6b5a3a;
+  --brand-ink-soot: #0f0b0a;
+
+  /* outline / deep-umber tones */
+  --brand-umber: #4b1c12;
+  --brand-outline: #2a1a18;
+  --brand-outline-dark: #2f211f;
+  --brand-outline-tone: #36211d;
+  --brand-char-deep: #160d0b;
+
+  /* leaf / status */
+  --brand-leaf: #39533b;
+  --brand-leaf-deep: #1e3327;
+  --brand-success: #2e5b37;
+  --brand-success-bright: #4ade80;
+  --brand-success-mid: #22c95e;
+  --brand-success-soft: #d9f0cd;
+  --brand-warning: #b98121;
+  --brand-warning-deep: #6b4a1f;
+  --brand-error: #a73528;
+  --brand-error-soft: #ffd7cf;
+
+  /* misc */
+  --brand-shadow-warm: #532e1a;
+  --brand-slate: #0f172a;
+  --brand-tan: #c7a88a;
+  --brand-sand: #9f8060;
+  --brand-mocha-deep: #4a2d22;
+  --brand-black: #000000;
+
+  /* alpha helper tokens (used inside Tailwind arbitrary values) */
+  --brand-text-a09: color-mix(in srgb, var(--brand-text) 9%, transparent);
+  --brand-text-a18: color-mix(in srgb, var(--brand-text) 18%, transparent);
+  --brand-text-a24: color-mix(in srgb, var(--brand-text) 24%, transparent);
+  --brand-slate-a10: color-mix(in srgb, var(--brand-slate) 10%, transparent);
+  --brand-char-a32: color-mix(in srgb, var(--brand-char-deep) 32%, transparent);
+  --brand-accent-a18: color-mix(in srgb, var(--brand-accent) 18%, transparent);
+
+  /* legacy aliases (kept for backwards compatibility) */
+  --ink: var(--brand-text);
+  --muted: var(--brand-text-muted);
+  --paper: var(--brand-surface-dim);
+  --paper-deep: var(--brand-surface-deep);
+  --leaf: var(--brand-leaf);
+  --leaf-dark: var(--brand-leaf-deep);
+  --spice: var(--brand-primary);
+  --brass: var(--brand-accent);
+  --brass-soft: var(--brand-accent-soft);
+  --aubergine: var(--brand-night);
+  --line: color-mix(in srgb, var(--brand-text) 12%, transparent);
+  --shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 13%, transparent);
+}
+
+/* ================================================================
+   DARK THEME (opt-in via <html data-theme="dark">)
+   Define a new theme by copying this block and changing the values.
+   ================================================================ */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --brand-primary-50: #261a12;
+  --brand-primary-100: #3b2418;
+  --brand-primary-200: #55301b;
+  --brand-primary-300: #7a4222;
+  --brand-primary-400: #a85a2c;
+  --brand-primary-500: #cf7639;
+  --brand-primary-600: #e08a47;
+  --brand-primary-700: #eda65f;
+  --brand-primary-800: #f5c894;
+  --brand-primary-900: #fbe7cf;
+  --brand-primary: #cf7639;
+  --brand-primary-deep: #eda65f;
+  --brand-primary-mid: #e08a47;
+  --brand-primary-strong: #f5c894;
+  --brand-primary-ink: #fbe7cf;
+
+  --brand-accent: #c9972b;
+  --brand-accent-strong: #d8a23a;
+  --brand-accent-bright: #e8a020;
+  --brand-accent-warm: #b46f24;
+  --brand-accent-dark: #633514;
+  --brand-accent-deep: #e0b268;
+  --brand-accent-olive: #c9972b;
+  --brand-accent-soft: #f0d79c;
+  --brand-accent-haze: #f4d38b;
+
+  --brand-cream: #f8ecdc;
+  --brand-cream-warm: #f6e6d0;
+
+  --brand-text: #f3e8d9;
+  --brand-text-muted: #b6a28c;
+  --brand-charcoal: #241d18;
+  --brand-white: #ffffff;
+  --brand-surface: #191411;
+  --brand-surface-dim: #201915;
+  --brand-surface-warm: #201a15;
+  --brand-surface-deep: #2a211b;
+  --brand-surface-mist: #241d17;
+  --brand-surface-ivory: #1c1613;
+  --brand-surface-soft: #171210;
+  --brand-surface-cream: #231b15;
+  --brand-surface-tint: #241c15;
+  --brand-surface-parchment: #201811;
+  --brand-surface-beige: #2b211a;
+  --brand-surface-beige-soft: #2a2019;
+  --brand-surface-bloom: #2a1f17;
+  --brand-slate-soft: #0f172a;
+  --brand-stone: #8a7a68;
+
+  --brand-neutral-50: #1a1412;
+  --brand-neutral-100: #241c18;
+  --brand-neutral-200: #342a24;
+  --brand-neutral-300: #4a3d34;
+  --brand-neutral-400: #6b5a4d;
+  --brand-neutral-500: #8f7c6b;
+  --brand-neutral-600: #a89581;
+  --brand-neutral-700: #c4b2a0;
+  --brand-neutral-800: #e2d5c6;
+  --brand-neutral-900: #f2ece4;
+  --brand-neutral-950: #faf7f2;
+
+  --brand-night: #0b0808;
+  --brand-night-deep: #080606;
+  --brand-night-soft: #050404;
+  --brand-overlay: #000000;
+  --brand-ink-deep: #ffffff;
+  --brand-ink-char: #f3eadb;
+
+  --brand-leaf: #5f8a61;
+  --brand-leaf-deep: #456a47;
+  --brand-success: #4ade80;
+  --brand-success-bright: #5beb90;
+  --brand-success-mid: #22c95e;
+  --brand-success-soft: #123a21;
+  --brand-warning: #f0b429;
+  --brand-warning-deep: #e3a412;
+  --brand-error: #ef7a70;
+  --brand-error-soft: #3d1413;
+
+  --brand-shadow-warm: #000000;
+  --brand-slate: #0b1220;
+  --brand-black: #000000;
+
+  --brand-text-a09: color-mix(in srgb, var(--brand-text) 9%, transparent);
+  --brand-text-a18: color-mix(in srgb, var(--brand-text) 18%, transparent);
+  --brand-text-a24: color-mix(in srgb, var(--brand-text) 24%, transparent);
+  --brand-slate-a10: color-mix(in srgb, var(--brand-slate) 10%, transparent);
+  --brand-char-a32: color-mix(in srgb, var(--brand-char-deep) 32%, transparent);
+  --brand-accent-a18: color-mix(in srgb, var(--brand-accent) 18%, transparent);
+}
+
+ 

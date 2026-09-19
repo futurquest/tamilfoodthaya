@@ -12,8 +12,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             primary: 'btn-primary',
             secondary: 'btn-secondary',
             gold: 'btn-gold',
-            outline: 'border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white rounded-xl font-semibold transition-all duration-300',
-            ghost: 'text-primary-600 hover:bg-primary-50 rounded-xl font-semibold transition-all duration-300',
+            outline: 'btn-outline',
+            ghost: 'btn-text',
         };
 
         const sizes = {
@@ -22,9 +22,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             lg: 'px-8 py-4 text-lg',
         };
 
-        // btn-primary / btn-secondary / btn-gold already have their own padding from CSS
-        // Only apply size overrides for outline/ghost variants
-        const needsSizeClass = variant === 'outline' || variant === 'ghost';
+        // All btn-* CSS classes define their own padding
+        // Size overrides are not applied to preserve the design system
+        const needsSizeClass = false;
 
         return (
             <button
