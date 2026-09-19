@@ -7,6 +7,9 @@ import FluidBackground from './FluidBackground';
 const FRAME = '1672/941';
 const IMAGE_COUNT = 14;
 const DWELL = 1800;
+// After the loop-back reset, resume the next glide almost immediately so the
+// parked (identical-looking) frame never holds still for a full dwell.
+const SEAM_RESUME = 60;
 // Native size of every photo in /events (1672x941) - cards use this exact
 // ratio so object-fit cover never crops or distorts the composition.
 
@@ -72,31 +75,25 @@ export default function EventGallery() {
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
-  // Autoplay: one glide per dwell. At the duplicate slot (pos === IMAGE_COUNT,
-  // visually a twin of slot 0) the next advance resets to 0 with no transition
-  // - the identical visuals make the wrap invisible, so the row just keeps
-  // gliding forward. Keyboard/touch/jump moves that cross the seam snap the
-  // same way.
-  // Autoplay, one dwell per glide. Slot 14 is a seamless twin of slot 0.
-  // At the seam the timer waits a full dwell so the 13→14 glide lands on that
-  // twin, then resets to 0 with NO transition mid-glide already finished - the
-  // identical visual is the only reason the reset leaves no trace storyboard.
-  // One timing source, so there's never a competing rAF snap mid-glide.
-  // Autoplay: one constant-cadence interval, keyed ONLY on pause state - never
-  // on pos, so the timing never re-arms or stretches. Each tick advances one
-  // just-glide. Slot IMAGE_COUNT is a seamless twin of slot 0 (identical twin
-  // photo), so when the row parks there the next glide resets to 0 with NO
-  // transition: the identical visuals carry no wrap trace, and because the
-  // interval never re-keys on pos, cadence stays perfectly constant across the
-  // seam - the row just keeps gliding forward forever, never pausing, never
-  // gliding back. Keyboard/touch moves that cross the seam snap the same way.
+  // Autoplay: one glide per dwell, keyed ONLY on pause state - never on pos -
+  // so the timing never re-arms or stretches. Slot IMAGE_COUNT is a seamless
+  // twin of slot 0 (identical photo), so when the row parks there the next
+  // advance resets to 0 with NO transition: identical visuals carry no wrap
+  // trace. That reset normally leaves pos 0 static for a full dwell, so the
+  // advance that follows the wrap is scheduled at SEAM_RESUME instead of DWELL
+  // - the row never visibly holds still, it just keeps gliding forward.
+  // Keyboard/touch moves that cross the seam produce the same reset.
   useEffect(() => {
     if (paused || reducedMotion) return;
-    const timer = window.setInterval(() => {
-      setInstant(posRef.current >= IMAGE_COUNT);
+    let timer: ReturnType<typeof setTimeout>;
+    const advance = () => {
+      const wrapping = posRef.current >= IMAGE_COUNT;
+      timer = window.setTimeout(advance, wrapping ? SEAM_RESUME : DWELL);
+      setInstant(wrapping);
       setPos(current => (current >= IMAGE_COUNT ? 0 : current + 1));
-    }, DWELL);
-    return () => window.clearInterval(timer);
+    };
+    timer = window.setTimeout(advance, DWELL);
+    return () => window.clearTimeout(timer);
   }, [paused, reducedMotion]);
 
   // Keep posRef in lockstep with real pos so the interval above reads the seam
