@@ -1,43 +1,59 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Lead } from './schemas/lead.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { LeadEntity } from './entities/lead.entity';
 
 @Injectable()
 export class LeadService {
-    constructor(@InjectModel(Lead.name) private leadModel: Model<Lead>) { }
+    constructor(@InjectRepository(LeadEntity) private leadRepo: Repository<LeadEntity>) { }
 
-    async createLead(data: any): Promise<Lead> {
-        const newLead = new this.leadModel(data);
-        return newLead.save();
+    async createLead(data: any): Promise<LeadEntity> {
+        const lead = this.leadRepo.create({
+            _id: LeadEntity.newId(),
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            eventDate: data.eventDate ?? null,
+            guests: data.guests != null ? Number(data.guests) : null,
+            location: data.location ?? null,
+            message: data.message ?? null,
+            package: data.package ?? null,
+            utmSource: data.utmSource ?? null,
+            campaign: data.campaign ?? null,
+        });
+        return this.leadRepo.save(lead);
     }
 
     async findAllLeads(filters: any = {}): Promise<any> {
-        const query: any = { isActive: true };
-
-        if (filters.status) {
-            query.status = filters.status;
-        }
-
-        if (filters.from || filters.to) {
-            query.createdAt = {};
-            if (filters.from) query.createdAt.$gte = new Date(filters.from);
-            if (filters.to) query.createdAt.$lte = new Date(filters.to);
-        }
-
         const page = filters.page ? parseInt(filters.page, 10) : 1;
         const limit = filters.limit ? parseInt(filters.limit, 10) : 20;
         const skip = (page - 1) * limit;
 
-        const [data, total] = await Promise.all([
-            this.leadModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
-            this.leadModel.countDocuments(query).exec(),
-        ]);
+        const where: any = { isActive: true };
+
+        if (filters.status) where.status = filters.status;
+
+        if (filters.from) where.createdAt = MoreThanOrEqual(new Date(filters.from));
+        if (filters.to) {
+            where.createdAt = where.createdAt
+                ? (where.createdAt as any).and(LessThanOrEqual(new Date(filters.to)))
+                : LessThanOrEqual(new Date(filters.to));
+        }
+
+        const [data, total] = await this.leadRepo.findAndCount({
+            where,
+            order: { createdAt: 'DESC' },
+            skip,
+            take: limit,
+        });
 
         return { data, total, page, limit };
     }
 
-    async updateStatus(id: string, status: string): Promise<Lead | null> {
-        return this.leadModel.findByIdAndUpdate(id, { status }, { new: true }).exec();
+    async updateStatus(id: string, status: string): Promise<LeadEntity | null> {
+        const lead = await this.leadRepo.findOne({ where: { _id: id } });
+        if (!lead) return null;
+        lead.status = status;
+        return this.leadRepo.save(lead);
     }
 }

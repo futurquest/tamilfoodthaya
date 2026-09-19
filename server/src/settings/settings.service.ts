@@ -1,29 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Settings } from './schemas/settings.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SettingsEntity } from './entities/settings.entity';
 
 @Injectable()
 export class SettingsService {
-    constructor(@InjectModel(Settings.name) private settingsModel: Model<Settings>) { }
+    constructor(@InjectRepository(SettingsEntity) private settingsRepo: Repository<SettingsEntity>) { }
 
-    async getSettings(): Promise<Settings> {
-        let settings = await this.settingsModel.findOne().exec();
+    async getSettings(): Promise<SettingsEntity> {
+        let settings = await this.settingsRepo.findOne({ order: { createdAt: 'ASC' } });
         if (!settings) {
-            settings = new this.settingsModel();
-            await settings.save();
+            settings = await this.settingsRepo.save(this.settingsRepo.create({ _id: SettingsEntity.newId() }));
         }
         return settings;
     }
 
-    async updateSettings(data: any): Promise<Settings> {
-        const settings = await this.settingsModel.findOne().exec();
+    async updateSettings(data: any): Promise<SettingsEntity> {
+        let settings = await this.settingsRepo.findOne({ order: { createdAt: 'ASC' } });
         if (settings) {
             Object.assign(settings, data);
-            return settings.save();
+            return this.settingsRepo.save(settings);
         } else {
-            const newSettings = new this.settingsModel(data);
-            return newSettings.save();
+            const newSettings = new SettingsEntity();
+            newSettings._id = SettingsEntity.newId();
+            Object.assign(newSettings, data);
+            return this.settingsRepo.save(newSettings);
         }
     }
 }

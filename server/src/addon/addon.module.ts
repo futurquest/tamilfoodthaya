@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AddonController } from './addon.controller';
 import { AddonService } from './addon.service';
-import { Addon, AddonSchema } from './schemas/addon.schema';
+import { AddonEntity } from './entities/addon.entity';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Addon.name, schema: AddonSchema }]),
+        TypeOrmModule.forFeature([AddonEntity]),
     ],
     controllers: [AddonController],
     providers: [AddonService],

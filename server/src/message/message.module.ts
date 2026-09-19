@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
-import { Message, MessageSchema } from './schemas/message.schema';
+import { MessageEntity } from './entities/message.entity';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }])],
+    imports: [TypeOrmModule.forFeature([MessageEntity])],
     controllers: [MessageController],
     providers: [MessageService],
 })
