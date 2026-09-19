@@ -54,8 +54,8 @@ export class MenuItemEntity {
     @Column({ name: 'isVeg', type: 'boolean', default: false })
     isVeg: boolean;
 
-    @Column({ name: 'stock', type: 'int', default: 0 })
-    stock: number;
+    @Column({ name: 'stockCount', type: 'int', default: 0 })
+    stockCount: number;
 
     @Column({ name: 'dailyAvailability', type: 'boolean', default: true })
     dailyAvailability: boolean;
