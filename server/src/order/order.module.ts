@@ -1,20 +1,17 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { StripePaymentStrategy } from './payment/stripe.strategy';
-import { Order, OrderSchema } from './schemas/order.schema';
-import { MenuItem, MenuItemSchema } from '../menu/schemas/menu-item.schema';
+import { OrderEntity } from './entities/order.entity';
+import { MenuItemEntity } from '../menu/entities/menu-item.entity';
 import { PaymentGateway } from './payment/payment.interface';
 
 import { PaymentGatewayFactory } from './payment/payment.factory';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Order.name, schema: OrderSchema },
-      { name: MenuItem.name, schema: MenuItemSchema },
-    ]),
+    TypeOrmModule.forFeature([OrderEntity, MenuItemEntity]),
   ],
   controllers: [OrderController],
   providers: [

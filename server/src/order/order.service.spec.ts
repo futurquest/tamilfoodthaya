@@ -1,39 +1,50 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
+import { getRepositoryToken, getDataSourceToken } from '@nestjs/typeorm';
 import { OrderService } from './order.service';
-import { Order } from './schemas/order.schema';
-import { MenuItem } from '../menu/schemas/menu-item.schema';
-import { ConfigService } from '@nestjs/config';
+import { OrderEntity } from './entities/order.entity';
+import { MenuItemEntity } from '../menu/entities/menu-item.entity';
 import { PaymentGatewayFactory } from './payment/payment.factory';
+import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from '@nestjs/common';
 
 describe('OrderService', () => {
     let service: OrderService;
-    let mockOrderModel: any;
-    let mockMenuItemModel: any;
-    let mockConnection: any;
+    let mockOrderRepo: any;
+    let mockMenuItemRepo: any;
+    let mockDataSource: any;
     let mockGateway: any;
     let mockEventEmitter: any;
 
+    const runTransaction = (work: (manager: any) => Promise<any>) => work({
+        findOne: mockMenuItemRepo.findOne,
+        findOneOrFail: jest.fn(),
+        create: mockMenuOrderManagerCreate,
+        save: mockMenuOrderManagerSave,
+        increment: mockMenuItemRepo.increment,
+    });
+
+    const mockMenuOrderManagerCreate = jest.fn();
+    const mockMenuOrderManagerSave = jest.fn();
+
     beforeEach(async () => {
-        mockOrderModel = {
-            create: jest.fn(),
-            findByIdAndUpdate: jest.fn(),
+        // Wire the manager.create/save used inside dataSource.transaction.
+        mockMenuOrderManagerCreate.mockReturnValue({});
+        mockMenuOrderManagerSave.mockImplementation(async (entity: any) => entity);
+
+        mockOrderRepo = {
+            findOne: jest.fn(),
+            findAndCount: jest.fn(),
+            save: jest.fn().mockImplementation(async (entity: any) => entity),
         };
 
-        mockMenuItemModel = {
-            findById: jest.fn(() => ({ session: jest.fn() })),
-            findByIdAndUpdate: jest.fn(),
+        mockMenuItemRepo = {
+            findOne: jest.fn(),
+            increment: jest.fn(),
         };
 
-        const mockSession = {
-            withTransaction: jest.fn((cb) => cb()),
-            endSession: jest.fn(),
-        };
-
-        mockConnection = {
-            startSession: jest.fn().mockResolvedValue(mockSession),
+        mockDataSource = {
+            transaction: jest.fn().mockImplementation(runTransaction),
         };
 
         mockGateway = {
@@ -52,9 +63,9 @@ describe('OrderService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 OrderService,
-                { provide: getModelToken(Order.name), useValue: mockOrderModel },
-                { provide: getModelToken(MenuItem.name), useValue: mockMenuItemModel },
-                { provide: getConnectionToken(), useValue: mockConnection },
+                { provide: getRepositoryToken(OrderEntity), useValue: mockOrderRepo },
+                { provide: getRepositoryToken(MenuItemEntity), useValue: mockMenuItemRepo },
+                { provide: getDataSourceToken(), useValue: mockDataSource },
                 { provide: PaymentGatewayFactory, useValue: mockPaymentFactory },
                 { provide: ConfigService, useValue: {} },
                 { provide: EventEmitter2, useValue: mockEventEmitter },
@@ -70,51 +81,43 @@ describe('OrderService', () => {
 
     describe('createCheckoutSession', () => {
         it('should throw BadRequestException if stock is insufficient', async () => {
-            mockMenuItemModel.findById.mockReturnValue({
-                session: jest.fn().mockResolvedValue({ stockCount: 1, name: 'Dosa' }),
-            });
+            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 1, name: 'Dosa' });
 
             const orderData = { items: [{ menuItemId: '1', quantity: 5 }] };
             await expect(service.createCheckoutSession(orderData)).rejects.toThrow(BadRequestException);
+            expect(mockDataSource.transaction).toHaveBeenCalled();
         });
 
         it('should correctly process order with transactions and return payment URL', async () => {
-            mockMenuItemModel.findById.mockReturnValue({
-                session: jest.fn().mockResolvedValue({ stockCount: 10, name: 'Dosa' }),
-            });
+            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 10, name: 'Dosa', price: 5 });
 
             const mockSavedOrder = { _id: '123', save: jest.fn() };
-            mockOrderModel.create.mockResolvedValue([mockSavedOrder]);
+            mockMenuOrderManagerCreate.mockReturnValue(mockSavedOrder);
 
-            const orderData = { items: [{ menuItemId: '1', quantity: 2 }] };
+            const orderData = { items: [{ menuItemId: '1', quantity: 2 }], total: 10, pickupTime: new Date(), customerInfo: {} };
             const res = await service.createCheckoutSession(orderData);
 
             expect(res.url).toBe('http://stripe.com');
-            expect(mockOrderModel.create).toHaveBeenCalled();
+            expect(mockMenuOrderManagerCreate).toHaveBeenCalled();
             expect(mockGateway.createCheckoutSession).toHaveBeenCalled();
-            expect(mockSavedOrder.save).toHaveBeenCalled();
-            expect(mockConnection.startSession).toHaveBeenCalled();
+            expect(mockMenuOrderManagerSave).toHaveBeenCalled();
+            expect(mockDataSource.transaction).toHaveBeenCalled();
         });
     });
 
     describe('handleWebhook', () => {
-        it('should increase order status and decrease stock inside a transaction', async () => {
+        it('should set order to paid and decrease stock inside a transaction', async () => {
             mockGateway.validateWebhook.mockResolvedValue({
                 type: 'checkout.session.completed',
                 data: { object: { metadata: { orderId: '123' } } }
             });
 
-            mockOrderModel.findByIdAndUpdate.mockResolvedValue({
-                _id: '123',
-                userId: 'user1',
-                customerInfo: { email: 'test@t.com', phone: '1234567890', name: 'Test' },
-                items: [{ menuItemId: 'abc', quantity: 2 }]
-            });
+            mockMenuItemRepo.findOne.mockResolvedValue({ _id: '123', customerInfo: { email: 'test@t.com', phone: '1234567890', name: 'Test' }, items: [{ menuItemId: 'abc', quantity: 2 }] });
 
             await service.handleWebhook('stripe', 'sig', {});
 
-            expect(mockOrderModel.findByIdAndUpdate).toHaveBeenCalled();
-            expect(mockMenuItemModel.findByIdAndUpdate).toHaveBeenCalledWith('abc', { $inc: { stockCount: -2 } }, expect.any(Object));
+            expect(mockDataSource.transaction).toHaveBeenCalled();
+            expect(mockMenuItemRepo.increment).toHaveBeenCalledWith(MenuItemEntity, { _id: 'abc' }, 'stockCount', -2);
         });
     });
 });

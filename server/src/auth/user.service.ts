@@ -1,20 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserEntity } from './entities/user.entity';
+import { OrderEntity } from '../order/entities/order.entity';
 import { CateringOrder } from '../catering/schemas/catering-order.schema';
-import { Order } from '../order/schemas/order.schema';
 import { NotificationLog } from '../notification/schemas/notification.schema';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
-        // CateringOrder/Order/NotificationLog still live on Mongo for now.
+        @InjectRepository(OrderEntity) private orderRepo: Repository<OrderEntity>,
+        // CateringOrder/NotificationLog still live on Mongo until those convert.
         @InjectModel(CateringOrder.name) private cateringOrderModel: Model<CateringOrder>,
-        @InjectModel(Order.name) private orderModel: Model<Order>,
         @InjectModel(NotificationLog.name) private notificationLogModel: Model<NotificationLog>,
     ) { }
 
@@ -55,9 +55,19 @@ export class UserService {
             $or: [{ userId }, { 'customerInfo.email': email }]
         }).sort({ createdAt: -1 }).exec();
 
-        const regularOrders = await this.orderModel.find({
-            $or: [{ userId }, { 'customerInfo.email': email }]
-        }).sort({ createdAt: -1 }).exec();
+        let regularOrders: OrderEntity[];
+        if (user && email) {
+            regularOrders = await this.orderRepo
+                .createQueryBuilder('order')
+                .where('("order"."userId" = :userId OR "order"."customerInfo"->>\'email\' = :email)', {
+                    userId,
+                    email,
+                })
+                .orderBy('"order"."createdAt"', 'DESC')
+                .getMany();
+        } else {
+            regularOrders = await this.orderRepo.find({ order: { createdAt: 'DESC' } });
+        }
 
         const notifications = await this.notificationLogModel.find({ userId, isCleared: false }).sort({ createdAt: -1 }).limit(10).exec();
 

@@ -9,8 +9,8 @@ import { AuthController } from './auth.controller';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserEntity } from './entities/user.entity';
+import { OrderEntity } from '../order/entities/order.entity';
 import { CateringOrder, CateringOrderSchema } from '../catering/schemas/catering-order.schema';
-import { Order, OrderSchema } from '../order/schemas/order.schema';
 import { NotificationLog, NotificationLogSchema } from '../notification/schemas/notification.schema';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { NotificationModule } from '../notification/notification.module';
@@ -27,12 +27,11 @@ import { NotificationModule } from '../notification/notification.module';
       }),
       inject: [ConfigService],
     }),
-    // User is on Postgres now; CateringOrder/Order/NotificationLog stay on
+    // User/Order are on Postgres now; CateringOrder/NotificationLog stay on
     // Mongo until those modules are converted (transitional dual-DB).
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, OrderEntity]),
     MongooseModule.forFeature([
       { name: CateringOrder.name, schema: CateringOrderSchema },
-      { name: Order.name, schema: OrderSchema },
       { name: NotificationLog.name, schema: NotificationLogSchema },
     ]),
   ],
