@@ -25,7 +25,7 @@ export class UserEntity {
     @Column({ unique: true })
     username: string;
 
-    @Column()
+    @Column({ default: '' })
     name: string;
 
     @Column()
