@@ -1,33 +1,40 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Coupon } from './schemas/coupon.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CouponEntity, CouponDiscountType } from './entities/coupon.entity';
 
 @Injectable()
 export class CouponService {
-    constructor(@InjectModel(Coupon.name) private couponModel: Model<Coupon>) { }
+    constructor(
+        @InjectRepository(CouponEntity) private couponRepo: Repository<CouponEntity>,
+    ) { }
 
-    async findAll(): Promise<Coupon[]> {
-        return this.couponModel.find().sort({ createdAt: -1 }).exec();
+    async findAll(): Promise<CouponEntity[]> {
+        return this.couponRepo.find({ order: { createdAt: 'DESC' } });
     }
 
-    async create(data: any): Promise<Coupon> {
-        return this.couponModel.create(data);
+    async create(data: Partial<CouponEntity>): Promise<CouponEntity> {
+        const entity = this.couponRepo.create({
+            _id: CouponEntity.newId(),
+            code: String(data.code || '').toUpperCase(),
+            ...data,
+        });
+        return this.couponRepo.save(entity);
     }
 
-    async update(id: string, data: any): Promise<Coupon> {
-        const updated = await this.couponModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).exec();
-        if (!updated) throw new NotFoundException(`Coupon not found: ${id}`);
-        return updated;
+    async update(id: string, data: Partial<CouponEntity>): Promise<CouponEntity> {
+        const updated = await this.couponRepo.update({ _id: id }, data);
+        if (!updated.affected) throw new NotFoundException(`Coupon not found: ${id}`);
+        return this.couponRepo.findOneOrFail({ where: { _id: id } });
     }
 
     async remove(id: string): Promise<{ deleted: boolean }> {
-        await this.couponModel.findByIdAndDelete(id).exec();
-        return { deleted: true };
+        const result = await this.couponRepo.delete({ _id: id });
+        return { deleted: result.affected ? true : false };
     }
 
     async validate(code: string, orderTotal: number): Promise<any> {
-        const coupon = await this.couponModel.findOne({ code: code.toUpperCase(), isActive: true }).exec();
+        const coupon = await this.couponRepo.findOne({ where: { code: code.toUpperCase(), isActive: true } });
         if (!coupon) throw new BadRequestException('Coupon not found or inactive');
 
         const now = new Date();
@@ -36,7 +43,7 @@ export class CouponService {
         if (coupon.maxUses > 0 && coupon.usedCount >= coupon.maxUses) throw new BadRequestException('Coupon usage limit reached');
         if (orderTotal < coupon.minOrderAmount) throw new BadRequestException(`Minimum order of €${coupon.minOrderAmount} required`);
 
-        const discount = coupon.discountType === 'percentage'
+        const discount = coupon.discountType === CouponDiscountType.PERCENTAGE
             ? Math.round((orderTotal * coupon.discountValue / 100) * 100) / 100
             : Math.min(coupon.discountValue, orderTotal);
 
@@ -51,6 +58,6 @@ export class CouponService {
     }
 
     async incrementUsage(code: string): Promise<void> {
-        await this.couponModel.findOneAndUpdate({ code: code.toUpperCase() }, { $inc: { usedCount: 1 } }).exec();
+        await this.couponRepo.increment({ code: code.toUpperCase() }, 'usedCount', 1);
     }
 }

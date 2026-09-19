@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CouponController } from './coupon.controller';
 import { CouponService } from './coupon.service';
-import { Coupon, CouponSchema } from './schemas/coupon.schema';
+import { CouponEntity } from './entities/coupon.entity';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Coupon.name, schema: CouponSchema }]),
+        TypeOrmModule.forFeature([CouponEntity]),
     ],
     controllers: [CouponController],
     providers: [CouponService],
