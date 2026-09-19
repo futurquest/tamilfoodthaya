@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { CateringOrderStatus } from '../schemas/catering-order.schema';
+import { CateringOrderStatus } from '../entities/catering-order.entity';
 
 export class UpdateCateringStatusDto {
     @IsNotEmpty()

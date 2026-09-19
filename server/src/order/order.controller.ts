@@ -5,7 +5,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt.guard';
 import { OrderService } from './order.service';
 import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
-import { UserRole } from '../auth/schemas/user.schema';
+import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('orders')
 export class OrderController {

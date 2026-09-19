@@ -8,8 +8,8 @@ import { PaginationFilterDto } from '../common/dto/pagination-filter.dto';
 import { UpdateCateringStatusDto } from './dto/update-catering-status.dto';
 import { CreateCateringOrderDto } from './dto/create-catering-order.dto';
 import { CreateCateringQuoteDto } from './dto/create-catering-quote.dto';
-import { ChangeRequestStatus } from './schemas/change-request.schema';
-import { UserRole } from '../auth/schemas/user.schema';
+import { ChangeRequestStatus } from './entities/change-request.entity';
+import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('catering')
 export class CateringController {

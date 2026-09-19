@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import { UserRole } from './schemas/user.schema';
+import { UserRole } from './entities/user.entity';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

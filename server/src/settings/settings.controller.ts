@@ -3,7 +3,7 @@ import { SettingsService } from './settings.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import { UserRole } from '../auth/schemas/user.schema';
+import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('settings')
 export class SettingsController {

@@ -108,52 +108,28 @@ VITE_API_BASE_URL=http://localhost:3000
 
 ## 🗄️ Database Operations
 
-All DB tooling lives in `server/src/db/` and runs from the `server/` directory. Backups are stored under `server/backups/` (gitignored).
+The server runs on **PostgreSQL** via TypeORM. Entities live next to their modules in `server/src/*/entities/` and the schema is kept in sync with `synchronize: true` during development.
 
-### Available Commands
+### One-time legacy Mongo → Postgres migration
+`server/scripts/replay-mongo-to-pg.ts` cold-copies the old MongoDB collections
+(`MONGODB_URI`) into the Postgres tables, preserving the 24-hex `_id` primary
+keys and jsonb payloads byte-for-byte. It is idempotent (`.orIgnore()`) and safe
+to re-run while the server keeps writing.
+
 ```bash
-# Backup the whole database (gzipped Extended JSON + manifest, one file per collection)
-npm run db:backup                       # full backup
-npm run db:backup -- --keep 10          # prune old backups, keep the 10 newest
-npm run db:backup -- --collections=users,coupons
-
-# List existing backups
-npm run db:list -- --details
-
-# Restore / import a backup
-npm run db:restore -- --dir ./backups/<backup-folder>     # replace mode (drops + re-inserts)
-npm run db:restore -- --dir ./backups/<backup-folder> --mode merge      # upsert by _id, keep everything
-npm run db:restore -- --dry-run                            # validate + report without writing
-npm run db:restore -- --collections=users --yes            # partial restore, skip prompt
-
-# Migrations (tracked in the `_migrations` collection)
-npm run db:migrate -- status     # show applied / pending
-npm run db:migrate               # apply all pending
-npm run db:migrate -- latest     # apply only the newest pending
-npm run db:migrate -- down <name> # roll back an applied migration
-npm run db:migrate:create add-some-field  # scaffold a new migration + register it
+npm run db:replay
 ```
 
-### Migration workflow
-- Migrations live in `server/src/db/migrations/`, export `{ name, up, down }`, and are registered in `index.ts` in order (oldest first). `db:migrate:create` creates the file **and** registers it automatically.
-- Each applied migration is recorded in the `_migrations` collection, so it runs exactly once.
-- Example migration:
+- Every column of the legacy row is materialized; fields the Mongo docs omit fall
+  back to the column defaults (`isActive true`, `minOrderAmount 0`, ...).
+- Read `MONGODB_URI` and the `POSTGRES_*` vars from `server/.env`.
 
-```ts
-import type { Db } from 'mongodb';
-import { Migration } from './types';
-
-const migration: Migration = {
-    name: '20260912-add-coupon-usage-fields',
-    up: async (db: Db) => { /* forward change */ await db.collection('coupons').updateMany({}, { $set: { used: 0 } }); },
-    down: async (db: Db) => { /* rollback */ await db.collection('coupons').updateMany({}, { $unset: { used: '' } }); },
-};
-export default migration;
+### Creating a fresh DB
+```bash
+docker run -d --name tamilfoodthaya-pg -p 5433:5432 \
+  -e POSTGRES_USER=tft -e POSTGRES_DB=tftdb -e POSTGRES_PASSWORD=tft_dev_pw \
+  postgres:16
 ```
-
-Notes:
-- Restore `--mode replace` requires confirming with `yes` (or `--yes`); it **drops** the target collections first.
-- Always back up before applying migrations or doing a replace-restore.
 
 ## 💳 Stripe & iDEAL Integration
 The platform uses **Stripe Checkout** for secure payments.
@@ -164,7 +140,7 @@ The platform uses **Stripe Checkout** for secure payments.
 ## 🚢 Deployment
 - **Frontend**: Vercel or Netlify (Point to `client/` directory).
 - **Backend**: Railway, Render, or Heroku (Point to `server/` directory).
-- **Database**: MongoDB Atlas.
+- **Database**: PostgreSQL (managed, e.g. Railway/Supabase Neon).
 
 ## 🧪 Testing
 - Backend: `cd server && npm test`

@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import { UserRole } from '../auth/schemas/user.schema';
+import { UserRole } from '../auth/entities/user.entity';
 import { CreateMenuItemDto, UpdateMenuItemDto } from './dto/create-menu-item.dto';
 import { MenuItemEntity } from './entities/menu-item.entity';
 

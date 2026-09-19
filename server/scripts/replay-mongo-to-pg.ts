@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import * as fs from 'fs';
 import * as path from 'path';
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 import { DataSource } from 'typeorm';
 
 /**
@@ -269,8 +269,9 @@ async function main(): Promise<void> {
     }
 
     console.log(`Connecting to Mongo: ${mongodbUri}`);
-    await mongoose.connect(mongodbUri);
-    const db = mongoose.connection.db;
+    const mongoClient = new MongoClient(mongodbUri);
+    await mongoClient.connect();
+    const db = mongoClient.db();
     if (!db) {
         console.error('❌ Could not obtain a native database handle.');
         process.exit(1);
@@ -340,7 +341,7 @@ async function main(): Promise<void> {
     for (const line of summary) console.log(line);
 
     await dataSource.destroy();
-    await mongoose.disconnect();
+    await mongoClient.close();
 
     if (anyFailed) {
         console.error('❌ Replay finished with failures (see above).');
