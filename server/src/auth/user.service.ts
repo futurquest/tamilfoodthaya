@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './schemas/user.schema';
+import { UserEntity } from './entities/user.entity';
 import { CateringOrder } from '../catering/schemas/catering-order.schema';
 import { Order } from '../order/schemas/order.schema';
 import { NotificationLog } from '../notification/schemas/notification.schema';
@@ -9,46 +11,44 @@ import { NotificationLog } from '../notification/schemas/notification.schema';
 @Injectable()
 export class UserService {
     constructor(
-        @InjectModel(User.name) private userModel: Model<User>,
+        @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
+        // CateringOrder/Order/NotificationLog still live on Mongo for now.
         @InjectModel(CateringOrder.name) private cateringOrderModel: Model<CateringOrder>,
         @InjectModel(Order.name) private orderModel: Model<Order>,
         @InjectModel(NotificationLog.name) private notificationLogModel: Model<NotificationLog>,
     ) { }
 
-    async getProfile(userId: string): Promise<User> {
-        const user = await this.userModel.findById(userId).select('-password -verificationPin -resetPasswordToken').exec();
+    async getProfile(userId: string): Promise<UserEntity> {
+        const user = await this.userRepo.findOne({ where: { _id: userId } });
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        return user;
+        const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = user;
+        return safe as UserEntity;
     }
 
-    async updateProfile(userId: string, updateData: any): Promise<User> {
-        // Prevent updating sensitive fields via profile update
+    async updateProfile(userId: string, updateData: any): Promise<UserEntity> {
         delete updateData.password;
         delete updateData.role;
         delete updateData.isVerified;
         delete updateData.email;
         delete updateData.username;
 
-        const updatedUser = await this.userModel.findByIdAndUpdate(
-            userId,
-            { $set: updateData },
-            { new: true }
-        ).select('-password -verificationPin -resetPasswordToken').exec();
-
-        if (!updatedUser) {
+        const user = await this.userRepo.findOne({ where: { _id: userId } });
+        if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        // Ideally, we'd log this audit event somewhere (audit collection)
-        console.log(`[AUDIT] User ${userId} updated their profile`);
+        Object.assign(user, updateData);
+        const saved = await this.userRepo.save(user);
 
-        return updatedUser;
+        const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = saved;
+        console.log(`[AUDIT] User ${userId} updated their profile`);
+        return safe as UserEntity;
     }
 
     async getDashboardData(userId: string) {
-        const user = await this.userModel.findById(userId).exec();
+        const user = await this.userRepo.findOne({ where: { _id: userId } });
         const email = user?.email;
 
         const cateringOrders = await this.cateringOrderModel.find({
@@ -84,27 +84,30 @@ export class UserService {
         };
     }
 
-    async findAllUsers(): Promise<User[]> {
-        return this.userModel.find().select('-password -verificationPin -resetPasswordToken').sort({ createdAt: -1 }).exec();
+    async findAllUsers(): Promise<UserEntity[]> {
+        const users = await this.userRepo.find({ order: { createdAt: 'DESC' } });
+        return users.map(u => {
+            const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = u;
+            return safe as UserEntity;
+        });
     }
 
-    async adminUpdateUser(userId: string, updateData: any): Promise<User> {
-        const updatedUser = await this.userModel.findByIdAndUpdate(
-            userId,
-            { $set: updateData },
-            { new: true }
-        ).select('-password -verificationPin -resetPasswordToken').exec();
-
-        if (!updatedUser) {
+    async adminUpdateUser(userId: string, updateData: any): Promise<UserEntity> {
+        const user = await this.userRepo.findOne({ where: { _id: userId } });
+        if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        return updatedUser;
+        Object.assign(user, updateData);
+        const saved = await this.userRepo.save(user);
+
+        const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = saved;
+        return safe as UserEntity;
     }
 
     async adminDeleteUser(userId: string): Promise<void> {
-        const result = await this.userModel.findByIdAndDelete(userId).exec();
-        if (!result) {
+        const result = await this.userRepo.delete({ _id: userId });
+        if (!result.affected) {
             throw new NotFoundException('User not found');
         }
     }

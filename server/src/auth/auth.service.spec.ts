@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { getModelToken } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { UserEntity } from './entities/user.entity';
 import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let userModel: any;
+  let userRepo: any;
   let jwtService: JwtService;
 
   beforeEach(async () => {
@@ -24,16 +24,19 @@ describe('AuthService', () => {
           useValue: { sendVerificationPin: jest.fn() },
         },
         {
-          provide: getModelToken(User.name),
+          provide: getRepositoryToken(UserEntity),
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    userModel = module.get(getModelToken(User.name));
+    userRepo = module.get(getRepositoryToken(UserEntity));
     jwtService = module.get<JwtService>(JwtService);
   });
 
@@ -43,10 +46,14 @@ describe('AuthService', () => {
     const mockUser = {
       username: 'admin',
       password: hashedPassword,
-      toObject: jest.fn().mockReturnValue({ username: 'admin' }),
+      _id: '1',
+      email: 'admin@tamilfoodthaya.com',
+      name: 'Admin',
+      phone: '123',
+      role: 'admin',
     };
 
-    userModel.findOne.mockResolvedValue(mockUser);
+    userRepo.findOne.mockResolvedValue(mockUser);
 
     const result = await service.validateUser('admin', password);
     expect(result).toBeDefined();
@@ -58,7 +65,7 @@ describe('AuthService', () => {
       username: 'admin',
       password: await bcrypt.hash('real-pass', 10),
     };
-    userModel.findOne.mockResolvedValue(mockUser);
+    userRepo.findOne.mockResolvedValue(mockUser);
 
     const result = await service.validateUser('admin', 'wrong-pass');
     expect(result).toBeNull();
