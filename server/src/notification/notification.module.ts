@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationService } from './notification.service';
-import { NotificationLog, NotificationLogSchema } from './schemas/notification.schema';
+import { NotificationLogEntity } from './entities/notification-log.entity';
 import { ConfigModule } from '@nestjs/config';
 import { NotificationController } from './notification.controller';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: NotificationLog.name, schema: NotificationLogSchema }]),
+        TypeOrmModule.forFeature([NotificationLogEntity]),
         ConfigModule,
     ],
     providers: [NotificationService],

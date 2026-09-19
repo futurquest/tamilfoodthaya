@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { UserEntity } from './entities/user.entity';
 import { OrderEntity } from '../order/entities/order.entity';
 import { CateringOrderEntity } from '../catering/entities/catering-order.entity';
-import { NotificationLog } from '../notification/schemas/notification.schema';
+import { NotificationLogEntity } from '../notification/entities/notification-log.entity';
 
 @Injectable()
 export class UserService {
@@ -14,8 +12,7 @@ export class UserService {
         @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
         @InjectRepository(OrderEntity) private orderRepo: Repository<OrderEntity>,
         @InjectRepository(CateringOrderEntity) private cateringOrderRepo: Repository<CateringOrderEntity>,
-        // NotificationLog still lives on Mongo until notification converts.
-        @InjectModel(NotificationLog.name) private notificationLogModel: Model<NotificationLog>,
+        @InjectRepository(NotificationLogEntity) private notificationRepo: Repository<NotificationLogEntity>,
     ) { }
 
     async getProfile(userId: string): Promise<UserEntity> {
@@ -79,7 +76,11 @@ export class UserService {
             regularOrders = await this.orderRepo.find({ order: { createdAt: 'DESC' } });
         }
 
-        const notifications = await this.notificationLogModel.find({ userId, isCleared: false }).sort({ createdAt: -1 }).limit(10).exec();
+        const notifications = await this.notificationRepo.find({
+            where: { userId, isCleared: false },
+            order: { createdAt: 'DESC' },
+            take: 10,
+        });
 
         const activeCatering = cateringOrders.filter(o => ['pending', 'reviewing', 'quoted', 'confirmed', 'paid', 'preparing'].includes(o.status));
         const historyCatering = cateringOrders.filter(o => ['completed', 'cancelled'].includes(o.status));

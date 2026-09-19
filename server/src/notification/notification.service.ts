@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-import { NotificationLog, NotificationStatus } from './schemas/notification.schema';
+import { NotificationLogEntity, NotificationStatus } from './entities/notification-log.entity';
 import { OnEvent } from '@nestjs/event-emitter';
 import { getStatusUpdateTemplate, getVerificationEmailTemplate } from './templates';
 
@@ -24,13 +24,13 @@ export class NotificationService {
     private transporter: nodemailer.Transporter;
 
     constructor(
-        @InjectModel(NotificationLog.name) private notificationLogModel: Model<NotificationLog>,
+        @InjectRepository(NotificationLogEntity) private notificationRepo: Repository<NotificationLogEntity>,
         private configService: ConfigService,
     ) {
         this.transporter = nodemailer.createTransport({
             host: this.configService.get<string>('SMTP_HOST', 'smtp.ethereal.email'),
             port: this.configService.get<number>('SMTP_PORT', 587),
-            secure: false, // true for 465, false for other ports
+            secure: false,
             auth: {
                 user: this.configService.get<string>('SMTP_USER', 'mock_user'),
                 pass: this.configService.get<string>('SMTP_PASS', 'mock_pass'),
@@ -50,7 +50,6 @@ export class NotificationService {
         const clientUrl = this.configService.get<string>('CLIENT_URL', 'http://localhost:5173');
         const dashboardUrl = `${clientUrl}/dashboard`;
 
-        // 1. Send Email
         await this.dispatchNotification(
             eventId,
             'email',
@@ -73,7 +72,6 @@ export class NotificationService {
             }
         );
 
-        // 2. Send WhatsApp
         await this.dispatchNotification(
             eventId,
             'whatsapp',
@@ -93,44 +91,40 @@ export class NotificationService {
         payload: any,
         sendFn: () => Promise<void>
     ) {
-        // Idempotency check: Have we processed this eventId and type?
         try {
-            const existingLog = await this.notificationLogModel.findOne({ eventId, type });
+            const existingLog = await this.notificationRepo.findOne({ where: { eventId, type } });
             if (existingLog && [NotificationStatus.SENT, NotificationStatus.PENDING].includes(existingLog.status)) {
                 this.logger.log(`Notification ${type} for event ${eventId} already processed or pending.`);
                 return;
             }
 
-            // Create pending log or update failed log
-            let log;
+            let log: NotificationLogEntity;
             if (existingLog) {
                 existingLog.status = NotificationStatus.PENDING;
-                existingLog.errorMessage = undefined;
-                log = await existingLog.save();
+                existingLog.errorMessage = null;
+                log = await this.notificationRepo.save(existingLog);
             } else {
-                log = await this.notificationLogModel.create({
+                log = await this.notificationRepo.save(this.notificationRepo.create({
+                    _id: NotificationLogEntity.newId(),
                     eventId,
                     type,
                     payload,
                     status: NotificationStatus.PENDING,
-                    userId: payload.userId,
-                    referenceId: payload.orderId
-                });
+                    userId: payload.userId ?? null,
+                    referenceId: payload.orderId ?? null,
+                }));
             }
 
-            // Attempt delivery
             await sendFn();
 
-            // Mark SENT
             log.status = NotificationStatus.SENT;
-            await log.save();
+            await this.notificationRepo.save(log);
             this.logger.log(`Notification ${type} for event ${eventId} SENT successfully.`);
         } catch (error) {
             this.logger.error(`Failed to send ${type} notification for event ${eventId}`, error);
-            // Mark FAILED
-            await this.notificationLogModel.findOneAndUpdate(
+            await this.notificationRepo.update(
                 { eventId, type },
-                { status: NotificationStatus.FAILED, errorMessage: error.message }
+                { status: NotificationStatus.FAILED, errorMessage: (error as Error).message }
             );
         }
     }
@@ -138,7 +132,6 @@ export class NotificationService {
     async sendEmail(to: string, subject: string, text: string, html?: string) {
         const smtpUser = this.configService.get<string>('SMTP_USER');
 
-        // Mocking if no account actually set up or still using default
         if (!smtpUser || smtpUser === 'mock_user' || smtpUser === 'your_email@gmail.com') {
             this.logger.debug(`[MOCK EMAIL] To: ${to}, Subject: ${subject}`);
             this.logger.debug(`Text: ${text}`);
@@ -155,7 +148,7 @@ export class NotificationService {
                 html,
             });
         } catch (error) {
-            this.logger.error(`Failed to send email to ${to}: ${error.message}`);
+            this.logger.error(`Failed to send email to ${to}: ${(error as Error).message}`);
         }
     }
 
@@ -170,16 +163,16 @@ export class NotificationService {
     }
 
     private async sendWhatsApp(to: string, message: string) {
-        // Mock WhatsApp integration
         this.logger.debug(`[MOCK WHATSAPP] To: ${to}, Message: ${message}`);
         return Promise.resolve();
     }
 
     async clearNotification(notificationId: string, userId: string) {
-        return this.notificationLogModel.findOneAndUpdate(
-            { _id: notificationId, userId },
-            { isCleared: true },
-            { new: true }
-        ).exec();
+        const log = await this.notificationRepo.findOne({ where: { _id: notificationId, userId } });
+        if (!log) {
+            return null;
+        }
+        log.isCleared = true;
+        return this.notificationRepo.save(log);
     }
 }
