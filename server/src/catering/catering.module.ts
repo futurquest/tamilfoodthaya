@@ -1,20 +1,24 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CateringController } from './catering.controller';
 import { CateringService } from './catering.service';
-import { CateringQuote, CateringQuoteSchema } from './schemas/catering-quote.schema';
-import { CateringPackage, CateringPackageSchema } from './schemas/catering-package.schema';
-import { CateringOrder, CateringOrderSchema } from './schemas/catering-order.schema';
-import { ChangeRequest, ChangeRequestSchema } from './schemas/change-request.schema';
+import { CateringQuoteEntity } from './entities/catering-quote.entity';
+import { CateringPackageEntity } from './entities/catering-package.entity';
+import { CateringOrderEntity } from './entities/catering-order.entity';
+import { ChangeRequestEntity } from './entities/change-request.entity';
+import { MenuItemEntity } from '../menu/entities/menu-item.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 import { CouponModule } from '../coupon/coupon.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: CateringQuote.name, schema: CateringQuoteSchema },
-      { name: CateringPackage.name, schema: CateringPackageSchema },
-      { name: CateringOrder.name, schema: CateringOrderSchema },
-      { name: ChangeRequest.name, schema: ChangeRequestSchema },
+    TypeOrmModule.forFeature([
+      CateringQuoteEntity,
+      CateringPackageEntity,
+      CateringOrderEntity,
+      ChangeRequestEntity,
+      MenuItemEntity,
+      UserEntity,
     ]),
     CouponModule,
   ],

@@ -1,20 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getModelToken } from '@nestjs/mongoose';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { In } from 'typeorm';
 import { CateringService } from './catering.service';
-import { CateringQuote } from './schemas/catering-quote.schema';
-import { CateringPackage } from './schemas/catering-package.schema';
-import { CateringOrder } from './schemas/catering-order.schema';
-import { ChangeRequest } from './schemas/change-request.schema';
+import { CateringQuoteEntity } from './entities/catering-quote.entity';
+import { CateringPackageEntity } from './entities/catering-package.entity';
+import { CateringOrderEntity } from './entities/catering-order.entity';
+import { ChangeRequestEntity } from './entities/change-request.entity';
+import { MenuItemEntity } from '../menu/entities/menu-item.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CouponService } from '../coupon/coupon.service';
 
 describe('CateringService', () => {
     let service: CateringService;
-    let packageModel: any;
-    let orderModel: any;
-    let quoteModel: any;
-    let changeRequestModel: any;
+    let packageRepo: any;
+    let orderRepo: any;
+    let quoteRepo: any;
+    let changeRequestRepo: any;
+    let menuItemRepo: any;
+    let userRepo: any;
     let eventEmitter: any;
 
     const mockPackage = {
@@ -28,18 +33,13 @@ describe('CateringService', () => {
                 name: 'Main Course',
                 minSelect: 1,
                 maxSelect: 3,
-                items: [
-                    { menuItem: { _id: 'm1', name: 'Biryani' }, basePrice: 5, choices: [{ name: 'Extra Spicy', priceModifier: 2 }] },
-                    { menuItem: { _id: 'm2', name: 'Kottu' }, basePrice: 0, choices: [] },
-                ],
+                items: [{ menuItem: 'm1' }, { menuItem: 'm2' }],
             },
             {
                 name: 'Dessert',
                 minSelect: 1,
                 maxSelect: 1,
-                items: [
-                    { menuItem: { _id: 'm3', name: 'Watalappam' }, basePrice: 3, choices: [] },
-                ],
+                items: [{ menuItem: 'm3' }],
             },
         ],
         available: true,
@@ -47,36 +47,43 @@ describe('CateringService', () => {
         isActive: true,
     };
 
-    const createMockModel = (mockData?: any) => {
-        const model: any = jest.fn().mockImplementation((dto) => ({
-            ...dto,
-            _id: 'new-id',
-            save: jest.fn().mockResolvedValue({ ...dto, _id: 'new-id' }),
-        }));
-        model.find = jest.fn().mockReturnValue({
-            sort: jest.fn().mockReturnThis(),
-            populate: jest.fn().mockReturnThis(),
-            exec: jest.fn().mockResolvedValue(mockData ? [mockData] : []),
-        });
-        model.findById = jest.fn().mockReturnValue({
-            populate: jest.fn().mockReturnThis(),
-            exec: jest.fn().mockResolvedValue(mockData || null),
-        });
-        model.findByIdAndUpdate = jest.fn().mockReturnValue({
-            populate: jest.fn().mockReturnThis(),
-            exec: jest.fn().mockResolvedValue(mockData || null),
-        });
-        model.findByIdAndDelete = jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValue(mockData || null),
-        });
-        return model;
-    };
+    const menuItems: any[] = [
+        { _id: 'm1', name: 'Biryani', price: 5, choices: [{ name: 'Extra Spicy', priceModifier: 2 }] },
+        { _id: 'm2', name: 'Kottu', price: 0, choices: [] },
+        { _id: 'm3', name: 'Watalappam', price: 3, choices: [] },
+    ];
 
     beforeEach(async () => {
-        packageModel = createMockModel(mockPackage);
-        orderModel = createMockModel();
-        quoteModel = createMockModel();
-        changeRequestModel = createMockModel();
+        packageRepo = {
+            find: jest.fn().mockResolvedValue([mockPackage]),
+            findOne: jest.fn().mockResolvedValue({ ...mockPackage }),
+            create: jest.fn().mockImplementation((dto) => dto),
+            save: jest.fn().mockImplementation(async (e) => e),
+        };
+        orderRepo = {
+            find: jest.fn().mockResolvedValue([]),
+            findOne: jest.fn().mockResolvedValue(null),
+            findAndCount: jest.fn().mockResolvedValue([[], 0]),
+            create: jest.fn().mockImplementation((dto) => dto),
+            save: jest.fn().mockImplementation(async (e) => e),
+        };
+        quoteRepo = {
+            find: jest.fn().mockResolvedValue([]),
+            create: jest.fn().mockImplementation((dto) => dto),
+            save: jest.fn().mockImplementation(async (e) => e),
+        };
+        changeRequestRepo = {
+            find: jest.fn().mockResolvedValue([]),
+            findOne: jest.fn().mockResolvedValue(null),
+            create: jest.fn().mockImplementation((dto) => dto),
+            save: jest.fn().mockImplementation(async (e) => e),
+        };
+        menuItemRepo = {
+            find: jest.fn().mockImplementation(() => Promise.resolve([])),
+        };
+        userRepo = {
+            find: jest.fn().mockResolvedValue([]),
+        };
         eventEmitter = {
             emit: jest.fn(),
         };
@@ -84,15 +91,14 @@ describe('CateringService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 CateringService,
-                { provide: getModelToken(CateringPackage.name), useValue: packageModel },
-                { provide: getModelToken(CateringOrder.name), useValue: orderModel },
-                { provide: getModelToken(CateringQuote.name), useValue: quoteModel },
-                { provide: getModelToken(ChangeRequest.name), useValue: changeRequestModel },
+                { provide: getRepositoryToken(CateringQuoteEntity), useValue: quoteRepo },
+                { provide: getRepositoryToken(CateringPackageEntity), useValue: packageRepo },
+                { provide: getRepositoryToken(CateringOrderEntity), useValue: orderRepo },
+                { provide: getRepositoryToken(ChangeRequestEntity), useValue: changeRequestRepo },
+                { provide: getRepositoryToken(MenuItemEntity), useValue: menuItemRepo },
+                { provide: getRepositoryToken(UserEntity), useValue: userRepo },
                 { provide: EventEmitter2, useValue: eventEmitter },
-                {
-                    provide: CouponService,
-                    useValue: { incrementUsage: jest.fn() },
-                }
+                { provide: CouponService, useValue: { incrementUsage: jest.fn() } },
             ],
         }).compile();
 
@@ -106,50 +112,55 @@ describe('CateringService', () => {
     describe('findAllPackages', () => {
         it('should return available packages sorted by sortOrder', async () => {
             const result = await service.findAllPackages();
-            expect(result).toEqual([mockPackage]);
-            expect(packageModel.find).toHaveBeenCalledWith({ available: true, isActive: true });
+            expect(result).toHaveLength(1);
+            expect(packageRepo.find).toHaveBeenCalledWith({
+                where: { isActive: true, available: true },
+                order: { sortOrder: 'ASC' },
+            });
         });
     });
 
     describe('findPackageById', () => {
-        it('should return package by id', async () => {
+        it('should return package by id and populate menu items', async () => {
             const result = await service.findPackageById('pkg1');
-            expect(result).toEqual(mockPackage);
+            expect(result._id).toBe('pkg1');
         });
 
         it('should throw NotFoundException for missing package', async () => {
-            packageModel.findById.mockReturnValue({
-                populate: jest.fn().mockReturnThis(),
-                exec: jest.fn().mockResolvedValue(null)
-            });
+            packageRepo.findOne.mockResolvedValue(null);
             await expect(service.findPackageById('nonexistent')).rejects.toThrow(NotFoundException);
         });
     });
 
     describe('createPackage', () => {
-        it('should create a PackageModel and save', async () => {
-            await service.createPackage({ name: 'Silver', basePrice: 20 });
-            expect(packageModel).toHaveBeenCalled();
+        it('should create a package and save', async () => {
+            const result = await service.createPackage({ name: 'Silver', basePrice: 20 });
+            expect(result.name).toBe('Silver');
+            expect(packageRepo.save).toHaveBeenCalled();
         });
     });
 
     describe('deletePackage', () => {
-        it('should delete and return { deleted: true }', async () => {
+        it('should soft-delete and return { deleted: true }', async () => {
             const result = await service.deletePackage('pkg1');
             expect(result).toEqual({ deleted: true });
         });
 
         it('should throw NotFoundException for missing package', async () => {
-            packageModel.findByIdAndUpdate.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+            packageRepo.findOne.mockResolvedValue(null);
             await expect(service.deletePackage('nonexistent')).rejects.toThrow(NotFoundException);
         });
     });
 
     describe('createCateringOrder', () => {
+        beforeEach(() => {
+            menuItemRepo.find.mockImplementation(() => Promise.resolve(menuItems));
+        });
+
         it('should reject order with too few guests', async () => {
             await expect(service.createCateringOrder({
                 packageId: 'pkg1',
-                guests: 5, // min 20
+                guests: 5,
                 eventDate: '2026-08-01',
                 selections: [],
                 customerInfo: { name: 'T', email: 't@t.com', phone: '0612345678' },
@@ -163,7 +174,6 @@ describe('CateringService', () => {
                 eventDate: '2026-08-01',
                 selections: [
                     { categoryName: 'Main Course', selectedItems: [{ itemName: 'Biryani' }] },
-                    // Missing Dessert — requires minSelect=1
                 ],
                 customerInfo: { name: 'T', email: 't@t.com', phone: '0612345678' },
             })).rejects.toThrow(BadRequestException);
@@ -194,53 +204,19 @@ describe('CateringService', () => {
                 customerInfo: { name: 'Test', email: 'test@test.com', phone: '0612345678' },
             };
 
-            // Fix the mock since choice price Modifier logic requires full subdoc
-            const customMockPackage = {
-                ...mockPackage,
-                categories: [
-                    {
-                        name: 'Main Course',
-                        minSelect: 1,
-                        maxSelect: 3,
-                        items: [
-                            {
-                                menuItem: {
-                                    _id: 'm1',
-                                    name: 'Biryani',
-                                    price: 5,
-                                    choices: [{ name: 'Extra Spicy', priceModifier: 2 }]
-                                },
-                                basePrice: 5,
-                                choices: [{ name: 'Extra Spicy', priceModifier: 2 }]
-                            }
-                        ]
-                    },
-                    {
-                        name: 'Dessert',
-                        minSelect: 1,
-                        maxSelect: 1,
-                        items: [
-                            { menuItem: { _id: 'm3', name: 'Watalappam', price: 3 }, basePrice: 3, choices: [] }
-                        ]
-                    }
-                ]
-            };
-            packageModel.findById.mockReturnValue({ populate: jest.fn().mockReturnThis(), exec: jest.fn().mockResolvedValue(customMockPackage) });
+            const saved = await service.createCateringOrder(orderData);
 
-            await service.createCateringOrder(orderData);
-
-            // Verify: basePrice(25) + Biryani(5) + ExtraSpicy(+2) + Watalappam(3) = 35 per person
+            // basePrice(25) + Biryani(5) + ExtraSpicy(+2) + Watalappam(3) = 35 per person
             // Total = 35 * 50 = 1750
-            const constructorCall = orderModel.mock.calls[0][0];
-            expect(constructorCall.pricePerPerson).toBe(35);
-            expect(constructorCall.totalPrice).toBe(1750);
-            expect(constructorCall.packageName).toBe('Gold Package');
+            expect(saved.pricePerPerson).toBe(35);
+            expect(saved.totalPrice).toBe(1750);
+            expect(saved.packageName).toBe('Gold Package');
         });
     });
 
     describe('updateCateringOrderStatus', () => {
         it('should throw NotFoundException for missing order', async () => {
-            orderModel.findById.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+            orderRepo.findOne.mockResolvedValue(null);
             await expect(service.updateCateringOrderStatus('nonexistent', 'confirmed' as any)).rejects.toThrow(NotFoundException);
         });
     });

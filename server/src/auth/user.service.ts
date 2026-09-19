@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserEntity } from './entities/user.entity';
 import { OrderEntity } from '../order/entities/order.entity';
-import { CateringOrder } from '../catering/schemas/catering-order.schema';
+import { CateringOrderEntity } from '../catering/entities/catering-order.entity';
 import { NotificationLog } from '../notification/schemas/notification.schema';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
         @InjectRepository(OrderEntity) private orderRepo: Repository<OrderEntity>,
-        // CateringOrder/NotificationLog still live on Mongo until those convert.
-        @InjectModel(CateringOrder.name) private cateringOrderModel: Model<CateringOrder>,
+        @InjectRepository(CateringOrderEntity) private cateringOrderRepo: Repository<CateringOrderEntity>,
+        // NotificationLog still lives on Mongo until notification converts.
         @InjectModel(NotificationLog.name) private notificationLogModel: Model<NotificationLog>,
     ) { }
 
@@ -51,9 +51,19 @@ export class UserService {
         const user = await this.userRepo.findOne({ where: { _id: userId } });
         const email = user?.email;
 
-        const cateringOrders = await this.cateringOrderModel.find({
-            $or: [{ userId }, { 'customerInfo.email': email }]
-        }).sort({ createdAt: -1 }).exec();
+        let cateringOrders: CateringOrderEntity[];
+        if (user && email) {
+            cateringOrders = await this.cateringOrderRepo
+                .createQueryBuilder('corder')
+                .where('("corder"."userId" = :userId OR "corder"."customerInfo"->>\'email\' = :email)', {
+                    userId,
+                    email,
+                })
+                .orderBy('"corder"."createdAt"', 'DESC')
+                .getMany();
+        } else {
+            cateringOrders = await this.cateringOrderRepo.find({ order: { createdAt: 'DESC' } });
+        }
 
         let regularOrders: OrderEntity[];
         if (user && email) {
