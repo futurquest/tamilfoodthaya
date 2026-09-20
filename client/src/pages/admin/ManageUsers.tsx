@@ -1,4 +1,6 @@
 ﻿import { useMemo, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     AlertCircle,
@@ -43,14 +45,15 @@ type AdminUser = {
     createdAt?: string;
 };
 
-const ROLE_OPTIONS: Array<{ value: RoleFilter; label: string }> = [
-    { value: 'all', label: 'All roles' },
-    { value: 'admin', label: 'Admins' },
-    { value: 'staff', label: 'Staff' },
-    { value: 'user', label: 'Customers' }
+const ROLE_VALUES: Array<{ value: RoleFilter; labelKey: string }> = [
+    { value: 'all', labelKey: 'admin.users.roles.all' },
+    { value: 'admin', labelKey: 'admin.users.roles.admin' },
+    { value: 'staff', labelKey: 'admin.users.roles.staff' },
+    { value: 'user', labelKey: 'admin.users.roles.user' }
 ];
 
 export const ManageUsers = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState<RoleFilter>('all');
@@ -69,13 +72,13 @@ export const ManageUsers = () => {
             updateAdminUser(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-            toast.success('User updated');
+            toast.success(t('admin.users.updatedToast', 'User updated'));
             setEditingUser(null);
             setFormError('');
         },
         onError: () => {
-            setFormError('The user could not be updated. Check the details and try again.');
-            toast.error('Failed to update user');
+            setFormError(t('admin.users.updateFailed', 'The user could not be updated. Check the details and try again.'));
+            toast.error(t('admin.users.updateFailedToast', 'Failed to update user'));
         }
     });
 
@@ -83,9 +86,9 @@ export const ManageUsers = () => {
         mutationFn: deleteAdminUser,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-            toast.success('User deleted');
+            toast.success(t('admin.users.deleteToast', 'User deleted'));
         },
-        onError: () => toast.error('Failed to delete user')
+        onError: () => toast.error(t('admin.users.deleteFailedToast', 'Failed to delete user'))
     });
 
     const rawUsers = usersQuery.data as any;
@@ -121,7 +124,7 @@ export const ManageUsers = () => {
                 user.phone,
                 user.role,
                 user.isVerified ? 'verified' : 'unverified',
-                user.createdAt ? formatDate(user.createdAt) : ''
+                user.createdAt ? formatDate(user.createdAt, t) : ''
             ]
                 .filter(Boolean)
                 .some((value) => String(value).toLowerCase().includes(query));
@@ -145,11 +148,11 @@ export const ManageUsers = () => {
     };
 
     const handleDelete = (user: AdminUser) => {
-        const label = user.name || user.username || user.email || 'this user';
+        const label = user.name || user.username || user.email || t('admin.users.unnamedUser', 'Unnamed user');
 
         if (
             window.confirm(
-                `Delete ${label}? This removes the account and cannot be undone.`
+                t('admin.users.confirmDelete', 'Delete {{label}}? This removes the account and cannot be undone.', { label })
             )
         ) {
             deleteMutation.mutate(user._id);
@@ -160,7 +163,7 @@ export const ManageUsers = () => {
         if (!editingUser) return;
 
         if (!editingUser.name?.trim()) {
-            setFormError('Enter a name before saving this account.');
+            setFormError(t('admin.users.nameRequired', 'Enter a name before saving this account.'));
             return;
         }
 
@@ -179,7 +182,7 @@ export const ManageUsers = () => {
         return (
             <div className="admin-loading-state">
                 <Spinner size="lg" />
-                <p>Loading users...</p>
+                <p>{t('admin.users.loading', 'Loading users...')}</p>
             </div>
         );
     }
@@ -191,45 +194,44 @@ export const ManageUsers = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Users
+                                {t('admin.users.eyebrow', 'Users')}
                             </p>
                             <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                User Management
+                                {t('admin.users.title', 'User Management')}
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Review customer accounts, staff access, verification status and
-                                admin permissions from one controlled workspace.
+                                {t('admin.users.subtitle', 'Review customer accounts, staff access, verification status and admin permissions from one controlled workspace.')}
                             </p>
                         </div>
 
                         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
                             <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                                 <ShieldCheck size={13} />
-                                Directory health
+                                {t('admin.users.directoryHealth', 'Directory health')}
                             </p>
                             <p className="mt-1 truncate text-sm font-extrabold text-white">
-                                {stats.verified} of {stats.total} verified
+                                {t('admin.users.directoryHealthValue', '{{verified}} of {{total}} verified', { verified: stats.verified, total: stats.total })}
                             </p>
                         </div>
                     </div>
 
                     <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 sm:grid-cols-5">
-                        <MetricCard label="Users" value={stats.total} icon={<Users size={15} />} />
-                        <MetricCard label="Admins" value={stats.admins} icon={<ShieldCheck size={15} />} />
-                        <MetricCard label="Staff" value={stats.staff} icon={<UserCog size={15} />} />
-                        <MetricCard label="Customers" value={stats.customers} icon={<UserIcon size={15} />} />
-                        <MetricCard label="Verified" value={stats.verified} icon={<BadgeCheck size={15} />} />
+                        <MetricCard label={t('admin.users.metricUsers', 'Users')} value={stats.total} icon={<Users size={15} />} />
+                        <MetricCard label={t('admin.users.metricAdmins', 'Admins')} value={stats.admins} icon={<ShieldCheck size={15} />} />
+                        <MetricCard label={t('admin.users.metricStaff', 'Staff')} value={stats.staff} icon={<UserCog size={15} />} />
+                        <MetricCard label={t('admin.users.metricCustomers', 'Customers')} value={stats.customers} icon={<UserIcon size={15} />} />
+                        <MetricCard label={t('admin.users.metricVerified', 'Verified')} value={stats.verified} icon={<BadgeCheck size={15} />} />
                     </div>
                 </section>
 
                 <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                     <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(280px,1fr)_auto] xl:items-end">
                         <label className="relative block min-w-0">
-                            <span className="sr-only">Search users</span>
+                            <span className="sr-only">{t('admin.users.searchAria', 'Search users')}</span>
                             <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
-                                placeholder="Search name, username, email, phone or role"
+                                placeholder={t('admin.users.searchPlaceholder', 'Search name, username, email, phone or role')}
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
@@ -239,22 +241,22 @@ export const ManageUsers = () => {
                         <div className="grid min-w-0 gap-3 lg:grid-cols-[240px_minmax(0,1fr)]">
                             <PremiumSelect
                                 compact
-                                label="Role"
+                                label={t('admin.users.roleLabel', 'Role')}
                                 value={roleFilter}
                                 onChange={(value) => setRoleFilter(value as RoleFilter)}
-                                options={ROLE_OPTIONS}
+                                options={ROLE_VALUES.map((option) => ({ value: option.value, label: t(option.labelKey) }))}
                                 icon={<UserCog size={16} />}
                             />
 
                             <div className="grid min-w-0 gap-1.5">
                                 <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-                                    <BadgeCheck size={13} /> Verification
+                                    <BadgeCheck size={13} /> {t('admin.users.verificationLabel', 'Verification')}
                                 </span>
                                 <div className="grid h-11 grid-cols-3 rounded-xl bg-stone-100 p-1">
                                     {([
-                                        ['all', 'All'],
-                                        ['verified', 'Verified'],
-                                        ['unverified', 'Open']
+                                        ['all', t('admin.users.tabAll', 'All')],
+                                        ['verified', t('admin.users.tabVerified', 'Verified')],
+                                        ['unverified', t('admin.users.tabOpen', 'Open')]
                                     ] as Array<[VerificationFilter, string]>).map(([value, label]) => (
                                         <button
                                             key={value}
@@ -277,7 +279,7 @@ export const ManageUsers = () => {
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-1 pt-3 text-xs font-semibold text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
-                            <Filter size={13} /> Showing {filteredUsers.length} of {userList.length} users
+                            <Filter size={13} /> {t('admin.users.showing', 'Showing {{shown}} of {{total}} users', { shown: filteredUsers.length, total: userList.length })}
                         </span>
                         {hasActiveFilters && (
                             <button
@@ -285,7 +287,7 @@ export const ManageUsers = () => {
                                 onClick={clearFilters}
                                 className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
                             >
-                                <RotateCcw size={13} /> Clear filters
+                                <RotateCcw size={13} /> {t('admin.users.clearFilters', 'Clear filters')}
                             </button>
                         )}
                     </div>
@@ -295,14 +297,14 @@ export const ManageUsers = () => {
                     <ErrorState onRetry={() => usersQuery.refetch()} />
                 ) : userList.length === 0 ? (
                     <EmptyState
-                        title="No users yet"
-                        copy="Registered customers and staff accounts will appear here once they are created."
+                        title={t('admin.users.emptyTitle', 'No users yet')}
+                        copy={t('admin.users.emptyCopy', 'Registered customers and staff accounts will appear here once they are created.')}
                     />
                 ) : filteredUsers.length === 0 ? (
                     <EmptyState
-                        title="No matching users"
-                        copy="Adjust the search or filters to find the account you need."
-                        actionLabel="Clear filters"
+                        title={t('admin.users.noMatchTitle', 'No matching users')}
+                        copy={t('admin.users.noMatchCopy', 'Adjust the search or filters to find the account you need.')}
+                        actionLabel={t('admin.users.clearFilters', 'Clear filters')}
                         onAction={clearFilters}
                     />
                 ) : (
@@ -329,17 +331,17 @@ export const ManageUsers = () => {
                             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
                                 <div className="min-w-0">
                                     <h2 id="user-editor-title" className="text-xl font-extrabold text-slate-950">
-                                        Edit user
+                                        {t('admin.users.editTitle', 'Edit user')}
                                     </h2>
                                     <p className="mt-1 text-sm font-medium text-slate-500">
-                                        Update account details, role and verification state.
+                                        {t('admin.users.editSubtitle', 'Update account details, role and verification state.')}
                                     </p>
                                 </div>
 
                                 <button
                                     type="button"
                                     onClick={() => setEditingUser(null)}
-                                    aria-label="Close user editor"
+                                    aria-label={t('admin.users.closeEditor', 'Close user editor')}
                                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                 >
                                     <X size={18} />
@@ -351,13 +353,13 @@ export const ManageUsers = () => {
                                     <div className="min-w-0 space-y-6">
                                         <div>
                                             <SectionTitle
-                                                title="Account details"
-                                                subtitle="Keep operational contact details accurate for orders and support."
+                                                title={t('admin.users.accountTitle', 'Account details')}
+                                                subtitle={t('admin.users.accountSubtitle', 'Keep operational contact details accurate for orders and support.')}
                                             />
 
                                             <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
                                                 <InputBlock
-                                                    label="Name"
+                                                    label={t('admin.users.nameLabel', 'Name')}
                                                     value={editingUser.name || ''}
                                                     onChange={(value) =>
                                                         setEditingUser({
@@ -365,12 +367,12 @@ export const ManageUsers = () => {
                                                             name: value
                                                         })
                                                     }
-                                                    placeholder="Full name"
+                                                    placeholder={t('admin.users.namePlaceholder', 'Full name')}
                                                     icon={<UserIcon size={16} />}
                                                 />
 
                                                 <InputBlock
-                                                    label="Phone"
+                                                    label={t('admin.users.phoneLabel', 'Phone')}
                                                     value={editingUser.phone || ''}
                                                     onChange={(value) =>
                                                         setEditingUser({
@@ -378,7 +380,7 @@ export const ManageUsers = () => {
                                                             phone: value
                                                         })
                                                     }
-                                                    placeholder="Phone number"
+                                                    placeholder={t('admin.users.phonePlaceholder', 'Phone number')}
                                                     icon={<Phone size={16} />}
                                                 />
                                             </div>
@@ -386,13 +388,13 @@ export const ManageUsers = () => {
 
                                         <div>
                                             <SectionTitle
-                                                title="Permissions"
-                                                subtitle="Choose the access level this account should have."
+                                                title={t('admin.users.permissionsTitle', 'Permissions')}
+                                                subtitle={t('admin.users.permissionsSubtitle', 'Choose the access level this account should have.')}
                                             />
 
                                             <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
                                                 <PremiumSelect
-                                                    label="Role"
+                                                    label={t('admin.users.roleLabel', 'Role')}
                                                     value={editingUser.role}
                                                     onChange={(value) =>
                                                         setEditingUser({
@@ -401,9 +403,9 @@ export const ManageUsers = () => {
                                                         })
                                                     }
                                                     options={[
-                                                        { value: 'user', label: 'Customer' },
-                                                        { value: 'staff', label: 'Staff' },
-                                                        { value: 'admin', label: 'Admin' }
+                                                        { value: 'user', label: t('admin.users.roleCustomer', 'Customer') },
+                                                        { value: 'staff', label: t('admin.users.roleStaff', 'Staff') },
+                                                        { value: 'admin', label: t('admin.users.roleAdmin', 'Admin') }
                                                     ]}
                                                     icon={<ShieldCheck size={16} />}
                                                 />
@@ -411,10 +413,10 @@ export const ManageUsers = () => {
                                                 <ToggleCard
                                                     title={
                                                         editingUser.isVerified
-                                                            ? 'Email verified'
-                                                            : 'Email not verified'
+                                                            ? t('admin.users.emailVerified', 'Email verified')
+                                                            : t('admin.users.emailNotVerified', 'Email not verified')
                                                     }
-                                                    description="Controls whether the account is marked as verified."
+                                                    description={t('admin.users.emailVerifiedDesc', 'Controls whether the account is marked as verified.')}
                                                     checked={Boolean(editingUser.isVerified)}
                                                     onChange={(checked) =>
                                                         setEditingUser({
@@ -430,7 +432,7 @@ export const ManageUsers = () => {
                                     <div className="rounded-2xl bg-(--brand-surface-dim) p-4">
                                         <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                                             <UserCheck size={17} className="text-amber-700" />
-                                            Account preview
+                                            {t('admin.users.accountPreview', 'Account preview')}
                                         </div>
 
                                         <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -439,7 +441,7 @@ export const ManageUsers = () => {
                                                 {getDisplayName(editingUser)}
                                             </p>
                                             <p className="mt-1 truncate text-sm font-semibold text-slate-500">
-                                                @{editingUser.username || 'no-username'}
+                                                @{editingUser.username || t('admin.users.noUsername', 'no-username')}
                                             </p>
                                             <div className="mt-4 flex flex-wrap gap-2">
                                                 <RoleBadge role={editingUser.role} />
@@ -448,9 +450,9 @@ export const ManageUsers = () => {
                                         </div>
 
                                         <div className="mt-4 space-y-3 text-xs font-semibold text-slate-500">
-                                            <PreviewLine label="Email" value={editingUser.email || 'No email'} />
-                                            <PreviewLine label="Phone" value={editingUser.phone || 'No phone'} />
-                                            <PreviewLine label="Joined" value={formatDate(editingUser.createdAt)} />
+                                            <PreviewLine label={t('admin.users.emailLabel', 'Email')} value={editingUser.email || t('admin.users.noEmail', 'No email')} />
+                                            <PreviewLine label={t('admin.users.phoneLabel', 'Phone')} value={editingUser.phone || t('admin.users.noPhone', 'No phone')} />
+                                            <PreviewLine label={t('admin.users.joinedLabel', 'Joined')} value={formatDate(editingUser.createdAt, t)} />
                                         </div>
                                     </div>
                                 </div>
@@ -468,7 +470,7 @@ export const ManageUsers = () => {
                                         onClick={() => setEditingUser(null)}
                                         className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                     >
-                                        Cancel
+                                        {t('admin.users.cancel', 'Cancel')}
                                     </button>
 
                                     <button
@@ -477,7 +479,7 @@ export const ManageUsers = () => {
                                         disabled={updateMutation.isPending}
                                         className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {updateMutation.isPending ? 'Saving...' : 'Save changes'}
+                                        {updateMutation.isPending ? t('admin.users.saving', 'Saving...') : t('admin.users.saveChanges', 'Save changes')}
                                     </button>
                                 </div>
                             </div>
@@ -499,18 +501,20 @@ const UserResults = ({
     deletePending: boolean;
     onEdit: (user: AdminUser) => void;
     onDelete: (user: AdminUser) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="hidden overflow-x-auto xl:block">
             <table className="w-full min-w-[920px] text-sm">
                 <thead className="border-b border-slate-200 bg-(--brand-surface-dim)">
                     <tr>
-                        <TableHeader>User</TableHeader>
-                        <TableHeader>Contact</TableHeader>
-                        <TableHeader>Role</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                        <TableHeader>Joined</TableHeader>
-                        <TableHeader align="right">Actions</TableHeader>
+                        <TableHeader>{t('admin.users.tableUser', 'User')}</TableHeader>
+                        <TableHeader>{t('admin.users.tableContact', 'Contact')}</TableHeader>
+                        <TableHeader>{t('admin.users.tableRole', 'Role')}</TableHeader>
+                        <TableHeader>{t('admin.users.tableStatus', 'Status')}</TableHeader>
+                        <TableHeader>{t('admin.users.tableJoined', 'Joined')}</TableHeader>
+                        <TableHeader align="right">{t('admin.users.tableActions', 'Actions')}</TableHeader>
                     </tr>
                 </thead>
 
@@ -522,10 +526,10 @@ const UserResults = ({
                                     <Avatar user={user} />
                                     <div className="min-w-0">
                                         <p className="truncate text-[15px] font-extrabold text-slate-950">
-                                            {getDisplayName(user)}
+                                            {getDisplayName(user, t)}
                                         </p>
                                         <p className="mt-1 truncate text-xs font-semibold text-slate-500">
-                                            @{user.username || 'no-username'}
+                                            @{user.username || t('admin.users.noUsername', 'no-username')}
                                         </p>
                                     </div>
                                 </div>
@@ -544,7 +548,7 @@ const UserResults = ({
                             </td>
 
                             <td className="px-5 py-4 font-semibold text-slate-600">
-                                {formatDate(user.createdAt)}
+                                {formatDate(user.createdAt, t)}
                             </td>
 
                             <td className="px-5 py-4">
@@ -573,7 +577,8 @@ const UserResults = ({
             ))}
         </div>
     </div>
-);
+    );
+};
 
 const UserCard = ({
     user,
@@ -585,17 +590,19 @@ const UserCard = ({
     deletePending: boolean;
     onEdit: (user: AdminUser) => void;
     onDelete: (user: AdminUser) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
                 <Avatar user={user} />
                 <div className="min-w-0">
-                    <p className="truncate text-base font-extrabold text-slate-950">
-                        {getDisplayName(user)}
+                    <p className="mt-3 truncate text-lg font-extrabold text-slate-950">
+                        {getDisplayName(user, t)}
                     </p>
                     <p className="mt-1 truncate text-xs font-semibold text-slate-500">
-                        @{user.username || 'no-username'}
+                        @{user.username || t('admin.users.noUsername', 'no-username')}
                     </p>
                 </div>
             </div>
@@ -607,8 +614,8 @@ const UserCard = ({
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <InfoTile label="Role" value={formatRole(user.role)} icon={<ShieldCheck size={14} />} />
-            <InfoTile label="Joined" value={formatDate(user.createdAt)} icon={<CalendarDays size={14} />} />
+            <InfoTile label={t('admin.users.roleLabel', 'Role')} value={formatRole(user.role, t)} icon={<ShieldCheck size={14} />} />
+            <InfoTile label={t('admin.users.joinedLabel', 'Joined')} value={formatDate(user.createdAt, t)} icon={<CalendarDays size={14} />} />
         </div>
 
         <div className="mt-4">
@@ -621,7 +628,8 @@ const UserCard = ({
             />
         </div>
     </article>
-);
+    );
+};
 
 const MetricCard = ({
     label,
@@ -671,21 +679,24 @@ const EmptyState = ({
     </div>
 );
 
-const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => {
+    const { t } = useTranslation();
+    return (
     <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 shadow-sm">
         <AlertCircle size={18} className="mt-0.5 shrink-0" />
         <div>
-            <p>Users could not be loaded.</p>
+            <p>{t('admin.users.loadErrorTitle', 'Users could not be loaded.')}</p>
             <button
                 type="button"
                 onClick={onRetry}
                 className="mt-2 font-extrabold underline decoration-red-300 underline-offset-4"
             >
-                Try again
+                {t('admin.users.loadErrorRetry', 'Try again')}
             </button>
         </div>
     </div>
-);
+    );
+};
 
 const SectionTitle = ({
     title,
@@ -838,7 +849,9 @@ const ActionGroup = ({
     onEdit: (user: AdminUser) => void;
     onDelete: (user: AdminUser) => void;
     mobile?: boolean;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <div className={`flex items-center gap-2 ${mobile ? 'grid grid-cols-2' : 'justify-end'}`}>
         <button
             type="button"
@@ -846,7 +859,7 @@ const ActionGroup = ({
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-200"
         >
             <Pencil size={14} />
-            Edit
+            {t('admin.users.editLabel', 'Edit')}
         </button>
 
         <button
@@ -856,26 +869,31 @@ const ActionGroup = ({
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
             <Trash2 size={14} />
-            Delete
+            {t('admin.users.deleteLabel', 'Delete')}
         </button>
     </div>
-);
+    );
+};
 
-const ContactBlock = ({ user }: { user: AdminUser }) => (
+const ContactBlock = ({ user }: { user: AdminUser }) => {
+    const { t } = useTranslation();
+    return (
     <div className="space-y-1.5 text-xs font-semibold text-slate-600">
         <div className="flex min-w-0 items-center gap-2">
             <Mail size={13} className="shrink-0 text-slate-400" />
-            <span className="truncate">{user.email || 'No email'}</span>
+            <span className="truncate">{user.email || t('admin.users.noEmail', 'No email')}</span>
         </div>
         <div className="flex min-w-0 items-center gap-2">
             <Phone size={13} className="shrink-0 text-slate-400" />
-            <span className="truncate">{user.phone || 'No phone'}</span>
+            <span className="truncate">{user.phone || t('admin.users.noPhone', 'No phone')}</span>
         </div>
     </div>
-);
+    );
+};
 
 const Avatar = ({ user, large }: { user: AdminUser; large?: boolean }) => {
-    const initial = getDisplayName(user).charAt(0).toUpperCase();
+    const { t } = useTranslation();
+    const initial = getDisplayName(user, t).charAt(0).toUpperCase();
 
     return (
         <div className={`${large ? 'h-14 w-14 text-lg' : 'h-11 w-11 text-sm'} flex shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-(--brand-surface-dim) font-extrabold text-slate-700`}>
@@ -885,6 +903,7 @@ const Avatar = ({ user, large }: { user: AdminUser; large?: boolean }) => {
 };
 
 const RoleBadge = ({ role }: { role: UserRole }) => {
+    const { t } = useTranslation();
     const styles: Record<UserRole, string> = {
         admin: 'border-red-200 bg-red-50 text-red-700',
         staff: 'border-amber-200 bg-amber-50 text-amber-700',
@@ -893,12 +912,14 @@ const RoleBadge = ({ role }: { role: UserRole }) => {
 
     return (
         <span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.08em] ${styles[role]}`}>
-            {formatRole(role)}
+            {formatRole(role, t)}
         </span>
     );
 };
 
-const VerificationBadge = ({ verified }: { verified: boolean }) => (
+const VerificationBadge = ({ verified }: { verified: boolean }) => {
+    const { t } = useTranslation();
+    return (
     <span
         className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
             verified
@@ -907,9 +928,10 @@ const VerificationBadge = ({ verified }: { verified: boolean }) => (
         }`}
     >
         {verified ? <Check size={13} /> : <X size={13} />}
-        {verified ? 'Verified' : 'Open'}
+        {verified ? t('admin.users.statusVerified', 'Verified') : t('admin.users.statusOpen', 'Open')}
     </span>
-);
+    );
+};
 
 const InfoTile = ({
     label,
@@ -936,17 +958,17 @@ const PreviewLine = ({ label, value }: { label: string; value: string }) => (
     </div>
 );
 
-const getDisplayName = (user: AdminUser) => {
-    return user.name || user.username || user.email || 'Unnamed user';
+const getDisplayName = (user: AdminUser, t?: TFunction) => {
+    return user.name || user.username || user.email || (t ? t('admin.users.unnamedUser', 'Unnamed user') : 'Unnamed user');
 };
 
-const formatRole = (role: UserRole) => {
-    if (role === 'user') return 'Customer';
+const formatRole = (role: UserRole, t?: TFunction) => {
+    if (role === 'user') return t ? t('admin.users.roleCustomer', 'Customer') : 'Customer';
     return role.charAt(0).toUpperCase() + role.slice(1);
 };
 
-const formatDate = (value?: string) => {
-    if (!value) return 'Not recorded';
+const formatDate = (value?: string, t?: TFunction) => {
+    if (!value) return t ? t('admin.users.notRecorded', 'Not recorded') : 'Not recorded';
 
     return new Date(value).toLocaleDateString('en-GB', {
         day: '2-digit',

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getCateringOrders, getLeads } from '../../hooks/useApi';
+import { useTranslation } from 'react-i18next';
 
 type Lead = {
     _id: string;
@@ -92,28 +93,22 @@ const leadStatusTone = (status: string): 'brass' | 'leaf' | 'ink' => {
     return 'ink';
 };
 
-const leadStatusLabel = (status: string): string => {
-    if (status === 'OPEN') return 'New';
-    if (status === 'IN_PROGRESS') return 'In review';
-    return 'Completed';
-};
-
 const quickActions = [
     {
-        label: 'Review leads',
-        description: 'Prioritize new catering enquiries',
+        labelKey: 'admin.dashboard.quick.reviewLeads',
+        descriptionKey: 'admin.dashboard.quick.reviewLeadsDesc',
         path: '/admin/leads',
         icon: Users
     },
     {
-        label: 'Manage menu',
-        description: 'Update dishes, prices and availability',
+        labelKey: 'admin.dashboard.quick.manageMenu',
+        descriptionKey: 'admin.dashboard.quick.manageMenuDesc',
         path: '/admin/menu',
         icon: UtensilsCrossed
     },
     {
-        label: 'Create package',
-        description: 'Build or refine catering offers',
+        labelKey: 'admin.dashboard.quick.createPackage',
+        descriptionKey: 'admin.dashboard.quick.createPackageDesc',
         path: '/admin/catering-packages',
         icon: PackagePlus
     }
@@ -122,6 +117,7 @@ const quickActions = [
 const WEEK_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
 export const Dashboard = () => {
+    const { t } = useTranslation();
     const [leads, setLeads] = useState<Lead[]>([]);
     const [orders, setOrders] = useState<CateringOrder[]>([]);
     const [loading, setLoading] = useState(true);
@@ -153,7 +149,7 @@ export const Dashboard = () => {
                 }
             } catch {
                 if (active) setLoadError(true);
-                toast.error('Could not load dashboard figures');
+                toast.error(t('admin.dashboard.loadFailed'));
             } finally {
                 if (active) setLoading(false);
             }
@@ -183,15 +179,15 @@ export const Dashboard = () => {
 
         return {
             revenue: formatEuro(bookedValue),
-            revenueDetail: `${activeBookings} active ${activeBookings === 1 ? 'booking' : 'bookings'}`,
+            revenueDetail: `${activeBookings} ${activeBookings === 1 ? t('admin.dashboard.bookingsOne') : t('admin.dashboard.bookingsOther')}`,
             newLeads: String(newLeads),
-            newLeadsDetail: `${inProgress} in progress`,
+            newLeadsDetail: `${inProgress} ${t('admin.dashboard.leadsInProgress')}`,
             orders: String(totalOrders),
-            ordersDetail: `${reviewCount} need review`,
+            ordersDetail: `${reviewCount} ${t('admin.dashboard.needReview')}`,
             conversion: `${conversionRate}%`,
-            conversionDetail: `${completedLeads} of ${totalLeads} leads completed`
+            conversionDetail: `${completedLeads} of ${totalLeads} ${t('admin.dashboard.leadsCompleted')}`
         };
-    }, [leads, orders]);
+    }, [leads, orders, t]);
 
     const operations = useMemo(() => {
         const reviewCount = orders.filter((order) => REVIEW_STATES.includes(order.status)).length;
@@ -207,25 +203,25 @@ export const Dashboard = () => {
 
         return [
             {
-                label: 'Pending quotes',
+                label: t('admin.dashboard.op.pendingQuotes'),
                 value: String(reviewCount),
-                detail: 'Awaiting your quote or confirmation',
+                detail: t('admin.dashboard.op.pendingQuotesDetail'),
                 icon: MessageSquare
             },
             {
-                label: 'Confirmed events',
+                label: t('admin.dashboard.op.confirmedEvents'),
                 value: String(activeBookings),
-                detail: 'Booked into the calendar',
+                detail: t('admin.dashboard.op.confirmedEventsDetail'),
                 icon: ChefHat
             },
             {
-                label: 'Upcoming dates',
+                label: t('admin.dashboard.op.upcomingDates'),
                 value: String(upcoming),
-                detail: 'Active events still to come',
+                detail: t('admin.dashboard.op.upcomingDatesDetail'),
                 icon: Calendar
             }
         ] as const;
-    }, [orders]);
+    }, [orders, t]);
 
     const weekTotals = useMemo(() => {
         const weekStart = startOfWeek().getTime();
@@ -250,13 +246,17 @@ export const Dashboard = () => {
             .map((lead) => ({
                 key: lead._id,
                 name: lead.name || '—',
-                event: lead.package || 'Enquiry',
+                event: lead.package || t('admin.dashboard.enquiry'),
                 date: formatLeadDate(lead.eventDate),
                 guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : '—',
-                status: leadStatusLabel(lead.status),
+                status: lead.status === 'OPEN'
+                    ? t('admin.dashboard.leadStatus.new')
+                    : lead.status === 'IN_PROGRESS'
+                    ? t('admin.dashboard.leadStatus.review')
+                    : t('admin.dashboard.leadStatus.done'),
                 statusTone: leadStatusTone(lead.status)
             }));
-    }, [leads]);
+    }, [leads, t]);
 
     const hasLeads = leads.length > 0;
     const hasOthers = orders.length > 0;
@@ -268,20 +268,25 @@ export const Dashboard = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Dashboard
+                                {t('admin.dashboard.kicker')}
                             </p>
                             <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                Restaurant Operations
+                                {t('admin.dashboard.heroTitle')}
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Booked catering value, enquiries and priority admin work — computed
-                                live from your records.
+                                {t('admin.dashboard.heroText')}
                             </p>
                         </div>
 
                         <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 xl:w-[520px]">
                             {quickActions.map((action) => (
-                                <QuickAction key={action.path} {...action} />
+                                <QuickAction
+                                    key={action.path}
+                                    label={t(action.labelKey)}
+                                    description={t(action.descriptionKey)}
+                                    path={action.path}
+                                    icon={action.icon}
+                                />
                             ))}
                         </div>
                     </div>
@@ -289,33 +294,33 @@ export const Dashboard = () => {
 
                 <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <MetricCard
-                        label="Booked Revenue"
-                        value={loading ? 'â€¦' : loadError ? '—' : kpis.revenue}
-                        detail={loading || loadError ? 'Up to date figures' : kpis.revenueDetail}
+                        label={t('admin.dashboard.metric.revenue')}
+                        value={loading ? '…' : loadError ? '—' : kpis.revenue}
+                        detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.revenueDetail}
                         icon={Euro}
                         tone="brass"
                         to="/admin/catering-orders"
                     />
                     <MetricCard
-                        label="New Leads"
-                        value={loading ? 'â€¦' : loadError ? '—' : kpis.newLeads}
-                        detail={loading || loadError ? 'Up to date figures' : kpis.newLeadsDetail}
+                        label={t('admin.dashboard.metric.newLeads')}
+                        value={loading ? '…' : loadError ? '—' : kpis.newLeads}
+                        detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.newLeadsDetail}
                         icon={Users}
                         tone="leaf"
                         to="/admin/leads"
                     />
                     <MetricCard
-                        label="Catering Orders"
-                        value={loading ? 'â€¦' : loadError ? '—' : kpis.orders}
-                        detail={loading || loadError ? 'Up to date figures' : kpis.ordersDetail}
+                        label={t('admin.dashboard.metric.orders')}
+                        value={loading ? '…' : loadError ? '—' : kpis.orders}
+                        detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.ordersDetail}
                         icon={ClipboardList}
                         tone="spice"
                         to="/admin/catering-orders"
                     />
                     <MetricCard
-                        label="Lead Conversion"
-                        value={loading ? 'â€¦' : loadError ? '—' : kpis.conversion}
-                        detail={loading || loadError ? 'Up to date figures' : kpis.conversionDetail}
+                        label={t('admin.dashboard.metric.conversion')}
+                        value={loading ? '…' : loadError ? '—' : kpis.conversion}
+                        detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.conversionDetail}
                         icon={TrendingUp}
                         tone="ink"
                         to="/admin/leads"
@@ -327,16 +332,16 @@ export const Dashboard = () => {
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <h2 className="text-xl font-extrabold text-slate-900">
-                                    Sales Trend
+                                    {t('admin.dashboard.salesTrend')}
                                 </h2>
                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
-                                    Booked catering value recorded this week, per day.
+                                    {t('admin.dashboard.salesTrendDetail')}
                                 </p>
                             </div>
 
                             <span className="inline-flex w-fit items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700">
                                 <TrendingUp size={14} />
-                                {loading ? 'â€¦' : `${bookedThisWeek > 0 ? bookedThisWeek : 0} booked this week`}
+                                {loading ? '…' : t('admin.dashboard.bookedWeek', { count: bookedThisWeek > 0 ? bookedThisWeek : 0 })}
                             </span>
                         </div>
 
@@ -349,12 +354,12 @@ export const Dashboard = () => {
                                             <div
                                                 className="w-full rounded-t-xl bg-gradient-to-t from-(--brand-primary) via-(--brand-accent-warm) to-(--brand-accent-strong) shadow-sm"
                                                 style={{ height: `${height}%` }}
-                                                aria-label={`${WEEK_LABELS[index]}: ${formatEuro(value)}`}
-                                                title={`${WEEK_LABELS[index]}: ${formatEuro(value)}`}
+                                                aria-label={`${t(`admin.dashboard.days.${index}`)}: ${formatEuro(value)}`}
+                                                title={`${t(`admin.dashboard.days.${index}`)}: ${formatEuro(value)}`}
                                             />
                                         </div>
                                         <span className="text-center text-[11px] font-bold text-slate-500">
-                                            {WEEK_LABELS[index]}
+                                            {t(`admin.dashboard.days.${index}`)}
                                         </span>
                                     </div>
                                 );
@@ -362,7 +367,7 @@ export const Dashboard = () => {
                             {maxDayValue === 0 && !loading && (
                                 <div className="pointer-events-none absolute inset-0 grid place-items-center">
                                     <p className="text-xs font-semibold text-slate-400">
-                                        No bookings recorded this week yet.
+                                        {t('admin.dashboard.noBookingsWeek')}
                                     </p>
                                 </div>
                             )}
@@ -373,10 +378,10 @@ export const Dashboard = () => {
                         <div className="flex items-start justify-between gap-4">
                             <div>
                                 <h2 className="text-xl font-extrabold text-slate-900">
-                                    Today&apos;s Priorities
+                                    {t('admin.dashboard.priorities')}
                                 </h2>
                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
-                                    Counted from your live orders — updates yourself as statuses change.
+                                    {t('admin.dashboard.prioritiesDetail')}
                                 </p>
                             </div>
                             <CheckCircle2 className="text-emerald-700" size={22} />
@@ -387,7 +392,7 @@ export const Dashboard = () => {
                                 <OperationItem
                                     key={item.label}
                                     label={item.label}
-                                    value={loading ? 'â€¦' : loadError ? '—' : item.value}
+                                    value={loading ? '…' : loadError ? '—' : item.value}
                                     detail={item.detail}
                                     icon={item.icon}
                                     to="/admin/catering-orders"
@@ -401,10 +406,10 @@ export const Dashboard = () => {
                     <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
                         <div>
                             <h2 className="text-xl font-extrabold text-slate-900">
-                                Recent Catering Leads
+                                {t('admin.dashboard.recentLeads')}
                             </h2>
                             <p className="mt-1 text-sm font-medium text-slate-500">
-                                Latest enquiries from your pipeline, newest first.
+                                {t('admin.dashboard.recentLeadsDetail')}
                             </p>
                         </div>
 
@@ -412,14 +417,14 @@ export const Dashboard = () => {
                             to="/admin/leads"
                             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-amber-200 hover:bg-amber-50 hover:text-amber-800"
                         >
-                            View pipeline
+                            {t('admin.dashboard.viewPipeline')}
                             <ArrowRight size={15} />
                         </Link>
                     </div>
 
                     <div className="divide-y divide-slate-100">
                         {loading ? (
-                            <p className="px-5 py-6 text-sm font-medium text-slate-500">Loading enquiriesâ€¦</p>
+                            <p className="px-5 py-6 text-sm font-medium text-slate-500">{t('admin.dashboard.loadingEnquiries')}</p>
                         ) : hasLeads ? (
                             recentLeads.map((lead) => <LeadRow key={lead.key} lead={lead} />)
                         ) : (
@@ -427,9 +432,9 @@ export const Dashboard = () => {
                                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-stone-100 text-slate-400">
                                     <Inbox size={18} />
                                 </span>
-                                <p className="text-sm font-semibold text-slate-600">No enquiries yet</p>
+                                <p className="text-sm font-semibold text-slate-600">{t('admin.dashboard.noEnquiries')}</p>
                                 <p className="text-xs font-medium text-slate-400">
-                                    New leads from the contact form appear here automatically.
+                                    {t('admin.dashboard.noEnquiriesDetail')}
                                 </p>
                             </div>
                         )}
@@ -437,7 +442,7 @@ export const Dashboard = () => {
                 </section>
 
                 {!hasLeads && !hasOthers && !loading && (
-                    <p className="sr-only">Dashboard figures are calculated from live records.</p>
+                    <p className="sr-only">{t('admin.dashboard.srOnly')}</p>
                 )}
             </div>
         </div>
@@ -605,6 +610,7 @@ const LeadRow = ({
         statusTone: 'brass' | 'leaf' | 'ink';
     };
 }) => {
+    const { t } = useTranslation();
     const statusClass =
         lead.statusTone === 'brass'
             ? 'border-amber-200 bg-amber-50 text-amber-700'
@@ -639,7 +645,7 @@ const LeadRow = ({
             <div className="flex flex-wrap items-center gap-2 md:justify-end">
                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-stone-50 px-3 py-1.5 text-sm font-bold text-slate-700">
                     <Users size={14} className="text-slate-400" />
-                    {lead.guests} guests
+                    {t('admin.dashboard.guestsCount', { count: lead.guests as any })}
                 </span>
                 <span
                     className={`inline-flex rounded-xl border px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.08em] ${statusClass}`}

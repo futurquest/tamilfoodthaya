@@ -1,21 +1,15 @@
 ﻿import { Link } from 'react-router-dom';
 import { IconMapPin, IconPhone, IconMail } from './Icons';
-
-const footerLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/menu', label: 'Menu' },
-    { to: '/catering', label: 'Catering' },
-    { to: '/buffet-packages', label: 'Buffet Packages' },
-    { to: '/contact', label: 'Contact' },
-];
+import { useTranslation } from 'react-i18next';
 
 const hours = [
-    { day: 'Mon â€“ Fri', time: '10:00 â€“ 22:30' },
-    { day: 'Saturday', time: '10:00 â€“ 23:00' },
-    { day: 'Sunday', time: '11:00 â€“ 22:00' },
+    { dayKey: 'footer.monFri', time: '10:00 – 22:30' },
+    { dayKey: 'footer.saturday', time: '10:00 – 23:00' },
+    { dayKey: 'footer.sunday', time: '11:00 – 22:00' },
 ];
 
 export default function Footer() {
+    const { t } = useTranslation();
     return (
         <>
             <style>{`
@@ -336,20 +330,20 @@ export default function Footer() {
                                     Tamil Food <em>Thaya</em>
                                 </div>
                             </Link>
-                            <p className="ft-brand-sub">Authentic Â· Netherlands Â· Est. 2020</p>
+                            <p className="ft-brand-sub">{t('footer.tagline')}</p>
                             <p className="ft-brand-desc">
-                                Bringing the rich traditions of Tamil cuisine to the Netherlands â€” from intimate dinners to grand celebrations.
+                                {t('footer.description')}
                             </p>
                             <ul className="ft-social">
                                 <li>
-                                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label={t('footer.facebook')}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                                         </svg>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label={t('footer.instagram')}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                                             <circle cx="12" cy="12" r="4"/>
@@ -358,7 +352,7 @@ export default function Footer() {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://wa.me/31201234567" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                                    <a href="https://wa.me/31201234567" target="_blank" rel="noopener noreferrer" aria-label={t('footer.whatsapp')}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
                                         </svg>
@@ -369,9 +363,14 @@ export default function Footer() {
 
                         {/* â”€â”€ Quick Links â”€â”€ */}
                         <div>
-                            <p className="ft-col-title">Navigate</p>
+                            <p className="ft-col-title">{t('footer.explore')}</p>
                             <ul className="ft-nav">
-                                {footerLinks.map((link) => (
+                                {[
+                                    { to: '/', key: 'nav.home' },
+                                    { to: '/menu', key: 'nav.menu' },
+                                    { to: '/catering', key: 'nav.catering' },
+                                    { to: '/contact', key: 'nav.contact' },
+                                ].map((link) => (
                                     <li key={link.to}>
                                         <Link to={link.to} className="ft-nav a" style={{
                                             fontSize: 14,
@@ -392,7 +391,7 @@ export default function Footer() {
                                                 display: 'inline-block',
                                                 flexShrink: 0,
                                             }} />
-                                            {link.label}
+                                            {t(link.key)}
                                         </Link>
                                     </li>
                                 ))}
@@ -401,15 +400,15 @@ export default function Footer() {
 
                         {/* â”€â”€ Contact â”€â”€ */}
                         <div>
-                            <p className="ft-col-title">Get in Touch</p>
+                            <p className="ft-col-title">{t('footer.contact')}</p>
                             <ul className="ft-contact">
                                 <li>
                                     <div className="ft-contact-icon">
                                         <IconMapPin size={15} />
                                     </div>
                                     <div className="ft-contact-text">
-                                        <span className="ft-contact-label">Location</span>
-                                        <span className="ft-contact-val">Amsterdam, Netherlands</span>
+                                        <span className="ft-contact-label">{t('footer.locationLabel')}</span>
+                                        <span className="ft-contact-val">{t('footer.locationValue')}</span>
                                     </div>
                                 </li>
                                 <li>
@@ -417,7 +416,7 @@ export default function Footer() {
                                         <IconPhone size={15} />
                                     </div>
                                     <div className="ft-contact-text">
-                                        <span className="ft-contact-label">Phone</span>
+                                        <span className="ft-contact-label">{t('footer.phone')}</span>
                                         <a href="tel:+31201234567" className="ft-contact-val">+31 20 123 4567</a>
                                     </div>
                                 </li>
@@ -426,7 +425,7 @@ export default function Footer() {
                                         <IconMail size={15} />
                                     </div>
                                     <div className="ft-contact-text">
-                                        <span className="ft-contact-label">Email</span>
+                                        <span className="ft-contact-label">{t('footer.email')}</span>
                                         <a href="mailto:hello@tamilfoodthaya.nl" className="ft-contact-val">hello@tamilfoodthaya.nl</a>
                                     </div>
                                 </li>
@@ -435,18 +434,18 @@ export default function Footer() {
 
                         {/* â”€â”€ Hours â”€â”€ */}
                         <div>
-                            <p className="ft-col-title">Opening Hours</p>
+                            <p className="ft-col-title">{t('footer.hours')}</p>
                             <div className="ft-hours">
                                 {hours.map((h) => (
-                                    <div key={h.day} className="ft-hours-row">
-                                        <span className="ft-hours-day">{h.day}</span>
+                                    <div key={h.dayKey} className="ft-hours-row">
+                                        <span className="ft-hours-day">{t(h.dayKey)}</span>
                                         <span className="ft-hours-time">{h.time}</span>
                                     </div>
                                 ))}
                             </div>
                             <div className="ft-open-badge">
                                 <span className="ft-open-dot" />
-                                Open for Dine-in &amp; Takeaway
+                                {t('footer.openBadge')}
                             </div>
                         </div>
 
@@ -455,15 +454,15 @@ export default function Footer() {
                     {/* Bottom bar */}
                     <hr className="ft-hr" />
                     <div className="ft-bottom">
-                        <p className="ft-bottom-left">
-                            Â© 2026 Tamil Food Thaya. All rights reserved.
+<p className="ft-bottom-left">
+                            {t('footer.copyright')}
                         </p>
                         <div className="ft-bottom-right">
-                            <a href="/privacy" className="ft-bottom-link">Privacy Policy</a>
+                            <a href="/privacy" className="ft-bottom-link">{t('footer.privacy')}</a>
                             <span className="ft-bottom-dot" />
-                            <a href="/terms" className="ft-bottom-link">Terms of Use</a>
+                            <a href="/terms" className="ft-bottom-link">{t('footer.terms')}</a>
                             <span className="ft-bottom-dot" />
-                            <span className="ft-tamil">à®¤à®®à®¿à®´à¯ à®‰à®£à®µà¯</span>
+                            <span className="ft-tamil">{t('footer.tamilScript')}</span>
                         </div>
                     </div>
                 </div>

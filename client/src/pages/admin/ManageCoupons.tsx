@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect, useMemo, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../../hooks/useApi';
 import toast from 'react-hot-toast';
 import {
@@ -56,15 +57,8 @@ const EMPTY_FORM: CouponForm = {
     validUntil: ''
 };
 
-const STATUS_OPTIONS: Array<{ value: StatusFilter; label: string }> = [
-    { value: 'all', label: 'All coupons' },
-    { value: 'active', label: 'Active' },
-    { value: 'scheduled', label: 'Scheduled' },
-    { value: 'expired', label: 'Expired' },
-    { value: 'exhausted', label: 'Used up' }
-];
-
 export const ManageCoupons = () => {
+    const { t } = useTranslation();
     const [coupons, setCoupons] = useState<Coupon[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState<string | null>(null);
@@ -77,6 +71,14 @@ export const ManageCoupons = () => {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [discountFilter, setDiscountFilter] = useState<DiscountFilter>('all');
 
+    const statusOptions: Array<{ value: StatusFilter; label: string }> = [
+        { value: 'all', label: t('admin.coupons.statusAll', 'All coupons') },
+        { value: 'active', label: t('admin.coupons.statusActive', 'Active') },
+        { value: 'scheduled', label: t('admin.coupons.statusScheduled', 'Scheduled') },
+        { value: 'expired', label: t('admin.coupons.statusExpired', 'Expired') },
+        { value: 'exhausted', label: t('admin.coupons.statusUsedUp', 'Used up') }
+    ];
+
     const load = async () => {
         try {
             setLoading(true);
@@ -87,7 +89,7 @@ export const ManageCoupons = () => {
         } catch {
             setCoupons([]);
             setLoadError(true);
-            toast.error('Failed to load coupons');
+            toast.error(t('admin.coupons.loadFailed', 'Failed to load coupons'));
         } finally {
             setLoading(false);
         }
@@ -188,17 +190,17 @@ export const ManageCoupons = () => {
     };
 
     const validateForm = () => {
-        if (!form.code.trim()) return 'Enter a coupon code before saving.';
-        if (Number(form.discountValue || 0) <= 0) return 'Enter a discount value greater than zero.';
+        if (!form.code.trim()) return t('admin.coupons.errorCode', 'Enter a coupon code before saving.');
+        if (Number(form.discountValue || 0) <= 0) return t('admin.coupons.errorDiscountZero', 'Enter a discount value greater than zero.');
         if (form.discountType === 'percentage' && Number(form.discountValue || 0) > 100) {
-            return 'Percentage coupons cannot be more than 100%.';
+            return t('admin.coupons.errorPercentageMax', 'Percentage coupons cannot be more than 100%.');
         }
         if (
             form.validFrom &&
             form.validUntil &&
             new Date(form.validUntil) < new Date(form.validFrom)
         ) {
-            return 'Valid until must be after the start date.';
+            return t('admin.coupons.errorDateRange', 'Valid until must be after the start date.');
         }
 
         return '';
@@ -227,16 +229,17 @@ export const ManageCoupons = () => {
 
             if (editing) {
                 await api.put(`/coupons/${editing}`, payload);
-                toast.success('Coupon updated');
+                toast.success(t('admin.coupons.updated', 'Coupon updated'));
             } else {
                 await api.post('/coupons', payload);
-                toast.success('Coupon created');
+                toast.success(t('admin.coupons.created', 'Coupon created'));
             }
 
             closeForm();
             await load();
         } catch (err: any) {
-            const message = err?.response?.data?.message || 'The coupon could not be saved.';
+            const message = err?.response?.data?.message ||
+                t('admin.coupons.saveFailed', 'The coupon could not be saved.');
             setFormError(message);
             toast.error(message);
         } finally {
@@ -245,23 +248,23 @@ export const ManageCoupons = () => {
     };
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm('Delete this coupon? This cannot be undone.')) return;
+        if (!window.confirm(t('admin.coupons.confirmDelete', 'Delete this coupon? This cannot be undone.'))) return;
 
         try {
             await api.delete(`/coupons/${id}`);
-            toast.success('Coupon deleted');
+            toast.success(t('admin.coupons.deleted', 'Coupon deleted'));
             await load();
         } catch {
-            toast.error('Failed to delete coupon');
+            toast.error(t('admin.coupons.deleteFailed', 'Failed to delete coupon'));
         }
     };
 
     const handleCopy = async (code: string) => {
         try {
             await navigator.clipboard.writeText(code);
-            toast.success(`${code} copied`);
+            toast.success(t('admin.coupons.copied', '{{code}} copied', { code }));
         } catch {
-            toast.error('Could not copy coupon code');
+            toast.error(t('admin.coupons.copyFailed', 'Could not copy coupon code'));
         }
     };
 
@@ -282,12 +285,11 @@ export const ManageCoupons = () => {
                                     <TicketPercent size={21} />
                                 </span>
                                 <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
-                                    Discount Coupons
+                                    {t('admin.coupons.title', 'Discount Coupons')}
                                 </h1>
                             </div>
                             <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
-                                Plan, monitor and retire restaurant offers with clear redemption
-                                rules, campaign windows and usage limits.
+                                {t('admin.coupons.subtitle', 'Plan, monitor and retire restaurant offers with clear redemption rules, campaign windows and usage limits.')}
                             </p>
                         </div>
 
@@ -297,28 +299,28 @@ export const ManageCoupons = () => {
                             className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white shadow-[0_10px_24px_var(--brand-text-a18)] transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
                         >
                             <Plus size={17} />
-                            Create coupon
+                            {t('admin.coupons.createCoupon', 'Create coupon')}
                         </button>
                     </div>
 
                     <div className="grid grid-cols-2 border-t border-slate-200 bg-(--brand-surface-dim) sm:grid-cols-5">
-                        <MetricCard label="Total" value={stats.total} icon={<Tag size={15} />} />
-                        <MetricCard label="Active" value={stats.active} icon={<CheckCircle2 size={15} />} />
-                        <MetricCard label="Scheduled" value={stats.scheduled} icon={<Clock3 size={15} />} />
-                        <MetricCard label="Ended" value={stats.ended} icon={<Ban size={15} />} />
-                        <MetricCard label="Redemptions" value={stats.redemptions} icon={<TrendingUp size={15} />} />
+                        <MetricCard label={t('admin.coupons.statsTotal', 'Total')} value={stats.total} icon={<Tag size={15} />} />
+                        <MetricCard label={t('admin.coupons.statusActive', 'Active')} value={stats.active} icon={<CheckCircle2 size={15} />} />
+                        <MetricCard label={t('admin.coupons.statusScheduled', 'Scheduled')} value={stats.scheduled} icon={<Clock3 size={15} />} />
+                        <MetricCard label={t('admin.coupons.statsEnded', 'Ended')} value={stats.ended} icon={<Ban size={15} />} />
+                        <MetricCard label={t('admin.coupons.statsRedemptions', 'Redemptions')} value={stats.redemptions} icon={<TrendingUp size={15} />} />
                     </div>
                 </section>
 
                 <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                     <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(280px,1fr)_auto] xl:items-end">
                         <label className="relative block min-w-0">
-                            <span className="sr-only">Search coupons</span>
+                            <span className="sr-only">{t('admin.coupons.searchAria', 'Search coupons')}</span>
                             <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search code, status, discount, dates or usage"
+                                placeholder={t('admin.coupons.searchPlaceholder', 'Search code, status, discount, dates or usage')}
                                 className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
                             />
                         </label>
@@ -326,13 +328,13 @@ export const ManageCoupons = () => {
                         <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
                             <div className="grid min-w-0 gap-1.5">
                                 <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-                                    <Percent size={13} /> Discount type
+                                    <Percent size={13} /> {t('admin.coupons.discountTypeLabel', 'Discount type')}
                                 </span>
                                 <div className="grid h-11 grid-cols-3 rounded-xl bg-stone-100 p-1">
                                     {([
-                                        ['all', 'All'],
-                                        ['percentage', 'Percent'],
-                                        ['fixed', 'Fixed']
+                                        ['all', t('admin.coupons.discountFilterAll', 'All')],
+                                        ['percentage', t('admin.coupons.discountFilterPercent', 'Percent')],
+                                        ['fixed', t('admin.coupons.discountFilterFixed', 'Fixed')]
                                     ] as Array<[DiscountFilter, string]>).map(([value, label]) => (
                                         <button
                                             key={value}
@@ -353,10 +355,10 @@ export const ManageCoupons = () => {
 
                             <PremiumSelect
                                 compact
-                                label="Status"
+                                label={t('admin.common.status', 'Status')}
                                 value={statusFilter}
                                 onChange={(value) => setStatusFilter(value as StatusFilter)}
-                                options={STATUS_OPTIONS}
+                                options={statusOptions}
                                 icon={<Filter size={16} />}
                             />
                         </div>
@@ -364,7 +366,7 @@ export const ManageCoupons = () => {
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-1 pt-3 text-xs font-semibold text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
-                            <Filter size={13} /> Showing {filteredCoupons.length} of {coupons.length} coupons
+                            <Filter size={13} /> {t('admin.coupons.showingCoupons', 'Showing {{shown}} of {{total}} coupons', { shown: filteredCoupons.length, total: coupons.length })}
                         </span>
                         {hasActiveFilters && (
                             <button
@@ -372,7 +374,7 @@ export const ManageCoupons = () => {
                                 onClick={clearFilters}
                                 className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
                             >
-                                <RotateCcw size={13} /> Clear filters
+                                <RotateCcw size={13} /> {t('admin.coupons.clearFilters', 'Clear filters')}
                             </button>
                         )}
                     </div>
@@ -382,13 +384,13 @@ export const ManageCoupons = () => {
                     <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 shadow-sm">
                         <AlertCircle size={18} className="mt-0.5 shrink-0" />
                         <div>
-                            <p>Coupons could not be loaded.</p>
+                            <p>{t('admin.coupons.loadFailedTitle', 'Coupons could not be loaded.')}</p>
                             <button
                                 type="button"
                                 onClick={load}
                                 className="mt-2 font-extrabold underline decoration-red-300 underline-offset-4"
                             >
-                                Try again
+                                {t('admin.coupons.tryAgain', 'Try again')}
                             </button>
                         </div>
                     </div>
@@ -398,16 +400,16 @@ export const ManageCoupons = () => {
                     <LoadingPanel />
                 ) : coupons.length === 0 ? (
                     <EmptyState
-                        title="No coupons yet"
-                        copy="Create your first campaign code for a weekend special, catering follow-up or returning customer offer."
-                        actionLabel="Create coupon"
+                        title={t('admin.coupons.emptyTitle', 'No coupons yet')}
+                        copy={t('admin.coupons.emptyCopy', 'Create your first campaign code for a weekend special, catering follow-up or returning customer offer.')}
+                        actionLabel={t('admin.coupons.createCoupon', 'Create coupon')}
                         onAction={openNew}
                     />
                 ) : filteredCoupons.length === 0 ? (
                     <EmptyState
-                        title="No matching coupons"
-                        copy="Adjust the search or filters to see more campaign codes."
-                        actionLabel="Clear filters"
+                        title={t('admin.coupons.noMatchTitle', 'No matching coupons')}
+                        copy={t('admin.coupons.noMatchCopy', 'Adjust the search or filters to see more campaign codes.')}
+                        actionLabel={t('admin.coupons.clearFilters', 'Clear filters')}
                         onAction={clearFilters}
                     />
                 ) : (
@@ -435,17 +437,17 @@ export const ManageCoupons = () => {
                             <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
                                 <div className="min-w-0">
                                     <h2 id="coupon-editor-title" className="text-xl font-extrabold text-slate-950">
-                                        {editing ? 'Edit coupon' : 'Create coupon'}
+                                        {editing ? t('admin.coupons.editorTitleEdit', 'Edit coupon') : t('admin.coupons.createCoupon', 'Create coupon')}
                                     </h2>
                                     <p className="mt-1 text-sm font-medium text-slate-500">
-                                        Define the code, discount, redemption limit and active dates.
+                                        {t('admin.coupons.editorSubtitle', 'Define the code, discount, redemption limit and active dates.')}
                                     </p>
                                 </div>
 
                                 <button
                                     type="button"
                                     onClick={closeForm}
-                                    aria-label="Close coupon editor"
+                                    aria-label={t('admin.coupons.closeEditor', 'Close coupon editor')}
                                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                 >
                                     <X size={18} />
@@ -457,13 +459,13 @@ export const ManageCoupons = () => {
                                     <div className="min-w-0 space-y-6">
                                         <div>
                                             <SectionTitle
-                                                title="Coupon rules"
-                                                subtitle="Use short, memorable codes that staff can read quickly."
+                                                title={t('admin.coupons.rulesTitle', 'Coupon rules')}
+                                                subtitle={t('admin.coupons.rulesSubtitle', 'Use short, memorable codes that staff can read quickly.')}
                                             />
 
                                             <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
                                                 <InputBlock
-                                                    label="Coupon code"
+                                                    label={t('admin.coupons.codeLabel', 'Coupon code')}
                                                     placeholder="SAVE20"
                                                     value={form.code}
                                                     onChange={(value) =>
@@ -477,7 +479,7 @@ export const ManageCoupons = () => {
                                                 />
 
                                                 <PremiumSelect
-                                                    label="Discount type"
+                                                    label={t('admin.coupons.discountTypeLabel', 'Discount type')}
                                                     value={form.discountType}
                                                     onChange={(value) =>
                                                         setForm((prev) => ({
@@ -486,8 +488,8 @@ export const ManageCoupons = () => {
                                                         }))
                                                     }
                                                     options={[
-                                                        { value: 'percentage', label: 'Percentage (%)' },
-                                                        { value: 'fixed', label: 'Fixed amount (EUR)' }
+                                                        { value: 'percentage', label: t('admin.coupons.discountPercentage', 'Percentage (%)') },
+                                                        { value: 'fixed', label: t('admin.coupons.discountFixedAmount', 'Fixed amount (EUR)') }
                                                     ]}
                                                     icon={<Layers3 size={16} />}
                                                 />
@@ -495,7 +497,7 @@ export const ManageCoupons = () => {
 
                                             <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-3">
                                                 <NumberBlock
-                                                    label={`Value (${form.discountType === 'percentage' ? '%' : 'EUR'})`}
+                                                    label={t('admin.coupons.valueLabel', 'Value ({{unit}})', { unit: form.discountType === 'percentage' ? '%' : 'EUR' })}
                                                     value={form.discountValue}
                                                     onChange={(value) =>
                                                         setForm((prev) => ({
@@ -506,7 +508,7 @@ export const ManageCoupons = () => {
                                                 />
 
                                                 <NumberBlock
-                                                    label="Minimum order"
+                                                    label={t('admin.coupons.minimumOrderLabel', 'Minimum order')}
                                                     value={form.minOrderAmount}
                                                     onChange={(value) =>
                                                         setForm((prev) => ({
@@ -517,8 +519,8 @@ export const ManageCoupons = () => {
                                                 />
 
                                                 <NumberBlock
-                                                    label="Max uses"
-                                                    helper="0 means unlimited"
+                                                    label={t('admin.coupons.maxUsesLabel', 'Max uses')}
+                                                    helper={t('admin.coupons.maxUsesHelper', '0 means unlimited')}
                                                     value={form.maxUses}
                                                     integer
                                                     onChange={(value) =>
@@ -533,13 +535,13 @@ export const ManageCoupons = () => {
 
                                         <div>
                                             <SectionTitle
-                                                title="Campaign window"
-                                                subtitle="Leave either date blank when the offer should stay open-ended."
+                                                title={t('admin.coupons.campaignWindowTitle', 'Campaign window')}
+                                                subtitle={t('admin.coupons.campaignWindowSubtitle', 'Leave either date blank when the offer should stay open-ended.')}
                                             />
 
                                             <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
                                                 <DateBlock
-                                                    label="Valid from"
+                                                    label={t('admin.coupons.validFromLabel', 'Valid from')}
                                                     value={form.validFrom}
                                                     onChange={(value) =>
                                                         setForm((prev) => ({
@@ -550,7 +552,7 @@ export const ManageCoupons = () => {
                                                 />
 
                                                 <DateBlock
-                                                    label="Valid until"
+                                                    label={t('admin.coupons.validUntilLabel', 'Valid until')}
                                                     value={form.validUntil}
                                                     onChange={(value) =>
                                                         setForm((prev) => ({
@@ -566,30 +568,30 @@ export const ManageCoupons = () => {
                                     <div className="rounded-2xl bg-(--brand-surface-dim) p-4">
                                         <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                                             <ReceiptText size={17} className="text-amber-700" />
-                                            Campaign preview
+                                            {t('admin.coupons.previewTitle', 'Campaign preview')}
                                         </div>
 
                                         <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                                             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-                                                Code
+                                                {t('admin.coupons.previewCode', 'Code')}
                                             </p>
                                             <p className="mt-1 break-all text-2xl font-extrabold tracking-[0.05em] text-slate-950">
                                                 {form.code.trim() || 'SAVE20'}
                                             </p>
                                             <p className="mt-3 text-sm font-bold text-slate-700">
-                                                {describeDiscount(form)} off
+                                                {t('admin.coupons.offSuffix', '{{discount}} off', { discount: describeDiscount(form) })}
                                             </p>
                                             <p className="mt-1 text-xs font-semibold leading-5 text-slate-500">
-                                                Minimum order {formatCurrency(form.minOrderAmount)}.
+                                                {t('admin.coupons.previewMinimumOrder', 'Minimum order {{amount}}.', { amount: formatCurrency(form.minOrderAmount) })}
                                                 {form.maxUses > 0
-                                                    ? ` Limited to ${form.maxUses} uses.`
-                                                    : ' Unlimited uses.'}
+                                                    ? t('admin.coupons.previewLimitedUses', ' Limited to {{count}} uses.', { count: form.maxUses })
+                                                    : t('admin.coupons.previewUnlimitedUses', ' Unlimited uses.')}
                                             </p>
                                         </div>
 
                                         <div className="mt-4 space-y-3 text-xs font-semibold text-slate-500">
-                                            <PreviewLine label="Starts" value={form.validFrom ? formatDate(form.validFrom) : 'Immediately'} />
-                                            <PreviewLine label="Ends" value={form.validUntil ? formatDate(form.validUntil) : 'No end date'} />
+                                            <PreviewLine label={t('admin.coupons.startsLabel', 'Starts')} value={form.validFrom ? formatDate(form.validFrom) : t('admin.coupons.immediately', 'Immediately')} />
+                                            <PreviewLine label={t('admin.coupons.endsLabel', 'Ends')} value={form.validUntil ? formatDate(form.validUntil) : t('admin.coupons.noEndDate', 'No end date')} />
                                         </div>
                                     </div>
                                 </div>
@@ -607,7 +609,7 @@ export const ManageCoupons = () => {
                                         onClick={closeForm}
                                         className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                     >
-                                        Cancel
+                                        {t('admin.common.cancel', 'Cancel')}
                                     </button>
 
                                     <button
@@ -617,10 +619,10 @@ export const ManageCoupons = () => {
                                         className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {saving
-                                            ? 'Saving...'
+                                            ? t('admin.coupons.saving', 'Saving...')
                                             : editing
-                                            ? 'Save changes'
-                                            : 'Create coupon'}
+                                            ? t('admin.coupons.saveChanges', 'Save changes')
+                                            : t('admin.coupons.createCoupon', 'Create coupon')}
                                     </button>
                                 </div>
                             </div>
@@ -644,19 +646,22 @@ const CouponResults = ({
     onCopy: (code: string) => void;
     onEdit: (coupon: Coupon) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+
+    return (
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="hidden overflow-x-auto xl:block">
             <table className="w-full min-w-[920px] text-sm">
                 <thead className="border-b border-slate-200 bg-(--brand-surface-dim)">
                     <tr>
-                        <TableHeader>Code</TableHeader>
-                        <TableHeader>Discount</TableHeader>
-                        <TableHeader>Minimum order</TableHeader>
-                        <TableHeader>Usage</TableHeader>
-                        <TableHeader>Validity</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                        <TableHeader align="right">Actions</TableHeader>
+                        <TableHeader>{t('admin.coupons.tableCode', 'Code')}</TableHeader>
+                        <TableHeader>{t('admin.coupons.tableDiscount', 'Discount')}</TableHeader>
+                        <TableHeader>{t('admin.coupons.minimumOrderLabel', 'Minimum order')}</TableHeader>
+                        <TableHeader>{t('admin.coupons.tableUsage', 'Usage')}</TableHeader>
+                        <TableHeader>{t('admin.coupons.tableValidity', 'Validity')}</TableHeader>
+                        <TableHeader>{t('admin.common.status', 'Status')}</TableHeader>
+                        <TableHeader align="right">{t('admin.common.actions', 'Actions')}</TableHeader>
                     </tr>
                 </thead>
 
@@ -671,7 +676,7 @@ const CouponResults = ({
                                         type="button"
                                         onClick={() => onCopy(coupon.code)}
                                         className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-left transition hover:border-amber-300 hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                                        title="Copy coupon code"
+                                        title={t('admin.coupons.copyCodeTitle', 'Copy coupon code')}
                                     >
                                         <span className="font-extrabold tracking-[0.08em] text-slate-950">
                                             {coupon.code}
@@ -726,7 +731,8 @@ const CouponResults = ({
             ))}
         </div>
     </div>
-);
+    );
+};
 
 const CouponCard = ({
     coupon,
@@ -740,7 +746,10 @@ const CouponCard = ({
     onCopy: (code: string) => void;
     onEdit: (coupon: Coupon) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+
+    return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-start justify-between gap-3">
             <button
@@ -752,15 +761,15 @@ const CouponCard = ({
                     {coupon.code}
                 </span>
                 <span className="mt-1 flex items-center gap-1 text-xs font-bold text-slate-500">
-                    <Copy size={12} /> Tap to copy
+                    <Copy size={12} /> {t('admin.coupons.tapToCopy', 'Tap to copy')}
                 </span>
             </button>
             <StatusBadge status={status} />
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <InfoTile label="Discount" value={describeDiscount(coupon)} icon={<Percent size={14} />} />
-            <InfoTile label="Minimum" value={formatCurrency(coupon.minOrderAmount)} icon={<WalletCards size={14} />} />
+            <InfoTile label={t('admin.coupons.tableDiscount', 'Discount')} value={describeDiscount(coupon)} icon={<Percent size={14} />} />
+            <InfoTile label={t('admin.coupons.minimumLabel', 'Minimum')} value={formatCurrency(coupon.minOrderAmount)} icon={<WalletCards size={14} />} />
         </div>
 
         <div className="mt-4 rounded-xl bg-(--brand-surface-dim) p-3">
@@ -774,7 +783,8 @@ const CouponCard = ({
             <ActionGroup coupon={coupon} onEdit={onEdit} onDelete={onDelete} mobile />
         </div>
     </article>
-);
+    );
+};
 
 const MetricCard = ({
     label,
@@ -822,8 +832,11 @@ const EmptyState = ({
     </div>
 );
 
-const LoadingPanel = () => (
-    <div aria-label="Loading coupons" className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
+const LoadingPanel = () => {
+    const { t } = useTranslation();
+
+    return (
+    <div aria-label={t('admin.coupons.loading', 'Loading coupons')} className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }).map((_, index) => (
             <div
                 key={index}
@@ -840,7 +853,8 @@ const LoadingPanel = () => (
             </div>
         ))}
     </div>
-);
+    );
+};
 
 const SectionTitle = ({
     title,
@@ -1004,6 +1018,7 @@ const TableHeader = ({
 );
 
 const UsageMeter = ({ coupon }: { coupon: Coupon }) => {
+    const { t } = useTranslation();
     const used = Number(coupon.usedCount || 0);
     const limit = Number(coupon.maxUses || 0);
     const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
@@ -1011,8 +1026,8 @@ const UsageMeter = ({ coupon }: { coupon: Coupon }) => {
     return (
         <div className="min-w-[160px]">
             <div className="flex items-center justify-between gap-3 text-xs font-bold text-slate-600">
-                <span>{used} used</span>
-                <span>{limit > 0 ? `${limit} limit` : 'Unlimited'}</span>
+                <span>{t('admin.coupons.usedCount', '{{count}} used', { count: used })}</span>
+                <span>{limit > 0 ? t('admin.coupons.limitCount', '{{count}} limit', { count: limit }) : t('admin.coupons.unlimited', 'Unlimited')}</span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-stone-200">
                 <div
@@ -1024,29 +1039,34 @@ const UsageMeter = ({ coupon }: { coupon: Coupon }) => {
     );
 };
 
-const DateRange = ({ coupon }: { coupon: Coupon }) => (
+const DateRange = ({ coupon }: { coupon: Coupon }) => {
+    const { t } = useTranslation();
+
+    return (
     <div className="text-xs font-semibold leading-5 text-slate-500">
-        <div>From {coupon.validFrom ? formatDate(coupon.validFrom) : 'Immediately'}</div>
-        <div>Until {coupon.validUntil ? formatDate(coupon.validUntil) : 'No end date'}</div>
+        <div>{t('admin.coupons.validityFrom', 'From {{date}}', { date: coupon.validFrom ? formatDate(coupon.validFrom) : t('admin.coupons.immediately', 'Immediately') })}</div>
+        <div>{t('admin.coupons.validityUntil', 'Until {{date}}', { date: coupon.validUntil ? formatDate(coupon.validUntil) : t('admin.coupons.noEndDate', 'No end date') })}</div>
     </div>
-);
+    );
+};
 
 const StatusBadge = ({ status }: { status: CouponStatus }) => {
+    const { t } = useTranslation();
     const map: Record<CouponStatus, { label: string; className: string }> = {
         active: {
-            label: 'Active',
+            label: t('admin.coupons.statusActive', 'Active'),
             className: 'border-emerald-200 bg-emerald-50 text-emerald-700'
         },
         scheduled: {
-            label: 'Scheduled',
+            label: t('admin.coupons.statusScheduled', 'Scheduled'),
             className: 'border-blue-200 bg-blue-50 text-blue-700'
         },
         expired: {
-            label: 'Expired',
+            label: t('admin.coupons.statusExpired', 'Expired'),
             className: 'border-red-200 bg-red-50 text-red-700'
         },
         exhausted: {
-            label: 'Used up',
+            label: t('admin.coupons.statusUsedUp', 'Used up'),
             className: 'border-amber-200 bg-amber-50 text-amber-700'
         }
     };
@@ -1070,7 +1090,10 @@ const ActionGroup = ({
     onEdit: (coupon: Coupon) => void;
     onDelete: (id: string) => void;
     mobile?: boolean;
-}) => (
+}) => {
+    const { t } = useTranslation();
+
+    return (
     <div className={`flex items-center gap-2 ${mobile ? 'grid grid-cols-2' : 'justify-end'}`}>
         <button
             type="button"
@@ -1078,7 +1101,7 @@ const ActionGroup = ({
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-200"
         >
             <Pencil size={14} />
-            Edit
+            {t('admin.common.edit', 'Edit')}
         </button>
 
         <button
@@ -1087,10 +1110,11 @@ const ActionGroup = ({
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-100"
         >
             <Trash2 size={14} />
-            Delete
+            {t('admin.common.delete', 'Delete')}
         </button>
     </div>
-);
+    );
+};
 
 const InfoTile = ({
     label,

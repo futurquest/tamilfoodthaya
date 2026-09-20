@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
@@ -30,27 +31,45 @@ type MessageItem = {
 
 type FilterType = 'ALL' | 'UNREAD' | 'READ';
 
-const filterConfig: Record<FilterType, { label: string; title: string; helper: string }> = {
+type FilterLabels = {
+    labelKey: string;
+    labelDefault: string;
+    titleKey: string;
+    titleDefault: string;
+    helperKey: string;
+    helperDefault: string;
+};
+
+const filterConfig: Record<FilterType, FilterLabels> = {
     ALL: {
-        label: 'All',
-        title: 'All messages',
-        helper: 'Every website message in one operational inbox.'
+        labelKey: 'admin.messages.filterAll',
+        labelDefault: 'All',
+        titleKey: 'admin.messages.filterAllTitle',
+        titleDefault: 'All messages',
+        helperKey: 'admin.messages.filterAllHelper',
+        helperDefault: 'Every website message in one operational inbox.'
     },
     UNREAD: {
-        label: 'Unread',
-        title: 'Unread messages',
-        helper: 'New customer enquiries that still need attention.'
+        labelKey: 'admin.messages.unread',
+        labelDefault: 'Unread',
+        titleKey: 'admin.messages.filterUnreadTitle',
+        titleDefault: 'Unread messages',
+        helperKey: 'admin.messages.filterUnreadHelper',
+        helperDefault: 'New customer enquiries that still need attention.'
     },
     READ: {
-        label: 'Read',
-        title: 'Read messages',
-        helper: 'Messages already reviewed by the team.'
+        labelKey: 'admin.messages.read',
+        labelDefault: 'Read',
+        titleKey: 'admin.messages.filterReadTitle',
+        titleDefault: 'Read messages',
+        helperKey: 'admin.messages.filterReadHelper',
+        helperDefault: 'Messages already reviewed by the team.'
     }
 };
 
-const fmt = (d: string) => {
+const fmt = (d: string, invalidLabel: string) => {
     const date = new Date(d);
-    if (Number.isNaN(date.getTime())) return 'Date not set';
+    if (Number.isNaN(date.getTime())) return invalidLabel;
 
     return date.toLocaleDateString('en-GB', {
         day: '2-digit',
@@ -62,6 +81,7 @@ const fmt = (d: string) => {
 };
 
 export const ViewMessages = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [filter, setFilter] = useState<FilterType>('ALL');
     const [searchTerm, setSearchTerm] = useState('');
@@ -88,18 +108,18 @@ export const ViewMessages = () => {
         mutationFn: (id: string) => api.patch(`/messages/${id}/read`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['messages'] });
-            toast.success('Message marked as read');
+            toast.success(t('admin.messages.markedAsRead', 'Message marked as read'));
         },
-        onError: () => toast.error('Could not mark the message as read')
+        onError: () => toast.error(t('admin.messages.markAsReadFailed', 'Could not mark the message as read'))
     });
 
     const deleteMsg = useMutation({
         mutationFn: (id: string) => api.delete(`/messages/${id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['messages'] });
-            toast.success('Message deleted');
+            toast.success(t('admin.messages.deleted', 'Message deleted'));
         },
-        onError: () => toast.error('Could not delete the message')
+        onError: () => toast.error(t('admin.messages.deleteFailed', 'Could not delete the message'))
     });
 
     const requestDelete = (id: string) => {
@@ -179,10 +199,10 @@ export const ViewMessages = () => {
                     <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-12 text-center">
                         <Inbox className="mx-auto text-red-700" size={28} />
                         <h1 className="mt-4 text-2xl font-extrabold text-red-700">
-                            Messages could not be loaded
+                            {t('admin.messages.loadFailedTitle', 'Messages could not be loaded')}
                         </h1>
                         <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-red-600">
-                            Refresh the page or check the API connection before replying to customer enquiries.
+                            {t('admin.messages.loadFailedSubtitle', 'Refresh the page or check the API connection before replying to customer enquiries.')}
                         </p>
                     </div>
                 </div>
@@ -197,26 +217,26 @@ export const ViewMessages = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Messages
+                                {t('admin.messages.eyebrow', 'Messages')}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                    Customer Message Inbox
+                                    {t('admin.messages.inboxTitle', 'Customer Message Inbox')}
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
                                     <MessageSquare size={13} />
-                                    Inbox
+                                    {t('admin.messages.inbox', 'Inbox')}
                                 </span>
                             </div>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Review website enquiries, spot unread messages quickly and keep customer follow-up moving.
+                                {t('admin.messages.subtitle', 'Review website enquiries, spot unread messages quickly and keep customer follow-up moving.')}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:w-[430px]">
-                            <MetricCard label="Total" value={messages.length} icon={<Inbox size={16} />} />
-                            <MetricCard label="Unread" value={unreadCount} icon={<Mail size={16} />} />
-                            <MetricCard label="Read" value={readCount} icon={<CheckCircle2 size={16} />} />
+                            <MetricCard label={t('admin.messages.total', 'Total')} value={messages.length} icon={<Inbox size={16} />} />
+                            <MetricCard label={t('admin.messages.unread', 'Unread')} value={unreadCount} icon={<Mail size={16} />} />
+                            <MetricCard label={t('admin.messages.read', 'Read')} value={readCount} icon={<CheckCircle2 size={16} />} />
                         </div>
                     </div>
                 </section>
@@ -231,15 +251,15 @@ export const ViewMessages = () => {
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search messages"
-                                aria-label="Search messages"
+                                placeholder={t('admin.messages.searchMessages', 'Search messages')}
+                                aria-label={t('admin.messages.searchMessages', 'Search messages')}
                                 className="h-10 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
 
                         <div className="grid min-w-0 gap-3 sm:max-w-[240px]">
                             <FilterSelect
-                                label="Status"
+                                label={t('admin.common.status', 'Status')}
                                 icon={<Filter size={13} />}
                                 value={filter}
                                 counts={{
@@ -255,7 +275,7 @@ export const ViewMessages = () => {
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-bold text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
                             <Filter size={12} />
-                            Showing {filteredMessages.length} of {messages.length} messages
+                            {t('admin.messages.showingCount', 'Showing {{visible}} of {{total}} messages', { visible: filteredMessages.length, total: messages.length })}
                         </span>
                         {(searchTerm || filter !== 'ALL') && (
                             <button
@@ -266,7 +286,7 @@ export const ViewMessages = () => {
                                 }}
                                 className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
                             >
-                                Clear filters
+                                {t('admin.messages.clearFilters', 'Clear filters')}
                             </button>
                         )}
                     </div>
@@ -290,12 +310,12 @@ export const ViewMessages = () => {
 
                 <ConfirmDialog
                     open={Boolean(pendingDelete)}
-                    title="Delete message"
+                    title={t('admin.messages.deleteMessage', 'Delete message')}
                     message={
                         pendingDelete
-                            ? `Delete the message from ${
-                                  pendingDelete.name || 'this customer'
-                              }? This cannot be undone.`
+                            ? t('admin.messages.deleteMessageBody', 'Delete the message from {{name}}? This cannot be undone.', {
+                                  name: pendingDelete.name || t('admin.messages.thisCustomer', 'this customer')
+                              })
                             : ''
                     }
                     busy={deleteMsg.isPending}
@@ -342,6 +362,7 @@ const FilterSelect = ({
     counts: Record<FilterType, number>;
     onChange: (value: FilterType) => void;
 }) => {
+    const { t } = useTranslation();
     const options: FilterType[] = ['ALL', 'UNREAD', 'READ'];
 
     return (
@@ -359,7 +380,7 @@ const FilterSelect = ({
                 >
                     {options.map((opt) => (
                         <option key={opt} value={opt}>
-                            {filterConfig[opt].label} ({counts[opt]})
+                            {t(filterConfig[opt].labelKey, filterConfig[opt].labelDefault)} ({counts[opt]})
                         </option>
                     ))}
                 </select>
@@ -392,18 +413,20 @@ const InboxWorkspace = ({
     onMarkRead: (id: string) => void;
     onDelete: (id: string) => void;
 }) => {
+    const { t } = useTranslation();
+
     return (
         <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-2.5 shadow-sm sm:p-3">
             <WorkspaceHeader
-                title={filterConfig[filter].title}
-                text={filterConfig[filter].helper}
-                badge={`${messages.length} message${messages.length === 1 ? '' : 's'}`}
+                title={t(filterConfig[filter].titleKey, filterConfig[filter].titleDefault)}
+                text={t(filterConfig[filter].helperKey, filterConfig[filter].helperDefault)}
+                badge={t('admin.messages.messageCount', '{{count}} messages', { count: messages.length })}
             />
 
             {messages.length === 0 ? (
                 <EmptyState
-                    title="No matching messages"
-                    text="Adjust search or filters to find the customer message you need."
+                    title={t('admin.messages.noMatching', 'No matching messages')}
+                    text={t('admin.messages.noMatchingText', 'Adjust search or filters to find the customer message you need.')}
                 />
             ) : detailOpen ? (
                 <MessageDetail
@@ -465,6 +488,8 @@ const MessagePreviewCard = ({
     active: boolean;
     onClick: () => void;
 }) => {
+    const { t } = useTranslation();
+
     return (
         <button
             type="button"
@@ -480,19 +505,19 @@ const MessagePreviewCard = ({
                 <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
                         <p className="truncate text-sm font-extrabold text-slate-900">
-                            {message.name || 'Unnamed customer'}
+                            {message.name || t('admin.messages.unnamedCustomer', 'Unnamed customer')}
                         </p>
                         <MessageBadge read={message.read} />
                     </div>
                     <p className="mt-1 truncate text-xs font-bold text-slate-500">
-                        {message.email || 'No email address'}
+                        {message.email || t('admin.messages.noEmailAddress', 'No email address')}
                     </p>
                     <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
                         {truncateText(message.message, 96)}
                     </p>
                     <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-slate-400">
                         <Clock3 size={12} />
-                        {fmt(message.createdAt)}
+                        {fmt(message.createdAt, t('admin.messages.dateNotSet', 'Date not set'))}
                     </p>
                 </div>
             </div>
@@ -515,16 +540,18 @@ const MessageDetail = ({
     onMarkRead: (id: string) => void;
     onDelete: (id: string) => void;
 }) => {
+    const { t } = useTranslation();
+
     if (!message) {
         return (
             <div className="grid min-h-[420px] place-items-center rounded-[24px] border border-dashed border-slate-200 bg-white/70 px-4 text-center">
                 <div>
                     <Inbox className="mx-auto text-slate-400" size={26} />
                     <p className="mt-3 text-sm font-extrabold text-slate-800">
-                        Select a message
+                        {t('admin.messages.selectMessage', 'Select a message')}
                     </p>
                     <p className="mt-1 text-xs font-medium leading-5 text-slate-500">
-                        Choose a customer message from the inbox to read it here.
+                        {t('admin.messages.selectMessageText', 'Choose a customer message from the inbox to read it here.')}
                     </p>
                 </div>
             </div>
@@ -541,7 +568,7 @@ const MessageDetail = ({
                         className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:bg-stone-50"
                     >
                         <ArrowLeft size={14} />
-                        Back to inbox
+                        {t('admin.messages.backToInbox', 'Back to inbox')}
                     </button>
                 </div>
             )}
@@ -552,13 +579,13 @@ const MessageDetail = ({
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                             <h2 className="text-xl font-extrabold text-slate-900">
-                                {message.name || 'Unnamed customer'}
+                                {message.name || t('admin.messages.unnamedCustomer', 'Unnamed customer')}
                             </h2>
                             <MessageBadge read={message.read} />
                         </div>
                         <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500">
                             <Clock3 size={13} />
-                            {fmt(message.createdAt)}
+                            {fmt(message.createdAt, t('admin.messages.dateNotSet', 'Date not set'))}
                         </p>
                     </div>
                 </div>
@@ -572,14 +599,14 @@ const MessageDetail = ({
             </div>
 
             <div className="mt-5 grid gap-3 md:grid-cols-2">
-                <ContactBlock icon={<Mail size={15} />} label="Email" value={message.email || 'No email'} href={message.email ? `mailto:${message.email}` : undefined} />
-                <ContactBlock icon={<Phone size={15} />} label="Phone" value={message.phone || 'No phone'} href={message.phone ? `tel:${message.phone}` : undefined} />
+                <ContactBlock icon={<Mail size={15} />} label={t('admin.common.email', 'Email')} value={message.email || t('admin.messages.noEmail', 'No email')} href={message.email ? `mailto:${message.email}` : undefined} />
+                <ContactBlock icon={<Phone size={15} />} label={t('admin.common.phone', 'Phone')} value={message.phone || t('admin.messages.noPhone', 'No phone')} href={message.phone ? `tel:${message.phone}` : undefined} />
             </div>
 
             <div className="mt-5 rounded-2xl border border-slate-200 bg-(--brand-surface-ivory) p-5">
                 <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
                     <MessageSquare size={13} />
-                    Customer message
+                    {t('admin.messages.customerMessageLabel', 'Customer message')}
                 </p>
                 <p className="whitespace-pre-wrap text-[15px] font-semibold leading-7 text-slate-700">
                     {message.message}
@@ -612,13 +639,15 @@ const Avatar = ({
 };
 
 const MessageBadge = ({ read }: { read?: boolean }) => {
+    const { t } = useTranslation();
+
     return read ? (
         <span className="inline-flex rounded-xl border border-slate-200 bg-stone-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-600">
-            Read
+            {t('admin.messages.read', 'Read')}
         </span>
     ) : (
         <span className="inline-flex rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-amber-800">
-            Unread
+            {t('admin.messages.unread', 'Unread')}
         </span>
     );
 };
@@ -636,6 +665,8 @@ const MessageActions = ({
     onDelete: (id: string) => void;
     compact?: boolean;
 }) => {
+    const { t } = useTranslation();
+
     return (
         <div className={`flex flex-wrap gap-2 ${compact ? '' : 'md:justify-end'}`}>
             {!message.read && (
@@ -646,7 +677,7 @@ const MessageActions = ({
                     className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-3 text-xs font-extrabold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     <CheckCircle2 size={14} />
-                    Mark read
+                    {t('admin.messages.markReadAction', 'Mark read')}
                 </button>
             )}
 
@@ -657,7 +688,7 @@ const MessageActions = ({
                 className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
                 <Trash2 size={14} />
-                Delete
+                {t('admin.common.delete', 'Delete')}
             </button>
         </div>
     );

@@ -1,37 +1,25 @@
 import ScrollReveal from './ScrollReveal';
 import FluidBackground from './FluidBackground';
+import { useTranslation } from 'react-i18next';
 
 export default function OurStorySection() {
+  const { t } = useTranslation();
   return (
     <section className="section about-section">
       <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
       <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
       <div className="container about-grid">
         <ScrollReveal variant="fadeUp" className="about-copy">
-          <p className="eyebrow">About Tamil Food Thaya</p>
-          <h2 className="section-title">Our Story</h2>
-          <h3 className="about-subhead">Bringing the Taste of Home to the Netherlands</h3>
+          <p className="eyebrow">{t('about.eyebrow')}</p>
+          <h2 className="section-title">{t('about.title')}</h2>
+          <h3 className="about-subhead">{t('about.subtitle')}</h3>
           <div className="about-body">
-            <p>
-              For more than <strong>25 years</strong>, founder <strong>Thayapalan</strong> has
-              shared the authentic flavours of Tamil home cooking with communities across Rotterdam
-              and the Netherlands.
-            </p>
-            <p>
-              Tamil Food Thaya began with a simple idea: <strong>food should taste like home</strong>.
-              Inspired by traditional Tamil cooking and the comforting meals made by mothers for
-              generations, Thayapalan set out to preserve those flavours and share them with others.
-            </p>
-            <p>
-              From intimate family gatherings to weddings and large celebrations, every meal is
-              prepared with the same values we started with —{' '}
-              <strong>tradition, freshness, generosity and care</strong>.
-            </p>
+            <p>{t('about.paragraph1')}</p>
+            <p>{t('about.paragraph2')}</p>
+            <p>{t('about.paragraph3')}</p>
           </div>
           <p className="about-tagline">
-            <strong>
-              Tamil Food Thaya — traditional Tamil food, made with the warmth of home.
-            </strong>
+            <strong>{t('about.tagline')}</strong>
           </p>
         </ScrollReveal>
 
@@ -39,10 +27,10 @@ export default function OurStorySection() {
           <figure>
             <img
               src="/thayapaalan.png"
-              alt="Thayapalan, founder of Tamil Food Thaya"
+              alt={t('about.imageAlt')}
               loading="lazy"
             />
-            <figcaption className="about-image__caption">Thayapalan — Founder</figcaption>
+            <figcaption className="about-image__caption">{t('about.caption')}</figcaption>
           </figure>
         </ScrollReveal>
       </div>

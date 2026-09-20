@@ -17,6 +17,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import MotionFX from './motion/MotionFX';
 import ScrollToTop from './components/ScrollToTop';
 import { lazy, Suspense, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PageLoader } from './components/Logo';
 
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then(module => ({ default: module.CheckoutPage })));
@@ -104,11 +105,12 @@ function App() {
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   const mainRef = useRef<HTMLElement | null>(null);
   const { pathname: rawPathname } = useLocation();
+  const { t } = useTranslation();
   const pathname = rawPathname.replace(/\/+$/, '') || '/';
   const isLanding = ['/', '/menu', '/catering', '/contact'].includes(pathname);
   return (
     <div className="site-shell">
-      <a className="skip-link" href="#main-content">Skip to content</a>
+      <a className="skip-link" href="#main-content">{t('common.skipLink')}</a>
       <ScrollToTop />
       <Header />
       <div className="fx-progress" aria-hidden="true" />

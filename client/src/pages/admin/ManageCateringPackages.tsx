@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
     Box,
@@ -88,6 +89,7 @@ const emptyPackage: CateringPackage = {
 };
 
 export const ManageCateringPackages = () => {
+    const { t } = useTranslation();
     const { menuItems } = useMenu();
     const [packages, setPackages] = useState<CateringPackage[]>([]);
     const [editing, setEditing] = useState<CateringPackage | null>(null);
@@ -154,7 +156,7 @@ export const ManageCateringPackages = () => {
             const data = await getCateringPackages();
             setPackages(Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : []);
         } catch {
-            toast.error('Could not load packages');
+            toast.error(t('admin.packages.loadFailed', 'Could not load packages'));
         } finally {
             setLoading(false);
         }
@@ -223,30 +225,30 @@ export const ManageCateringPackages = () => {
 
             if (payload._id) {
                 await updateCateringPackage(payload._id, payload);
-                toast.success('Package updated');
+                toast.success(t('admin.packages.updated', 'Package updated'));
             } else {
                 await createCateringPackage(payload);
-                toast.success('Package created');
+                toast.success(t('admin.packages.created', 'Package created'));
             }
 
             setEditing(null);
             await fetchPackages();
         } catch {
-            toast.error('Could not save package');
+            toast.error(t('admin.packages.saveFailed', 'Could not save package'));
         } finally {
             setSaving(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Delete this catering package? Customers will no longer be able to select it.')) return;
+        if (!confirm(t('admin.packages.confirmDelete', 'Delete this catering package? Customers will no longer be able to select it.'))) return;
 
         try {
             await deleteCateringPackage(id);
-            toast.success('Package deleted');
+            toast.success(t('admin.packages.deleted', 'Package deleted'));
             await fetchPackages();
         } catch {
-            toast.error('Could not delete package');
+            toast.error(t('admin.packages.deleteFailed', 'Could not delete package'));
         }
     };
 
@@ -335,19 +337,19 @@ export const ManageCateringPackages = () => {
                         <div>
                             <span className="inline-flex items-center gap-1.5 rounded-xl border border-(--brand-accent-strong)/30 bg-(--brand-accent-strong)/15 px-3 py-1.5 text-xs font-extrabold text-(--brand-accent-haze)">
                                 <Sparkles size={13} />
-                                Main catering product
+                                {t('admin.packages.mainProduct', 'Main catering product')}
                             </span>
                             <div className="mt-4 flex flex-wrap items-center gap-3">
                                 <h1 className="admin-package-hero-title max-w-[760px] text-3xl font-extrabold tracking-tight md:text-[44px] md:leading-[1.03]">
-                                    Catering packages that sell the event clearly.
+                                    {t('admin.packages.heroTitle', 'Catering packages that sell the event clearly.')}
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-extrabold text-white">
                                     <UtensilsCrossed size={13} />
-                                    {viewMode === 'grid' ? 'Grid view' : 'List view'}
+                                    {viewMode === 'grid' ? t('admin.packages.gridView', 'Grid view') : t('admin.packages.listView', 'List view')}
                                 </span>
                             </div>
                             <p className="admin-package-hero-copy mt-4 max-w-2xl text-sm font-semibold leading-6">
-                                Manage the packages customers compare first: price per person, guest range, included choices, publishing status and multilingual selling copy.
+                                {t('admin.packages.heroSubtitle', 'Manage the packages customers compare first: price per person, guest range, included choices, publishing status and multilingual selling copy.')}
                             </p>
                             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                                 <Button
@@ -355,7 +357,7 @@ export const ManageCateringPackages = () => {
                                     className="h-11 rounded-xl border border-(--brand-accent-strong) bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) px-5 text-sm font-extrabold text-white hover:opacity-95"
                                 >
                                     <Plus size={16} className="mr-2" />
-                                    New Package
+                                    {t('admin.packages.newPackage', 'New Package')}
                                 </Button>
                                 <button
                                     type="button"
@@ -363,17 +365,19 @@ export const ManageCateringPackages = () => {
                                     className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-5 text-sm font-extrabold text-white transition hover:bg-white/15"
                                 >
                                     {viewMode === 'grid' ? <List size={16} /> : <Grid3X3 size={16} />}
-                                    Switch to {viewMode === 'grid' ? 'list' : 'grid'}
+                                    {viewMode === 'grid'
+                                        ? t('admin.packages.switchToList', 'Switch to list')
+                                        : t('admin.packages.switchToGrid', 'Switch to grid')}
                                 </button>
                             </div>
                         </div>
 
                         <div className="grid gap-3">
                             <div className="grid grid-cols-2 gap-3">
-                                <MetricCard label="Packages" value={stats.totalPackages} icon={<Package size={16} />} tone="dark" />
-                                <MetricCard label="Active" value={stats.activePackages} icon={<CheckCircle2 size={16} />} tone="dark" />
-                                <MetricCard label="Hidden" value={stats.hiddenPackages} icon={<X size={16} />} tone="dark" />
-                                <MetricCard label="Choices" value={stats.totalItems} icon={<Box size={16} />} tone="dark" />
+                                <MetricCard label={t('admin.packages.metricPackages', 'Packages')} value={stats.totalPackages} icon={<Package size={16} />} tone="dark" />
+                                <MetricCard label={t('admin.packages.metricActive', 'Active')} value={stats.activePackages} icon={<CheckCircle2 size={16} />} tone="dark" />
+                                <MetricCard label={t('admin.packages.metricHidden', 'Hidden')} value={stats.hiddenPackages} icon={<X size={16} />} tone="dark" />
+                                <MetricCard label={t('admin.packages.metricChoices', 'Choices')} value={stats.totalItems} icon={<Box size={16} />} tone="dark" />
                             </div>
                             <FeaturedPackagePanel pkg={featuredPackage} />
                         </div>
@@ -387,7 +391,7 @@ export const ManageCateringPackages = () => {
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search package name, description, group, price or guest count..."
+                                placeholder={t('admin.packages.searchPlaceholder', 'Search package name, description, group, price or guest count...')}
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
@@ -409,7 +413,7 @@ export const ManageCateringPackages = () => {
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-bold text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
                             <Filter size={12} />
-                            Showing {filteredPackages.length} of {packages.length} packages
+                            {t('admin.packages.showing', 'Showing {{shown}} of {{total}} packages', { shown: filteredPackages.length, total: packages.length })}
                         </span>
                         {(searchTerm || availabilityFilter !== 'ALL') && (
                             <button
@@ -420,7 +424,7 @@ export const ManageCateringPackages = () => {
                                 }}
                                 className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
                             >
-                                Clear filters
+                                {t('admin.packages.clearFilters', 'Clear filters')}
                             </button>
                         )}
                     </div>
@@ -430,11 +434,11 @@ export const ManageCateringPackages = () => {
                     <LoadingPanel />
                 ) : filteredPackages.length === 0 ? (
                     <EmptyState
-                        title={packages.length === 0 ? 'No packages yet' : 'No matching packages'}
+                        title={packages.length === 0 ? t('admin.packages.emptyTitle', 'No packages yet') : t('admin.packages.noMatchTitle', 'No matching packages')}
                         text={
                             packages.length === 0
-                                ? 'Create the first catering package so customers can choose an event menu.'
-                                : 'Adjust search or filters to find the package you need.'
+                                ? t('admin.packages.emptyText', 'Create the first catering package so customers can choose an event menu.')
+                                : t('admin.packages.noMatchText', 'Adjust search or filters to find the package you need.')
                         }
                         action={packages.length === 0 ? openNewPackage : undefined}
                     />
@@ -479,6 +483,7 @@ const PackageEditor = ({
     onUpdateItem: (catIdx: number, itemIdx: number, value: string) => void;
     onRemoveItem: (catIdx: number, itemIdx: number) => void;
 }) => {
+    const { t } = useTranslation();
     const choiceCount = editing.categories.reduce((acc, cat) => acc + (cat.items?.length || 0), 0);
 
     return (
@@ -488,10 +493,10 @@ const PackageEditor = ({
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                {editing._id ? 'Edit Catering Package' : 'Create Catering Package'}
+                                {editing._id ? t('admin.packages.editTitle', 'Edit Catering Package') : t('admin.packages.createTitle', 'Create Catering Package')}
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Build package details, guest limits, multilingual descriptions and grouped meal choices.
+                                {t('admin.packages.editorSubtitle', 'Build package details, guest limits, multilingual descriptions and grouped meal choices.')}
                             </p>
                         </div>
 
@@ -502,7 +507,7 @@ const PackageEditor = ({
                                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-stone-50"
                             >
                                 <X size={16} />
-                                Cancel
+                                {t('admin.packages.cancel', 'Cancel')}
                             </button>
                             <button
                                 type="button"
@@ -511,7 +516,7 @@ const PackageEditor = ({
                                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white transition hover:bg-slate-800 disabled:opacity-50"
                             >
                                 <Save size={16} />
-                                {saving ? 'Saving...' : 'Save package'}
+                                {saving ? t('admin.packages.saving', 'Saving...') : t('admin.packages.savePackage', 'Save package')}
                             </button>
                         </div>
                     </div>
@@ -519,43 +524,43 @@ const PackageEditor = ({
 
                 <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_360px]">
                     <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-                        <SectionTitle title="Package details" subtitle="Customer-facing copy, pricing and event size." />
+                        <SectionTitle title={t('admin.packages.detailsTitle', 'Package details')} subtitle={t('admin.packages.detailsSubtitle', 'Customer-facing copy, pricing and event size.')} />
                         <div className="mt-5 grid gap-4 lg:grid-cols-3">
-                            <InputBlock label="Name (NL)" value={editing.nameTranslations?.nl || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, nl: value })} />
-                            <InputBlock label="Name (EN)" value={editing.nameTranslations?.en || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, en: value })} />
-                            <InputBlock label="Name (TA)" value={editing.nameTranslations?.ta || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, ta: value })} />
+                            <InputBlock label={t('admin.packages.nameNl', 'Name (NL)')} value={editing.nameTranslations?.nl || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, nl: value })} />
+                            <InputBlock label={t('admin.packages.nameEn', 'Name (EN)')} value={editing.nameTranslations?.en || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, en: value })} />
+                            <InputBlock label={t('admin.packages.nameTa', 'Name (TA)')} value={editing.nameTranslations?.ta || ''} onChange={(value) => onUpdateField('nameTranslations', { ...editing.nameTranslations, ta: value })} />
                         </div>
                         <div className="mt-4 grid gap-4 lg:grid-cols-3">
-                            <TextAreaBlock label="Description (NL)" value={editing.descriptionTranslations?.nl || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, nl: value })} />
-                            <TextAreaBlock label="Description (EN)" value={editing.descriptionTranslations?.en || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, en: value })} />
-                            <TextAreaBlock label="Description (TA)" value={editing.descriptionTranslations?.ta || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, ta: value })} />
+                            <TextAreaBlock label={t('admin.packages.descNl', 'Description (NL)')} value={editing.descriptionTranslations?.nl || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, nl: value })} />
+                            <TextAreaBlock label={t('admin.packages.descEn', 'Description (EN)')} value={editing.descriptionTranslations?.en || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, en: value })} />
+                            <TextAreaBlock label={t('admin.packages.descTa', 'Description (TA)')} value={editing.descriptionTranslations?.ta || ''} onChange={(value) => onUpdateField('descriptionTranslations', { ...editing.descriptionTranslations, ta: value })} />
                         </div>
                         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                            <NumberBlock label="Base price" value={editing.basePrice} helper="Price per person" step="0.50" onChange={(value) => onUpdateField('basePrice', value)} />
-                            <NumberBlock label="Minimum guests" value={editing.minGuests} helper="Smallest event size" onChange={(value) => onUpdateField('minGuests', value)} />
-                            <NumberBlock label="Maximum guests" value={editing.maxGuests} helper="Largest event size" onChange={(value) => onUpdateField('maxGuests', value)} />
-                            <NumberBlock label="Sort order" value={editing.sortOrder} helper="Public display order" onChange={(value) => onUpdateField('sortOrder', value)} />
+                            <NumberBlock label={t('admin.packages.basePrice', 'Base price')} value={editing.basePrice} helper={t('admin.packages.basePriceHelper', 'Price per person')} step="0.50" onChange={(value) => onUpdateField('basePrice', value)} />
+                            <NumberBlock label={t('admin.packages.minGuests', 'Minimum guests')} value={editing.minGuests} helper={t('admin.packages.minGuestsHelper', 'Smallest event size')} onChange={(value) => onUpdateField('minGuests', value)} />
+                            <NumberBlock label={t('admin.packages.maxGuests', 'Maximum guests')} value={editing.maxGuests} helper={t('admin.packages.maxGuestsHelper', 'Largest event size')} onChange={(value) => onUpdateField('maxGuests', value)} />
+                            <NumberBlock label={t('admin.packages.sortOrder', 'Sort order')} value={editing.sortOrder} helper={t('admin.packages.sortOrderHelper', 'Public display order')} onChange={(value) => onUpdateField('sortOrder', value)} />
                         </div>
                     </section>
 
                     <aside className="space-y-4">
                         <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                            <SectionTitle title="Publishing" subtitle="Public package availability." />
+                            <SectionTitle title={t('admin.packages.publishingTitle', 'Publishing')} subtitle={t('admin.packages.publishingSubtitle', 'Public package availability.')} />
                             <ToggleCard
-                                title={editing.available ? 'Visible to customers' : 'Hidden from customers'}
-                                description="Control whether this package appears on the catering page."
+                                title={editing.available ? t('admin.packages.visibleToCustomers', 'Visible to customers') : t('admin.packages.hiddenFromCustomers', 'Hidden from customers')}
+                                description={t('admin.packages.publishControl', 'Control whether this package appears on the catering page.')}
                                 checked={editing.available}
                                 onChange={(checked) => onUpdateField('available', checked)}
                             />
                         </section>
 
                         <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                            <SectionTitle title="Package summary" subtitle="Fast operational review." />
+                            <SectionTitle title={t('admin.packages.summaryTitle', 'Package summary')} subtitle={t('admin.packages.summarySubtitle', 'Fast operational review.')} />
                             <div className="mt-4 grid gap-2">
-                                <SummaryRow label="Price per person" value={formatPrice(editing.basePrice)} />
-                                <SummaryRow label="Guest range" value={`${editing.minGuests} - ${editing.maxGuests}`} />
-                                <SummaryRow label="Meal groups" value={String(editing.categories.length)} />
-                                <SummaryRow label="Choices" value={String(choiceCount)} />
+                                <SummaryRow label={t('admin.packages.sumPricePerPerson', 'Price per person')} value={formatPrice(editing.basePrice)} />
+                                <SummaryRow label={t('admin.packages.sumGuestRange', 'Guest range')} value={`${editing.minGuests} - ${editing.maxGuests}`} />
+                                <SummaryRow label={t('admin.packages.sumMealGroups', 'Meal groups')} value={String(editing.categories.length)} />
+                                <SummaryRow label={t('admin.packages.sumChoices', 'Choices')} value={String(choiceCount)} />
                             </div>
                         </section>
                     </aside>
@@ -563,17 +568,17 @@ const PackageEditor = ({
 
                 <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
                     <WorkspaceHeader
-                        title="Meal group builder"
-                        text="Create the customer choice groups shown inside this catering package."
-                        badge={`${editing.categories.length} ${editing.categories.length === 1 ? 'group' : 'groups'}`}
+                        title={t('admin.packages.builderTitle', 'Meal group builder')}
+                        text={t('admin.packages.builderText', 'Create the customer choice groups shown inside this catering package.')}
+                        badge={`${editing.categories.length} ${editing.categories.length === 1 ? t('admin.packages.groupSingular', 'group') : t('admin.packages.groupPlural', 'groups')}`}
                     />
                     <div className="grid gap-3">
                         {editing.categories.length === 0 ? (
                             <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-12 text-center">
                                 <FolderPlus className="mx-auto text-slate-400" size={28} />
-                                <h3 className="mt-3 text-base font-extrabold text-slate-900">No meal groups yet</h3>
+                                <h3 className="mt-3 text-base font-extrabold text-slate-900">{t('admin.packages.noGroupsTitle', 'No meal groups yet')}</h3>
                                 <p className="mx-auto mt-2 max-w-md text-sm font-semibold leading-6 text-slate-500">
-                                    Add starters, mains, desserts or drinks as choice groups for this package.
+                                    {t('admin.packages.noGroupsText', 'Add starters, mains, desserts or drinks as choice groups for this package.')}
                                 </p>
                             </div>
                         ) : (
@@ -600,7 +605,7 @@ const PackageEditor = ({
                         className="mt-3 inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white transition hover:bg-slate-800"
                     >
                         <FolderPlus size={16} />
-                        Add meal group
+                        {t('admin.packages.addGroup', 'Add meal group')}
                     </button>
                 </section>
             </div>
@@ -630,7 +635,9 @@ const MealGroupEditor = ({
     onAddItem: (catIdx: number) => void;
     onUpdateItem: (catIdx: number, itemIdx: number, value: string) => void;
     onRemoveItem: (catIdx: number, itemIdx: number) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
             <button type="button" onClick={onToggle} className="flex min-w-0 items-center gap-3 text-left">
@@ -639,10 +646,10 @@ const MealGroupEditor = ({
                 </span>
                 <span className="min-w-0">
                     <span className="block truncate text-base font-extrabold text-slate-900">
-                        {cat.nameTranslations?.nl || cat.name || `Meal group ${catIdx + 1}`}
+                        {cat.nameTranslations?.nl || cat.name || `${t('admin.packages.mealGroup', 'Meal group')} ${catIdx + 1}`}
                     </span>
                     <span className="mt-1 block text-xs font-bold text-slate-500">
-                        Choose {cat.minSelect} to {cat.maxSelect} items, {cat.items.length} options
+                        {t('admin.packages.chooseRange', 'Choose {{min}} to {{max}} items, {{count}} options', { min: cat.minSelect, max: cat.maxSelect, count: cat.items.length })}
                     </span>
                 </span>
                 {expanded ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
@@ -653,51 +660,51 @@ const MealGroupEditor = ({
                 className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
             >
                 <Trash2 size={14} />
-                Remove
+                {t('admin.packages.remove', 'Remove')}
             </button>
         </div>
 
         {expanded && (
             <div className="border-t border-slate-100 bg-(--brand-surface-ivory) p-4">
                 <div className="grid gap-4 lg:grid-cols-3">
-                    <InputBlock label="Group name (NL)" value={cat.nameTranslations?.nl || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, nl: value })} />
-                    <InputBlock label="Group name (EN)" value={cat.nameTranslations?.en || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, en: value })} />
-                    <InputBlock label="Group name (TA)" value={cat.nameTranslations?.ta || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, ta: value })} />
+                    <InputBlock label={t('admin.packages.groupNameNl', 'Group name (NL)')} value={cat.nameTranslations?.nl || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, nl: value })} />
+                    <InputBlock label={t('admin.packages.groupNameEn', 'Group name (EN)')} value={cat.nameTranslations?.en || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, en: value })} />
+                    <InputBlock label={t('admin.packages.groupNameTa', 'Group name (TA)')} value={cat.nameTranslations?.ta || ''} onChange={(value) => onUpdateCategory(catIdx, 'nameTranslations', { ...cat.nameTranslations, ta: value })} />
                 </div>
                 <div className="mt-4 grid gap-4 lg:grid-cols-3">
-                    <TextAreaBlock label="Description (NL)" value={cat.descriptionTranslations?.nl || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, nl: value })} />
-                    <TextAreaBlock label="Description (EN)" value={cat.descriptionTranslations?.en || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, en: value })} />
-                    <TextAreaBlock label="Description (TA)" value={cat.descriptionTranslations?.ta || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, ta: value })} />
+                    <TextAreaBlock label={t('admin.packages.groupDescNl', 'Description (NL)')} value={cat.descriptionTranslations?.nl || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, nl: value })} />
+                    <TextAreaBlock label={t('admin.packages.groupDescEn', 'Description (EN)')} value={cat.descriptionTranslations?.en || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, en: value })} />
+                    <TextAreaBlock label={t('admin.packages.groupDescTa', 'Description (TA)')} value={cat.descriptionTranslations?.ta || ''} onChange={(value) => onUpdateCategory(catIdx, 'descriptionTranslations', { ...cat.descriptionTranslations, ta: value })} />
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    <NumberBlock label="Minimum selections" value={cat.minSelect} onChange={(value) => onUpdateCategory(catIdx, 'minSelect', value)} />
-                    <NumberBlock label="Maximum selections" value={cat.maxSelect} onChange={(value) => onUpdateCategory(catIdx, 'maxSelect', value)} />
+                    <NumberBlock label={t('admin.packages.minSelections', 'Minimum selections')} value={cat.minSelect} onChange={(value) => onUpdateCategory(catIdx, 'minSelect', value)} />
+                    <NumberBlock label={t('admin.packages.maxSelections', 'Maximum selections')} value={cat.maxSelect} onChange={(value) => onUpdateCategory(catIdx, 'maxSelect', value)} />
                 </div>
 
                 <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <SectionTitle title="Included choices" subtitle="Menu items customers can choose from." />
+                        <SectionTitle title={t('admin.packages.includedTitle', 'Included choices')} subtitle={t('admin.packages.includedSubtitle', 'Menu items customers can choose from.')} />
                         <button
                             type="button"
                             onClick={() => onAddItem(catIdx)}
                             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-4 text-xs font-extrabold text-white"
                         >
                             <Plus size={14} />
-                            Add choice
+                            {t('admin.packages.addChoice', 'Add choice')}
                         </button>
                     </div>
                     <div className="mt-4 grid gap-3">
                         {cat.items.map((item, itemIdx) => (
                             <div key={itemIdx} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
                                 <PremiumSelect
-                                    label={`Choice ${itemIdx + 1}`}
+                                    label={t('admin.packages.choiceLabel', 'Choice {{index}}', { index: itemIdx + 1 })}
                                     value={getMenuItemId(item.menuItem)}
                                     onChange={(value) => onUpdateItem(catIdx, itemIdx, value)}
                                     options={[
-                                        { value: '', label: 'Select menu item' },
+                                        { value: '', label: t('admin.packages.selectMenuItem', 'Select menu item') },
                                         ...allMenuItems.map((menuItem) => ({
                                             value: menuItem._id,
-                                            label: menuItem.name || 'Untitled menu item'
+                                            label: menuItem.name || t('admin.packages.untitledItem', 'Untitled menu item')
                                         }))
                                     ]}
                                 />
@@ -705,7 +712,7 @@ const MealGroupEditor = ({
                                     type="button"
                                     onClick={() => onRemoveItem(catIdx, itemIdx)}
                                     className="mt-7 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-                                    aria-label="Remove choice"
+                                    aria-label={t('admin.packages.removeChoice', 'Remove choice')}
                                 >
                                     <Trash2 size={15} />
                                 </button>
@@ -716,7 +723,8 @@ const MealGroupEditor = ({
             </div>
         )}
     </article>
-);
+    );
+};
 
 const PackageGrid = ({
     packages,
@@ -726,12 +734,14 @@ const PackageGrid = ({
     packages: CateringPackage[];
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <section className="rounded-[28px] border border-[color:var(--brand-outline)] bg-[linear-gradient(135deg,var(--brand-surface-warm)_0%,var(--brand-surface-ivory)_42%,var(--brand-slate-soft)_100%)] p-3 shadow-sm">
         <WorkspaceHeader
-            title="Package board"
-            text="Review public package cards, pricing, guest ranges and included choice groups."
-            badge={`${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
+            title={t('admin.packages.boardTitle', 'Package board')}
+            text={t('admin.packages.boardText', 'Review public package cards, pricing, guest ranges and included choice groups.')}
+            badge={`${packages.length} ${packages.length === 1 ? t('admin.packages.packageSingular', 'package') : t('admin.packages.packagePlural', 'packages')}`}
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {packages.map((pkg) => (
@@ -739,7 +749,8 @@ const PackageGrid = ({
             ))}
         </div>
     </section>
-);
+    );
+};
 
 const PackageCard = ({
     pkg,
@@ -750,6 +761,7 @@ const PackageCard = ({
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
 }) => {
+    const { t } = useTranslation();
     const categoryCount = pkg.categories?.length || 0;
     const itemCount = getPackageItemCount(pkg);
 
@@ -763,13 +775,13 @@ const PackageCard = ({
                     <StatusBadge available={pkg.available} variant="dark" />
                 </div>
                 <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-(--brand-stone)">
-                    From
+                    {t('admin.packages.from', 'From')}
                 </p>
                 <div className="mt-1 flex items-end gap-2">
                     <span className="text-3xl font-extrabold leading-none text-white">
                         {formatPrice(pkg.basePrice)}
                     </span>
-                    <span className="pb-1 text-xs font-bold text-(--brand-stone)">per person</span>
+                    <span className="pb-1 text-xs font-bold text-(--brand-stone)">{t('admin.packages.perPerson', 'per person')}</span>
                 </div>
             </div>
 
@@ -780,22 +792,22 @@ const PackageCard = ({
                             {getPackageName(pkg)}
                         </h3>
                         <p className="mt-2 line-clamp-3 min-h-[4.5rem] text-sm font-semibold leading-6 text-slate-600">
-                            {pkg.descriptionTranslations?.nl || pkg.description || 'No description added yet.'}
+                            {pkg.descriptionTranslations?.nl || pkg.description || t('admin.packages.noDescription', 'No description added yet.')}
                         </p>
                     </div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
-                    <MiniStat icon={<Users size={14} />} label="Guests" value={`${pkg.minGuests} - ${pkg.maxGuests}`} />
-                    <MiniStat icon={<Layers3 size={14} />} label="Groups" value={String(categoryCount)} />
-                    <MiniStat icon={<Box size={14} />} label="Choices" value={String(itemCount)} />
+                    <MiniStat icon={<Users size={14} />} label={t('admin.packages.miniGuests', 'Guests')} value={`${pkg.minGuests} - ${pkg.maxGuests}`} />
+                    <MiniStat icon={<Layers3 size={14} />} label={t('admin.packages.miniGroups', 'Groups')} value={String(categoryCount)} />
+                    <MiniStat icon={<Box size={14} />} label={t('admin.packages.miniChoices', 'Choices')} value={String(itemCount)} />
                 </div>
 
                 <PackageGroupPills pkg={pkg} />
 
                 <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
                     <span className="rounded-xl border border-slate-200 bg-stone-50 px-3 py-1.5 text-xs font-extrabold text-slate-700">
-                        Order {pkg.sortOrder ?? 0}
+                        {t('admin.packages.orderLabel', 'Order {{order}}', { order: pkg.sortOrder ?? 0 })}
                     </span>
                     <PackageActions pkg={pkg} onEdit={onEdit} onDelete={onDelete} />
                 </div>
@@ -812,18 +824,28 @@ const PackageList = ({
     packages: CateringPackage[];
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <section className="rounded-[28px] border border-slate-200 bg-white p-3 shadow-sm">
         <WorkspaceHeader
-            title="List workspace"
-            text="Scan price, guest limits, group count and publishing state in one dense table."
-            badge={`${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
+            title={t('admin.packages.listTitle', 'List workspace')}
+            text={t('admin.packages.listText', 'Scan price, guest limits, group count and publishing state in one dense table.')}
+            badge={`${packages.length} ${packages.length === 1 ? t('admin.packages.packageSingular', 'package') : t('admin.packages.packagePlural', 'packages')}`}
         />
         <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 lg:block">
             <table className="w-full min-w-[960px] border-separate border-spacing-0 text-left">
                 <thead className="bg-stone-50">
                     <tr>
-                        {['Package', 'Status', 'Price', 'Guests', 'Groups', 'Choices', 'Action'].map((heading) => (
+                        {[
+                            t('admin.packages.hPackage', 'Package'),
+                            t('admin.packages.hStatus', 'Status'),
+                            t('admin.packages.hPrice', 'Price'),
+                            t('admin.packages.hGuests', 'Guests'),
+                            t('admin.packages.hGroups', 'Groups'),
+                            t('admin.packages.hChoices', 'Choices'),
+                            t('admin.packages.hAction', 'Action')
+                        ].map((heading) => (
                             <th key={heading} className="border-b border-slate-200 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500">
                                 {heading}
                             </th>
@@ -844,6 +866,7 @@ const PackageList = ({
         </div>
     </section>
 );
+};
 
 const PackageRow = ({
     pkg,
@@ -853,12 +876,14 @@ const PackageRow = ({
     pkg: CateringPackage;
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <tr className="transition hover:bg-amber-50/50">
         <td className="border-b border-slate-100 px-4 py-4">
             <p className="text-sm font-extrabold text-slate-900">{getPackageName(pkg)}</p>
             <p className="mt-1 max-w-[320px] truncate text-xs font-bold text-slate-500">
-                {pkg.descriptionTranslations?.nl || pkg.description || 'No description added yet.'}
+                {pkg.descriptionTranslations?.nl || pkg.description || t('admin.packages.noDescription', 'No description added yet.')}
             </p>
         </td>
         <td className="border-b border-slate-100 px-4 py-4"><StatusBadge available={pkg.available} /></td>
@@ -868,7 +893,8 @@ const PackageRow = ({
         <td className="border-b border-slate-100 px-4 py-4 text-sm font-extrabold text-slate-900">{getPackageItemCount(pkg)}</td>
         <td className="border-b border-slate-100 px-4 py-4"><PackageActions pkg={pkg} onEdit={onEdit} onDelete={onDelete} /></td>
     </tr>
-);
+    );
+};
 
 const MetricCard = ({
     label,
@@ -907,17 +933,18 @@ const AvailabilityTabs = ({
     counts: Record<AvailabilityFilter, number>;
     onChange: (value: AvailabilityFilter) => void;
 }) => {
+    const { t } = useTranslation();
     const tabs: { value: AvailabilityFilter; label: string }[] = [
-        { value: 'ALL', label: 'All' },
-        { value: 'ACTIVE', label: 'Active' },
-        { value: 'HIDDEN', label: 'Hidden' }
+        { value: 'ALL', label: t('admin.packages.filterAll', 'All') },
+        { value: 'ACTIVE', label: t('admin.packages.filterActive', 'Active') },
+        { value: 'HIDDEN', label: t('admin.packages.filterHidden', 'Hidden') }
     ];
 
     return (
         <div className="grid gap-1.5">
             <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
                 <Filter size={13} />
-                Status
+                {t('admin.packages.statusLabel', 'Status')}
             </span>
             <div className="flex max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-stone-50 p-1">
                 {tabs.map((tab) => {
@@ -942,14 +969,15 @@ const AvailabilityTabs = ({
 };
 
 const ViewToggle = ({ value, onChange }: { value: ViewMode; onChange: (value: ViewMode) => void }) => {
+    const { t } = useTranslation();
     const options: { value: ViewMode; label: string; icon: ReactNode }[] = [
-        { value: 'grid', label: 'Grid', icon: <Grid3X3 size={14} /> },
-        { value: 'list', label: 'List', icon: <List size={14} /> }
+        { value: 'grid', label: t('admin.packages.gridLabel', 'Grid'), icon: <Grid3X3 size={14} /> },
+        { value: 'list', label: t('admin.packages.listLabel', 'List'), icon: <List size={14} /> }
     ];
 
     return (
         <div className="grid gap-1.5">
-            <span className="px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">View</span>
+            <span className="px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">{t('admin.packages.viewLabel', 'View')}</span>
             <div className="flex rounded-2xl border border-slate-200 bg-stone-50 p-1">
                 {options.map((option) => {
                     const active = value === option.value;
@@ -990,7 +1018,9 @@ const PackageActions = ({
     pkg: CateringPackage;
     onEdit: (pkg: CateringPackage) => void;
     onDelete: (id: string) => void;
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
     <div className="flex flex-wrap justify-end gap-2">
         <button
             type="button"
@@ -998,7 +1028,7 @@ const PackageActions = ({
             className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-3 text-xs font-extrabold text-white transition hover:bg-slate-800"
         >
             <Edit2 size={14} />
-            Edit
+            {t('admin.packages.edit', 'Edit')}
         </button>
         <button
             type="button"
@@ -1006,20 +1036,22 @@ const PackageActions = ({
             className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
         >
             <Trash2 size={14} />
-            Delete
+            {t('admin.packages.delete', 'Delete')}
         </button>
     </div>
-);
+    );
+};
 
 const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
+    const { t } = useTranslation();
     if (!pkg) {
         return (
             <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
-                    Featured package
+                    {t('admin.packages.featured', 'Featured package')}
                 </p>
                 <p className="mt-2 text-sm font-bold leading-6 text-(--brand-surface-beige-soft)">
-                    Create a package to see the main catering offer here.
+                    {t('admin.packages.featuredEmpty', 'Create a package to see the main catering offer here.')}
                 </p>
             </div>
         );
@@ -1030,7 +1062,7 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
-                        Featured package
+                        {t('admin.packages.featured', 'Featured package')}
                     </p>
                     <p className="mt-2 truncate text-lg font-extrabold text-white">
                         {getPackageName(pkg)}
@@ -1039,9 +1071,9 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
                 <StatusBadge available={pkg.available} variant="dark" />
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2">
-                <DarkMiniStat label="Price" value={formatPrice(pkg.basePrice)} />
-                <DarkMiniStat label="Guests" value={`${pkg.minGuests} - ${pkg.maxGuests}`} />
-                <DarkMiniStat label="Groups" value={String(pkg.categories?.length || 0)} />
+                <DarkMiniStat label={t('admin.packages.featPrice', 'Price')} value={formatPrice(pkg.basePrice)} />
+                <DarkMiniStat label={t('admin.packages.featGuests', 'Guests')} value={`${pkg.minGuests} - ${pkg.maxGuests}`} />
+                <DarkMiniStat label={t('admin.packages.featGroups', 'Groups')} value={String(pkg.categories?.length || 0)} />
             </div>
         </div>
     );
@@ -1055,6 +1087,7 @@ const DarkMiniStat = ({ label, value }: { label: string; value: string }) => (
 );
 
 const PackageGroupPills = ({ pkg }: { pkg: CateringPackage }) => {
+    const { t } = useTranslation();
     const groups = (pkg.categories || [])
         .map((cat) => cat.nameTranslations?.nl || cat.name)
         .filter(Boolean)
@@ -1063,7 +1096,7 @@ const PackageGroupPills = ({ pkg }: { pkg: CateringPackage }) => {
     if (groups.length === 0) {
         return (
             <p className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-stone-50 px-3 py-3 text-xs font-bold text-slate-500">
-                No meal groups configured yet.
+                {t('admin.packages.noGroupsConfigured', 'No meal groups configured yet.')}
             </p>
         );
     }
@@ -1080,7 +1113,7 @@ const PackageGroupPills = ({ pkg }: { pkg: CateringPackage }) => {
             ))}
             {(pkg.categories || []).length > groups.length && (
                 <span className="rounded-xl border border-slate-200 bg-stone-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-600">
-                    +{(pkg.categories || []).length - groups.length} more
+                    +{(pkg.categories || []).length - groups.length} {t('admin.packages.more', 'more')}
                 </span>
             )}
         </div>
@@ -1094,6 +1127,7 @@ const StatusBadge = ({
     available: boolean;
     variant?: 'light' | 'dark';
 }) => {
+    const { t } = useTranslation();
     if (available) {
         return (
             <span
@@ -1103,7 +1137,7 @@ const StatusBadge = ({
                         : 'border-emerald-200 bg-emerald-50 text-emerald-700'
                 }`}
             >
-                Active
+                {t('admin.packages.statusActive', 'Active')}
             </span>
         );
     }
@@ -1116,7 +1150,7 @@ const StatusBadge = ({
                     : 'border-slate-200 bg-stone-50 text-slate-600'
             }`}
         >
-            Hidden
+            {t('admin.packages.statusHidden', 'Hidden')}
         </span>
     );
 };
@@ -1260,7 +1294,9 @@ const LoadingPanel = () => (
     </div>
 );
 
-const EmptyState = ({ title, text, action }: { title: string; text: string; action?: () => void }) => (
+const EmptyState = ({ title, text, action }: { title: string; text: string; action?: () => void }) => {
+    const { t } = useTranslation();
+    return (
     <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50 text-slate-400">
             <UtensilsCrossed size={22} />
@@ -1270,11 +1306,12 @@ const EmptyState = ({ title, text, action }: { title: string; text: string; acti
         {action && (
             <Button onClick={action} className="mt-5 h-10 rounded-xl border border-slate-900 bg-slate-900 px-5 text-sm font-extrabold text-white hover:bg-slate-800">
                 <Plus size={16} className="mr-2" />
-                New package
+                {t('admin.packages.newPackage', 'New package')}
             </Button>
         )}
     </div>
-);
+    );
+};
 
 const getPackageName = (pkg: CateringPackage) => pkg.nameTranslations?.nl || pkg.name || 'Untitled package';
 

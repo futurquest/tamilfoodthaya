@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '../../components/ui/Card';
 import {
     Search,
@@ -64,60 +65,85 @@ const STATUS_OPTIONS = [
 const statusMeta: Record<
     string,
     {
-        label: string;
+        labelKey: string;
+        labelDefault: string;
         chipClass: string;
         menuClass: string;
         dotClass: string;
     }
 > = {
     pending: {
-        label: 'Pending',
+        labelKey: 'admin.orders.statusPending',
+        labelDefault: 'Pending',
         chipClass: 'border-amber-200 bg-amber-50 text-amber-700',
         menuClass: 'hover:bg-amber-50',
         dotClass: 'bg-amber-500'
     },
     reviewing: {
-        label: 'Reviewing',
+        labelKey: 'admin.orders.statusReviewing',
+        labelDefault: 'Reviewing',
         chipClass: 'border-blue-200 bg-blue-50 text-blue-700',
         menuClass: 'hover:bg-blue-50',
         dotClass: 'bg-blue-500'
     },
     quoted: {
-        label: 'Quoted',
+        labelKey: 'admin.orders.statusQuoted',
+        labelDefault: 'Quoted',
         chipClass: 'border-indigo-200 bg-indigo-50 text-indigo-700',
         menuClass: 'hover:bg-indigo-50',
         dotClass: 'bg-indigo-500'
     },
     confirmed: {
-        label: 'Confirmed',
+        labelKey: 'admin.orders.statusConfirmed',
+        labelDefault: 'Confirmed',
         chipClass: 'border-emerald-200 bg-emerald-50 text-emerald-700',
         menuClass: 'hover:bg-emerald-50',
         dotClass: 'bg-emerald-500'
     },
     paid: {
-        label: 'Paid',
+        labelKey: 'admin.orders.statusPaid',
+        labelDefault: 'Paid',
         chipClass: 'border-green-200 bg-green-50 text-green-700',
         menuClass: 'hover:bg-green-50',
         dotClass: 'bg-green-500'
     },
     preparing: {
-        label: 'Preparing',
+        labelKey: 'admin.orders.statusPreparing',
+        labelDefault: 'Preparing',
         chipClass: 'border-purple-200 bg-purple-50 text-purple-700',
         menuClass: 'hover:bg-purple-50',
         dotClass: 'bg-purple-500'
     },
     completed: {
-        label: 'Completed',
+        labelKey: 'admin.orders.statusCompleted',
+        labelDefault: 'Completed',
         chipClass: 'border-slate-200 bg-stone-50 text-slate-700',
         menuClass: 'hover:bg-stone-50',
         dotClass: 'bg-slate-500'
     },
     cancelled: {
-        label: 'Cancelled',
+        labelKey: 'admin.orders.statusCancelled',
+        labelDefault: 'Cancelled',
         chipClass: 'border-red-200 bg-red-50 text-red-700',
         menuClass: 'hover:bg-red-50',
         dotClass: 'bg-red-500'
     }
+};
+
+const paymentLabels: Record<string, { labelKey: string; labelDefault: string }> = {
+    unpaid: { labelKey: 'admin.orders.statusUnpaid', labelDefault: 'Unpaid' },
+    failed: { labelKey: 'admin.orders.statusFailed', labelDefault: 'Failed' }
+};
+
+const statusLabel = (
+    t: (key: string, defaultValue: string) => string,
+    value: string
+) => {
+    const meta = statusMeta[value];
+    if (meta) return t(meta.labelKey, meta.labelDefault);
+    const payment = paymentLabels[value];
+    if (payment) return t(payment.labelKey, payment.labelDefault);
+    return formatStatus(value);
 };
 
 const paymentStyles: Record<string, string> = {
@@ -128,6 +154,7 @@ const paymentStyles: Record<string, string> = {
 };
 
 export const ManageCateringOrders = () => {
+    const { t } = useTranslation();
     const [orders, setOrders] = useState<CateringOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('');
@@ -147,7 +174,7 @@ export const ManageCateringOrders = () => {
                 : [];
             setOrders(normalized);
         } catch {
-            toast.error('Failed to load catering orders');
+            toast.error(t('admin.orders.loadFailed', 'Failed to load catering orders'));
             setOrders([]);
         } finally {
             setLoading(false);
@@ -178,9 +205,9 @@ export const ManageCateringOrders = () => {
                 )
             );
 
-            toast.success(`Order status updated to ${formatStatus(newStatus)}`);
+            toast.success(t('admin.orders.statusUpdated', 'Order status updated to {{status}}', { status: statusLabel(t, newStatus) }));
         } catch {
-            toast.error('Failed to update status');
+            toast.error(t('admin.orders.updateFailed', 'Failed to update status'));
         } finally {
             setUpdatingOrderId(null);
             setOpenDropdown(null);
@@ -226,41 +253,40 @@ export const ManageCateringOrders = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="fluid-label font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Orders
+                                {t('admin.orders.eyebrow', 'Orders')}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="fluid-hero-title font-extrabold tracking-tight text-slate-900">
-                                    Catering Orders
+                                    {t('admin.orders.title', 'Catering Orders')}
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 fluid-chip font-extrabold text-amber-800">
                                     <UtensilsCrossed size={13} />
-                                    Live event bookings
+                                    {t('admin.orders.liveBookings', 'Live event bookings')}
                                 </span>
                             </div>
                             <p className="mt-3 max-w-2xl fluid-small font-medium text-slate-500">
-                                Review event bookings, customer selections, payment state
-                                and production status in one clean view.
+                                {t('admin.orders.subtitle', 'Review event bookings, customer selections, payment state and production status in one clean view.')}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:w-[560px] xl:grid-cols-4">
                             <MetricCard
-                                label="Orders"
+                                label={t('admin.orders.metricOrders', 'Orders')}
                                 value={stats.total}
                                 icon={<ClipboardList size={16} />}
                             />
                             <MetricCard
-                                label="Pending"
+                                label={t('admin.orders.statusPending', 'Pending')}
                                 value={stats.pending}
                                 icon={<Calendar size={16} />}
                             />
                             <MetricCard
-                                label="Confirmed"
+                                label={t('admin.orders.statusConfirmed', 'Confirmed')}
                                 value={stats.confirmed}
                                 icon={<CheckCircle2 size={16} />}
                             />
                             <MetricCard
-                                label="Revenue"
+                                label={t('admin.orders.revenue', 'Revenue')}
                                 value={formatEuro(stats.revenue)}
                                 icon={<CircleDollarSign size={16} />}
                             />
@@ -278,7 +304,7 @@ export const ManageCateringOrders = () => {
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search by customer, email, package or order ID..."
+                                placeholder={t('admin.orders.searchPlaceholder', 'Search by customer, email, package or order ID...')}
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </div>
@@ -303,7 +329,7 @@ export const ManageCateringOrders = () => {
                     <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
                         <CardContent className="px-6 py-16 text-center">
                             <p className="fluid-small text-slate-400">
-                                Loading catering orders...
+                                {t('admin.orders.loading', 'Loading catering orders...')}
                             </p>
                         </CardContent>
                     </Card>
@@ -314,10 +340,10 @@ export const ManageCateringOrders = () => {
                                 <UtensilsCrossed size={20} />
                             </div>
                             <h3 className="fluid-title mt-4 font-semibold text-slate-900">
-                                No catering orders found
+                                {t('admin.orders.noOrders', 'No catering orders found')}
                             </h3>
                             <p className="mt-2 fluid-small text-slate-500">
-                                Orders will appear here when customers place catering bookings.
+                                {t('admin.orders.noOrdersText', 'Orders will appear here when customers place catering bookings.')}
                             </p>
                         </CardContent>
                     </Card>
@@ -357,22 +383,22 @@ export const ManageCateringOrders = () => {
                                                                 'border-slate-200 bg-stone-50 text-slate-700'
                                                             }`}
                                                         >
-                                                            {formatStatus(order.status)}
+                                                            {statusLabel(t, order.status)}
                                                         </span>
 
                                                         <span
                                                             className={`fluid-chip inline-flex rounded-full border px-3 py-1.5 font-semibold uppercase tracking-[0.12em] ${paymentClass}`}
                                                         >
-                                                            {formatStatus(order.paymentStatus)}
+                                                            {statusLabel(t, order.paymentStatus)}
                                                         </span>
                                                     </div>
 
                                                     <h3 className="fluid-title mt-1 font-semibold text-slate-900">
-                                                        {order.customerInfo?.name || 'Unknown Customer'}
+                                                        {order.customerInfo?.name || t('admin.orders.unknownCustomer', 'Unknown Customer')}
                                                     </h3>
 
                                                     <p className="mt-1 fluid-small text-slate-500">
-                                                        {order.packageName || 'No package name'}
+                                                        {order.packageName || t('admin.orders.noPackageName', 'No package name')}
                                                     </p>
 
                                                     <div className="mt-3 flex flex-wrap gap-2 fluid-small text-slate-500">
@@ -382,7 +408,7 @@ export const ManageCateringOrders = () => {
                                                         </span>
                                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-stone-50 px-3 py-1.5">
                                                             <Users size={14} />
-                                                            {order.guests || 0} guests
+                                                            {t('admin.orders.guestsCount', '{{count}} guests', { count: order.guests || 0 })}
                                                         </span>
                                                         {order.eventLocation && (
                                                             <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-stone-50 px-3 py-1.5">
@@ -398,13 +424,13 @@ export const ManageCateringOrders = () => {
                                                 <div className="flex items-center justify-between gap-4 lg:justify-end">
                                                     <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3 text-left lg:text-right">
                                                         <p className="fluid-small text-slate-400">
-                                                            Total
+                                                            {t('admin.orders.total', 'Total')}
                                                         </p>
                                                         <p className="fluid-value-sm mt-0.5 font-semibold tabular-nums text-slate-900">
                                                             {formatEuro(Number(order.totalPrice || 0))}
                                                         </p>
                                                         <p className="fluid-tiny mt-1 tabular-nums text-slate-500">
-                                                            {formatEuro(Number(order.pricePerPerson || 0))} p.p.
+                                                            {t('admin.orders.perPerson', '{{price}} p.p.', { price: formatEuro(Number(order.pricePerPerson || 0)) })}
                                                         </p>
                                                     </div>
 
@@ -424,23 +450,23 @@ export const ManageCateringOrders = () => {
                                                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                                                     <InfoCard
                                                         icon={<Mail size={14} />}
-                                                        label="Email"
-                                                        value={order.customerInfo?.email || 'â€”'}
+                                                        label={t('admin.common.email', 'Email')}
+                                                        value={order.customerInfo?.email || t('admin.orders.dash', '—')}
                                                     />
                                                     <InfoCard
                                                         icon={<Phone size={14} />}
-                                                        label="Phone"
-                                                        value={order.customerInfo?.phone || 'â€”'}
+                                                        label={t('admin.common.phone', 'Phone')}
+                                                        value={order.customerInfo?.phone || t('admin.orders.dash', '—')}
                                                     />
                                                     <InfoCard
                                                         icon={<Calendar size={14} />}
-                                                        label="Created"
+                                                        label={t('admin.orders.created', 'Created')}
                                                         value={formatDateTime(order.createdAt)}
                                                     />
                                                     <InfoCard
                                                         icon={<MapPin size={14} />}
-                                                        label="Event Location"
-                                                        value={order.eventLocation || 'â€”'}
+                                                        label={t('admin.orders.eventLocation', 'Event Location')}
+                                                        value={order.eventLocation || t('admin.orders.dash', '—')}
                                                     />
                                                 </div>
 
@@ -448,27 +474,27 @@ export const ManageCateringOrders = () => {
                                                     <div className="mb-2 flex items-center gap-2 text-slate-400">
                                                         <FileText size={14} />
                                                         <p className="fluid-chip font-semibold uppercase tracking-[0.16em]">
-                                                            Customer Notes
+                                                            {t('admin.orders.customerNotes', 'Customer Notes')}
                                                         </p>
                                                     </div>
                                                     <p className="fluid-small leading-6 text-slate-700">
-                                                        {order.customerInfo?.notes || 'No notes provided'}
+                                                        {order.customerInfo?.notes || t('admin.orders.noNotes', 'No notes provided')}
                                                     </p>
                                                 </div>
 
                                                 <div>
                                                     <div className="mb-3">
                                                         <p className="fluid-chip font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                                            Package Selections
+                                                            {t('admin.orders.packageSelections', 'Package Selections')}
                                                         </p>
                                                         <p className="mt-1 fluid-small text-slate-500">
-                                                            Review the selected items per category.
+                                                            {t('admin.orders.selectionsText', 'Review the selected items per category.')}
                                                         </p>
                                                     </div>
 
                                                     {order.selections?.length === 0 ? (
                                                         <div className="rounded-[22px] border border-dashed border-slate-200 bg-stone-50 px-4 py-8 text-center fluid-small text-slate-400">
-                                                            No selections recorded
+                                                            {t('admin.orders.noSelections', 'No selections recorded')}
                                                         </div>
                                                     ) : (
                                                         <div className="grid gap-4 md:grid-cols-2">
@@ -494,7 +520,7 @@ export const ManageCateringOrders = () => {
                                                                                         </p>
                                                                                         {item.choiceName && (
                                                                                             <p className="mt-1 fluid-tiny text-slate-500">
-                                                                                                Choice: {item.choiceName}
+                                                                                                {t('admin.orders.choiceLabel', 'Choice: {{choice}}', { choice: item.choiceName })}
                                                                                             </p>
                                                                                         )}
                                                                                     </div>
@@ -515,10 +541,10 @@ export const ManageCateringOrders = () => {
                                                 <div className="flex flex-col gap-3 border-t border-slate-200 pt-4 lg:flex-row lg:items-center lg:justify-between overflow-visible">
                                                     <div>
                                                         <p className="fluid-small font-semibold text-slate-900">
-                                                            Update Status
+                                                            {t('admin.orders.updateStatus', 'Update Status')}
                                                         </p>
                                                         <p className="fluid-tiny mt-1 text-slate-500">
-                                                            Change the current progress of this catering order.
+                                                            {t('admin.orders.updateStatusText', 'Change the current progress of this catering order.')}
                                                         </p>
                                                     </div>
 
@@ -606,7 +632,8 @@ const FilterDropdown = ({
     onToggle: () => void;
     onSelect: (value: string) => void;
 }) => {
-    const currentLabel = value ? formatStatus(value) : 'All Statuses';
+    const { t } = useTranslation();
+    const currentLabel = value ? statusLabel(t, value) : t('admin.orders.allStatuses', 'All Statuses');
 
     return (
         <div className="relative lg:w-[220px]" onClick={(e) => e.stopPropagation()}>
@@ -636,7 +663,7 @@ const FilterDropdown = ({
                     >
                         <span className="flex items-center gap-2">
                             <span className="h-2 w-2 rounded-full bg-slate-400" />
-                            All Statuses
+                            {t('admin.orders.allStatuses', 'All Statuses')}
                         </span>
                         {value === '' && <Check size={15} className="text-slate-500" />}
                     </button>
@@ -653,21 +680,21 @@ const FilterDropdown = ({
                             }`}
                         >
                             <span className="flex items-center gap-2">
-                                <span
-                                    className={`h-2 w-2 rounded-full ${
-                                        statusMeta[status]?.dotClass || 'bg-slate-400'
-                                    }`}
-                                />
-                                {formatStatus(status)}
+<span
+                                        className={`h-2 w-2 rounded-full ${
+                                            statusMeta[status]?.dotClass || 'bg-slate-400'
+                                        }`}
+                                    />
+                                {statusLabel(t, status)}
                             </span>
-                            {value === status && (
-                                <Check size={15} className="text-slate-500" />
-                            )}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
+{value === status && (
+                                    <Check size={15} className="text-slate-500" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
     );
 };
 
@@ -684,6 +711,7 @@ const StatusDropdown = ({
     onToggle: () => void;
     onSelect: (value: string) => void;
 }) => {
+    const { t } = useTranslation();
     const current = statusMeta[value];
 
     return (
@@ -705,7 +733,7 @@ const StatusDropdown = ({
                             current?.dotClass || 'bg-slate-400'
                         }`}
                     />
-                    {formatStatus(value)}
+                    {statusLabel(t, value)}
                 </span>
                 <ChevronDown
                     size={16}
@@ -735,7 +763,7 @@ const StatusDropdown = ({
                                             meta?.dotClass || 'bg-slate-400'
                                         }`}
                                     />
-                                    {meta?.label || formatStatus(status)}
+                                    {meta?.labelKey ? t(meta.labelKey, meta.labelDefault) : formatStatus(status)}
                                 </span>
                                 {value === status && (
                                     <Check size={15} className="text-slate-500" />

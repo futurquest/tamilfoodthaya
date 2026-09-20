@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, type DragEvent, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import {
     ArrowRight,
     CheckCircle2,
@@ -38,7 +40,9 @@ type Lead = {
     message?: string;
 };
 
-const statusConfig: Record<
+const getStatusConfig = (
+    t: TFunction
+): Record<
     LeadStatus,
     {
         title: string;
@@ -49,35 +53,35 @@ const statusConfig: Record<
         badgeClass: string;
         activeClass: string;
     }
-> = {
+> => ({
     OPEN: {
-        title: 'New',
-        subtitle: 'Fresh enquiries',
-        helper: 'Qualify and respond quickly',
+        title: t('admin.leads.new', 'New'),
+        subtitle: t('admin.leads.freshEnquiries', 'Fresh enquiries'),
+        helper: t('admin.leads.openHelper', 'Qualify and respond quickly'),
         accentClass: 'from-amber-400 to-orange-700',
         dotClass: 'bg-amber-500',
         badgeClass: 'border-amber-200 bg-amber-50 text-amber-700',
         activeClass: 'border-amber-300 ring-4 ring-amber-100'
     },
     IN_PROGRESS: {
-        title: 'In Progress',
-        subtitle: 'Active conversations',
-        helper: 'Needs quote or follow-up',
+        title: t('admin.leads.inProgress', 'In Progress'),
+        subtitle: t('admin.leads.activeConversations', 'Active conversations'),
+        helper: t('admin.leads.quoteOrFollowUp', 'Needs quote or follow-up'),
         accentClass: 'from-(--brand-leaf) to-(--brand-accent)',
         dotClass: 'bg-(--brand-leaf)',
         badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700',
         activeClass: 'border-emerald-300 ring-4 ring-emerald-100'
     },
     COMPLETED: {
-        title: 'Completed',
-        subtitle: 'Closed enquiries',
-        helper: 'Converted or archived',
+        title: t('admin.leads.completed', 'Completed'),
+        subtitle: t('admin.leads.closedEnquiries', 'Closed enquiries'),
+        helper: t('admin.leads.convertedOrArchived', 'Converted or archived'),
         accentClass: 'from-slate-700 to-stone-400',
         dotClass: 'bg-slate-700',
         badgeClass: 'border-slate-200 bg-stone-50 text-slate-700',
         activeClass: 'border-slate-300 ring-4 ring-slate-100'
     }
-};
+});
 
 const statusOrder: LeadStatus[] = ['OPEN', 'IN_PROGRESS', 'COMPLETED'];
 
@@ -95,7 +99,9 @@ const useIsMinWidth = (query: string) => {
 };
 
 export const ManageLeads = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
+    const statusConfig = getStatusConfig(t);
     const [localLeads, setLocalLeads] = useState<Lead[]>([]);
     const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null);
     const [activeDropStatus, setActiveDropStatus] = useState<LeadStatus | null>(null);
@@ -132,7 +138,7 @@ export const ManageLeads = () => {
         }) => updateLeadStatus(id, status),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['leads'] });
-            toast.success('Lead status updated');
+            toast.success(t('admin.leads.leadStatusUpdated', 'Lead status updated'));
         },
         onError: (_error, variables) => {
             setLocalLeads((current) =>
@@ -142,7 +148,7 @@ export const ManageLeads = () => {
                         : lead
                 )
             );
-            toast.error('Could not update the lead. Please try again.');
+            toast.error(t('admin.leads.updateLeadFailed', 'Could not update the lead. Please try again.'));
         }
     });
 
@@ -275,11 +281,13 @@ export const ManageLeads = () => {
                     <div className="rounded-[28px] border border-red-200 bg-red-50 px-6 py-12 text-center">
                         <Inbox className="mx-auto text-red-700" size={28} />
                         <h1 className="mt-4 text-2xl font-extrabold text-red-700">
-                            Leads could not be loaded
+                            {t('admin.leads.loadFailed', 'Leads could not be loaded')}
                         </h1>
                         <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-red-600">
-                            Refresh the page or check the API connection before following up
-                            with new catering enquiries.
+                            {t(
+                                'admin.leads.loadFailedHint',
+                                'Refresh the page or check the API connection before following up with new catering enquiries.'
+                            )}
                         </p>
                     </div>
                 </div>
@@ -294,28 +302,32 @@ export const ManageLeads = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Leads
+                                {t('admin.leads.leads', 'Leads')}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                    Catering Lead Board
+                                    {t('admin.leads.boardTitle', 'Catering Lead Board')}
                                 </h1>
                                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
                                     <Sparkles size={13} />
-                                    {activeViewMode === 'board' ? 'Board view' : 'List view'}
+                                    {activeViewMode === 'board'
+                                        ? t('admin.leads.boardView', 'Board view')
+                                        : t('admin.leads.listView', 'List view')}
                                 </span>
                             </div>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                A polished sales board for qualifying catering enquiries,
-                                contacting customers, tracking sources and moving work forward.
+                                {t(
+                                    'admin.leads.boardSubtitle',
+                                    'A polished sales board for qualifying catering enquiries, contacting customers, tracking sources and moving work forward.'
+                                )}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 xl:w-[560px]">
-                            <MetricCard label="Total" value={totalLeads} icon={<Inbox size={16} />} />
-                            <MetricCard label="New" value={newLeads} icon={<Users size={16} />} />
-                            <MetricCard label="Active" value={activeLeads} icon={<MessageSquare size={16} />} />
-                            <MetricCard label="Closed" value={`${conversionRate}%`} icon={<CheckCircle2 size={16} />} />
+                            <MetricCard label={t('admin.leads.total', 'Total')} value={totalLeads} icon={<Inbox size={16} />} />
+                            <MetricCard label={t('admin.leads.new', 'New')} value={newLeads} icon={<Users size={16} />} />
+                            <MetricCard label={t('admin.leads.active', 'Active')} value={activeLeads} icon={<MessageSquare size={16} />} />
+                            <MetricCard label={t('admin.leads.closed', 'Closed')} value={`${conversionRate}%`} icon={<CheckCircle2 size={16} />} />
                         </div>
                     </div>
                 </section>
@@ -330,8 +342,11 @@ export const ManageLeads = () => {
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search name, email, phone, package, message or source..."
-                                aria-label="Search leads"
+                                placeholder={t(
+                                    'admin.leads.searchPlaceholder',
+                                    'Search name, email, phone, package, message or source...'
+                                )}
+                                aria-label={t('admin.leads.searchLeads', 'Search leads')}
                                 className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
                             />
                         </label>
@@ -349,12 +364,15 @@ export const ManageLeads = () => {
                             />
 
                             <FilterSelect
-                                    label="Source"
+                                    label={t('admin.leads.source', 'Source')}
                                     value={sourceFilter}
                                     onChange={setSourceFilter}
                                     options={sources.map((source) => ({
                                         value: source,
-                                        label: source === 'ALL' ? 'All sources' : source
+                                        label:
+                                            source === 'ALL'
+                                                ? t('admin.leads.allSources', 'All sources')
+                                                : source
                                     }))}
                                 />
 
@@ -363,23 +381,28 @@ export const ManageLeads = () => {
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-bold text-slate-500">
-                        <span className="inline-flex items-center gap-1.5">
-                            <CircleDot size={12} />
-                            Showing {filteredLeads.length} of {totalLeads} leads
-                        </span>
-                        {(searchTerm || sourceFilter !== 'ALL' || statusFilter !== 'ALL') && (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setSearchTerm('');
-                                    setSourceFilter('ALL');
-                                    setStatusFilter('ALL');
-                                }}
-                                className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
-                            >
-                                Clear filters
-                            </button>
-                        )}
+                                                    <span className="inline-flex items-center gap-1.5">
+                                <CircleDot size={12} />
+                                {t('admin.leads.countSummary', 'Showing {{shown}} of {{total}} leads', {
+                                    shown: filteredLeads.length,
+                                    total: totalLeads
+                                })}
+                            </span>
+                            {(searchTerm ||
+                                sourceFilter !== 'ALL' ||
+                                statusFilter !== 'ALL') && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSearchTerm('');
+                                        setSourceFilter('ALL');
+                                        setStatusFilter('ALL');
+                                    }}
+                                    className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800"
+                                >
+                                    {t('admin.leads.clearFilters', 'Clear filters')}
+                                </button>
+                            )}
                     </div>
                 </section>
 
@@ -652,6 +675,8 @@ const BoardColumn = ({
     onDragEnter: () => void;
     onDrop: () => void;
 }) => {
+    const { t } = useTranslation();
+    const statusConfig = getStatusConfig(t);
     const config = statusConfig[status];
     const isActive = activeDropStatus === status && Boolean(draggedLeadId);
 
@@ -710,6 +735,8 @@ const LeadCard = ({
     onDragEnd: () => void;
     onMove: (leadId: string, nextStatus: LeadStatus) => void;
 }) => {
+    const { t } = useTranslation();
+    const statusConfig = getStatusConfig(t);
     const status = statusConfig[lead.status];
     const sourceLabel = getLeadSource(lead);
     const nextStatus =
@@ -903,6 +930,8 @@ const LeadListRow = ({
     busy: boolean;
     onMove: (leadId: string, nextStatus: LeadStatus) => void;
 }) => {
+    const { t } = useTranslation();
+    const statusConfig = getStatusConfig(t);
     const status = statusConfig[lead.status];
     const nextStatus = getNextStatus(lead.status);
 
@@ -969,6 +998,8 @@ const LeadListMobileCard = ({
     busy: boolean;
     onMove: (leadId: string, nextStatus: LeadStatus) => void;
 }) => {
+    const { t } = useTranslation();
+    const statusConfig = getStatusConfig(t);
     const status = statusConfig[lead.status];
     const nextStatus = getNextStatus(lead.status);
 

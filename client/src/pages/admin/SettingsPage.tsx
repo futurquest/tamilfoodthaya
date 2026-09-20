@@ -1,4 +1,5 @@
 ﻿import { useEffect, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSettings, updateSettings } from '../../hooks/useApi';
@@ -67,17 +68,18 @@ const DEFAULT_SETTINGS: SiteSettings = {
     }
 };
 
-const DAYS: Array<{ key: keyof BusinessHours; label: string }> = [
-    { key: 'monday', label: 'Monday' },
-    { key: 'tuesday', label: 'Tuesday' },
-    { key: 'wednesday', label: 'Wednesday' },
-    { key: 'thursday', label: 'Thursday' },
-    { key: 'friday', label: 'Friday' },
-    { key: 'saturday', label: 'Saturday' },
-    { key: 'sunday', label: 'Sunday' }
+const DAYS: Array<{ key: keyof BusinessHours; labelKey: string; labelDefault: string }> = [
+    { key: 'monday', labelKey: 'admin.settings.dayMonday', labelDefault: 'Monday' },
+    { key: 'tuesday', labelKey: 'admin.settings.dayTuesday', labelDefault: 'Tuesday' },
+    { key: 'wednesday', labelKey: 'admin.settings.dayWednesday', labelDefault: 'Wednesday' },
+    { key: 'thursday', labelKey: 'admin.settings.dayThursday', labelDefault: 'Thursday' },
+    { key: 'friday', labelKey: 'admin.settings.dayFriday', labelDefault: 'Friday' },
+    { key: 'saturday', labelKey: 'admin.settings.daySaturday', labelDefault: 'Saturday' },
+    { key: 'sunday', labelKey: 'admin.settings.daySunday', labelDefault: 'Sunday' }
 ];
 
 export const SettingsPage = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
 
     const {
@@ -119,10 +121,10 @@ export const SettingsPage = () => {
         mutationFn: updateSettings,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['settings'] });
-            toast.success('Settings saved');
+            toast.success(t('admin.settings.saved', 'Settings saved'));
         },
         onError: () => {
-            toast.error('Failed to save settings');
+            toast.error(t('admin.settings.saveFailed', 'Failed to save settings'));
         }
     });
 
@@ -155,7 +157,7 @@ export const SettingsPage = () => {
         return (
             <div className="admin-loading-state">
                 <Spinner size="lg" />
-                <p>Loading site settings...</p>
+                <p>{t('admin.settings.loading', 'Loading site settings...')}</p>
             </div>
         );
     }
@@ -177,38 +179,37 @@ export const SettingsPage = () => {
                     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
                         <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-                                Settings
+                                {t('admin.settings.eyebrow', 'Settings')}
                             </p>
                             <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
-                                Site Settings
+                                {t('admin.settings.title', 'Site Settings')}
                             </h1>
                             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">
-                                Control public restaurant details, contact channels, opening
-                                hours and online ordering availability.
+                                {t('admin.settings.subtitle', 'Control public restaurant details, contact channels, opening hours and online ordering availability.')}
                             </p>
                         </div>
 
                         <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
                             <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
                                 <SettingsIcon size={13} />
-                                Save status
+                                {t('admin.settings.saveStatus', 'Save status')}
                             </p>
                             <p className="mt-1 truncate text-sm font-extrabold text-white">
                                 {mutation.isPending
-                                    ? 'Saving changes'
+                                    ? t('admin.settings.savingChanges', 'Saving changes')
                                     : isDirty
-                                    ? 'Unsaved changes'
-                                    : 'All changes saved'}
+                                    ? t('admin.settings.unsavedChanges', 'Unsaved changes')
+                                    : t('admin.settings.allChangesSaved', 'All changes saved')}
                             </p>
                         </div>
                     </div>
 
                     <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 sm:grid-cols-5">
-                        <MetricCard label="Brand" value={values.siteName ? 'Set' : 'Missing'} icon={<Store size={15} />} />
-                        <MetricCard label="Contact" value={`${completedContactFields}/4`} icon={<Phone size={15} />} />
-                        <MetricCard label="Hours" value={`${filledHours}/7`} icon={<Clock3 size={15} />} />
-                        <MetricCard label="Social" value={hasSocialLinks ? 'Linked' : 'Empty'} icon={<Globe2 size={15} />} />
-                        <MetricCard label="Orders" value={ordersEnabled ? 'Enabled' : 'Paused'} icon={<Power size={15} />} />
+                        <MetricCard label={t('admin.settings.metricBrand', 'Brand')} value={values.siteName ? t('admin.settings.valueSet', 'Set') : t('admin.settings.valueMissing', 'Missing')} icon={<Store size={15} />} />
+                        <MetricCard label={t('admin.settings.metricContact', 'Contact')} value={`${completedContactFields}/4`} icon={<Phone size={15} />} />
+                        <MetricCard label={t('admin.settings.metricHours', 'Hours')} value={`${filledHours}/7`} icon={<Clock3 size={15} />} />
+                        <MetricCard label={t('admin.settings.metricSocial', 'Social')} value={hasSocialLinks ? t('admin.settings.valueLinked', 'Linked') : t('admin.settings.valueEmpty', 'Empty')} icon={<Globe2 size={15} />} />
+                        <MetricCard label={t('admin.settings.metricOrders', 'Orders')} value={ordersEnabled ? t('admin.settings.valueEnabled', 'Enabled') : t('admin.settings.valuePaused', 'Paused')} icon={<Power size={15} />} />
                     </div>
                 </section>
 
@@ -219,21 +220,21 @@ export const SettingsPage = () => {
                         <SettingsCard
                             id="identity"
                             icon={<Store size={18} />}
-                            title="Business Identity"
-                            subtitle="The public-facing restaurant name and address shown across the website."
+                            title={t('admin.settings.identityTitle', 'Business Identity')}
+                            subtitle={t('admin.settings.identitySubtitle', 'The public-facing restaurant name and address shown across the website.')}
                         >
                             <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
                                 <InputBlock
-                                    label="Site name"
+                                    label={t('admin.settings.siteName', 'Site name')}
                                     icon={<Store size={16} />}
                                     placeholder="Tamil Food Thaya"
                                     registration={register('siteName')}
                                 />
 
                                 <InputBlock
-                                    label="Address"
+                                    label={t('admin.settings.address', 'Address')}
                                     icon={<MapPin size={16} />}
-                                    placeholder="Restaurant address"
+                                    placeholder={t('admin.settings.addressPlaceholder', 'Restaurant address')}
                                     registration={register('address')}
                                 />
                             </div>
@@ -242,33 +243,33 @@ export const SettingsPage = () => {
                         <SettingsCard
                             id="contact"
                             icon={<MessageCircle size={18} />}
-                            title="Contact Channels"
-                            subtitle="Keep phone, email, WhatsApp and social links consistent for customer support."
+                            title={t('admin.settings.contactTitle', 'Contact Channels')}
+                            subtitle={t('admin.settings.contactSubtitle', 'Keep phone, email, WhatsApp and social links consistent for customer support.')}
                         >
                             <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
                                 <InputBlock
-                                    label="Email"
+                                    label={t('admin.common.email', 'Email')}
                                     icon={<Mail size={16} />}
                                     placeholder="info@example.com"
                                     registration={register('email')}
                                 />
 
                                 <InputBlock
-                                    label="Phone"
+                                    label={t('admin.common.phone', 'Phone')}
                                     icon={<Phone size={16} />}
                                     placeholder="+31 ..."
                                     registration={register('phone')}
                                 />
 
                                 <InputBlock
-                                    label="WhatsApp"
+                                    label={t('admin.settings.whatsapp', 'WhatsApp')}
                                     icon={<MessageCircle size={16} />}
                                     placeholder="+31 ..."
                                     registration={register('whatsapp')}
                                 />
 
                                 <InputBlock
-                                    label="Facebook URL"
+                                    label={t('admin.settings.facebookUrl', 'Facebook URL')}
                                     icon={<Facebook size={16} />}
                                     placeholder="https://facebook.com/..."
                                     registration={register('facebookUrl')}
@@ -276,7 +277,7 @@ export const SettingsPage = () => {
 
                                 <div className="2xl:col-span-2">
                                     <InputBlock
-                                        label="Instagram URL"
+                                        label={t('admin.settings.instagramUrl', 'Instagram URL')}
                                         icon={<Instagram size={16} />}
                                         placeholder="https://instagram.com/..."
                                         registration={register('instagramUrl')}
@@ -288,14 +289,14 @@ export const SettingsPage = () => {
                         <SettingsCard
                             id="hours"
                             icon={<Clock3 size={18} />}
-                            title="Business Hours"
-                            subtitle="Use clear customer-facing text such as 12:00 - 22:00 or Closed."
+                            title={t('admin.settings.hoursTitle', 'Business Hours')}
+                            subtitle={t('admin.settings.hoursSubtitle', 'Use clear customer-facing text such as 12:00 - 22:00 or Closed.')}
                         >
                             <div className="grid min-w-0 gap-3 2xl:grid-cols-2">
                                 {DAYS.map((day) => (
                                     <InputBlock
                                         key={day.key}
-                                        label={day.label}
+                                        label={t(day.labelKey, day.labelDefault)}
                                         icon={<Clock3 size={16} />}
                                         placeholder="12:00 - 22:00"
                                         registration={register(`businessHours.${day.key}`)}
@@ -307,12 +308,12 @@ export const SettingsPage = () => {
                         <SettingsCard
                             id="orders"
                             icon={<UtensilsCrossed size={18} />}
-                            title="Online Orders"
-                            subtitle="Pause ordering when the kitchen is closed for maintenance or special events."
+                            title={t('admin.settings.ordersTitle', 'Online Orders')}
+                            subtitle={t('admin.settings.ordersSubtitle', 'Pause ordering when the kitchen is closed for maintenance or special events.')}
                         >
                             <ToggleCard
-                                title={ordersEnabled ? 'Online orders enabled' : 'Online orders paused'}
-                                description="Controls whether customers can place orders through the website."
+                                title={ordersEnabled ? t('admin.settings.ordersEnabledTitle', 'Online orders enabled') : t('admin.settings.ordersPausedTitle', 'Online orders paused')}
+                                description={t('admin.settings.ordersEnabledDescription', 'Controls whether customers can place orders through the website.')}
                                 checked={ordersEnabled}
                                 inputProps={register('ordersEnabled')}
                             />
@@ -325,13 +326,13 @@ export const SettingsPage = () => {
                         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                             <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                                 <CheckCircle2 size={17} className="text-emerald-700" />
-                                Readiness
+                                {t('admin.settings.readiness', 'Readiness')}
                             </div>
                             <div className="mt-4 space-y-3">
-                                <ReadinessLine label="Business name" complete={Boolean(values.siteName)} />
-                                <ReadinessLine label="Contact details" complete={completedContactFields >= 3} />
-                                <ReadinessLine label="Opening hours" complete={filledHours === 7} />
-                                <ReadinessLine label="Order availability" complete />
+                                <ReadinessLine label={t('admin.settings.readyBusinessName', 'Business name')} complete={Boolean(values.siteName)} />
+                                <ReadinessLine label={t('admin.settings.readyContact', 'Contact details')} complete={completedContactFields >= 3} />
+                                <ReadinessLine label={t('admin.settings.readyHours', 'Opening hours')} complete={filledHours === 7} />
+                                <ReadinessLine label={t('admin.settings.readyOrders', 'Order availability')} complete />
                             </div>
                         </div>
 
@@ -342,7 +343,7 @@ export const SettingsPage = () => {
                                 className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 <Save size={16} />
-                                {mutation.isPending ? 'Saving...' : 'Save settings'}
+                                {mutation.isPending ? t('admin.settings.saving', 'Saving...') : t('admin.settings.saveSettings', 'Save settings')}
                             </button>
 
                             <button
@@ -352,7 +353,7 @@ export const SettingsPage = () => {
                                 className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 <RotateCcw size={15} />
-                                Reset changes
+                                {t('admin.settings.resetChanges', 'Reset changes')}
                             </button>
                         </div>
                     </aside>
@@ -363,11 +364,12 @@ export const SettingsPage = () => {
 };
 
 const SettingsNav = () => {
+    const { t } = useTranslation();
     const items: Array<{ id: SettingsSection; label: string; icon: ReactNode }> = [
-        { id: 'identity', label: 'Identity', icon: <Store size={15} /> },
-        { id: 'contact', label: 'Contact', icon: <MessageCircle size={15} /> },
-        { id: 'hours', label: 'Hours', icon: <Clock3 size={15} /> },
-        { id: 'orders', label: 'Orders', icon: <Power size={15} /> }
+        { id: 'identity', label: t('admin.settings.navIdentity', 'Identity'), icon: <Store size={15} /> },
+        { id: 'contact', label: t('admin.settings.metricContact', 'Contact'), icon: <MessageCircle size={15} /> },
+        { id: 'hours', label: t('admin.settings.metricHours', 'Hours'), icon: <Clock3 size={15} /> },
+        { id: 'orders', label: t('admin.settings.metricOrders', 'Orders'), icon: <Power size={15} /> }
     ];
 
     return (
@@ -498,33 +500,37 @@ const ToggleCard = ({
     </label>
 );
 
-const OperationsPreview = ({ values }: { values: SiteSettings }) => (
+const OperationsPreview = ({ values }: { values: SiteSettings }) => {
+    const { t } = useTranslation();
+
+    return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
             <Globe2 size={17} className="text-amber-700" />
-            Public preview
+            {t('admin.settings.publicPreview', 'Public preview')}
         </div>
 
         <div className="mt-4 rounded-xl border border-slate-200 bg-(--brand-surface-dim) p-4">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-                Restaurant
+                {t('admin.settings.restaurantLabel', 'Restaurant')}
             </p>
             <p className="mt-1 text-lg font-extrabold text-slate-950">
                 {values.siteName || 'Tamil Food Thaya'}
             </p>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
-                {values.address || 'Restaurant address'}
+                {values.address || t('admin.settings.restaurantAddress', 'Restaurant address')}
             </p>
         </div>
 
         <div className="mt-4 space-y-3 text-xs font-semibold text-slate-500">
-            <PreviewLine label="Email" value={values.email || 'No email'} />
-            <PreviewLine label="Phone" value={values.phone || 'No phone'} />
-            <PreviewLine label="WhatsApp" value={values.whatsapp || 'No WhatsApp'} />
-            <PreviewLine label="Orders" value={values.ordersEnabled ? 'Enabled' : 'Paused'} />
+            <PreviewLine label={t('admin.common.email', 'Email')} value={values.email || t('admin.settings.noEmail', 'No email')} />
+            <PreviewLine label={t('admin.common.phone', 'Phone')} value={values.phone || t('admin.settings.noPhone', 'No phone')} />
+            <PreviewLine label={t('admin.settings.whatsapp', 'WhatsApp')} value={values.whatsapp || t('admin.settings.noWhatsApp', 'No WhatsApp')} />
+            <PreviewLine label={t('admin.settings.metricOrders', 'Orders')} value={values.ordersEnabled ? t('admin.settings.valueEnabled', 'Enabled') : t('admin.settings.valuePaused', 'Paused')} />
         </div>
     </div>
-);
+    );
+};
 
 const ReadinessLine = ({
     label,
@@ -532,15 +538,19 @@ const ReadinessLine = ({
 }: {
     label: string;
     complete: boolean;
-}) => (
+}) => {
+    const { t } = useTranslation();
+
+    return (
     <div className="flex items-center justify-between gap-3 text-xs font-bold">
         <span className="text-slate-600">{label}</span>
         <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${complete ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>
             {complete ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
-            {complete ? 'Ready' : 'Needs info'}
+            {complete ? t('admin.settings.ready', 'Ready') : t('admin.settings.needsInfo', 'Needs info')}
         </span>
     </div>
-);
+    );
+};
 
 const PreviewLine = ({ label, value }: { label: string; value: string }) => (
     <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2 last:border-b-0 last:pb-0">
@@ -549,18 +559,22 @@ const PreviewLine = ({ label, value }: { label: string; value: string }) => (
     </div>
 );
 
-const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => {
+    const { t } = useTranslation();
+
+    return (
     <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 shadow-sm">
         <AlertCircle size={18} className="mt-0.5 shrink-0" />
         <div>
-            <p>Settings could not be loaded.</p>
+            <p>{t('admin.settings.loadFailed', 'Settings could not be loaded.')}</p>
             <button
                 type="button"
                 onClick={onRetry}
                 className="mt-2 font-extrabold underline decoration-red-300 underline-offset-4"
             >
-                Try again
+                {t('admin.settings.tryAgain', 'Try again')}
             </button>
         </div>
     </div>
-);
+    );
+};

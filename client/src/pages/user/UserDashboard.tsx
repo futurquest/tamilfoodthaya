@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getUserDashboard, requestCateringChange, clearNotification } from '../../hooks/useApi';
 import { Container } from '../../components/ui/Container';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -25,6 +26,7 @@ import { toast } from 'react-hot-toast';
 import { SEO } from '../../components/SEO';
 
 export const UserDashboard = () => {
+    const { t } = useTranslation();
     const [dashboardData, setDashboardData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
@@ -43,7 +45,7 @@ export const UserDashboard = () => {
         } catch (error) {
             console.error(error);
             setLoadError(true);
-            toast.error('Failed to load dashboard data');
+            toast.error(t('dashboard.toast.loadFailed'));
         } finally {
             setLoading(false);
         }
@@ -65,11 +67,11 @@ export const UserDashboard = () => {
         setSubmittingChange(true);
         try {
             await requestCateringChange(activeOrderId, changeNotes);
-            toast.success('Change request submitted successfully!');
+            toast.success(t('dashboard.toast.changeSubmitted'));
             setShowChangeModal(false);
             loadData();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || 'Failed to submit request');
+            toast.error(error.response?.data?.message || t('dashboard.toast.changeFailed'));
         } finally {
             setSubmittingChange(false);
         }
@@ -78,11 +80,11 @@ export const UserDashboard = () => {
     const handleClearNotification = async (notificationId: string) => {
         try {
             await clearNotification(notificationId);
-            toast.success('Notification cleared!');
+            toast.success(t('dashboard.toast.notifCleared'));
             loadData();
         } catch (error) {
             console.error('Failed to clear notification:', error);
-            toast.error('Failed to clear notification');
+            toast.error(t('dashboard.toast.notifClearFailed'));
         }
     };
 
@@ -142,14 +144,14 @@ export const UserDashboard = () => {
 
     const getTypeBadgeClass = () => 'dash-type-chip';
 
-    if (loadError) return <div className="user-dashboard-font dashboard-error container" role="alert"><h1>We couldn't load your bookings</h1><p>Your orders have not changed. Please try again.</p><button className="btn-primary" onClick={loadData}>Try again</button></div>;
+    if (loadError) return <div className="user-dashboard-font dashboard-error container" role="alert"><h1>{t('dashboard.loadErrorTitle')}</h1><p>{t('dashboard.loadErrorText')}</p><button className="btn-primary" onClick={loadData}>{t('dashboard.tryAgain')}</button></div>;
 
     if (loading) {
         return (
             <div className="user-dashboard-font min-h-screen pt-32 pb-24 flex items-center justify-center" style={{ background: 'var(--brand-surface)' }}>
                 <div className="flex flex-col items-center gap-4" role="status" aria-live="polite">
                     <div className="h-12 w-12 rounded-full border-4 animate-spin" style={{ borderColor: 'color-mix(in srgb, var(--brand-accent) 30%, transparent)', borderTopColor: 'var(--brand-accent)' }} />
-                    <p className="font-medium" style={{ color: 'var(--brand-text-muted)' }}>Preparing your dashboard...</p>
+                    <p className="font-medium" style={{ color: 'var(--brand-text-muted)' }}>{t('dashboard.loading')}</p>
                 </div>
             </div>
         );
@@ -260,11 +262,11 @@ export const UserDashboard = () => {
                 .dash-stat-icon-complete { background: color-mix(in srgb, var(--brand-text) 12%, transparent); color: var(--brand-text-muted); }
                 .dash-stat-icon-value { background: color-mix(in srgb, var(--brand-accent) 18%, transparent); color: var(--brand-accent); }
             `}</style>
-            <SEO title="My Dashboard" description="Manage your Tamil Food Thaya bookings and orders." />
+            <SEO title={t('dashboard.seoTitle')} description={t('dashboard.seoDescription')} />
 
             <PageHeader
-                title="My Dashboard"
-                subtitle="Manage your active catering bookings, order history, and recent notifications in one place."
+                title={t('dashboard.title')}
+                subtitle={t('dashboard.subtitle')}
             />
 
             <Container className="-mt-10 relative z-10 pb-24">
@@ -275,7 +277,7 @@ export const UserDashboard = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--brand-text-muted)' }}>
-                                            Pending / Review
+                                            {t('dashboard.stat.pending')}
                                         </p>
                                         <h3 className="mt-2 text-3xl font-extrabold" style={{ color: 'var(--brand-text)' }}>{pendingCount}</h3>
                                     </div>
@@ -293,7 +295,7 @@ export const UserDashboard = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--brand-text-muted)' }}>
-                                            In Progress
+                                            {t('dashboard.stat.inProgress')}
                                         </p>
                                         <h3 className="mt-2 text-3xl font-extrabold" style={{ color: 'var(--brand-text)' }}>{progressCount}</h3>
                                     </div>
@@ -311,7 +313,7 @@ export const UserDashboard = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--brand-text-muted)' }}>
-                                            Completed
+                                            {t('dashboard.stat.completed')}
                                         </p>
                                         <h3 className="mt-2 text-3xl font-extrabold" style={{ color: 'var(--brand-text)' }}>{completedCount}</h3>
                                     </div>
@@ -329,7 +331,7 @@ export const UserDashboard = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--brand-text-muted)' }}>
-                                            Total Value
+                                            {t('dashboard.stat.totalValue')}
                                         </p>
                                         <h3 className="mt-2 text-3xl font-extrabold" style={{ color: 'var(--brand-text)' }}>
                                             €{totalSpent.toFixed(2)}
@@ -352,17 +354,17 @@ export const UserDashboard = () => {
                                     <div>
                                         <h2 className="flex items-center gap-3 text-2xl font-extrabold" style={{ color: 'var(--brand-text)' }}>
                                             <Clock style={{ color: 'var(--brand-accent)' }} />
-                                            Manage My Orders
+                                            {t('dashboard.manageOrders')}
                                         </h2>
                                         <p className="mt-2 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
-                                            Track current orders, view past bookings, and request changes.
+                                            {t('dashboard.manageOrdersSub')}
                                         </p>
                                     </div>
 
                                     <select
                                         value={statusFilter}
                                         onChange={(event) => setStatusFilter(event.target.value)}
-                                        aria-label="Filter orders by status"
+                                        aria-label={t('dashboard.filterLabel')}
                                         className="cursor-pointer rounded-full border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] transition-colors"
                                         style={{
                                             backgroundColor: 'var(--brand-surface-ivory)',
@@ -373,7 +375,7 @@ export const UserDashboard = () => {
                                     >
                                         {['all', 'pending', 'confirmed', 'paid', 'preparing', 'completed'].map((f) => (
                                             <option key={f} value={f}>
-                                                {f.charAt(0).toUpperCase() + f.slice(1)}
+                                                {f === 'all' ? t('dashboard.filter.all') : t(`dashboard.status.${f}`)}
                                             </option>
                                         ))}
                                     </select>
@@ -400,15 +402,15 @@ export const UserDashboard = () => {
                                                             <div className="min-w-0">
                                                                 <div className="mb-2 flex flex-wrap items-center gap-2">
                                                                     <h3 className="text-xl font-bold" style={{ color: 'var(--brand-text)' }}>
-                                                                        {isCatering
-                                                                            ? order.packageName
-                                                                            : `Food Order #${order._id.slice(-6).toUpperCase()}`}
+{isCatering
+                                            ? order.packageName
+                                            : t('dashboard.foodOrder', { id: order._id.slice(-6).toUpperCase() })}
                                                                     </h3>
 
                                                                     <span
                                                                         className={getTypeBadgeClass()}
                                                                     >
-                                                                        {isCatering ? 'Catering' : 'Regular'}
+                                                                        {isCatering ? t('dashboard.type.catering') : t('dashboard.type.regular')}
                                                                     </span>
                                                                 </div>
 
@@ -421,7 +423,7 @@ export const UserDashboard = () => {
                                                                     {isCatering && (
                                                                         <div className="flex items-center gap-1.5">
                                                                             <Users size={14} style={{ color: 'var(--brand-accent)' }} />
-                                                                            {order.guests} Guests
+                                                                            {t('dashboard.guests', { count: order.guests })}
                                                                         </div>
                                                                     )}
 
@@ -435,7 +437,7 @@ export const UserDashboard = () => {
                                                                     {!isCatering && (
                                                                         <div className="flex items-center gap-1.5">
                                                                             <Package size={14} style={{ color: 'var(--brand-accent)' }} />
-                                                                            {order.items?.length || 0} Items
+                                                                            {t('dashboard.items', { count: order.items?.length || 0 })}
                                                                         </div>
                                                                     )}
                                                                 </div>
@@ -450,9 +452,9 @@ export const UserDashboard = () => {
                                                                         order.status
                                                                     )}
                                                                 >
-                                                                    <span className="dash-status-dot" />
-                                                                    {order.status}
-                                                                </span>
+<span className="dash-status-dot" />
+                                    {String(t(`dashboard.status.${order.status}`, { defaultValue: order.status }))}
+                                </span>
                                                             </div>
                                                         </div>
 
@@ -469,7 +471,7 @@ export const UserDashboard = () => {
                                                                         size="sm"
                                                                         onClick={() => handleRequestChange(order._id)}
                                                                     >
-                                                                        Request Changes
+                                                                        {t('dashboard.requestChanges')}
                                                                     </Button>
                                                                 )}
 
@@ -478,7 +480,7 @@ export const UserDashboard = () => {
                                                                         variant="primary"
                                                                         size="sm"
                                                                     >
-                                                                        Order Similar
+                                                                        {t('dashboard.orderSimilar')}
                                                                     </Button>
                                                                 </Link>
                                                             </div>
@@ -494,12 +496,12 @@ export const UserDashboard = () => {
                                             <Package size={48} className="mb-4" style={{ color: 'var(--brand-outline-dark)' }} />
                                             <p className="max-w-sm font-medium" style={{ color: 'var(--brand-text-muted)' }}>
                                                 {statusFilter === 'all'
-                                                    ? "You don't have any orders yet. Once you book, your orders and their status will show up here."
-                                                    : `No ${statusFilter} orders found. Try another status from the filter above.`}
+                                                    ? t('dashboard.noOrders')
+                                                    : t('dashboard.noOrdersForFilter', { status: t(`dashboard.status.${statusFilter}`) })}
                                             </p>
                                             {statusFilter === 'all' && (
                                                 <Link to="/menu" className="mt-5">
-                                                    <Button variant="outline" size="sm">Browse the Menu</Button>
+                                                    <Button variant="outline" size="sm">{t('dashboard.browseMenu')}</Button>
                                                 </Link>
                                             )}
                                         </div>
@@ -515,17 +517,17 @@ export const UserDashboard = () => {
                                 <div className="mb-6">
                                     <h3 className="flex items-center gap-2 text-lg font-extrabold" style={{ color: 'var(--brand-text)' }}>
                                         <AlertCircle style={{ color: 'var(--brand-accent)' }} size={20} />
-                                        Notifications
+                                        {t('dashboard.notifications')}
                                     </h3>
                                     <p className="mt-1 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
-                                        Recent updates and communications
+                                        {t('dashboard.notificationsSub')}
                                     </p>
                                 </div>
 
                                 {recentNotifications.length === 0 ? (
                                     <div className="rounded-2xl border border-dashed py-10 text-center" style={{ borderColor: 'var(--brand-outline)', background: 'color-mix(in srgb, var(--brand-surface-dim) 60%, transparent)' }}>
                                         <AlertCircle size={32} className="mx-auto mb-3" style={{ color: 'var(--brand-outline-dark)' }} />
-                                        <p className="text-sm italic" style={{ color: 'var(--brand-text-muted)' }}>No recent notifications</p>
+                                        <p className="text-sm italic" style={{ color: 'var(--brand-text-muted)' }}>{t('dashboard.noNotifications')}</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
@@ -547,7 +549,7 @@ export const UserDashboard = () => {
                                                         </div>
                                                         <div>
                                                             <p className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--brand-text)' }}>
-                                                                {note.type === 'email' ? 'Email Sent' : 'WhatsApp Msg'}
+                                                                {note.type === 'email' ? t('dashboard.notifEmail') : t('dashboard.notifWhatsapp')}
                                                             </p>
                                                             <p className="text-xs" style={{ color: 'var(--brand-text-muted)' }}>
                                                                 {new Date(note.createdAt).toLocaleDateString()}
@@ -559,20 +561,20 @@ export const UserDashboard = () => {
                                                         onClick={() => handleClearNotification(note._id)}
                                                         className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-red-50 hover:text-red-500"
                                                         style={{ color: 'var(--brand-text-muted)' }}
-                                                        title="Clear notification"
+                                                        title={t('dashboard.clearNotif')}
                                                     >
                                                         <X size={14} />
                                                     </button>
                                                 </div>
 
                                                 <p className="text-sm leading-relaxed" style={{ color: 'var(--brand-text-muted)' }}>
-                                                    Update for order{' '}
+                                                    {t('dashboard.updateForOrderLabel')}{' '}
                                                     <span className="font-semibold" style={{ color: 'var(--brand-accent)' }}>
                                                         ...{note.referenceId?.toString().slice(-6)}
                                                     </span>
                                                 </p>
                                                 <p className="mt-2 text-xs" style={{ color: 'var(--brand-text-muted)' }}>
-                                                    Message successfully delivered to your primary contact.
+                                                    {t('dashboard.notifDelivered')}
                                                 </p>
                                             </div>
                                         ))}
@@ -586,9 +588,9 @@ export const UserDashboard = () => {
                                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: 'color-mix(in srgb, var(--brand-accent) 18%, transparent)', color: 'var(--brand-accent)' }}>
                                     <ExternalLink size={22} />
                                 </div>
-                                <h4 className="text-base font-bold" style={{ color: 'var(--brand-text)' }}>Need Help?</h4>
+                                <h4 className="text-base font-bold" style={{ color: 'var(--brand-text)' }}>{t('dashboard.needHelp')}</h4>
                                 <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--brand-text-muted)' }}>
-                                    Need to cancel or make urgent changes? Our support team is here to help.
+                                    {t('dashboard.needHelpText')}
                                 </p>
                                 <Link to="/contact#inquiry">
                                     <Button
@@ -596,7 +598,7 @@ export const UserDashboard = () => {
                                         size="sm"
                                         className="mt-5 w-full"
                                     >
-                                        Contact Support
+                                        {t('dashboard.contactSupport')}
                                     </Button>
                                 </Link>
                             </CardContent>
@@ -622,22 +624,18 @@ export const UserDashboard = () => {
                                 <Save size={30} />
                             </div>
 
-                            <h3 className="mb-2 text-2xl font-extrabold" style={{ color: 'var(--brand-text)' }}>Request Modifications</h3>
+                            <h3 className="mb-2 text-2xl font-extrabold" style={{ color: 'var(--brand-text)' }}>{t('dashboard.modalTitle')}</h3>
                             <p className="mb-8 text-sm leading-relaxed" style={{ color: 'var(--brand-text-muted)' }}>
-                                Describe the changes you'd like to make to order{' '}
-                                <span className="font-mono font-semibold" style={{ color: 'var(--brand-accent)' }}>
-                                    #{activeOrderId?.slice(-8).toUpperCase()}
-                                </span>
-                                .
+                                {t('dashboard.modalBody', { id: `#${activeOrderId?.slice(-8).toUpperCase()}` })}
                             </p>
 
                             <div className="mb-8">
                                 <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--brand-text)' }}>
-                                    Change Details
+                                    {t('dashboard.changeDetails')}
                                 </label>
                                 <textarea
                                     className="min-h-[160px] w-full rounded-2xl border px-4 py-3 text-sm outline-none dash-textarea"
-                                    placeholder="e.g. We'd like to increase the guest count to 60 and add an extra dessert category..."
+                                    placeholder={t('dashboard.changePlaceholder')}
                                     value={changeNotes}
                                     onChange={(e) => setChangeNotes(e.target.value)}
                                 />
@@ -649,7 +647,7 @@ export const UserDashboard = () => {
                                     className="h-12 flex-1"
                                     onClick={() => setShowChangeModal(false)}
                                 >
-                                    Discard
+                                    {t('dashboard.discard')}
                                 </Button>
                                 <Button
                                     variant="primary"
@@ -657,7 +655,7 @@ export const UserDashboard = () => {
                                     disabled={!changeNotes.trim() || submittingChange}
                                     className="h-12 flex-1 gap-2"
                                 >
-                                    {submittingChange ? 'Processing...' : 'Send Request'}
+                                    {submittingChange ? t('dashboard.processing') : t('dashboard.send')}
                                     {!submittingChange && <Save size={18} />}
                                 </Button>
                             </div>

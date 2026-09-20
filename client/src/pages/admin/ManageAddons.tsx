@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../../hooks/useApi';
 import toast from 'react-hot-toast';
 import {
@@ -78,9 +79,10 @@ const EMPTY_FORM: AddonForm = {
     category: 'decoration'
 };
 
-const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
+const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode; labelKey: string }> = [
     {
         name: 'DJ & Music',
+        labelKey: 'admin.addons.presetDjAndMusic',
         description:
             'Professional DJ with full sound system and lighting for 4 hours.',
         price: 350,
@@ -90,6 +92,7 @@ const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
     },
     {
         name: 'Flower Decoration',
+        labelKey: 'admin.addons.presetFlowerDecoration',
         description: 'Elegant floral arrangements for tables and entrance.',
         price: 200,
         pricingType: 'fixed',
@@ -98,6 +101,7 @@ const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
     },
     {
         name: 'Welcome Drinks',
+        labelKey: 'admin.addons.presetWelcomeDrinks',
         description:
             'Mocktail / juice welcome drinks for all guests on arrival.',
         price: 8,
@@ -107,6 +111,7 @@ const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
     },
     {
         name: "Kids' Menu",
+        labelKey: 'admin.addons.presetKidsMenu',
         description: 'Specially prepared mild dishes for children under 12.',
         price: 12,
         pricingType: 'per_person',
@@ -115,6 +120,7 @@ const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
     },
     {
         name: 'Photographer',
+        labelKey: 'admin.addons.presetPhotographer',
         description: 'Professional event photographer for up to 5 hours.',
         price: 450,
         pricingType: 'fixed',
@@ -124,6 +130,7 @@ const PRESETS: Array<Partial<AddonForm> & { icon: ReactNode }> = [
 ];
 
 export const ManageAddons = () => {
+    const { t } = useTranslation();
     const [addons, setAddons] = useState<Addon[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState<string | null>(null);
@@ -199,7 +206,7 @@ export const ManageAddons = () => {
         } catch {
             setAddons([]);
             setLoadError(true);
-            toast.error('Failed to load add-ons');
+            toast.error(t('admin.addons.loadFailed', 'Failed to load add-ons'));
         } finally {
             setLoading(false);
         }
@@ -301,7 +308,12 @@ export const ManageAddons = () => {
             const payload = buildPayload(form);
 
             if (!payload.name.trim()) {
-                setFormError('Enter a Dutch name before saving this add-on.');
+                setFormError(
+                    t(
+                        'admin.addons.errorDutchName',
+                        'Enter a Dutch name before saving this add-on.'
+                    )
+                );
                 return;
             }
 
@@ -310,37 +322,57 @@ export const ManageAddons = () => {
 
             if (editing) {
                 await api.put(`/addons/${editing}`, payload);
-                toast.success('Add-on updated');
+                toast.success(t('admin.addons.updated', 'Add-on updated'));
             } else {
                 await api.post('/addons', payload);
-                toast.success('Add-on created');
+                toast.success(t('admin.addons.created', 'Add-on created'));
             }
 
             closeForm();
             await load();
         } catch {
-            setFormError('The add-on could not be saved. Check the details and try again.');
+            setFormError(
+                t(
+                    'admin.addons.saveFailed',
+                    'The add-on could not be saved. Check the details and try again.'
+                )
+            );
         } finally {
             setSaving(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm('Delete this add-on?')) return;
+        if (!window.confirm(t('admin.addons.confirmDelete', 'Delete this add-on?'))) return;
 
         try {
             await api.delete(`/addons/${id}`);
-            toast.success('Deleted');
+            toast.success(t('admin.addons.deleted', 'Deleted'));
             await load();
         } catch {
-            toast.error('Failed to delete');
+            toast.error(t('admin.addons.deleteFailed', 'Failed to delete'));
         }
     };
 
-    const clearFilters = () => {
+const clearFilters = () => {
         setSearchTerm('');
         setCategoryFilter('all');
         setPricingFilter('all');
+    };
+
+    const categoryName = (category: CategoryType) => {
+        switch (category) {
+            case 'extra_time':
+                return t('admin.addons.categoryExtraTime', 'Extra Time');
+            case 'decoration':
+                return t('admin.addons.categoryDecoration', 'Decoration');
+            case 'entertainment':
+                return t('admin.addons.categoryEntertainment', 'Entertainment');
+            case 'service':
+                return t('admin.addons.categoryService', 'Service');
+            default:
+                return t('admin.addons.categoryOther', 'Other');
+        }
     };
 
     return (
@@ -353,13 +385,12 @@ export const ManageAddons = () => {
                                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-(--brand-text) text-(--brand-accent-haze)">
                                     <Sparkles size={21} />
                                 </span>
-                                <h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
-                                    Event Add-ons
+<h1 className="text-2xl font-extrabold text-slate-950 md:text-[32px]">
+                                    {t('admin.addons.title', 'Event Add-ons')}
                                 </h1>
                             </div>
-                            <p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
-                                Manage optional services customers can add to a catering booking,
-                                with clear pricing and multilingual descriptions.
+<p className="mt-3 max-w-[68ch] text-sm font-medium leading-6 text-slate-600">
+                                {t('admin.addons.subtitle', 'Manage optional services customers can add to a catering booking, with clear pricing and multilingual descriptions.')}
                             </p>
                         </div>
 
@@ -368,42 +399,42 @@ export const ManageAddons = () => {
                             onClick={() => openNew()}
                             className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white shadow-[0_10px_24px_var(--brand-text-a18)] transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 sm:w-auto"
                         >
-                            <Plus size={17} />
-                            Add add-on
+<Plus size={17} />
+                            {t('admin.addons.addAddOn', 'Add add-on')}
                         </button>
                     </div>
 
                     <div className="grid grid-cols-2 border-t border-slate-200 bg-(--brand-surface-dim) sm:grid-cols-4">
-                        <MetricCard label="Total add-ons" value={stats.total} icon={<Package size={15} />} />
-                        <MetricCard label="Fixed price" value={stats.fixed} icon={<Euro size={15} />} />
-                        <MetricCard label="Per person" value={stats.perPerson} icon={<Users size={15} />} />
-                        <MetricCard label="Categories" value={stats.categories} icon={<Layers3 size={15} />} />
+<MetricCard label={t('admin.addons.statsTotal', 'Total add-ons')} value={stats.total} icon={<Package size={15} />} />
+                        <MetricCard label={t('admin.addons.statsFixedPrice', 'Fixed price')} value={stats.fixed} icon={<Euro size={15} />} />
+                        <MetricCard label={t('admin.addons.perPerson', 'Per person')} value={stats.perPerson} icon={<Users size={15} />} />
+                        <MetricCard label={t('admin.addons.categories', 'Categories')} value={stats.categories} icon={<Layers3 size={15} />} />
                     </div>
                 </section>
 
                 <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                     <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(280px,1fr)_auto] xl:items-end">
                         <label className="relative block min-w-0">
-                            <span className="sr-only">Search add-ons</span>
+                            <span className="sr-only">{t('admin.addons.searchAria', 'Search add-ons')}</span>
                             <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search name, description, category or price"
+                                placeholder={t('admin.addons.searchPlaceholder', 'Search name, description, category or price')}
                                 className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
                             />
                         </label>
 
                         <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
-                            <div className="grid min-w-0 gap-1.5">
+<div className="grid min-w-0 gap-1.5">
                                 <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-                                    <Euro size={13} /> Pricing
+                                    <Euro size={13} /> {t('admin.addons.pricingLabel', 'Pricing')}
                                 </span>
                                 <div className="grid h-11 grid-cols-3 rounded-xl bg-stone-100 p-1">
-                                    {([
-                                        ['all', 'All'],
-                                        ['fixed', 'Fixed'],
-                                        ['per_person', 'Per person']
+{([
+                                        ['all', t('admin.addons.pricingFilterAll', 'All')],
+                                        ['fixed', t('admin.addons.pricingFilterFixed', 'Fixed')],
+                                        ['per_person', t('admin.addons.perPerson', 'Per person')]
                                     ] as Array<[PricingFilter, string]>).map(([value, label]) => (
                                         <button
                                             key={value}
@@ -423,10 +454,10 @@ export const ManageAddons = () => {
                             </div>
 
                             <div className="grid gap-1.5">
-                                <span className="px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">View</span>
+                                <span className="px-1 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">{t('admin.addons.viewLabel', 'View')}</span>
                                 <div className="grid h-11 grid-cols-2 rounded-xl bg-stone-100 p-1">
-                                    <ViewButton label="Grid" icon={<Grid3X3 size={15} />} active={viewMode === 'grid'} onClick={() => setViewMode('grid')} />
-                                    <ViewButton label="List" icon={<List size={15} />} active={viewMode === 'list'} onClick={() => setViewMode('list')} />
+<ViewButton label={t('admin.addons.viewGrid', 'Grid')} icon={<Grid3X3 size={15} />} active={viewMode === 'grid'} onClick={() => setViewMode('grid')} />
+                                    <ViewButton label={t('admin.addons.viewList', 'List')} icon={<List size={15} />} active={viewMode === 'list'} onClick={() => setViewMode('list')} />
                                 </div>
                             </div>
                         </div>
@@ -434,11 +465,11 @@ export const ManageAddons = () => {
 
                     <div className="mt-3 min-w-0 border-t border-slate-100 pt-3">
                         <div className="flex min-w-0 gap-2 overflow-x-auto pb-1">
-                            <CategoryTab label="All categories" count={addons.length} active={categoryFilter === 'all'} onClick={() => setCategoryFilter('all')} />
+                            <CategoryTab label={t('admin.addons.allCategories', 'All categories')} count={addons.length} active={categoryFilter === 'all'} onClick={() => setCategoryFilter('all')} />
                             {(Object.keys(CATEGORY_ICONS) as CategoryType[]).map((category) => (
                                 <CategoryTab
                                     key={category}
-                                    label={formatCategory(category)}
+                                    label={categoryName(category)}
                                     count={categoryCounts[category] || 0}
                                     icon={CATEGORY_ICONS[category]}
                                     active={categoryFilter === category}
@@ -450,7 +481,7 @@ export const ManageAddons = () => {
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs font-semibold text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
-                            <Filter size={13} /> Showing {filteredAddons.length} of {addons.length} add-ons
+                            <Filter size={13} /> {t('admin.addons.showingAddOns', 'Showing {{shown}} of {{total}} add-ons', { shown: filteredAddons.length, total: addons.length })}
                         </span>
                         {hasActiveFilters && (
                             <button
@@ -458,7 +489,7 @@ export const ManageAddons = () => {
                                 onClick={clearFilters}
                                 className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
                             >
-                                <RotateCcw size={13} /> Clear filters
+<RotateCcw size={13} /> {t('admin.addons.clearFilters', 'Clear filters')}
                             </button>
                         )}
                     </div>
@@ -473,10 +504,10 @@ export const ManageAddons = () => {
 
                             <div className="flex-1">
                                 <h3 className="text-[15px] font-semibold text-slate-900">
-                                    Quick Presets
+                                    {t('admin.addons.quickPresets', 'Quick Presets')}
                                 </h3>
                                 <p className="mt-1 text-sm text-slate-500">
-                                    Click one to start with a common add-on.
+                                    {t('admin.addons.quickPresetsHint', 'Click one to start with a common add-on.')}
                                 </p>
 
                                 <div className="mt-4 flex flex-wrap gap-2">
@@ -487,7 +518,7 @@ export const ManageAddons = () => {
                                             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-stone-50"
                                         >
                                             {preset.icon}
-                                            {preset.name}
+                                            {t(preset.labelKey)}
                                         </button>
                                     ))}
                                 </div>
@@ -503,16 +534,16 @@ export const ManageAddons = () => {
                         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600">
                             <AlertCircle size={21} />
                         </span>
-                        <h3 className="mt-4 text-lg font-extrabold text-slate-950">Add-ons could not be loaded</h3>
+<h3 className="mt-4 text-lg font-extrabold text-slate-950">{t('admin.addons.loadFailedTitle', 'Add-ons could not be loaded')}</h3>
                         <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-slate-600">
-                            Check the connection and retry. Existing add-on data has not been changed.
+                            {t('admin.addons.loadFailedBody', 'Check the connection and retry. Existing add-on data has not been changed.')}
                         </p>
                         <button
                             type="button"
                             onClick={load}
                             className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
                         >
-                            <RotateCcw size={15} /> Retry loading
+                            <RotateCcw size={15} /> {t('admin.addons.retryLoading', 'Retry loading')}
                         </button>
                     </div>
                 ) : filteredAddons.length === 0 ? (
@@ -520,13 +551,13 @@ export const ManageAddons = () => {
                         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-stone-50">
                             {addons.length > 0 ? <Search size={22} className="text-slate-400" /> : <Package size={22} className="text-slate-400" />}
                         </div>
-                        <h3 className="mt-4 text-lg font-extrabold text-slate-950">
-                            {addons.length > 0 ? 'No add-ons match these filters' : 'Create your first add-on'}
+<h3 className="mt-4 text-lg font-extrabold text-slate-950">
+                            {addons.length > 0 ? t('admin.addons.noMatchTitle', 'No add-ons match these filters') : t('admin.addons.emptyTitle', 'Create your first add-on')}
                         </h3>
                         <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-slate-600">
                             {addons.length > 0
-                                ? 'Clear the filters or try a different search term.'
-                                : 'Add optional services such as welcome drinks, decoration or entertainment.'}
+                                ? t('admin.addons.noMatchBody', 'Clear the filters or try a different search term.')
+                                : t('admin.addons.emptyBody', 'Add optional services such as welcome drinks, decoration or entertainment.')}
                         </p>
                         <button
                             type="button"
@@ -534,7 +565,7 @@ export const ManageAddons = () => {
                             className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100"
                         >
                             {addons.length > 0 ? <RotateCcw size={15} /> : <Plus size={15} />}
-                            {addons.length > 0 ? 'Clear filters' : 'Add first add-on'}
+                            {addons.length > 0 ? t('admin.addons.clearFilters', 'Clear filters') : t('admin.addons.emptyAction', 'Add first add-on')}
                         </button>
                     </div>
                 ) : (
@@ -553,14 +584,14 @@ export const ManageAddons = () => {
                                         className={`inline-flex w-fit items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-bold ${CATEGORY_STYLES[addon.category]} ${viewMode === 'list' ? 'md:col-start-3 md:row-start-1' : ''}`}
                                     >
                                         {CATEGORY_ICONS[addon.category]}
-                                        {formatCategory(addon.category)}
+                                        {categoryName(addon.category)}
                                     </span>
 
                                     <div className={`flex shrink-0 gap-1.5 ${viewMode === 'list' ? 'md:col-start-5 md:row-start-1 md:justify-end' : ''}`}>
                                         <button
                                             onClick={() => openEdit(addon)}
-                                            aria-label={`Edit ${addon.nameTranslations?.nl || addon.name}`}
-                                            title="Edit add-on"
+aria-label={t('admin.addons.editAddon', 'Edit {{name}}', { name: addon.nameTranslations?.nl || addon.name })}
+                                            title={t('admin.addons.editAddonTitle', 'Edit add-on')}
                                             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
                                         >
                                             <Pencil size={14} />
@@ -570,8 +601,8 @@ export const ManageAddons = () => {
                                             onClick={() =>
                                                 handleDelete(addon._id)
                                             }
-                                            aria-label={`Delete ${addon.nameTranslations?.nl || addon.name}`}
-                                            title="Delete add-on"
+aria-label={t('admin.addons.deleteAddon', 'Delete {{name}}', { name: addon.nameTranslations?.nl || addon.name })}
+                                            title={t('admin.addons.deleteAddonTitle', 'Delete add-on')}
                                             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-200"
                                         >
                                             <Trash2 size={14} />
@@ -586,14 +617,14 @@ export const ManageAddons = () => {
                                 <p className={`break-words text-sm font-medium leading-6 text-slate-600 ${viewMode === 'grid' ? 'mt-2 flex-1' : 'mt-2 md:col-start-2 md:row-start-1 md:mt-0'}`}>
                                     {addon.descriptionTranslations?.nl ||
                                         addon.description ||
-                                        'No description added'}
+                                        t('admin.addons.noDescription', 'No description added')}
                                 </p>
 
                                 <div className={`flex items-center justify-between gap-3 ${viewMode === 'grid' ? 'mt-5 border-t border-slate-100 pt-4' : 'mt-4 md:col-start-4 md:row-start-1 md:mt-0'}`}>
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Euro size={14} />
                                         <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">
-                                            Price
+                                            {t('admin.addons.priceLabel', 'Price')}
                                         </span>
                                     </div>
 
@@ -603,8 +634,8 @@ export const ManageAddons = () => {
                                         </p>
                                         <p className="text-xs text-slate-500">
                                             {addon.pricingType === 'per_person'
-                                                ? 'per person'
-                                                : 'fixed'}
+                                                ? t('admin.addons.pricePerPerson', 'per person')
+                                                : t('admin.addons.priceFixed', 'fixed')}
                                         </p>
                                     </div>
                                 </div>
@@ -627,18 +658,18 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                         >
                             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                                 <div className="min-w-0">
-                                    <h2 id="addon-editor-title" className="text-xl font-extrabold text-slate-950">
-                                        {editing ? 'Edit add-on' : 'Create add-on'}
+<h2 id="addon-editor-title" className="text-xl font-extrabold text-slate-950">
+                                        {editing ? t('admin.addons.editorTitleEdit', 'Edit add-on') : t('admin.addons.editorTitleCreate', 'Create add-on')}
                                     </h2>
                                     <p className="mt-1 text-sm font-medium text-slate-500">
-                                        Add customer-facing translations, pricing and catalogue placement.
+                                        {t('admin.addons.editorSubtitle', 'Add customer-facing translations, pricing and catalogue placement.')}
                                     </p>
                                 </div>
 
                                 <button
                                     onClick={closeForm}
-                                    aria-label="Close add-on editor"
-                                    title="Close"
+aria-label={t('admin.addons.closeEditor', 'Close add-on editor')}
+                                    title={t('admin.addons.close', 'Close')}
                                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-stone-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100"
                                 >
                                     <X size={18} />
@@ -649,14 +680,14 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                 <div className="space-y-6">
                                     <div>
                                         <SectionTitle
-                                            title="Names"
-                                            subtitle="Add multilingual display names."
+                                            title={t('admin.addons.namesTitle', 'Names')}
+                                            subtitle={t('admin.addons.namesSubtitle', 'Add multilingual display names.')}
                                         />
 
                                         <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-3">
                                             <InputBlock
-                                                label="Name (NL)"
-                                                placeholder="Dutch name"
+                                                label={t('admin.addons.nameNl', 'Name (NL)')}
+                                                placeholder={t('admin.addons.placeholderDutchName', 'Dutch name')}
                                                 value={
                                                     form.nameTranslations?.nl ||
                                                     ''
@@ -677,8 +708,8 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                             />
 
                                             <InputBlock
-                                                label="Name (EN)"
-                                                placeholder="English name"
+                                                label={t('admin.addons.nameEn', 'Name (EN)')}
+                                                placeholder={t('admin.addons.placeholderEnglishName', 'English name')}
                                                 value={
                                                     form.nameTranslations?.en ||
                                                     ''
@@ -699,8 +730,8 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                             />
 
                                             <InputBlock
-                                                label="Name (TA)"
-                                                placeholder="Tamil name"
+                                                label={t('admin.addons.nameTa', 'Name (TA)')}
+                                                placeholder={t('admin.addons.placeholderTamilName', 'Tamil name')}
                                                 value={
                                                     form.nameTranslations?.ta ||
                                                     ''
@@ -724,14 +755,14 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
 
                                     <div>
                                         <SectionTitle
-                                            title="Descriptions"
-                                            subtitle="Add descriptions in each language."
+                                            title={t('admin.addons.descriptionsTitle', 'Descriptions')}
+                                            subtitle={t('admin.addons.descriptionsSubtitle', 'Add descriptions in each language.')}
                                         />
 
                                         <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-3">
                                             <TextAreaBlock
-                                                label="Description (NL)"
-                                                placeholder="Dutch description"
+                                                label={t('admin.addons.descriptionNl', 'Description (NL)')}
+                                                placeholder={t('admin.addons.placeholderDutchDescription', 'Dutch description')}
                                                 value={
                                                     form.descriptionTranslations
                                                         ?.nl || ''
@@ -753,8 +784,8 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                             />
 
                                             <TextAreaBlock
-                                                label="Description (EN)"
-                                                placeholder="English description"
+                                                label={t('admin.addons.descriptionEn', 'Description (EN)')}
+                                                placeholder={t('admin.addons.placeholderEnglishDescription', 'English description')}
                                                 value={
                                                     form.descriptionTranslations
                                                         ?.en || ''
@@ -776,8 +807,8 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                             />
 
                                             <TextAreaBlock
-                                                label="Description (TA)"
-                                                placeholder="Tamil description"
+                                                label={t('admin.addons.descriptionTa', 'Description (TA)')}
+                                                placeholder={t('admin.addons.placeholderTamilDescription', 'Tamil description')}
                                                 value={
                                                     form.descriptionTranslations
                                                         ?.ta || ''
@@ -802,13 +833,13 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
 
                                     <div>
                                         <SectionTitle
-                                            title="Pricing & Category"
-                                            subtitle="Configure how this add-on is billed."
+                                            title={t('admin.addons.pricingCategoryTitle', 'Pricing & Category')}
+                                            subtitle={t('admin.addons.pricingCategorySubtitle', 'Configure how this add-on is billed.')}
                                         />
 
                                         <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                             <NumberBlock
-                                                label="Price (€)"
+                                                label={t('admin.addons.priceFieldLabel', 'Price (€)')}
                                                 value={form.price}
                                                 onChange={(value) =>
                                                     setForm((prev) => ({
@@ -819,7 +850,7 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                             />
 
                                             <PremiumSelect
-                                                label="Pricing Type"
+                                                label={t('admin.addons.pricingTypeLabel', 'Pricing Type')}
                                                 value={form.pricingType}
                                                 onChange={(value) =>
                                                     setForm((prev) => ({
@@ -831,18 +862,18 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                                 options={[
                                                     {
                                                         value: 'fixed',
-                                                        label: 'Fixed Price'
+                                                        label: t('admin.addons.fixedPriceOption', 'Fixed Price')
                                                     },
                                                     {
                                                         value: 'per_person',
-                                                        label: 'Per Person'
+                                                        label: t('admin.addons.perPersonOption', 'Per Person')
                                                     }
                                                 ]}
                                                 icon={<Euro size={16} />}
                                             />
 
                                             <PremiumSelect
-                                                label="Category"
+                                                label={t('admin.addons.categoryLabel', 'Category')}
                                                 value={form.category}
                                                 onChange={(value) =>
                                                     setForm((prev) => ({
@@ -854,23 +885,23 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                                 options={[
                                                     {
                                                         value: 'decoration',
-                                                        label: 'Decoration'
+                                                        label: t('admin.addons.categoryDecoration', 'Decoration')
                                                     },
                                                     {
                                                         value: 'entertainment',
-                                                        label: 'Entertainment'
+                                                        label: t('admin.addons.categoryEntertainment', 'Entertainment')
                                                     },
                                                     {
                                                         value: 'service',
-                                                        label: 'Service'
+                                                        label: t('admin.addons.categoryService', 'Service')
                                                     },
                                                     {
                                                         value: 'extra_time',
-                                                        label: 'Extra Time'
+                                                        label: t('admin.addons.categoryExtraTime', 'Extra Time')
                                                     },
                                                     {
                                                         value: 'other',
-                                                        label: 'Other'
+                                                        label: t('admin.addons.categoryOther', 'Other')
                                                     }
                                                 ]}
                                                 icon={<Layers3 size={16} />}
@@ -891,7 +922,7 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                         onClick={closeForm}
                                         className="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
                                     >
-                                        Cancel
+                                        {t('admin.common.cancel', 'Cancel')}
                                     </button>
 
                                     <button
@@ -900,10 +931,10 @@ className="fixed inset-0 z-[100] flex overflow-y-auto bg-(--brand-char-deep)/60 
                                         className="h-11 rounded-xl bg-(--brand-text) px-5 text-sm font-bold text-white transition hover:bg-(--brand-ink-coal) focus:outline-none focus:ring-4 focus:ring-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {saving
-                                            ? 'Saving...'
+                                            ? t('admin.addons.saving', 'Saving...')
                                             : editing
-                                            ? 'Save Changes'
-                                            : 'Create Add-on'}
+                                            ? t('admin.addons.saveChanges', 'Save Changes')
+                                            : t('admin.addons.createAddOn', 'Create Add-on')}
                                     </button>
                                 </div>
                             </div>
@@ -990,8 +1021,11 @@ const CategoryTab = ({
     </button>
 );
 
-const LoadingPanel = () => (
-    <div aria-label="Loading add-ons" className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
+const LoadingPanel = () => {
+    const { t } = useTranslation();
+
+    return (
+    <div aria-label={t('admin.addons.loading', 'Loading add-ons')} className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }).map((_, index) => (
             <div
                 key={index}
@@ -1007,8 +1041,9 @@ const LoadingPanel = () => (
                 <div className="mt-8 h-14 rounded-xl bg-stone-100" />
             </div>
         ))}
-    </div>
-);
+</div>
+    );
+};
 
 const SectionTitle = ({
     title,
