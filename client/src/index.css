@@ -4746,7 +4746,6 @@ select:focus-visible {
 .dashboard-error { padding: 10rem 1.5rem 5rem; display: grid; justify-items: start; gap: 1.5rem; }
 :lang(ta) { --font-sans: 'Noto Sans Tamil', 'Figtree', sans-serif; --font-display: 'Noto Sans Tamil', 'Outfit', sans-serif; }
 :lang(ta) h1, :lang(ta) h2 { line-height: 1.45; }
-:lang(ta) h1, :lang(ta) h2,
 @media (max-width: 980px) {
   .home-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); }
   .site-header__actions { gap: .35rem; }
@@ -5245,4 +5244,4 @@ select:focus-visible {
 
 
 /* Tamil headings: 5% smaller than English; body/sentence text = English size; sentences flow full width (no ch wrap caps). */
-:lang(ta) .display, :lang(ta) h1, :lang(ta) h2 { font-size: 95% !important; max-width: none; }
+:lang(ta) .display, :lang(ta) h1, :lang(ta) h2 { max-width: none; }
