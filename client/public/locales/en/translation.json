@@ -409,7 +409,8 @@
       "visible": "Visible",
       "visibleInMenu": "Visible in menu",
       "workspaceText": "Manage dishes, pricing, images, dietary details, stock and menu visibility in one polished workspace.",
-      "workspaceTitle": "Menu Item Workspace"
+      "workspaceTitle": "Menu Item Workspace",
+      "itemCount": "{{count}} items"
     },
     "categories": {
       "title": "Category Management",
@@ -1560,5 +1561,9 @@
       "notifClearFailed": "Failed to clear notification"
     },
     "updateForOrderLabel": "Update for order"
+  },
+  "brand": {
+    "aria": "Tamil Food Thaya home",
+    "tagline": "Traditional kitchen and catering"
   }
 }

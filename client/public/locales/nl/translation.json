@@ -409,7 +409,8 @@
       "visible": "Zichtbaar",
       "visibleInMenu": "Zichtbaar in menu",
       "workspaceText": "Beheer gerechten, prijzen, afbeeldingen, dieetdetails, voorraad en menu-zichtbaarheid in één verzorgde werkruimte.",
-      "workspaceTitle": "Menu-item werkruimte"
+      "workspaceTitle": "Menu-item werkruimte",
+      "itemCount": "{{count}} items"
     },
     "categories": {
       "title": "Categorieën Beheer",
@@ -1560,5 +1561,9 @@
       "notifClearFailed": "Melding wissen mislukt"
     },
     "updateForOrderLabel": "Update voor bestelling"
+  },
+  "brand": {
+    "aria": "Tamil Food Thaya home",
+    "tagline": "Traditionele keuken en catering"
   }
 }
