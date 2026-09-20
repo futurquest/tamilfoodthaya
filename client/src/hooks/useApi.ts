@@ -60,6 +60,12 @@ export const getMessages = () => api.get('/messages').then((res) => res.data);
 export const getSettings = () => api.get('/settings').then((res) => res.data);
 export const updateSettings = (data: any) => api.put('/settings', data).then((res) => res.data);
 
+// Homepage CMS API (published = public; draft + publish = admin only)
+export const getPublishedHomepage = () => api.get('/settings/homepage').then((res) => res.data);
+export const getHomepageDraft = () => api.get('/settings/homepage/draft').then((res) => res.data);
+export const updateHomepageDraft = (data: any) => api.put('/settings/homepage/draft', data).then((res) => res.data);
+export const publishHomepage = () => api.post('/settings/homepage/publish').then((res) => res.data);
+
 // Menu API
 export const createCategory = (data: any) => api.post('/menu/categories', data).then((res) => res.data);
 export const updateCategory = (id: string, data: any) => api.patch(`/menu/categories/${id}`, data).then((res) => res.data);

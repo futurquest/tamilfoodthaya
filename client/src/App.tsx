@@ -37,6 +37,7 @@ const ManageCateringOrders = lazy(() => import('./pages/admin/ManageCateringOrde
 const ManageAddons = lazy(() => import('./pages/admin/ManageAddons').then(module => ({ default: module.ManageAddons })));
 const ManageCoupons = lazy(() => import('./pages/admin/ManageCoupons').then(module => ({ default: module.ManageCoupons })));
 const ManageUsers = lazy(() => import('./pages/admin/ManageUsers').then(module => ({ default: module.ManageUsers })));
+const ManageHomepage = lazy(() => import('./pages/admin/ManageHomepage').then(module => ({ default: module.ManageHomepage })));
 const CateringCheckoutPage = lazy(() => import('./pages/CateringCheckoutPage').then(module => ({ default: module.CateringCheckoutPage })));
 const UserDashboard = lazy(() => import('./pages/user/UserDashboard').then(module => ({ default: module.UserDashboard })));
 
@@ -79,6 +80,7 @@ function AppRoutes() {
                 <Route path="/admin/catering-orders" element={<ManageCateringOrders />} />
                 <Route path="/admin/addons" element={<ManageAddons />} />
                 <Route path="/admin/coupons" element={<ManageCoupons />} />
+                <Route path="/admin/homepage" element={<ManageHomepage />} />
               </Route>
             </Route>
           </Routes>

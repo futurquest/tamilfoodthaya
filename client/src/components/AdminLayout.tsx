@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
     LayoutDashboard, Users, BookOpen, Settings, LogOut,
     UtensilsCrossed, ClipboardList, MessageSquare, Tag, Sparkles,
-    ShieldCheck, CircleDot, ChevronRight, PanelLeftOpen, PanelLeftClose, Menu, X, Package, UserCog
+    ShieldCheck, CircleDot, ChevronRight, PanelLeftOpen, PanelLeftClose, Menu, X, Package, UserCog, Home
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from './ThemeToggle';
@@ -92,6 +92,13 @@ export const AdminLayout = () => {
                 { name: 'Packages', path: '/admin/catering-packages', icon: <Package size={18} /> },
                 { name: 'Add-ons', path: '/admin/addons', icon: <Sparkles size={18} /> },
                 { name: 'Coupons', path: '/admin/coupons', icon: <Tag size={18} /> },
+            ]
+        },
+        {
+            label: 'Website',
+            description: 'Public homepage',
+            items: [
+                { name: 'Homepage', path: '/admin/homepage', icon: <Home size={18} /> },
             ]
         },
         {

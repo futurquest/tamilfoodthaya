@@ -4780,8 +4780,9 @@ select:focus-visible {
   isolation: isolate;
   display: flex;
   align-items: center;
-  min-height: clamp(580px, 78dvh, 800px);
-  padding: clamp(8.5rem, 13vw, 11rem) 1.25rem clamp(3.5rem, 7vw, 6rem);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(5.5rem, 9vw, 7.5rem) 1.25rem clamp(3rem, 6vw, 4rem);
   background:
     radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 28rem),
     var(--brand-surface);
@@ -4819,7 +4820,7 @@ select:focus-visible {
 .home-hero__note { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid color-mix(in srgb, var(--brand-text) 25%, transparent); color: var(--brand-text-muted); font-size: .88rem; line-height: 1.6; }
 
 @media (max-width: 760px) {
-  .home-hero--photographic { min-height: min(760px, 88dvh); padding: 8rem 1rem 3rem; align-items: flex-end; }
+  .home-hero--photographic { min-height: 100vh; min-height: 100dvh; padding: 7rem 1rem 3rem; align-items: center; }
   .home-hero--photographic::before { background: linear-gradient(0deg, var(--brand-surface) 0%, color-mix(in srgb, var(--brand-surface) 94%, transparent) 43%, color-mix(in srgb, var(--brand-surface) 22%, transparent) 78%, transparent 100%); }
   .home-hero__backdrop img { object-position: 70% center; }
   .home-hero--photographic .home-hero__copy { max-width: 100%; }
@@ -4830,7 +4831,7 @@ select:focus-visible {
 }
 
 @media (max-width: 420px) {
-  .home-hero--photographic { min-height: 720px; }
+  .home-hero--photographic { min-height: 100vh; min-height: 100dvh; }
   .home-hero--photographic .display { font-size: 2.35rem; }
 }
 

@@ -51,6 +51,14 @@ export class SettingsEntity {
     @Column({ default: true })
     ordersEnabled: boolean;
 
+    /** Admin-editable homepage draft (hero locked first; sections visible/order; featured package/menu ids capped at 3). Never returned by public GET. */
+    @Column({ type: 'jsonb', default: () => `'{}'::jsonb`, nullable: true })
+    homepageDraft: Record<string, any>;
+
+    /** Published homepage config — the only shape served to the public homepage. */
+    @Column({ type: 'jsonb', default: () => `'{}'::jsonb`, nullable: true })
+    homepagePublished: Record<string, any>;
+
     @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
