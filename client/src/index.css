@@ -4746,6 +4746,7 @@ select:focus-visible {
 .dashboard-error { padding: 10rem 1.5rem 5rem; display: grid; justify-items: start; gap: 1.5rem; }
 :lang(ta) { --font-sans: 'Noto Sans Tamil', 'Figtree', sans-serif; --font-display: 'Noto Sans Tamil', 'Outfit', sans-serif; }
 :lang(ta) h1, :lang(ta) h2 { line-height: 1.45; }
+html:lang(ta) { font-size: 80%; }
 @media (max-width: 980px) {
   .home-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); }
   .site-header__actions { gap: .35rem; }
