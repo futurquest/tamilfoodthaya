@@ -5243,5 +5243,5 @@ select:focus-visible {
 }
 
 
-/* Tamil headings: 5% smaller than English; body/sentence text = English size; sentences flow full width (no ch wrap caps). */
-:lang(ta) .display, :lang(ta) h1, :lang(ta) h2 { max-width: none; }
+/* Tamil headings: 300% of English AND heavy 800 (English = default 700) — user-tested fit; body/sentence text = English size; sentences flow full width (no ch wrap caps). */
+:lang(ta) .display, :lang(ta) h1, :lang(ta) h2 { font-size: 300%; font-weight: 800; max-width: none; }

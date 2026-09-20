@@ -14,6 +14,7 @@ import '@fontsource/noto-sans-tamil/tamil-400.css';
 import '@fontsource/noto-sans-tamil/tamil-500.css';
 import '@fontsource/noto-sans-tamil/tamil-600.css';
 import '@fontsource/noto-sans-tamil/tamil-700.css';
+import '@fontsource/noto-sans-tamil/tamil-800.css';
 import App from './App';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
