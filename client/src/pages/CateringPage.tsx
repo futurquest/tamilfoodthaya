@@ -121,9 +121,11 @@ export const CateringPage = () => {
           {loading ? (
             <div className="package-grid">{[1, 2, 3].map((item) => <div key={item} className="package-skeleton" />)}</div>
           ) : packages.length === 0 ? (
-            <div className="empty-panel">
-              <h3>{t('catering2.refreshTitle')}</h3>
-              <p>{t('catering2.refreshText')}</p>
+            <div className="empty-panel package-empty">
+              <div>
+                <h3>{t('catering2.refreshTitle')}</h3>
+                <p>{t('catering2.refreshText')}</p>
+              </div>
               <button type="button" className="btn-primary" onClick={() => navigate('/contact#inquiry')}>{t('catering2.quote')}</button>
             </div>
           ) : (

@@ -32,6 +32,7 @@ export default function EventGallery() {
   );
   const [perPage, setPerPage] = useState(() => perPageFor(window.innerWidth));
   const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [stageWidth, setStageWidth] = useState(0);
   const [gap, setGap] = useState(20);
@@ -113,8 +114,9 @@ export default function EventGallery() {
   // Responsive items-per-slide + viewport fit: pick how many photos the row
   // shows, then size the stage width so the row never grows past the screen.
   useLayoutEffect(() => {
+    const container = containerRef.current;
     const shell = shellRef.current;
-    if (!shell) return;
+    if (!container || !shell) return;
     const compute = () => {
       const viewportW = window.innerWidth;
       const nextPerPage = perPageFor(viewportW);
@@ -131,9 +133,10 @@ export default function EventGallery() {
       // fill the container width.
       const targetCardH = Math.max(200, Math.round(viewportH * 0.35));
       const targetCardW = targetCardH * ratio;
+      const availableWidth = container.clientWidth;
       const fitted = nextPerPage === 1
-        ? shell.clientWidth
-        : Math.min(shell.clientWidth, targetCardW * nextPerPage + gapPx * (nextPerPage - 1));
+        ? availableWidth
+        : Math.min(availableWidth, targetCardW * nextPerPage + gapPx * (nextPerPage - 1));
       setStageWidth(Math.round(fitted));
       const width = (fitted - gapPx * (nextPerPage - 1)) / nextPerPage;
       setCardW(width);
@@ -141,17 +144,17 @@ export default function EventGallery() {
     };
     compute();
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(compute) : null;
-    ro?.observe(shell);
+    ro?.observe(container);
     window.addEventListener('resize', compute);
     return () => {
       ro?.disconnect();
       window.removeEventListener('resize', compute);
     };
-  }, [pos, perPage]);
+  }, [perPage]);
 
   const shellStyle = {
     '--frame': String(stageRatio),
-    width: stageWidth > 0 ? `${stageWidth}px` : undefined,
+    maxWidth: stageWidth > 0 ? `${stageWidth}px` : undefined,
   } as CSSProperties;
 
   return (
@@ -168,6 +171,7 @@ export default function EventGallery() {
         </div>
 
         <div
+          ref={containerRef}
           className={`event-gallery__carousel${paused ? ' is-paused' : ''}`}
           role="region"
           aria-roledescription={t('eventGallery.carousel')}

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
@@ -47,29 +47,28 @@ export const LanguageSwitcher = ({ dropUp = false }: { dropUp?: boolean }) => {
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 aria-label="Select language"
-style={{
+                style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: dropUp ? 'space-between' : 'flex-start',
                     width: dropUp ? '100%' : 'auto',
                     gap: 8,
                     borderRadius: 999,
-                    border: dropUp ? '1px solid color-mix(in srgb, var(--brand-accent-soft) 28%, transparent)' : '1px solid color-mix(in srgb, var(--brand-accent-olive) 35%, transparent)',
-                    background: dropUp
-                        ? 'linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 10%, transparent), color-mix(in srgb, var(--brand-cream) 4%, transparent))'
-                        : 'linear-gradient(135deg, color-mix(in srgb, var(--brand-white) 18%, transparent), color-mix(in srgb, var(--brand-white) 6%, transparent))',
-                    color: dropUp ? 'var(--brand-surface-cream)' : 'var(--brand-ink-warm)',
+                    border: '1px solid color-mix(in srgb, var(--brand-text) 14%, transparent)',
+                    background: 'color-mix(in srgb, var(--brand-surface) 85%, transparent)',
+                    color: 'var(--brand-text)',
                     fontFamily: 'var(--font-sans)',
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
                     padding: '6px 12px 6px 8px',
                     cursor: 'pointer',
-                    backdropFilter: 'blur(8px)',
-                    boxShadow: dropUp
-                        ? (open ? '0 10px 28px color-mix(in srgb, var(--brand-black) 18%, transparent)' : '0 3px 10px color-mix(in srgb, var(--brand-black) 10%, transparent)')
-                        : (open ? '0 8px 24px color-mix(in srgb, var(--brand-ink-char) 15%, transparent)' : '0 3px 10px color-mix(in srgb, var(--brand-ink-char) 8%, transparent)'),
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    boxShadow: open
+                        ? '0 8px 24px color-mix(in srgb, var(--brand-shadow-warm) 22%, transparent)'
+                        : '0 2px 8px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent)',
                     transition: 'all 200ms ease',
                 }}
             >
@@ -81,10 +80,10 @@ style={{
                         width: 24,
                         height: 24,
                         borderRadius: '999px',
-                        background: 'linear-gradient(135deg, var(--brand-accent-olive), var(--brand-accent-bright))',
-                        color: 'var(--brand-ink-deep-b)',
+                        background: 'color-mix(in srgb, var(--brand-primary) 18%, transparent)',
+                        color: 'var(--brand-primary)',
                         fontSize: 10,
-                        fontWeight: 700,
+                        fontWeight: 800,
                     }}
                 >
                     {currentLang.flag}
@@ -100,6 +99,7 @@ style={{
                         transform: open ? 'rotate(-135deg)' : 'rotate(45deg)',
                         transition: 'transform 180ms ease',
                         marginTop: open ? 3 : -1,
+                        opacity: 0.75,
                     }}
                 />
             </button>
@@ -117,10 +117,12 @@ style={{
                         width: dropUp ? '100%' : 'auto',
                         minWidth: 190,
                         borderRadius: 14,
-                        border: '1px solid color-mix(in srgb, var(--brand-accent-olive) 22%, transparent)',
-                        background: 'color-mix(in srgb, var(--brand-white) 95%, transparent)',
-                        backdropFilter: 'blur(10px)',
-                        boxShadow: '0 16px 40px color-mix(in srgb, var(--brand-ink-char-soft) 16%, transparent)',
+                        border: '1px solid color-mix(in srgb, var(--brand-text) 14%, transparent)',
+                        background: 'var(--brand-surface-dim)',
+                        color: 'var(--brand-text)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        boxShadow: 'var(--shadow-lift)',
                         padding: 6,
                         zIndex: 150,
                     }}
@@ -140,18 +142,30 @@ style={{
                                     gap: 10,
                                     border: 'none',
                                     borderRadius: 10,
-                                    padding: '9px 10px',
+                                    padding: '9px 12px',
                                     cursor: 'pointer',
                                     fontFamily: 'var(--font-sans)',
                                     fontSize: 13,
                                     fontWeight: active ? 700 : 500,
-                                    color: active ? 'var(--brand-ink-char)' : 'var(--brand-ink-mocha)',
-                                    background: active ? 'color-mix(in srgb, var(--brand-accent-bright) 20%, transparent)' : 'transparent',
-                                    transition: 'background 160ms ease',
+                                    color: active ? 'var(--brand-primary)' : 'var(--brand-text)',
+                                    background: active
+                                        ? 'color-mix(in srgb, var(--brand-primary) 14%, transparent)'
+                                        : 'transparent',
+                                    transition: 'background 160ms ease, color 160ms ease',
                                     textAlign: 'left',
                                 }}
+                                onMouseEnter={(e) => {
+                                    if (!active) {
+                                        e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-text) 7%, transparent)';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (!active) {
+                                        e.currentTarget.style.background = 'transparent';
+                                    }
+                                }}
                             >
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 9 }}>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                                     <span
                                         style={{
                                             display: 'inline-flex',
@@ -160,10 +174,14 @@ style={{
                                             borderRadius: '999px',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            background: active ? 'linear-gradient(135deg, var(--brand-accent-olive), var(--brand-accent-bright))' : 'color-mix(in srgb, var(--brand-ink-char) 8%, transparent)',
-                                            color: active ? 'var(--brand-ink-deep-b)' : 'var(--brand-muted-warm)',
+                                            background: active
+                                                ? 'color-mix(in srgb, var(--brand-primary) 22%, transparent)'
+                                                : 'color-mix(in srgb, var(--brand-text) 8%, transparent)',
+                                            color: active
+                                                ? 'var(--brand-primary)'
+                                                : 'var(--brand-text-muted)',
                                             fontSize: 10,
-                                            fontWeight: 700,
+                                            fontWeight: 800,
                                         }}
                                     >
                                         {lang.flag}
@@ -174,10 +192,10 @@ style={{
                                     <span
                                         aria-hidden
                                         style={{
-                                            width: 7,
-                                            height: 12,
-                                            borderRight: '2px solid var(--brand-accent-olive)',
-                                            borderBottom: '2px solid var(--brand-accent-olive)',
+                                            width: 6,
+                                            height: 11,
+                                            borderRight: '2px solid var(--brand-primary)',
+                                            borderBottom: '2px solid var(--brand-primary)',
                                             transform: 'rotate(45deg)',
                                             marginRight: 4,
                                         }}

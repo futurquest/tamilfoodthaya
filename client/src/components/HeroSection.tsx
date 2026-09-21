@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SEO, restaurantSchema } from './SEO';
+import FluidBackground from './FluidBackground';
 
 export interface HeroSectionData {
   title?: string;
@@ -21,11 +22,13 @@ export default function HeroSection({ data }: { data?: HeroSectionData }) {
         description={t('home2.seoDescription')}
         schema={restaurantSchema}
       />
-<section className="home-hero home-hero--photographic">
-      <picture className="home-hero__backdrop" aria-hidden="true">
-        <img src="/home-hero.png" alt="" width="1678" height="937" fetchPriority="high" decoding="async" />
-      </picture>
-      <div className="container home-hero__grid">
+      <section className="home-hero home-hero--photographic">
+        <picture className="home-hero__backdrop" aria-hidden="true">
+          <img src="/home-hero.png" alt="" width="1678" height="937" fetchPriority="high" decoding="async" />
+        </picture>
+        <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
+        <div className="container home-hero__grid">
           <div className="home-hero__copy">
             <p className="eyebrow home-hero__eyebrow">{t('home2.eyebrow')}</p>
             <h1 lang={lang} className="display">{title}</h1>
@@ -42,7 +45,6 @@ export default function HeroSection({ data }: { data?: HeroSectionData }) {
             <p className="home-hero__note">{t('home2.regionNote')}</p>
           </div>
         </div>
-
       </section>
     </>
   );

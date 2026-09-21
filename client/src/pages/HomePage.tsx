@@ -61,7 +61,7 @@ function toPackageShape(p: any): Package {
 }
 
 const SectionRenderer = ({ cfg }: { cfg: HomepageConfig }) => {
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const lang = i18n.language?.split('-')[0] || 'nl';
 
     const sections = [...(cfg.sections || [])].sort((a, b) => a.order - b.order);

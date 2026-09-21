@@ -4783,15 +4783,21 @@ select:focus-visible {
   min-height: 100vh;
   min-height: 100dvh;
   padding: clamp(5.5rem, 9vw, 7.5rem) 1.25rem clamp(3rem, 6vw, 4rem);
-  background:
-    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 28rem),
-    var(--brand-surface);
+  background: var(--brand-surface);
   color: var(--brand-text);
 }
 
 .home-hero--photographic::before {
-  z-index: -1;
-  background: linear-gradient(90deg, var(--brand-surface) 0%, color-mix(in srgb, var(--brand-surface) 92%, transparent) 27%, color-mix(in srgb, var(--brand-surface) 18%, transparent) 58%, transparent 100%);
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 82% 10%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 34rem),
+    radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--brand-primary) 12%, transparent), transparent 28rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface-warm) 28%, transparent) 0%, transparent 60%, color-mix(in srgb, var(--brand-surface) 40%, transparent) 100%),
+    linear-gradient(90deg, color-mix(in srgb, var(--brand-surface) 96%, transparent) 0%, color-mix(in srgb, var(--brand-surface) 82%, transparent) 36%, color-mix(in srgb, var(--brand-surface) 15%, transparent) 64%, transparent 100%);
 }
 
 .home-hero__backdrop,
@@ -4803,6 +4809,8 @@ select:focus-visible {
 }
 
 .home-hero__backdrop { z-index: -2; }
+.home-hero--photographic .fx-aura { z-index: 0; opacity: 0.8; }
+.home-hero--photographic .fx-fluid { z-index: 0; }
 .home-hero__backdrop img { display: block; object-fit: cover; object-position: 62% center; }
 .home-hero--photographic .home-hero__grid { display: block; min-height: 0; }
 .home-hero--photographic .home-hero__copy { max-width: min(650px, 58%); }
@@ -4821,7 +4829,12 @@ select:focus-visible {
 
 @media (max-width: 760px) {
   .home-hero--photographic { min-height: 100vh; min-height: 100dvh; padding: 7rem 1rem 3rem; align-items: center; }
-  .home-hero--photographic::before { background: linear-gradient(0deg, var(--brand-surface) 0%, color-mix(in srgb, var(--brand-surface) 94%, transparent) 43%, color-mix(in srgb, var(--brand-surface) 22%, transparent) 78%, transparent 100%); }
+  .home-hero--photographic::before {
+    background:
+      radial-gradient(circle at 82% 10%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 28rem),
+      linear-gradient(180deg, color-mix(in srgb, var(--brand-surface-warm) 28%, transparent) 0%, transparent 60%, color-mix(in srgb, var(--brand-surface) 40%, transparent) 100%),
+      linear-gradient(0deg, color-mix(in srgb, var(--brand-surface) 96%, transparent) 0%, color-mix(in srgb, var(--brand-surface) 80%, transparent) 46%, color-mix(in srgb, var(--brand-surface) 15%, transparent) 78%, transparent 100%);
+  }
   .home-hero__backdrop img { object-position: 70% center; }
   .home-hero--photographic .home-hero__copy { max-width: 100%; }
   .home-hero--photographic .display { max-width: 18ch; font-size: clamp(2.25rem, 8vw, 3.7rem); }

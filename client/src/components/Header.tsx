@@ -26,15 +26,35 @@ export const Header = () => {
 
   useEffect(() => setMobileOpen(false), [location.pathname, location.hash]);
   useEffect(() => {
+    const mobileViewport = window.matchMedia('(max-width: 1180px)');
+    const onViewportChange = () => {
+      if (!mobileViewport.matches) setMobileOpen(false);
+    };
+    mobileViewport.addEventListener('change', onViewportChange);
+    return () => mobileViewport.removeEventListener('change', onViewportChange);
+  }, []);
+
+  useEffect(() => {
     if (!mobileOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (document.querySelector('.mobile-menu__panel')?.contains(target)) return;
+      if (document.querySelector('.mobile-toggle')?.contains(target)) return;
+      setMobileOpen(false);
+    };
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMobileOpen(false);
         document.querySelector<HTMLButtonElement>('.mobile-toggle')?.focus();
       }
     };
+    document.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('keydown', onKey);
+    };
   }, [mobileOpen]);
 
   const navLinks = [
