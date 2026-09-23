@@ -72,7 +72,7 @@ export const MenuPage = () => {
   return (
     <div className="menu-page">
       <SEO title={t('menuPage.seoTitle')} description={t('menuPage.seoDescription')} />
-      <section className="page-hero">
+      <section className="page-hero menu-hero">
         <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
         <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">

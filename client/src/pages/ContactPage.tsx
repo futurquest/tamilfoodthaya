@@ -33,7 +33,7 @@ export const ContactPage = () => {
     <div className="contact-page">
       <SEO title={t('contactPage.seoTitle')} description={t('contactPage.seoDescription')} />
 
-      <section className="page-hero">
+      <section className="page-hero contact-hero">
         <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
         <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">
