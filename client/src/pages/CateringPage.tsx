@@ -59,24 +59,51 @@ export const CateringPage = () => {
     <div className="catering-page">
       <SEO title={t('catering2.seoTitle')} description={t('catering2.seoDescription')} />
 
-      <section className="catering-hero catering-hero--packages">
+      <section className="catering-hero catering-hero--photographic catering-hero--packages">
+        <picture className="catering-hero__backdrop" aria-hidden="true">
+          <img src="/contact-hero-bg.png" alt="" width="2167" height="725" fetchPriority="high" decoding="async" />
+        </picture>
         <span className="fx-aura fx-aura--right" data-para="22" data-cur="10" aria-hidden="true" />
-        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
+        <FluidBackground intensity={0.4} parallaxStrength={7} deepParallax={12} />
         <div className="container catering-hero__grid">
-          <div>
-            <span className="eyebrow">{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
-            <h1 className="display">{t('catering2.heroTitle')}</h1>
-            <p className="lead">{t('catering2.heroLead')}</p>
+          <div className="catering-hero__glass-card">
+            <div className="catering-hero__eyebrow-badge">
+              <span className="catering-hero__badge-pulse" aria-hidden="true" />
+              <span>{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
+            </div>
+            <h1 lang={currentLang} className="display catering-hero__headline">{t('catering2.heroTitle')}</h1>
+            <p lang={currentLang} className="lead catering-hero__lead">{t('catering2.heroLead')}</p>
             <div className="home-hero__actions">
-              <button type="button" className="btn-primary" onClick={() => document.getElementById('packages-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}>
-                {t('catering2.viewPackages')}
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => document.getElementById('packages-section')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}
+              >
+                <span>{t('catering2.viewPackages')}</span>
                 <ArrowRight size={18} />
               </button>
               <button type="button" className="btn-secondary" onClick={() => navigate('/contact#inquiry')}>
-                {t('catering2.requestGuidance')}
+                <span>{t('catering2.requestGuidance')}</span>
               </button>
             </div>
+            <div className="catering-hero__trust-strip" aria-label="Catering guarantees">
+              <div className="catering-hero__trust-item">
+                <span className="text-amber-500 font-bold">★</span>
+                <span>{currentLang === 'ta' ? 'நிகழ்வு நாளில் புதிதாக சமையல்' : currentLang === 'nl' ? 'Vers bereid op de dag zelf' : 'Freshly prepared on event day'}</span>
+              </div>
+              <div className="catering-hero__trust-divider" aria-hidden="true" />
+              <div className="catering-hero__trust-item">
+                <span className="text-primary font-bold">✦</span>
+                <span>{currentLang === 'ta' ? 'தனிப்பயன் விருந்தினர் மெனு' : currentLang === 'nl' ? 'Maatwerk menu & dieetwensen' : 'Custom menus & dietary care'}</span>
+              </div>
+              <div className="catering-hero__trust-divider" aria-hidden="true" />
+              <div className="catering-hero__trust-item">
+                <span className="text-accent font-bold">●</span>
+                <span>{currentLang === 'ta' ? '10 முதல் 500+ விருந்தினர்கள்' : currentLang === 'nl' ? '10 tot 500+ gasten' : '10 to 500+ guests'}</span>
+              </div>
+            </div>
           </div>
+
           <div className="catering-hero__panel" data-cur="11">
             <span className="catering-hero__panel-kicker">{t('catering2.panelKicker', 'How it works')}</span>
             <strong className="catering-hero__panel-title">{t('catering2.panelTitle')}</strong>
@@ -99,9 +126,13 @@ export const CateringPage = () => {
       <section id="packages-section" className="section package-section package-section--primary">
         <FluidBackground intensity={0.45} parallaxStrength={6} deepParallax={10} />
         <div className="container">
-          <div className="section-heading split package-heading">
-            <h2 className="section-title"><span className="eyebrow">{t('catering2.packagesEyebrow', 'Catering — On A Mission')}</span>{t('catering2.packagesTitle')}</h2>
-            <p className="lead">{t('catering2.packagesLead')}</p>
+          <div className="section-heading section-heading--centered package-heading text-balance text-center">
+            <div className="package-eyebrow-pill">
+              <span className="text-primary font-bold">✦</span>
+              <span>{t('catering2.packagesEyebrow', 'Catering · Shaped around your guests')}</span>
+            </div>
+            <h2 className="section-title">{t('catering2.packagesTitle')}</h2>
+            <p className="lead lead--centered">{t('catering2.packagesLead')}</p>
           </div>
 
           {!loading && featuredPackage && (
@@ -119,7 +150,7 @@ export const CateringPage = () => {
           )}
 
           {loading ? (
-            <div className="package-grid">{[1, 2, 3].map((item) => <div key={item} className="package-skeleton" />)}</div>
+            <div className="package-grid package-grid--count-2">{[1, 2].map((item) => <div key={item} className="package-skeleton" />)}</div>
           ) : packages.length === 0 ? (
             <div className="empty-panel package-empty">
               <div>
@@ -129,38 +160,40 @@ export const CateringPage = () => {
               <button type="button" className="btn-primary" onClick={() => navigate('/contact#inquiry')}>{t('catering2.quote')}</button>
             </div>
           ) : (
-            <div className="package-grid package-grid--priority">
+            <div className={`package-grid package-grid--priority package-grid--count-${packages.length}`}>
               {packages.map((pkg, index) => (
-                <article className="package-card" key={pkg._id}>
-                  <div className="package-card__image">
-                    <img
-                      src={pkg.image || PLACEHOLDER_IMG}
-                      alt={getLabel(pkg.name, currentLang, 'Catering package')}
-                      loading="lazy"
-                      onError={(event) => { event.currentTarget.src = PLACEHOLDER_IMG; }}
-                    />
-                    <span>{index === 0 ? t('catering2.best') : index === 1 ? t('catering2.favorite') : t('catering2.ready')}</span>
-                  </div>
-                  <div className="package-card__body">
-                    <span className="package-card__type">{index === 1 ? t('catering2.favorite') : t('catering2.package')}</span>
-                    <h3>{getLabel(pkg.name, currentLang)}</h3>
-                    <p>{getLabel(pkg.description, currentLang)}</p>
-                    <div className="package-card__meta">
-                      <span><Users size={15} /> {pkg.minGuests}{pkg.maxGuests ? `-${pkg.maxGuests}` : '+'} {t('catering2.guests')}</span>
-                      {pkg.durationHours && <span><Clock size={15} /> {pkg.durationHours} hrs</span>}
+                <ScrollReveal key={pkg._id} variant="fadeUp" className="package-grid-item">
+                  <article className="package-card">
+                    <div className="package-card__image">
+                      <img
+                        src={pkg.image || PLACEHOLDER_IMG}
+                        alt={getLabel(pkg.name, currentLang, 'Catering package')}
+                        loading="lazy"
+                        onError={(event) => { event.currentTarget.src = PLACEHOLDER_IMG; }}
+                      />
+                      <span>{index === 0 ? t('catering2.best') : index === 1 ? t('catering2.favorite') : t('catering2.ready')}</span>
                     </div>
-                    <div className="package-card__footer">
-                      <div>
-                        <span>{t('common.from')}</span>
-                        <strong>EUR {pkg.basePrice}{pkg.pricingModel === 'per_person' ? ' p.p.' : ''}</strong>
+                    <div className="package-card__body">
+                      <span className="package-card__type">{index === 1 ? t('catering2.favorite') : t('catering2.package')}</span>
+                      <h3>{getLabel(pkg.name, currentLang)}</h3>
+                      <p>{getLabel(pkg.description, currentLang)}</p>
+                      <div className="package-card__meta">
+                        <span><Users size={15} /> {pkg.minGuests}{pkg.maxGuests ? `-${pkg.maxGuests}` : '+'} {t('catering2.guests')}</span>
+                        {pkg.durationHours && <span><Clock size={15} /> {pkg.durationHours} hrs</span>}
                       </div>
-                      <button type="button" className="btn-primary" onClick={() => navigate(`/catering/checkout/${pkg._id}`)}>
-                        {t('catering2.customise')}
-                        <ArrowRight size={17} />
-                      </button>
+                      <div className="package-card__footer">
+                        <div>
+                          <span>{t('common.from')}</span>
+                          <strong>EUR {pkg.basePrice}{pkg.pricingModel === 'per_person' ? ' p.p.' : ''}</strong>
+                        </div>
+                        <button type="button" className="btn-primary" onClick={() => navigate(`/catering/checkout/${pkg._id}`)}>
+                          {t('catering2.customise')}
+                          <ArrowRight size={17} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </ScrollReveal>
               ))}
             </div>
           )}
@@ -172,20 +205,31 @@ export const CateringPage = () => {
       <section className="section process-section">
         <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
         <div className="container">
-          <div className="section-heading split">
-            <h2 className="section-title"><span className="eyebrow">{t('catering2.processEyebrow', 'Kitchen & Fire')}</span>{t('catering2.processTitle')}</h2>
-            <p className="lead">{t('catering2.processLead')}</p>
+          <div className="section-heading section-heading--centered text-balance text-center">
+            <div className="package-eyebrow-pill">
+              <span className="text-primary font-bold">✦</span>
+              <span>{t('catering2.processEyebrow', 'Tamil Food Thaya · From kitchen to table')}</span>
+            </div>
+            <h2 lang={currentLang} className="section-title">{t('catering2.processTitle')}</h2>
+            <p lang={currentLang} className="lead lead--centered">{t('catering2.processLead')}</p>
           </div>
-          <div className="process-grid">
-            {process.map((item) => (
-              <ScrollReveal key={item.title} variant="fadeUp">
-                <article>
-                  <span>{item.icon}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
-                </article>
-              </ScrollReveal>
-            ))}
+          <div className="catering-process-showcase">
+            <div className="catering-process-grid">
+              {process.map((item, index) => (
+                <ScrollReveal key={item.title} variant="fadeUp" delay={index * 80} className="catering-process-item">
+                  <article className="catering-process-card">
+                    <div className="catering-process-card__header">
+                      <span className="catering-process-card__step">{`0${index + 1}`}</span>
+                      <div className="catering-process-card__icon">{item.icon}</div>
+                    </div>
+                    <div className="catering-process-card__body">
+                      <h3 lang={currentLang}>{item.title}</h3>
+                      <p lang={currentLang}>{item.copy}</p>
+                    </div>
+                  </article>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -161,13 +161,19 @@ export default function EventGallery() {
     <section className="section event-gallery" aria-labelledby={`${id}-title`}>
       <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container">
-        <div className="event-gallery__heading">
-          <div>
-            <p className="eyebrow">{t('eventGallery.eyebrow', 'Kitchen & Fire — Events in pictures')}</p>
-            <h2 className="section-title" id={`${id}-title`}>{t('eventGallery.title')}</h2>
-            <p className="lead">{t('eventGallery.description')}</p>
+        <div className="section-heading section-heading--centered text-balance text-center event-gallery__heading--centered">
+          <div className="package-eyebrow-pill">
+            <span className="text-primary font-bold">✦</span>
+            <span>{t('eventGallery.eyebrow', 'Kitchen & Fire — Events in pictures')}</span>
           </div>
-          <Link to="/contact#inquiry" className="btn-secondary">{t('conversion.quote')}<ArrowRight size={18} aria-hidden="true" /></Link>
+          <h2 className="section-title" id={`${id}-title`}>{t('eventGallery.title')}</h2>
+          <p className="lead lead--centered">{t('eventGallery.description')}</p>
+          <div className="event-gallery__cta-wrap">
+            <Link to="/contact#inquiry" className="btn-primary">
+              <span>{t('conversion.quote')}</span>
+              <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
 
         <div

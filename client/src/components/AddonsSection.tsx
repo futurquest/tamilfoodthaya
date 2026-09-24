@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, Check, Flower2, Music, Plus, Wine } from 'lucide-react';
+import { ArrowRight, Camera, Check, Flower2, Music, Plus, Wine } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../hooks/useApi';
 import ScrollReveal from './ScrollReveal';
@@ -53,30 +53,37 @@ export default function AddonsSection() {
     <section className="section addons-section">
       <FluidBackground intensity={0.38} parallaxStrength={5} deepParallax={8} />
       <div className="container">
-        <div className="section-heading split">
-          <h2 className="section-title"><span className="eyebrow">{t('addons.eyebrow', 'Kitchen & Fire')}</span>{t('addons.title')}</h2>
-          <p className="lead">{t('addons.lead')}</p>
+        <div className="section-heading section-heading--centered text-balance text-center">
+          <div className="package-eyebrow-pill">
+            <span className="text-primary font-bold">✦</span>
+            <span>{t('addons.eyebrow', 'Kitchen & Fire — Add-ons')}</span>
+          </div>
+          <h2 lang={currentLang} className="section-title">{t('addons.title')}</h2>
+          <p lang={currentLang} className="lead lead--centered">{t('addons.lead')}</p>
         </div>
 
-        <div className="addons-grid">
+        <div className={`addons-grid addons-grid--count-${addons.length}`}>
           {addons.map((addon) => (
-            <ScrollReveal key={addon._id} variant="fadeUp">
+            <ScrollReveal key={addon._id} variant="fadeUp" className="addon-grid-item">
               <article className="addon-card">
                 <span className="addon-card__icon">{CATEGORY_ICONS[addon.category] || CATEGORY_ICONS.other}</span>
-                <h3>{getLabel((addon as any).nameTranslations, addon.name, currentLang)}</h3>
-                <p>{getLabel((addon as any).descriptionTranslations, addon.description, currentLang)}</p>
-                <div>
+                <h3 lang={currentLang}>{getLabel((addon as any).nameTranslations, addon.name, currentLang)}</h3>
+                <p lang={currentLang}>{getLabel((addon as any).descriptionTranslations, addon.description, currentLang)}</p>
+                <div className="addon-card__pricing">
                   <strong>EUR {addon.price}</strong>
                   <span>{addon.pricingType === 'per_person' ? t('common.perGuest') : t('common.fixed')}</span>
                 </div>
-                <small><Check size={13} /> {t('addons.addDuring')}</small>
+                <small className="addon-card__feature"><Check size={14} /> {t('addons.addDuring')}</small>
               </article>
             </ScrollReveal>
           ))}
         </div>
 
-        <div className="section-cta">
-          <Link to="/catering#packages-section" className="btn-primary">{t('addons.browse')}</Link>
+        <div className="section-cta text-center" style={{ marginTop: 'clamp(2rem, 4vw, 3rem)' }}>
+          <Link to="/catering#packages-section" className="btn-primary">
+            <span>{t('addons.browse')}</span>
+            <ArrowRight size={18} />
+          </Link>
         </div>
       </div>
     </section>
