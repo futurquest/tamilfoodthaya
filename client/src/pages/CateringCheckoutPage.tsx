@@ -1273,7 +1273,7 @@ setDishPreview({
                                     </div>
 
                                     <div className="flex justify-between" style={{ color: 'var(--brand-text-muted)' }}>
-                                        <span>Ã— {guests} guests</span>
+                                        <span>Ã- {guests} guests</span>
                                     </div>
 
                                     <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>

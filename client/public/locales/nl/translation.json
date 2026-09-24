@@ -1165,6 +1165,20 @@
       "Eerlijke ingrediënten, geen omwegen",
       "Geserveerd met de warmte van thuis"
     ],
+    "journeyTags": [
+      "Keuken naar tafel",
+      "Handgemaakt & vers",
+      "Puur & eerlijk",
+      "Warme gastvrijheid"
+    ],
+    "journeyDescs": [
+      "Vers bereid op de ochtend van uw feest en warm geleverd in professionele thermoboxen.",
+      "Langzaam gestoofde curry's, zelfgeroosterde specerijen en ambachtelijke technieken.",
+      "Koudgeperste oliën, verse kokosmelk en gegarandeerd zonder kunstmatige toevoegingen.",
+      "Royaal geserveerd met oprechte toewijding zodat elke gast zich gekoesterd voelt."
+    ],
+    "journeyEyebrow": "Onze Kwaliteitsbelofte",
+    "journeyTitle": "Vier principes achter elk gerecht dat wij met zorg bereiden",
     "events": [
       [
         "Familiediners",

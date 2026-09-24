@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '../../components/ui/Card';
 import {
@@ -451,12 +451,12 @@ export const ManageCateringOrders = () => {
                                                     <InfoCard
                                                         icon={<Mail size={14} />}
                                                         label={t('admin.common.email', 'Email')}
-                                                        value={order.customerInfo?.email || t('admin.orders.dash', '—')}
+                                                        value={order.customerInfo?.email || t('admin.orders.dash', '-')}
                                                     />
                                                     <InfoCard
                                                         icon={<Phone size={14} />}
                                                         label={t('admin.common.phone', 'Phone')}
-                                                        value={order.customerInfo?.phone || t('admin.orders.dash', '—')}
+                                                        value={order.customerInfo?.phone || t('admin.orders.dash', '-')}
                                                     />
                                                     <InfoCard
                                                         icon={<Calendar size={14} />}
@@ -466,7 +466,7 @@ export const ManageCateringOrders = () => {
                                                     <InfoCard
                                                         icon={<MapPin size={14} />}
                                                         label={t('admin.orders.eventLocation', 'Event Location')}
-                                                        value={order.eventLocation || t('admin.orders.dash', '—')}
+                                                        value={order.eventLocation || t('admin.orders.dash', '-')}
                                                     />
                                                 </div>
 

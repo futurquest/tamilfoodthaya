@@ -1165,6 +1165,20 @@
       "Honest ingredients, no shortcuts",
       "Served with the warmth of home"
     ],
+    "journeyTags": [
+      "Kitchen to table",
+      "Handcrafted fresh",
+      "Honest ingredients",
+      "Warm hospitality"
+    ],
+    "journeyDescs": [
+      "Prepared fresh on the morning of your event & delivered hot in insulated carriers.",
+      "Slow-simmered curries, hand-roasted spice masalas, and artisanal care.",
+      "Cold-pressed oils, pure coconut milk, and zero artificial colors or preservatives.",
+      "Abundant portions served with authentic warmth so every guest feels truly cherished."
+    ],
+    "journeyEyebrow": "The Thaya Quality Standard",
+    "journeyTitle": "Four commitments behind every feast we prepare",
     "events": [
       [
         "Family dinners",

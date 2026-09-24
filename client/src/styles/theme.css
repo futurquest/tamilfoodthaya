@@ -14,10 +14,10 @@
 
 /* ---------- Fonts (raw, theme-independent) ---------- */
 @theme {
-  --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-tamil: 'Noto Sans Tamil', 'Manrope', system-ui, sans-serif;
+  --font-tamil: 'Noto Sans Tamil', 'Figtree', system-ui, sans-serif;
 }
 
 /* Corner-radius scale — 1rem base, +0.5rem steps for cards/panels. */
@@ -361,9 +361,9 @@
   --brand-mocha-deep: #543f36;
   --brand-black: #000000;
 
-  /* selected tab pill — white bg, black text in dark mode */
-  --brand-tab-pill-bg: #ffffff;
-  --brand-tab-pill-fg: #000000;
+  /* selected tab pill — deep warm spice in dark mode, comfortable on eyes */
+  --brand-tab-pill-bg: #9e3621;
+  --brand-tab-pill-fg: #ffffff;
 
   --shadow-soft: 0 16px 45px -20px rgba(0, 0, 0, 0.65);
   --shadow-lift: 0 24px 60px -25px rgba(0, 0, 0, 0.85);

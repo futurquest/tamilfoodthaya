@@ -16,7 +16,7 @@ import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import MotionFX from './motion/MotionFX';
 import ScrollToTop from './components/ScrollToTop';
-import { lazy, Suspense, useRef } from 'react';
+import { lazy, Suspense, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageLoader } from './components/Logo';
 
@@ -89,6 +89,18 @@ function AppRoutes() {
 }
 
 function App() {
+  useEffect(() => {
+    import('./i18n').then(({ default: i18nInstance }) => {
+      const handleLangChange = (lng: string) => {
+        document.documentElement.lang = lng.split('-')[0] || 'nl';
+        document.documentElement.dir = i18nInstance.dir(lng);
+      };
+      handleLangChange(i18nInstance.language || 'nl');
+      i18nInstance.on('languageChanged', handleLangChange);
+      return () => i18nInstance.off('languageChanged', handleLangChange);
+    });
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>

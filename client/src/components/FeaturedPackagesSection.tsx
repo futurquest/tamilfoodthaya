@@ -33,7 +33,11 @@ export default function FeaturedPackagesSection({ packages = [], loading = false
     <section className="section package-section">
       <FluidBackground intensity={0.42} parallaxStrength={6} deepParallax={10} />
       <div className="container">
-        <div className="section-heading split">
+        <div className="section-heading package-heading text-balance text-center">
+          <div className="package-eyebrow-pill">
+            <span className="text-primary font-bold">✦</span>
+            <span>{t('catering.packagesSection.eyebrow', 'Curated Catering Feasts')}</span>
+          </div>
           <div>
             <h2 className="section-title">{t('catering.packagesSection.title', 'Catering packages shaped around your guest list.')}</h2>
           </div>
@@ -43,22 +47,24 @@ export default function FeaturedPackagesSection({ packages = [], loading = false
         </div>
 
         {loading ? (
-          <div className="package-grid">
-            {[1, 2, 3].map((item) => <div className="package-skeleton" key={item} />)}
+          <div className="package-grid package-grid--count-2">
+            {[1, 2].map((item) => <div className="package-skeleton" key={item} />)}
           </div>
         ) : featured.length > 0 ? (
-          <div className="package-grid">
+          <div className={`package-grid package-grid--count-${featured.length}`}>
             {featured.map((pkg, index) => (
-              <ScrollReveal key={pkg._id} variant="fadeUp">
+              <ScrollReveal key={pkg._id} variant="fadeUp" className="package-grid-item">
                 <article className="package-card">
-                  <img
-                    src={pkg.image || PLACEHOLDER_IMG}
-                    alt={getLabel(pkg.name, currentLang, t('catering.packagesSection.altPhoto', 'Catering package'))}
-                    loading="lazy"
-                    onError={(event) => { event.currentTarget.src = PLACEHOLDER_IMG; }}
-                  />
-                  <div className="package-card__body">
+                  <div className="package-card__image">
+                    <img
+                      src={pkg.image || PLACEHOLDER_IMG}
+                      alt={getLabel(pkg.name, currentLang, t('catering.packagesSection.altPhoto', 'Catering package'))}
+                      loading="lazy"
+                      onError={(event) => { event.currentTarget.src = PLACEHOLDER_IMG; }}
+                    />
                     <span className="package-card__type">{index === 1 ? t('catering.packagesSection.mostRequested', 'Most requested') : t('catering.packagesSection.eventPackage', 'Event package')}</span>
+                  </div>
+                  <div className="package-card__body">
                     <h3>{getLabel(pkg.name, currentLang)}</h3>
                     <p>{getLabel(pkg.description, currentLang)}</p>
                     <div className="package-card__meta">

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowRight,
@@ -68,7 +68,7 @@ const toTimestamp = (value?: string): number => {
 
 const formatLeadDate = (value?: string): string => {
     const t = value ? Date.parse(value) : NaN;
-    if (!Number.isFinite(t)) return '—';
+    if (!Number.isFinite(t)) return '-';
     return new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
         month: 'short',
@@ -245,10 +245,10 @@ export const Dashboard = () => {
             .slice(0, 5)
             .map((lead) => ({
                 key: lead._id,
-                name: lead.name || '—',
+                name: lead.name || '-',
                 event: lead.package || t('admin.dashboard.enquiry'),
                 date: formatLeadDate(lead.eventDate),
-                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : '—',
+                guests: lead.guests != null ? String(Math.round(Math.max(toNumber(lead.guests), 0))) : '-',
                 status: lead.status === 'OPEN'
                     ? t('admin.dashboard.leadStatus.new')
                     : lead.status === 'IN_PROGRESS'
@@ -295,7 +295,7 @@ export const Dashboard = () => {
                 <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <MetricCard
                         label={t('admin.dashboard.metric.revenue')}
-                        value={loading ? '…' : loadError ? '—' : kpis.revenue}
+                        value={loading ? '�' : loadError ? '-' : kpis.revenue}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.revenueDetail}
                         icon={Euro}
                         tone="brass"
@@ -303,7 +303,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.newLeads')}
-                        value={loading ? '…' : loadError ? '—' : kpis.newLeads}
+                        value={loading ? '�' : loadError ? '-' : kpis.newLeads}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.newLeadsDetail}
                         icon={Users}
                         tone="leaf"
@@ -311,7 +311,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.orders')}
-                        value={loading ? '…' : loadError ? '—' : kpis.orders}
+                        value={loading ? '�' : loadError ? '-' : kpis.orders}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.ordersDetail}
                         icon={ClipboardList}
                         tone="spice"
@@ -319,7 +319,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.conversion')}
-                        value={loading ? '…' : loadError ? '—' : kpis.conversion}
+                        value={loading ? '�' : loadError ? '-' : kpis.conversion}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.conversionDetail}
                         icon={TrendingUp}
                         tone="ink"
@@ -341,7 +341,7 @@ export const Dashboard = () => {
 
                             <span className="inline-flex w-fit items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700">
                                 <TrendingUp size={14} />
-                                {loading ? '…' : t('admin.dashboard.bookedWeek', { count: bookedThisWeek > 0 ? bookedThisWeek : 0 })}
+                                {loading ? '�' : t('admin.dashboard.bookedWeek', { count: bookedThisWeek > 0 ? bookedThisWeek : 0 })}
                             </span>
                         </div>
 
@@ -392,7 +392,7 @@ export const Dashboard = () => {
                                 <OperationItem
                                     key={item.label}
                                     label={item.label}
-                                    value={loading ? '…' : loadError ? '—' : item.value}
+                                    value={loading ? '�' : loadError ? '-' : item.value}
                                     detail={item.detail}
                                     icon={item.icon}
                                     to="/admin/catering-orders"

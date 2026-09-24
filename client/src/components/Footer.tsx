@@ -1,11 +1,11 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { IconMapPin, IconPhone, IconMail } from './Icons';
 import { useTranslation } from 'react-i18next';
 
 const hours = [
-    { dayKey: 'footer.monFri', time: '10:00 – 22:30' },
-    { dayKey: 'footer.saturday', time: '10:00 – 23:00' },
-    { dayKey: 'footer.sunday', time: '11:00 – 22:00' },
+    { dayKey: 'footer.monFri', time: '10:00 - 22:30' },
+    { dayKey: 'footer.saturday', time: '10:00 - 23:00' },
+    { dayKey: 'footer.sunday', time: '11:00 - 22:00' },
 ];
 
 export default function Footer() {
@@ -323,7 +323,7 @@ export default function Footer() {
                 <div className="ft-inner">
                     <div className="ft-grid">
 
-                        {/* â”€â”€ Brand â”€â”€ */}
+                        {/* ── Brand ── */}
                         <div>
                             <Link to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 4 }}>
                                 <div className="ft-brand-name">
@@ -361,7 +361,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* â”€â”€ Quick Links â”€â”€ */}
+                        {/* ── Quick Links ── */}
                         <div>
                             <p className="ft-col-title">{t('footer.explore')}</p>
                             <ul className="ft-nav">
@@ -398,7 +398,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* â”€â”€ Contact â”€â”€ */}
+                        {/* ── Contact ── */}
                         <div>
                             <p className="ft-col-title">{t('footer.contact')}</p>
                             <ul className="ft-contact">
@@ -432,7 +432,7 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* â”€â”€ Hours â”€â”€ */}
+                        {/* ── Hours ── */}
                         <div>
                             <p className="ft-col-title">{t('footer.hours')}</p>
                             <div className="ft-hours">

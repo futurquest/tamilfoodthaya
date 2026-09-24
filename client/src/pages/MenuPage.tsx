@@ -49,7 +49,9 @@ export const MenuPage = () => {
           name: cat.name,
           image: cat.image,
           description: cat.description,
-          items: itemArr.filter((item: any) => item.categoryId === cat._id || item.categoryId?._id === cat._id),
+          items: itemArr
+            .filter((item: any) => item.categoryId === cat._id || item.categoryId?._id === cat._id)
+            .slice(0, 6),
         })));
       } else {
         setCategories(localizeFallbackCategories(t));

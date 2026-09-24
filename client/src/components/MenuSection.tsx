@@ -132,7 +132,9 @@ const [categories, setCategories] = useState<Category[]>([]);
           name: cat.name,
           image: cat.image,
           description: cat.description,
-          items: itemArr.filter((item: any) => item.categoryId === cat._id || item.categoryId?._id === cat._id),
+          items: itemArr
+            .filter((item: any) => item.categoryId === cat._id || item.categoryId?._id === cat._id)
+            .slice(0, 6),
         }));
         setCategories(built);
         setActiveCategory(built[0]?._id || '');
@@ -149,8 +151,12 @@ const [categories, setCategories] = useState<Category[]>([]);
     <section id="our_menu" className="section menu-preview">
       <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container">
-        <div className="section-heading split">
-<div>
+        <div className="section-heading text-balance">
+          <div className="menu-eyebrow-pill">
+            <span className="text-primary font-bold">✦</span>
+            <span>{t('menuPreview.eyebrow', 'Culinary Specialties')}</span>
+          </div>
+          <div>
             <h2 className="section-title">{t('menuPreview.title')}</h2>
           </div>
           <p className="lead">{t('menuPreview.lead')}</p>
@@ -195,9 +201,12 @@ const [categories, setCategories] = useState<Category[]>([]);
                 </ScrollReveal>
 
                 <div className="dish-list">
-                  {activeCat.items.map((item) => (
+                  {activeCat.items.slice(0, 6).map((item) => (
                     <button key={item._id} type="button" className="dish-row" onClick={() => setSelectedItem(item)}>
-                      <span className="dish-row__name">{getLabel((item as any).nameTranslations, item.name, currentLang)}</span>
+                      <div className="dish-row__header">
+                        <span className="dish-row__name">{getLabel((item as any).nameTranslations, item.name, currentLang)}</span>
+                        <span className="dish-row__view-hint">View details →</span>
+                      </div>
                       <span className="dish-row__copy">{getLabel((item as any).descriptionTranslations, item.description, currentLang)}</span>
                       <span className="dish-row__meta">
                         {item.isVeg && <span><Leaf size={14} /> {t('common.veg')}</span>}

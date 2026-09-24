@@ -27,22 +27,40 @@ export default function HeroSection({ data }: { data?: HeroSectionData }) {
           <img src="/home-hero.png" alt="" width="1678" height="937" fetchPriority="high" decoding="async" />
         </picture>
         <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
-        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
+        <FluidBackground intensity={0.4} parallaxStrength={7} deepParallax={12} />
         <div className="container home-hero__grid">
-          <div className="home-hero__copy">
-            <p className="eyebrow home-hero__eyebrow">{t('home2.eyebrow')}</p>
-            <h1 lang={lang} className="display">{title}</h1>
-            <p className="lead" lang={lang}>{lead}</p>
+          <div className="home-hero__glass-card">
+            <div className="home-hero__eyebrow-badge">
+              <span className="home-hero__badge-pulse" aria-hidden="true" />
+              <span>{t('home2.eyebrow')}</span>
+            </div>
+            <h1 lang={lang} className="display home-hero__headline">{title}</h1>
+            <p className="lead home-hero__lead" lang={lang}>{lead}</p>
             <div className="home-hero__actions">
               <Link to="/catering#packages-section" className="btn-primary">
-                {t('home2.cateringCta')}
+                <span>{t('home2.cateringCta')}</span>
                 <ArrowRight size={18} />
               </Link>
               <Link to="/menu" className="btn-secondary">
-                {t('home2.menuCta')}
+                <span>{t('home2.menuCta')}</span>
               </Link>
             </div>
-            <p className="home-hero__note">{t('home2.regionNote')}</p>
+            <div className="home-hero__trust-strip" aria-label="Trust highlights">
+              <div className="home-hero__trust-item">
+                <span className="text-amber-500 font-bold">★</span>
+                <span>{t('home2.trust1')}</span>
+              </div>
+              <div className="home-hero__trust-divider" aria-hidden="true" />
+              <div className="home-hero__trust-item">
+                <span className="text-primary font-bold">✦</span>
+                <span>{t('home2.trust2')}</span>
+              </div>
+              <div className="home-hero__trust-divider" aria-hidden="true" />
+              <div className="home-hero__trust-item">
+                <span className="text-accent font-bold">●</span>
+                <span>{t('home2.trust3')}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
