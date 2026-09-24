@@ -10,7 +10,6 @@ export default function OurStorySection() {
       <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
       <div className="container about-grid">
         <ScrollReveal variant="fadeUp" className="about-copy">
-          <p className="eyebrow">{t('about.eyebrow')}</p>
           <h2 className="section-title">{t('about.title')}</h2>
           <h3 className="about-subhead">{t('about.subtitle')}</h3>
           <div className="about-body">

@@ -20,7 +20,6 @@ export default function EventTypesSection() {
       <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container story-grid">
         <ScrollReveal variant="fadeUp" className="story-copy">
-          <p className="eyebrow">{t('story.eyebrow', 'Kitchen & Fire — What we do')}</p>
           <h2 className="section-title">{t('story.title')}</h2>
           <p className="lead">{t('story.lead')}</p>
           <div className="journey-strip">

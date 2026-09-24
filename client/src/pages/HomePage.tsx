@@ -7,6 +7,18 @@ import EventTypesSection from '../components/EventTypesSection';
 import MenuSection from '../components/MenuSection';
 import FeaturedPackagesSection from '../components/FeaturedPackagesSection';
 import EventGallery from '../components/EventGallery';
+import { motion } from 'framer-motion';
+
+const ScrollReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+        {children}
+    </motion.div>
+);
 
 interface Package {
     _id: string;
@@ -75,25 +87,34 @@ const SectionRenderer = ({ cfg }: { cfg: HomepageConfig }) => {
     };
 
     return (
-        <div className="animate-fadeIn">
+        <div>
             {sections.map((section) => {
                 if (!section.visible) return null;
                 if (section.key === 'hero') {
                     return (
-                        <HeroSection
-                            key="hero"
-                            data={{
-                                title: pick(heroSection?.title),
-                                lead: pick(heroSection?.subtitle) || heroSection?.description,
-                            }}
-                        />
+                        <ScrollReveal key="hero">
+                            <HeroSection
+                                data={{
+                                    title: pick(heroSection?.title),
+                                    lead: pick(heroSection?.subtitle) || heroSection?.description,
+                                }}
+                            />
+                        </ScrollReveal>
                     );
                 }
                 if (section.key === 'catering') {
-                    return <FeaturedPackagesSection key="catering" packages={packages} loading={false} />;
+                    return (
+                        <ScrollReveal key="catering">
+                            <FeaturedPackagesSection packages={packages} loading={false} />
+                        </ScrollReveal>
+                    );
                 }
                 if (section.key === 'menu') {
-                    return <MenuSection key="menu" />;
+                    return (
+                        <ScrollReveal key="menu">
+                            <MenuSection />
+                        </ScrollReveal>
+                    );
                 }
                 return null;
             })}
@@ -108,13 +129,25 @@ const ClassicHomePage = ({
     packages: Package[];
     loadingPackages: boolean;
 }) => (
-    <div className="animate-fadeIn">
-        <HeroSection />
-        <OurStorySection />
-        <EventTypesSection />
-        <EventGallery />
-        <FeaturedPackagesSection packages={packages} loading={loadingPackages} />
-        <MenuSection />
+    <div>
+        <ScrollReveal delay={0.1}>
+            <HeroSection />
+        </ScrollReveal>
+        <ScrollReveal>
+            <OurStorySection />
+        </ScrollReveal>
+        <ScrollReveal>
+            <EventTypesSection />
+        </ScrollReveal>
+        <ScrollReveal>
+            <EventGallery />
+        </ScrollReveal>
+        <ScrollReveal>
+            <FeaturedPackagesSection packages={packages} loading={loadingPackages} />
+        </ScrollReveal>
+        <ScrollReveal>
+            <MenuSection />
+        </ScrollReveal>
     </div>
 );
 
