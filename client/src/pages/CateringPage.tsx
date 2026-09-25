@@ -59,14 +59,11 @@ export const CateringPage = () => {
     <div className="catering-page">
       <SEO title={t('catering2.seoTitle')} description={t('catering2.seoDescription')} />
 
-      <section className="catering-hero catering-hero--photographic catering-hero--packages">
-        <picture className="catering-hero__backdrop" aria-hidden="true">
-          <img src="/contact-hero-bg.png" alt="" width="2167" height="725" fetchPriority="high" decoding="async" />
-        </picture>
+      <section className="page-hero catering-hero catering-hero--packages">
         <span className="fx-aura fx-aura--right" data-para="22" data-cur="10" aria-hidden="true" />
-        <FluidBackground intensity={0.4} parallaxStrength={7} deepParallax={12} />
+        <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container catering-hero__grid">
-          <div className="catering-hero__glass-card">
+          <div className="catering-hero__content">
             <div className="catering-hero__eyebrow-badge">
               <span className="catering-hero__badge-pulse" aria-hidden="true" />
               <span>{t('catering2.heroEyebrow', 'Kitchen & Fire — Catering')}</span>
@@ -174,7 +171,6 @@ export const CateringPage = () => {
                       <span>{index === 0 ? t('catering2.best') : index === 1 ? t('catering2.favorite') : t('catering2.ready')}</span>
                     </div>
                     <div className="package-card__body">
-                      <span className="package-card__type">{index === 1 ? t('catering2.favorite') : t('catering2.package')}</span>
                       <h3>{getLabel(pkg.name, currentLang)}</h3>
                       <p>{getLabel(pkg.description, currentLang)}</p>
                       <div className="package-card__meta">

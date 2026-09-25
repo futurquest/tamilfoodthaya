@@ -37,8 +37,12 @@ export const ContactPage = () => {
         <span className="fx-aura" data-para="22" data-cur="9" aria-hidden="true" />
         <FluidBackground intensity={0.5} parallaxStrength={7} deepParallax={12} />
         <div className="container">
-          <h1>{t('contactPage.heroTitle')}</h1>
-          <p>{t('contactPage.heroDesc')}</p>
+          <div className="catering-hero__eyebrow-badge">
+            <span className="catering-hero__badge-pulse" aria-hidden="true" />
+            <span>{t('contactPage.heroEyebrow', 'Kitchen & Fire — Get in Touch')}</span>
+          </div>
+          <h1 className="display catering-hero__headline">{t('contactPage.heroTitle')}</h1>
+          <p className="lead catering-hero__lead">{t('contactPage.heroDesc')}</p>
         </div>
       </section>
 
