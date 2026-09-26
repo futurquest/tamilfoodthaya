@@ -94,12 +94,14 @@ STRIPE_WEBHOOK_SECRET=your_webhook_secret
 CLIENT_URL=http://localhost:5173
 
 # Email (SMTP)
-SMTP_HOST=smtp.example.com
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your_username
-SMTP_PASS=your_password
-SMTP_FROM="Tamil Food Thaya" <noreply@yourdomain.com>
+SMTP_USER=your-address@gmail.com
+SMTP_PASS=your-16-character-app-password
+SMTP_FROM="Tamil Food Thaya <your-address@gmail.com>"
 ```
+
+For Gmail, enable 2-Step Verification and create a Google App Password. Add the SMTP lines from [server/.env.gmail.example](server/.env.gmail.example) to your existing `server/.env` (do not replace its database or payment settings), then restart the backend. Use the same Gmail address in `SMTP_USER` and `SMTP_FROM`; put the App Password in `SMTP_PASS`, not your normal Google password. Keep `server/.env` private. Email delivery is not guaranteed by a successful API response until SMTP send errors are surfaced by the backend.
 
 ### Frontend (.env)
 ```env
