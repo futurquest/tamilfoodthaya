@@ -151,7 +151,7 @@ const [categories, setCategories] = useState<Category[]>([]);
     <section id="our_menu" className="section menu-preview">
       <FluidBackground intensity={0.4} parallaxStrength={5} deepParallax={9} />
       <div className="container">
-        <div className="section-heading text-balance">
+        <div className="section-heading section-heading--centered text-balance">
           <div className="menu-eyebrow-pill">
             <span className="text-primary font-bold">✦</span>
             <span>{t('menuPreview.eyebrow', 'Culinary Specialties')}</span>

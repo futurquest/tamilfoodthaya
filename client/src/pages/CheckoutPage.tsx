@@ -24,7 +24,7 @@ const createCheckoutSchema = (t: (key: string) => string) => z.object({
 type CheckoutForm = z.infer<ReturnType<typeof createCheckoutSchema>>;
 
 export const CheckoutPage = () => {
-  const { cart, total, clearCart } = useCart();
+  const { cart, total } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -61,14 +61,16 @@ export const CheckoutPage = () => {
       });
 
       if (response?.url) {
-        clearCart();
         window.location.href = response.url;
         return;
       }
 
       toast.error(t('checkout.paymentMissing'));
-    } catch {
-      toast.error(t('checkout.processError'));
+    } catch (error: unknown) {
+      const responseMessage = (error as { response?: { data?: { message?: string | string[] } } })
+        ?.response?.data?.message;
+      const message = Array.isArray(responseMessage) ? responseMessage[0] : responseMessage;
+      toast.error(message || t('checkout.processError'));
     }
   };
 

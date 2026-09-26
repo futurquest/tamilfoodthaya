@@ -22,7 +22,7 @@ export class SettingsService {
     ) { }
 
     async getSettings(): Promise<SettingsEntity> {
-        let settings = await this.settingsRepo.findOne({ order: { createdAt: 'ASC' } });
+        let settings = await this.findPrimarySettings();
         if (!settings) {
             settings = await this.settingsRepo.save(this.settingsRepo.create({ _id: SettingsEntity.newId() }));
         }
@@ -30,7 +30,7 @@ export class SettingsService {
     }
 
     async updateSettings(data: any): Promise<SettingsEntity> {
-        let settings = await this.settingsRepo.findOne({ order: { createdAt: 'ASC' } });
+        let settings = await this.findPrimarySettings();
         if (settings) {
             Object.assign(settings, data);
             return this.settingsRepo.save(settings);
@@ -102,5 +102,10 @@ export class SettingsService {
         const found = await this.menuItemRepo.find({ where: { _id: In(capped), isActive: true, available: true } });
         const byId = new Map(found.map(m => [m._id, m]));
         return capped.map(id => byId.get(id)).filter(Boolean);
+    }
+
+    private async findPrimarySettings(): Promise<SettingsEntity | null> {
+        const [settings] = await this.settingsRepo.find({ order: { createdAt: 'ASC' }, take: 1 });
+        return settings ?? null;
     }
 }

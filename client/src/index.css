@@ -4173,30 +4173,52 @@ select:focus-visible {
 
 .admin-login-submit {
   display: inline-flex;
+  width: 100%;
   min-height: 3.1rem;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  border: 1px solid color-mix(in srgb, var(--brand-primary-dark) 20%, transparent);
+  border: 1px solid var(--brand-primary-strong);
   border-radius: 0.85rem;
-  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary-warm) 72%, var(--brand-primary));
-  color: var(--brand-surface);
+  background: var(--brand-primary-strong);
+  color: var(--brand-cream);
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .admin-login-submit:hover:not(:disabled) {
+  background: var(--brand-primary-800);
+  border-color: var(--brand-primary-800);
   transform: translateY(-2px);
   box-shadow: 0 20px 42px color-mix(in srgb, var(--brand-primary) 28%, transparent);
 }
 
+.admin-login-submit:focus-visible {
+  outline: 3px solid var(--brand-accent);
+  outline-offset: 3px;
+}
+
+[data-theme='dark'] .admin-login-submit {
+  border-color: var(--brand-accent);
+  background: var(--brand-accent);
+  color: var(--brand-night);
+}
+
+[data-theme='dark'] .admin-login-submit:hover:not(:disabled) {
+  border-color: var(--brand-accent-bright);
+  background: var(--brand-accent-bright);
+}
+
+[data-theme='dark'] .admin-login-submit:focus-visible {
+  outline-color: var(--brand-cream);
+}
+
 .admin-login-submit:disabled {
   cursor: not-allowed;
-  opacity: 0.62;
   transform: none;
 }
 
@@ -4204,8 +4226,8 @@ select:focus-visible {
   width: 1rem;
   height: 1rem;
   flex: 0 0 auto;
-  border: 2px solid color-mix(in srgb, var(--brand-surface) 32%, transparent);
-  border-top-color: var(--brand-surface);
+  border: 2px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
   border-radius: 999px;
   animation: admin-login-spin 0.75s linear infinite;
 }

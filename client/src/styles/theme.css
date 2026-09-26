@@ -202,6 +202,8 @@
   --brand-warning-deep: #966c15;
   --brand-error: #b43924;
   --brand-error-soft: #fae4e0;
+  --catering-success: #15803d;
+  --catering-success-soft: #dcfce7;
 
   /* misc */
   --brand-shadow-warm: #362016;
@@ -352,6 +354,8 @@
   --brand-warning-deep: #b5841e;
   --brand-error: #e0654c;
   --brand-error-soft: #381a15;
+  --catering-success: #4ade80;
+  --catering-success-soft: #12351f;
 
   /* misc */
   --brand-shadow-warm: #000000;

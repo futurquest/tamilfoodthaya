@@ -83,7 +83,20 @@ export const updateCateringPackage = (id: string, data: any) => api.patch(`/cate
 export const deleteCateringPackage = (id: string) => api.delete(`/catering/packages/${id}`).then((res) => res.data);
 
 // Catering Orders API
-export const createCateringOrder = (data: any) => api.post('/catering/orders', data).then((res) => res.data);
+export const createCateringOrder = (data: any) => {
+    const orderData = {
+        ...data,
+        selections: data.selections.map((selection: any) => ({
+            ...selection,
+            selectedItems: selection.selectedItems.map(({ itemId, itemName, choiceName }: any) => ({
+                itemId,
+                itemName,
+                ...(choiceName ? { choiceName } : {}),
+            })),
+        })),
+    };
+    return api.post('/catering/orders', orderData).then((res) => res.data);
+};
 export const getCateringOrders = () => api.get('/catering/orders').then((res) => res.data);
 export const updateCateringOrderStatus = (id: string, status: string) => api.patch(`/catering/orders/${id}/status`, { status }).then((res) => res.data);
 

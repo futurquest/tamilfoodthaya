@@ -26,6 +26,11 @@ export class SelectedItemDto {
     @IsOptional()
     @IsString()
     choiceName?: string;
+
+    // The checkout displays a provisional price; the service recalculates it.
+    @IsOptional()
+    @IsNumber()
+    price?: number;
 }
 
 export class CateringAddonDto {

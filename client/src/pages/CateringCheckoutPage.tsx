@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type FocusEvent, type MouseEvent, type ReactNode } from 'react';
+import { useState, useEffect, useId, useMemo, useRef, type FocusEvent, type MouseEvent, type ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container } from '../components/ui/Container';
@@ -10,6 +10,7 @@ import { PageLoader } from '../components/Logo';
 import { toast } from 'react-hot-toast';
 import {
     CheckCircle,
+    CircleAlert,
     ChevronRight,
     ChevronLeft,
     Users,
@@ -124,6 +125,14 @@ export const CateringCheckoutPage = () => {
         notes: ''
     });
     const [submitting, setSubmitting] = useState(false);
+    const submittingRef = useRef(false);
+    const noticeRef = useRef<HTMLDivElement>(null);
+    const [orderNotice, setOrderNotice] = useState<{
+        type: 'error' | 'success';
+        message: string;
+        titleKey?: string;
+        hintKey?: string;
+    } | null>(null);
     const [activeCatIdx, setActiveCatIdx] = useState(0);
 
     const [availableAddons, setAvailableAddons] = useState<Addon[]>([]);
@@ -137,6 +146,15 @@ export const CateringCheckoutPage = () => {
     } | null>(null);
     const [couponLoading, setCouponLoading] = useState(false);
     const [dishPreview, setDishPreview] = useState<DishPreview | null>(null);
+
+    useEffect(() => {
+        if (!orderNotice) return;
+        noticeRef.current?.focus();
+        if (orderNotice.type === 'success') {
+            const redirect = window.setTimeout(() => navigate('/catering'), 3000);
+            return () => window.clearTimeout(redirect);
+        }
+    }, [orderNotice, navigate]);
 
     useEffect(() => {
         if (!packageId) {
@@ -213,7 +231,15 @@ export const CateringCheckoutPage = () => {
             }
         } else {
             if (catSelections.length >= cat.maxSelect) {
-                toast.error(`Maximum ${cat.maxSelect} item(s) allowed for "${cat.name}"`);
+                setOrderNotice({
+                    type: 'error',
+                    titleKey: 'cateringCheckout.selectionErrorTitle',
+                    message: t('cateringCheckout.maxSelectionAllowed', {
+                        max: cat.maxSelect,
+                        category: getLabel((cat as any).nameTranslations, cat.name),
+                    }),
+                    hintKey: 'cateringCheckout.selectionErrorHint',
+                });
                 return;
             }
 
@@ -370,15 +396,29 @@ setDishPreview({
         pkg.categories.forEach((cat) => {
             const count = (selections[cat.name] || []).length;
             if (count < cat.minSelect) {
-                errors.push(
-                    `"${getLabel((cat as any).nameTranslations, cat.name)}" requires at least ${cat.minSelect} selection(s)`
-                );
+                errors.push(t('cateringCheckout.minSelectionRequired', {
+                    category: getLabel((cat as any).nameTranslations, cat.name),
+                    min: cat.minSelect,
+                }));
             }
         });
         return errors;
     }, [pkg, selections, currentLang]);
 
     const canProceedFromSelections = selectionErrors.length === 0;
+
+    const continueFromSelections = () => {
+        if (!canProceedFromSelections) {
+            setOrderNotice({
+                type: 'error',
+                titleKey: 'cateringCheckout.selectionErrorTitle',
+                message: selectionErrors.join('\n'),
+                hintKey: 'cateringCheckout.requiredItemsHint',
+            });
+            return;
+        }
+        setStep(1);
+    };
 
     const canSubmit =
         (user ||
@@ -389,8 +429,10 @@ setDishPreview({
         guests > 0;
 
     const handleSubmit = async () => {
-        if (!pkg || !canSubmit) return;
+        if (!pkg || !canSubmit || submittingRef.current || orderNotice?.type === 'success') return;
 
+        submittingRef.current = true;
+        setOrderNotice(null);
         setSubmitting(true);
         try {
             const orderData = {
@@ -413,10 +455,17 @@ setDishPreview({
             };
 
             await createCateringOrder(orderData);
-            toast.success('Order placed successfully');
-            navigate('/catering');
+            setOrderNotice({ type: 'success', message: t('cateringCheckout.orderSuccess') });
         } catch (err: any) {
-            toast.error(err?.response?.data?.message || 'Failed to place order');
+            submittingRef.current = false;
+            const responseMessage = err?.response?.data?.message;
+            const detail = Array.isArray(responseMessage) ? responseMessage[0] : responseMessage;
+            setOrderNotice({
+                type: 'error',
+                message: err?.response?.status === 400 && typeof detail === 'string' && detail.trim()
+                    ? detail
+                    : t('cateringCheckout.orderError'),
+            });
         } finally {
             setSubmitting(false);
         }
@@ -805,8 +854,7 @@ setDishPreview({
                                                     </Button>
                                                 ) : (
                                                     <Button
-                                                        disabled={!canProceedFromSelections}
-                                                        onClick={() => setStep(1)}
+                                                        onClick={continueFromSelections}
                                                         className="btn-primary gap-2"
                                                     >
                                                         {t('cateringCheckout.chooseAddons')}
@@ -1164,6 +1212,7 @@ setDishPreview({
                                             <Button
                                                 variant="outline"
                                                 onClick={() => setStep(2)}
+                                                disabled={submitting || orderNotice?.type === 'success'}
                                                 className="gap-2"
                                             >
                                                 <ChevronLeft size={18} />
@@ -1172,7 +1221,7 @@ setDishPreview({
 
                                             <Button
                                                 onClick={handleSubmit}
-                                                disabled={submitting}
+                                                disabled={submitting || orderNotice?.type === 'success'}
                                                 className="btn-primary gap-2 px-8"
                                             >
                                                 {submitting ? t('cateringCheckout.placing') : t('cateringCheckout.placeOrder')}
@@ -1273,7 +1322,7 @@ setDishPreview({
                                     </div>
 
                                     <div className="flex justify-between" style={{ color: 'var(--brand-text-muted)' }}>
-                                        <span>Ã- {guests} guests</span>
+                                        <span>- {guests} guests</span>
                                     </div>
 
                                     <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--brand-outline)' }}>
@@ -1400,6 +1449,101 @@ setDishPreview({
                     </div>
                 </div>
             )}
+
+            {orderNotice && (
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm" onMouseDown={(event) => {
+                    if (event.target === event.currentTarget && orderNotice.type === 'error') setOrderNotice(null);
+                }}>
+                    <div
+                        ref={noticeRef}
+                        role={orderNotice.type === 'error' ? 'alertdialog' : 'dialog'}
+                        aria-modal="true"
+                        aria-labelledby="catering-order-notice-title"
+                        aria-describedby="catering-order-notice-message"
+                        tabIndex={-1}
+                        className="w-full max-w-lg overflow-hidden rounded-2xl border shadow-2xl outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        onKeyDown={(event) => {
+                            if (event.key === 'Escape' && orderNotice.type === 'error') {
+                                setOrderNotice(null);
+                            } else if (event.key === 'Tab') {
+                                event.preventDefault();
+                                event.currentTarget.querySelector<HTMLButtonElement>('button')?.focus();
+                            }
+                        }}
+                        style={{
+                            borderColor: 'var(--brand-outline)',
+                            borderTopColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                            borderTopWidth: 4,
+                            background: 'var(--brand-surface-ivory)',
+                            color: 'var(--brand-text)',
+                            outlineColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                        }}
+                    >
+                        <div className="p-5 sm:p-7">
+                            <div className="flex items-start gap-4">
+                                <div
+                                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+                                    style={{
+                                        background: orderNotice.type === 'error' ? 'var(--brand-error-soft)' : 'var(--catering-success-soft)',
+                                        color: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                                    }}
+                                >
+                                    {orderNotice.type === 'error'
+                                        ? <CircleAlert size={24} aria-hidden="true" />
+                                        : <CheckCircle size={24} aria-hidden="true" />}
+                                </div>
+                                <div className="min-w-0 flex-1 pt-0.5">
+                                    <h2 id="catering-order-notice-title" className="font-display text-xl font-semibold leading-tight">
+                                        {t(orderNotice.titleKey || (orderNotice.type === 'error' ? 'cateringCheckout.orderErrorTitle' : 'cateringCheckout.orderSuccessTitle'))}
+                                    </h2>
+                                </div>
+                                {orderNotice.type === 'error' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setOrderNotice(null)}
+                                        aria-label={t('cateringCheckout.dismissOrderError')}
+                                        className="-mr-2 -mt-2 shrink-0 rounded-lg p-2 transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2"
+                                    >
+                                        <X size={18} aria-hidden="true" />
+                                    </button>
+                                )}
+                            </div>
+                            <div
+                                id="catering-order-notice-message"
+                                role={orderNotice.type === 'success' ? 'status' : undefined}
+                                className="mt-5 space-y-1 rounded-xl border-l-4 px-4 py-3.5 text-sm leading-6"
+                                style={{
+                                    borderLeftColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                                    background: orderNotice.type === 'error'
+                                        ? 'color-mix(in srgb, var(--brand-error) 7%, var(--brand-surface-ivory))'
+                                        : 'color-mix(in srgb, var(--catering-success) 9%, var(--brand-surface-ivory))',
+                                }}
+                            >
+                                {orderNotice.message.split('\n').filter(Boolean).map((line, index) => (
+                                    <p key={index} className="break-words font-medium">{line}</p>
+                                ))}
+                            </div>
+                            {(orderNotice.hintKey || orderNotice.type === 'success' || orderNotice.titleKey === undefined) && (
+                                <p className="mt-4 text-sm leading-6" style={{ color: 'var(--brand-text-muted)' }}>
+                                    {t(orderNotice.hintKey || (orderNotice.type === 'error' ? 'cateringCheckout.orderRetryHint' : 'cateringCheckout.orderRedirectHint'))}
+                                </p>
+                            )}
+                            {orderNotice.type === 'error' && (
+                                <div className="mt-6 flex justify-end border-t pt-4" style={{ borderColor: 'var(--brand-outline)' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setOrderNotice(null)}
+                                        className="rounded-lg border px-4 py-2 text-sm font-semibold transition-colors hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
+                                        style={{ borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-dim)', color: 'var(--brand-text)' }}
+                                    >
+                                        {t('cateringCheckout.close')}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -1423,13 +1567,15 @@ const DetailField = ({
     min?: string;
     max?: string;
 }) => {
+    const inputId = useId();
     return (
         <div>
-            <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand-text)' }}>
+            <label htmlFor={inputId} className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand-text)' }}>
                 {icon}
                 {label}
             </label>
             <input
+                id={inputId}
                 type={type}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}

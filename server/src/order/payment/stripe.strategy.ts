@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { PaymentGateway } from './payment.interface';
@@ -18,6 +18,11 @@ export class StripePaymentStrategy implements PaymentGateway {
     }
 
     async createCheckoutSession(orderData: any, metadata: any): Promise<{ url: string; sessionId: string }> {
+        const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+        if (!secretKey || !secretKey.startsWith('sk_')) {
+            throw new ServiceUnavailableException('Online payment is not configured. Please contact the restaurant before placing an order.');
+        }
+
         const lineItems = orderData.items.map((item: any) => ({
             price_data: {
                 currency: 'eur',
@@ -36,7 +41,7 @@ export class StripePaymentStrategy implements PaymentGateway {
             line_items: lineItems,
             mode: 'payment',
             success_url: `${clientUrl}/order-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${clientUrl}/cart`,
+            cancel_url: `${clientUrl}/checkout`,
             metadata: metadata,
         });
 
