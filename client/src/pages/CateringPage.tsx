@@ -215,11 +215,13 @@ export const CateringPage = () => {
                 <ScrollReveal key={item.title} variant="fadeUp" delay={index * 80} className="catering-process-item">
                   <article className="catering-process-card">
                     <div className="catering-process-card__header">
-                      <span className="catering-process-card__step">{`0${index + 1}`}</span>
+                      <div className="catering-process-card__title-group">
+                        <span className="catering-process-card__step">{`0${index + 1}`}</span>
+                        <h3 lang={currentLang}>{item.title}</h3>
+                      </div>
                       <div className="catering-process-card__icon">{item.icon}</div>
                     </div>
                     <div className="catering-process-card__body">
-                      <h3 lang={currentLang}>{item.title}</h3>
                       <p lang={currentLang}>{item.copy}</p>
                     </div>
                   </article>
