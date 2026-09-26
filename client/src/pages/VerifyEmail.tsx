@@ -4,13 +4,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyEmail } from '../hooks/useApi';
 import { SEO } from '../components/SEO';
 import { ShieldCheck, Mail } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import FluidBackground from '../components/FluidBackground';
+import { useFeedback } from '../context/FeedbackContext';
 
 export const VerifyEmail = () => {
     const [pin, setPin] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { t } = useTranslation();
+    const { show } = useFeedback();
     const location = useLocation();
     const navigate = useNavigate();
     const email = location.state?.email;
@@ -18,18 +19,18 @@ export const VerifyEmail = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) {
-            toast.error('Email not found. Please register again.');
+            show({ type: 'error', message: 'Email not found. Please register again.' });
             return;
         }
 
         setIsLoading(true);
         try {
             await verifyEmail({ email, pin });
-            toast.success(t('auth.verify.success', 'Email successfully verified! You can now login.'));
+            show({ type: 'success', message: t('auth.verify.success', 'Email successfully verified! You can now login.') });
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            toast.error(error.response?.data?.message || t('auth.verify.failed', 'Verification failed'));
+            show({ type: 'error', message: error.response?.data?.message || t('auth.verify.failed', 'Verification failed') });
         } finally {
             setIsLoading(false);
         }

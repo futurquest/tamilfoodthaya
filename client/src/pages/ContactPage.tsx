@@ -1,31 +1,27 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
 import { CalendarDays, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createLead, getSettings } from '../hooks/useApi';
 import { SEO } from '../components/SEO';
 import FluidBackground from '../components/FluidBackground';
+import { useFeedback } from '../context/FeedbackContext';
 
 export const ContactPage = () => {
   const { t } = useTranslation();
-  const [result, setResult] = useState<'success' | 'error' | null>(null);
+  const { show } = useFeedback();
   const today = new Date().toLocaleDateString('en-CA');
   const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm();
   const eventDate = watch('eventDate');
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: getSettings });
 
   const onSubmit = async (data: any) => {
-    setResult(null);
     try {
       await createLead(data);
-      setResult('success');
-      toast.success(t('contactPage.success'));
+      show({ type: 'success', message: t('contactPage.success') });
       reset();
     } catch {
-      setResult('error');
-      toast.error(t('contactPage.error'));
+      show({ type: 'error', message: t('contactPage.error') });
     }
   };
 
@@ -121,7 +117,6 @@ export const ContactPage = () => {
               </div>
               <label>{t('conversion.location')}<input className="input-field" autoComplete="address-level2" {...register('location')} /></label>
             </fieldset>
-            {result && <p className={`form-result form-result--${result}`} role={result === 'error' ? 'alert' : 'status'}>{t(result === 'success' ? 'conversion.success' : 'conversion.retry')}</p>}
             <label>
               {t('form.message')}
               <textarea aria-invalid={!!errors.message} aria-describedby={errors.message ? 'message-error' : undefined} {...register('message', { required: t('contactPage.messageRequired') })} className="input-field" placeholder={t('contactPage.messagePlaceholder')} />

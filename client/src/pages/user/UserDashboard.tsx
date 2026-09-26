@@ -22,11 +22,12 @@ import {
     Euro,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { useFeedback } from '../../context/FeedbackContext';
 import { SEO } from '../../components/SEO';
 
 export const UserDashboard = () => {
     const { t } = useTranslation();
+    const { show } = useFeedback();
     const [dashboardData, setDashboardData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
@@ -45,7 +46,6 @@ export const UserDashboard = () => {
         } catch (error) {
             console.error(error);
             setLoadError(true);
-            toast.error(t('dashboard.toast.loadFailed'));
         } finally {
             setLoading(false);
         }
@@ -67,11 +67,11 @@ export const UserDashboard = () => {
         setSubmittingChange(true);
         try {
             await requestCateringChange(activeOrderId, changeNotes);
-            toast.success(t('dashboard.toast.changeSubmitted'));
             setShowChangeModal(false);
+            show({ type: 'success', message: t('dashboard.toast.changeSubmitted') });
             loadData();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || t('dashboard.toast.changeFailed'));
+            show({ type: 'error', message: error.response?.data?.message || t('dashboard.toast.changeFailed') });
         } finally {
             setSubmittingChange(false);
         }
@@ -80,11 +80,11 @@ export const UserDashboard = () => {
     const handleClearNotification = async (notificationId: string) => {
         try {
             await clearNotification(notificationId);
-            toast.success(t('dashboard.toast.notifCleared'));
+            show({ type: 'success', message: t('dashboard.toast.notifCleared') });
             loadData();
         } catch (error) {
             console.error('Failed to clear notification:', error);
-            toast.error(t('dashboard.toast.notifClearFailed'));
+            show({ type: 'error', message: t('dashboard.toast.notifClearFailed') });
         }
     };
 

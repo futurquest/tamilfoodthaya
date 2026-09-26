@@ -7,7 +7,7 @@ import { Card, CardContent } from '../components/ui/Card';
 import { getCateringPackage, createCateringOrder, api } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
 import { PageLoader } from '../components/Logo';
-import { toast } from 'react-hot-toast';
+import { useFeedback } from '../context/FeedbackContext';
 import {
     CheckCircle,
     CircleAlert,
@@ -103,6 +103,7 @@ export const CateringCheckoutPage = () => {
     const { packageId } = useParams<{ packageId: string }>();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const { show } = useFeedback();
     const { user } = useAuth();
 
     const currentLang = i18n.language?.split('-')[0] || 'nl';
@@ -174,7 +175,7 @@ export const CateringCheckoutPage = () => {
                 });
                 setSelections(initialSelections);
             } catch {
-                toast.error('Package not found');
+                show({ type: 'error', message: t('feedback.packageNotFound') });
                 navigate('/catering');
             } finally {
                 setLoading(false);
@@ -293,9 +294,9 @@ export const CateringCheckoutPage = () => {
                 discountValue: res.data.discountValue,
                 discountType: res.data.discountType
             });
-            toast.success('Coupon applied');
+            show({ type: 'success', message: t('feedback.couponApplied') });
         } catch (err: any) {
-            toast.error(err?.response?.data?.message || 'Invalid coupon');
+            show({ type: 'error', message: err?.response?.data?.message || t('feedback.invalidCoupon') });
         } finally {
             setCouponLoading(false);
         }

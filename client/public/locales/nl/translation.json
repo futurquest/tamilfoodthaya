@@ -1,4 +1,13 @@
 {
+  "feedback": {
+    "successTitle": "Gelukt",
+    "errorTitle": "Er is iets misgegaan",
+    "close": "Melding sluiten",
+    "continue": "Verder",
+    "packageNotFound": "Dit cateringpakket is niet meer beschikbaar. Kies een ander pakket.",
+    "couponApplied": "Uw kortingscode is toegepast op deze bestelling.",
+    "invalidCoupon": "Deze kortingscode kon niet worden toegepast. Controleer de code en probeer opnieuw."
+  },
   "nav": {
     "home": "Home",
     "menu": "Menu",

@@ -14,7 +14,7 @@ i18n
             escapeValue: false, // React already safes from XSS
         },
         backend: {
-            loadPath: '/locales/{{lng}}/translation.json',
+            loadPath: '/locales/{{lng}}/translation.json?v=feedback-2',
         },
         detection: {
             order: ['localStorage', 'navigator'],

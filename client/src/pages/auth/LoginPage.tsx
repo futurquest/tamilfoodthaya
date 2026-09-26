@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { Eye, EyeOff, Lock, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
@@ -9,9 +8,11 @@ import { loginUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
 import FluidBackground from '../../components/FluidBackground';
 import { Logo } from '../../components/Logo';
+import { useFeedback } from '../../context/FeedbackContext';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
+  const { show } = useFeedback();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -23,10 +24,12 @@ export const LoginPage = () => {
     try {
       const res = await loginUser(data);
       login(res.access_token, res.user);
-      toast.success(t('auth.login.loginSuccess', { defaultValue: `Welcome back, ${res.user.username}` }).replace('{username}', res.user.username));
+      show({ type: 'success', message: t('auth.login.loginSuccess', { defaultValue: `Welcome back, ${res.user.username}` }).replace('{username}', res.user.username) });
       navigate(res.user.role === 'admin' ? '/admin/dashboard' : '/');
     } catch {
-      setAuthError(t('auth.login.loginError', 'Login failed. Please check your credentials.'));
+      const message = t('auth.login.loginError', 'Login failed. Please check your credentials.');
+      setAuthError(message);
+      show({ type: 'error', message });
     }
   };
 

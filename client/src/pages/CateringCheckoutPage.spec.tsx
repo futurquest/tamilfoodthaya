@@ -15,6 +15,7 @@ vi.mock('../hooks/useApi', () => ({
     api: { get: mocks.apiGet },
 }));
 vi.mock('../context/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
+vi.mock('../context/FeedbackContext', () => ({ useFeedback: () => ({ show: vi.fn() }) }));
 vi.mock('../components/SEO', () => ({ SEO: () => null }));
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({

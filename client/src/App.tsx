@@ -19,6 +19,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { lazy, Suspense, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageLoader } from './components/Logo';
+import { FeedbackProvider } from './components/FeedbackModal';
 
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then(module => ({ default: module.CheckoutPage })));
 const LoginPage = lazy(() => import('./pages/auth/LoginPage').then(module => ({ default: module.LoginPage })));
@@ -105,11 +106,13 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
+          <FeedbackProvider>
           <Toaster position="top-center" />
           <Router>
             <RouteMetadata />
             <Suspense fallback={<PageLoader />}><AppRoutes /></Suspense>
           </Router>
+          </FeedbackProvider>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>

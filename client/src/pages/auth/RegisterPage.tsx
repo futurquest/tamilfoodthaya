@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { Eye, EyeOff, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { registerUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
 import FluidBackground from '../../components/FluidBackground';
+import { useFeedback } from '../../context/FeedbackContext';
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
+  const { show } = useFeedback();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
   const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);
@@ -17,10 +18,10 @@ export const RegisterPage = () => {
   const onSubmit = async (data: any) => {
     try {
       await registerUser(data);
-      toast.success(t('auth.register.registerSuccess', 'Registration successful. Check your email for the PIN.'));
+      show({ type: 'success', message: t('auth.register.registerSuccess', 'Registration successful. Check your email for the PIN.') });
       navigate('/verify-email', { state: { email: data.email } });
     } catch (error: any) {
-      toast.error(error.response?.data?.message || t('auth.register.registerError', 'Registration failed. Please try again.'));
+      show({ type: 'error', message: error.response?.data?.message || t('auth.register.registerError', 'Registration failed. Please try again.') });
     }
   };
 

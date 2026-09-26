@@ -1125,6 +1125,15 @@
     "dishes": "dishes",
     "skipLink": "Skip to content"
   },
+  "feedback": {
+    "successTitle": "All set",
+    "errorTitle": "Something went wrong",
+    "close": "Close notification",
+    "continue": "Continue",
+    "packageNotFound": "This catering package is no longer available. Please choose another package.",
+    "couponApplied": "Your coupon has been applied to this order.",
+    "invalidCoupon": "This coupon could not be applied. Check the code and try again."
+  },
   "about": {
     "eyebrow": "The story behind the table",
     "title": "A kitchen rooted in home.",

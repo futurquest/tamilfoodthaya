@@ -79,7 +79,7 @@
         box-shadow: 0 10px 26px rgba(75, 28, 18, 0.18);
       }
       #app-splash b {
-        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
         font-size: 1.05rem;
         font-weight: 800;
         letter-spacing: 0.02em;
@@ -113,15 +113,27 @@
     </style>
   </head>
   <body>
-    <div id="root">
-      <div id="app-splash">
-        <div id="app-splash__ring">
-          <img src="/logo.png" alt="Tamil Food Thaya" />
-        </div>
-        <b>Tamil Food Thaya</b>
-        <span>loading&hellip;</span>
+    <div id="app-splash" role="status" aria-label="Loading Tamil Food Thaya">
+      <div id="app-splash__ring">
+        <img src="/logo.png" alt="" width="56" height="56" />
       </div>
+      <b>Tamil Food Thaya</b>
+      <span>loading&hellip;</span>
     </div>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var root = document.getElementById('root');
+        var splash = document.getElementById('app-splash');
+        var observer = new MutationObserver(function () {
+          if (root.children.length && !root.querySelector('.page-loader')) {
+            splash.remove();
+            observer.disconnect();
+          }
+        });
+        observer.observe(root, { childList: true, subtree: true });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

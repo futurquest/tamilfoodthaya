@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { Calendar, FileText, Mail, Phone, ShieldCheck, ShoppingBag, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-hot-toast';
+import { useFeedback } from '../context/FeedbackContext';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -28,6 +28,7 @@ export const CheckoutPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { show } = useFeedback();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CheckoutForm>({
     resolver: zodResolver(createCheckoutSchema(t)),
     defaultValues: {
@@ -65,12 +66,12 @@ export const CheckoutPage = () => {
         return;
       }
 
-      toast.error(t('checkout.paymentMissing'));
+      show({ type: 'error', message: t('checkout.paymentMissing') });
     } catch (error: unknown) {
       const responseMessage = (error as { response?: { data?: { message?: string | string[] } } })
         ?.response?.data?.message;
       const message = Array.isArray(responseMessage) ? responseMessage[0] : responseMessage;
-      toast.error(message || t('checkout.processError'));
+      show({ type: 'error', message: message || t('checkout.processError') });
     }
   };
 
