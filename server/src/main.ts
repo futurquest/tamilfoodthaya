@@ -60,9 +60,26 @@ async function bootstrap() {
     transform: true,
   }));
 
-  // Enable CORS for client
+  // Enable CORS for the configured client. In development Vite can select the
+  // next free localhost port, so accept loopback origins without weakening the
+  // production origin policy.
+  const configuredClientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+
   app.enableCors({
-    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5173'],
+    origin: (origin, callback) => {
+      const isAllowedDevelopmentOrigin =
+        isDevelopment &&
+        !!origin &&
+        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
+      if (!origin || origin === configuredClientOrigin || isAllowedDevelopmentOrigin) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`CORS blocked origin: ${origin}`), false);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],

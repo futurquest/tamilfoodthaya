@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import { api } from '../../hooks/useApi';
 import toast from 'react-hot-toast';
+import { MetricCard, SectionTitle } from '../../components/AdminUI';
 import {
     AlertCircle,
     Ban,
@@ -785,25 +786,6 @@ const CouponCard = ({
     </article>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => (
-    <div className="min-w-0 border-slate-200 px-4 py-4 odd:border-r sm:border-r sm:last:border-r-0 md:px-5">
-        <div className="flex items-center gap-2 text-slate-500">
-            {icon}
-            <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em]">{label}</p>
-        </div>
-        <p className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-950">{value}</p>
-    </div>
-);
-
 const EmptyState = ({
     title,
     copy,
@@ -855,20 +837,6 @@ const LoadingPanel = () => {
     </div>
     );
 };
-
-const SectionTitle = ({
-    title,
-    subtitle
-}: {
-    title: string;
-    subtitle: string;
-}) => (
-    <div>
-        <h3 className="text-base font-extrabold text-slate-950">{title}</h3>
-        <p className="mt-1 text-sm font-medium text-slate-500">{subtitle}</p>
-    </div>
-);
-
 const InputBlock = ({
     label,
     placeholder,

@@ -29,6 +29,7 @@ import {
 } from '../../hooks/useApi';
 import { Spinner } from '../../components/ui/Spinner';
 import { toast } from 'react-hot-toast';
+import { MetricCard, SectionTitle } from '../../components/AdminUI';
 
 type UserRole = 'user' | 'staff' | 'admin';
 type RoleFilter = 'all' | UserRole;
@@ -204,18 +205,18 @@ export const ManageUsers = () => {
                             </p>
                         </div>
 
-                        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
+                        <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3">
+                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
                                 <ShieldCheck size={13} />
                                 {t('admin.users.directoryHealth', 'Directory health')}
                             </p>
-                            <p className="mt-1 truncate text-sm font-extrabold text-white">
+                            <p className="mt-1 truncate text-sm font-extrabold text-slate-900">
                                 {t('admin.users.directoryHealthValue', '{{verified}} of {{total}} verified', { verified: stats.verified, total: stats.total })}
                             </p>
                         </div>
                     </div>
 
-                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 sm:grid-cols-5">
+                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-slate-200 pt-5 sm:grid-cols-5">
                         <MetricCard label={t('admin.users.metricUsers', 'Users')} value={stats.total} icon={<Users size={15} />} />
                         <MetricCard label={t('admin.users.metricAdmins', 'Admins')} value={stats.admins} icon={<ShieldCheck size={15} />} />
                         <MetricCard label={t('admin.users.metricStaff', 'Staff')} value={stats.staff} icon={<UserCog size={15} />} />
@@ -630,25 +631,6 @@ const UserCard = ({
     </article>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => (
-    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-(--brand-stone)">
-            {icon}
-            <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
-        </div>
-        <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
-    </div>
-);
-
 const EmptyState = ({
     title,
     copy,
@@ -697,20 +679,6 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => {
     </div>
     );
 };
-
-const SectionTitle = ({
-    title,
-    subtitle
-}: {
-    title: string;
-    subtitle: string;
-}) => (
-    <div>
-        <h3 className="text-base font-extrabold text-slate-950">{title}</h3>
-        <p className="mt-1 text-sm font-medium text-slate-500">{subtitle}</p>
-    </div>
-);
-
 const InputBlock = ({
     label,
     value,

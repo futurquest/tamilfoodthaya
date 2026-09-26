@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+
+export type CateringOrderPanelContent = ReactNode;
 import { Card, CardContent } from '../../components/ui/Card';
 import {
     Search,
@@ -23,6 +25,7 @@ import {
     updateCateringOrderStatus
 } from '../../hooks/useApi';
 import { toast } from 'react-hot-toast';
+import { MetricCard, InfoCard } from '../../components/AdminUI';
 
 interface CateringOrder {
     _id: string;
@@ -575,53 +578,7 @@ export const ManageCateringOrders = () => {
             </div>
         </div>
     );
-};
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => {
-    return (
-        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-3.5 py-3 shadow-sm md:px-4">
-            <div className="flex items-center gap-2 text-(--brand-stone)">
-                {icon}
-                <p className="fluid-label min-w-0 truncate font-bold uppercase tracking-[0.16em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-1.5 break-words leading-tight font-extrabold tabular-nums text-white fluid-value">{value}</p>
-        </div>
-    );
-};
-
-const InfoCard = ({
-    icon,
-    label,
-    value
-}: {
-    icon: ReactNode;
-    label: string;
-    value: string;
-}) => {
-    return (
-        <div className="rounded-[22px] border border-slate-200 bg-stone-50 p-4">
-            <div className="flex items-center gap-2 text-slate-400">
-                {icon}
-                <p className="fluid-chip font-semibold uppercase tracking-[0.16em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 break-words fluid-body font-medium text-slate-900">{value}</p>
-        </div>
-    );
-};
-
-const FilterDropdown = ({
+};const FilterDropdown = ({
     value,
     isOpen,
     onToggle,

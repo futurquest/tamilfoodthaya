@@ -35,6 +35,7 @@ import {
 } from '../../hooks/useApi';
 import { Button } from '../../components/ui/Button';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { MetricCard, SectionTitle, WorkspaceHeader, FilterSelect } from '../../components/AdminUI';
 
 type MenuFormValues = {
     name: string;
@@ -401,57 +402,7 @@ export const ManageMenu = () => {
             </div>
         </div>
     );
-};
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => (
-    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-(--brand-stone)">
-            {icon}
-            <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
-        </div>
-        <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
-    </div>
-);
-
-const FilterSelect = ({
-    label,
-    value,
-    onChange,
-    options
-}: {
-    label: string;
-    value: string;
-    onChange: (value: string) => void;
-    options: { value: string; label: string }[];
-}) => (
-    <label className="grid gap-1.5 xl:w-[210px]">
-        <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-            <Filter size={13} />
-            {label}
-        </span>
-        <select
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-            className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-100"
-        >
-            {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                    {option.label}
-                </option>
-            ))}
-        </select>
-    </label>
-);
-
-const AvailabilityTabs = ({
+};const AvailabilityTabs = ({
     value,
     counts,
     onChange
@@ -802,29 +753,6 @@ const MenuRow = ({
         </tr>
     );
 };
-
-const WorkspaceHeader = ({
-    title,
-    text,
-    badge
-}: {
-    title: string;
-    text: string;
-    badge: string;
-}) => (
-    <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
-        <div className="min-w-0">
-            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
-                {title}
-            </p>
-            <p className="mt-1 text-sm font-bold leading-5 text-slate-700">{text}</p>
-        </div>
-        <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
-            {badge}
-        </span>
-    </div>
-);
-
 const MenuActions = ({
     item,
     onEdit,
@@ -1193,14 +1121,6 @@ const ToggleControl = ({
         </span>
     </button>
 );
-
-const SectionTitle = ({ title, subtitle }: { title: string; subtitle: string }) => (
-    <div>
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{title}</p>
-        <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">{subtitle}</p>
-    </div>
-);
-
 const InputField = ({
     label,
     icon,

@@ -784,6 +784,14 @@
       "salesTrendDetail": "Revenue booked over the last 7 days.",
       "srOnly": "Screen reader",
       "viewPipeline": "View pipeline",
+      "quick": {
+        "reviewLeads": "Review Leads",
+        "reviewLeadsDesc": "Approve or decline new catering requests.",
+        "manageMenu": "Manage Menu",
+        "manageMenuDesc": "Update dishes, categories, and prices.",
+        "createPackage": "Create Package",
+        "createPackageDesc": "Add a new catering package."
+      },
       "days": [
         "Mon",
         "Tue",

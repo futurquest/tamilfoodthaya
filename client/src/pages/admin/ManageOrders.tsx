@@ -15,6 +15,7 @@ import { getLeads, updateLeadStatus } from '../../hooks/useApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Spinner } from '../../components/ui/Spinner';
 import { toast } from 'react-hot-toast';
+import { MetricCard } from '../../components/AdminUI';
 
 type LeadStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 
@@ -371,25 +372,4 @@ const LeadCard = ({
         </Card>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: React.ReactNode;
-}) => {
-    return (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400">
-                {icon}
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
-        </div>
-    );
-};
+

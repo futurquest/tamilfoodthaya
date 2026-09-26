@@ -258,9 +258,12 @@ export const UserDashboard = () => {
                     border-color: color-mix(in srgb, var(--brand-accent) 35%, transparent);
                 }
                 .dash-stat-icon-pending { background: color-mix(in srgb, var(--brand-accent) 18%, transparent); color: var(--brand-accent); }
-                .dash-stat-icon-progress { background: color-mix(in srgb, var(--brand-primary) 18%, transparent); color: var(--brand-primary); }
                 .dash-stat-icon-complete { background: color-mix(in srgb, var(--brand-text) 12%, transparent); color: var(--brand-text-muted); }
                 .dash-stat-icon-value { background: color-mix(in srgb, var(--brand-accent) 18%, transparent); color: var(--brand-accent); }
+                :lang(ta) .dash-manage-orders-title {
+                    font-size: 1.15rem !important;
+                    line-height: 1.4 !important;
+                }
             `}</style>
             <SEO title={t('dashboard.seoTitle')} description={t('dashboard.seoDescription')} />
 
@@ -352,7 +355,7 @@ export const UserDashboard = () => {
                             <CardContent className="p-6 md:p-8">
                                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
-                                        <h2 className="flex items-center gap-3 text-2xl font-extrabold" style={{ color: 'var(--brand-text)' }}>
+                                        <h2 className="dash-manage-orders-title flex items-center gap-3 text-2xl font-extrabold" style={{ color: 'var(--brand-text)' }}>
                                             <Clock style={{ color: 'var(--brand-accent)' }} />
                                             {t('dashboard.manageOrders')}
                                         </h2>

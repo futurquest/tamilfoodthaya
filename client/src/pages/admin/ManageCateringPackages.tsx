@@ -31,6 +31,7 @@ import {
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
 import { toast } from 'react-hot-toast';
+import { MetricCard, SectionTitle, WorkspaceHeader } from '../../components/AdminUI';
 
 interface Item {
     menuItem: any;
@@ -332,23 +333,23 @@ export const ManageCateringPackages = () => {
     return (
         <div className="admin-page">
             <div className="admin-page-container max-w-[1180px]">
-                <section className="overflow-hidden rounded-[28px] border border-(--brand-outline-dark) bg-(--brand-night) text-white shadow-[0_28px_80px_var(--brand-text-a24)]">
-                    <div className="grid gap-6 p-5 md:p-6 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
+                <section className="admin-command-hero rounded-[28px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-6">
+                    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-stretch">
                         <div>
-                            <span className="inline-flex items-center gap-1.5 rounded-xl border border-(--brand-accent-strong)/30 bg-(--brand-accent-strong)/15 px-3 py-1.5 text-xs font-extrabold text-(--brand-accent-haze)">
+                            <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-800">
                                 <Sparkles size={13} />
                                 {t('admin.packages.mainProduct', 'Main catering product')}
                             </span>
                             <div className="mt-4 flex flex-wrap items-center gap-3">
-                                <h1 className="admin-package-hero-title max-w-[760px] text-3xl font-extrabold tracking-tight md:text-[44px] md:leading-[1.03]">
+                                <h1 className="max-w-[760px] text-3xl font-extrabold tracking-tight text-slate-900 md:text-[40px]">
                                     {t('admin.packages.heroTitle', 'Catering packages that sell the event clearly.')}
                                 </h1>
-                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-extrabold text-white">
+                                <span className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-stone-50 px-3 py-1.5 text-xs font-extrabold text-slate-700">
                                     <UtensilsCrossed size={13} />
                                     {viewMode === 'grid' ? t('admin.packages.gridView', 'Grid view') : t('admin.packages.listView', 'List view')}
                                 </span>
                             </div>
-                            <p className="admin-package-hero-copy mt-4 max-w-2xl text-sm font-semibold leading-6">
+                            <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-slate-500">
                                 {t('admin.packages.heroSubtitle', 'Manage the packages customers compare first: price per person, guest range, included choices, publishing status and multilingual selling copy.')}
                             </p>
                             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -362,7 +363,7 @@ export const ManageCateringPackages = () => {
                                 <button
                                     type="button"
                                     onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-5 text-sm font-extrabold text-white transition hover:bg-white/15"
+                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-stone-50 px-5 text-sm font-extrabold text-slate-700 transition hover:bg-stone-100"
                                 >
                                     {viewMode === 'grid' ? <List size={16} /> : <Grid3X3 size={16} />}
                                     {viewMode === 'grid'
@@ -374,10 +375,10 @@ export const ManageCateringPackages = () => {
 
                         <div className="grid gap-3">
                             <div className="grid grid-cols-2 gap-3">
-                                <MetricCard label={t('admin.packages.metricPackages', 'Packages')} value={stats.totalPackages} icon={<Package size={16} />} tone="dark" />
-                                <MetricCard label={t('admin.packages.metricActive', 'Active')} value={stats.activePackages} icon={<CheckCircle2 size={16} />} tone="dark" />
-                                <MetricCard label={t('admin.packages.metricHidden', 'Hidden')} value={stats.hiddenPackages} icon={<X size={16} />} tone="dark" />
-                                <MetricCard label={t('admin.packages.metricChoices', 'Choices')} value={stats.totalItems} icon={<Box size={16} />} tone="dark" />
+                                <MetricCard label={t('admin.packages.metricPackages', 'Packages')} value={stats.totalPackages} icon={<Package size={16} />} />
+                                <MetricCard label={t('admin.packages.metricActive', 'Active')} value={stats.activePackages} icon={<CheckCircle2 size={16} />} />
+                                <MetricCard label={t('admin.packages.metricHidden', 'Hidden')} value={stats.hiddenPackages} icon={<X size={16} />} />
+                                <MetricCard label={t('admin.packages.metricChoices', 'Choices')} value={stats.totalItems} icon={<Box size={16} />} />
                             </div>
                             <FeaturedPackagePanel pkg={featuredPackage} />
                         </div>
@@ -767,21 +768,21 @@ const PackageCard = ({
 
     return (
         <article className="group flex min-h-[360px] flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_45px_var(--brand-slate-a10)]">
-            <div className="bg-(--brand-night) p-4 text-white">
+            <div className="bg-stone-50 p-4 border-b border-slate-200">
                 <div className="flex items-start justify-between gap-3">
                     <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-(--brand-accent-strong) to-(--brand-primary) text-white shadow-sm">
                         <UtensilsCrossed size={18} />
                     </div>
-                    <StatusBadge available={pkg.available} variant="dark" />
+                    <StatusBadge available={pkg.available} variant="light" />
                 </div>
-                <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-(--brand-stone)">
+                <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
                     {t('admin.packages.from', 'From')}
                 </p>
                 <div className="mt-1 flex items-end gap-2">
-                    <span className="text-3xl font-extrabold leading-none text-white">
+                    <span className="text-3xl font-extrabold leading-none text-slate-900">
                         {formatPrice(pkg.basePrice)}
                     </span>
-                    <span className="pb-1 text-xs font-bold text-(--brand-stone)">{t('admin.packages.perPerson', 'per person')}</span>
+                    <span className="pb-1 text-xs font-bold text-slate-400">{t('admin.packages.perPerson', 'per person')}</span>
                 </div>
             </div>
 
@@ -895,35 +896,6 @@ const PackageRow = ({
     </tr>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    icon,
-    tone = 'light'
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-    tone?: 'light' | 'dark';
-}) => (
-    <div
-        className={`rounded-2xl px-4 py-3 shadow-sm ${
-            tone === 'dark'
-                ? 'border border-white/10 bg-white/10 text-white'
-                : 'border border-slate-200 bg-white'
-        }`}
-    >
-        <div className={`flex items-center gap-2 ${tone === 'dark' ? 'text-(--brand-stone)' : 'text-slate-400'}`}>
-            {icon}
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em]">{label}</p>
-        </div>
-        <p className={`mt-2 text-2xl font-extrabold ${tone === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-            {value}
-        </p>
-    </div>
-);
-
 const AvailabilityTabs = ({
     value,
     counts,
@@ -997,19 +969,6 @@ const ViewToggle = ({ value, onChange }: { value: ViewMode; onChange: (value: Vi
         </div>
     );
 };
-
-const WorkspaceHeader = ({ title, text, badge }: { title: string; text: string; badge: string }) => (
-    <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
-        <div className="min-w-0">
-            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">{title}</p>
-            <p className="mt-1 text-sm font-bold leading-5 text-slate-700">{text}</p>
-        </div>
-        <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
-            {badge}
-        </span>
-    </div>
-);
-
 const PackageActions = ({
     pkg,
     onEdit,
@@ -1046,11 +1005,11 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
     const { t } = useTranslation();
     if (!pkg) {
         return (
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
+            <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
                     {t('admin.packages.featured', 'Featured package')}
                 </p>
-                <p className="mt-2 text-sm font-bold leading-6 text-(--brand-surface-beige-soft)">
+                <p className="mt-2 text-sm font-bold leading-6 text-slate-500">
                     {t('admin.packages.featuredEmpty', 'Create a package to see the main catering offer here.')}
                 </p>
             </div>
@@ -1058,17 +1017,17 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
     }
 
     return (
-        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+        <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
                         {t('admin.packages.featured', 'Featured package')}
                     </p>
-                    <p className="mt-2 truncate text-lg font-extrabold text-white">
+                    <p className="mt-2 truncate text-lg font-extrabold text-slate-900">
                         {getPackageName(pkg)}
                     </p>
                 </div>
-                <StatusBadge available={pkg.available} variant="dark" />
+                <StatusBadge available={pkg.available} variant="light" />
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2">
                 <DarkMiniStat label={t('admin.packages.featPrice', 'Price')} value={formatPrice(pkg.basePrice)} />
@@ -1080,9 +1039,9 @@ const FeaturedPackagePanel = ({ pkg }: { pkg: CateringPackage | null }) => {
 };
 
 const DarkMiniStat = ({ label, value }: { label: string; value: string }) => (
-    <div className="rounded-xl border border-white/10 bg-black/10 px-3 py-2">
-        <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-(--brand-stone)">{label}</p>
-        <p className="mt-1 truncate text-sm font-extrabold text-white">{value}</p>
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+        <p className="mt-1 truncate text-sm font-extrabold text-slate-900">{value}</p>
     </div>
 );
 
@@ -1145,9 +1104,7 @@ const StatusBadge = ({
     return (
         <span
             className={`inline-flex rounded-xl border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${
-                variant === 'dark'
-                    ? 'border-white/15 bg-white/10 text-(--brand-surface-beige-soft)'
-                    : 'border-slate-200 bg-stone-50 text-slate-600'
+                'border-slate-200 bg-stone-50 text-slate-600'
             }`}
         >
             {t('admin.packages.statusHidden', 'Hidden')}
@@ -1164,14 +1121,6 @@ const MiniStat = ({ icon, label, value }: { icon: ReactNode; label: string; valu
         <p className="mt-1 truncate text-sm font-extrabold text-slate-800">{value}</p>
     </div>
 );
-
-const SectionTitle = ({ title, subtitle }: { title: string; subtitle: string }) => (
-    <div>
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{title}</p>
-        <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">{subtitle}</p>
-    </div>
-);
-
 const SummaryRow = ({ label, value }: { label: string; value: string }) => (
     <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3">
         <span className="text-sm font-semibold text-slate-500">{label}</span>

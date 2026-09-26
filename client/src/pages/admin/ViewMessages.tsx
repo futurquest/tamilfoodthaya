@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import {
     ArrowLeft,
     CheckCircle2,
-    ChevronDown,
     Clock3,
     Filter,
     Inbox,
@@ -18,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getMessages, api } from '../../hooks/useApi';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { MetricCard, WorkspaceHeader, FilterSelect } from '../../components/AdminUI';
 
 type MessageItem = {
     _id: string;
@@ -325,72 +325,7 @@ export const ViewMessages = () => {
             </div>
         </div>
     );
-};
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => {
-    return (
-        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-(--brand-stone)">
-                {icon}
-                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
-        </div>
-    );
-};
-
-const FilterSelect = ({
-    label,
-    icon,
-    value,
-    counts,
-    onChange
-}: {
-    label: string;
-    icon: ReactNode;
-    value: FilterType;
-    counts: Record<FilterType, number>;
-    onChange: (value: FilterType) => void;
-}) => {
-    const { t } = useTranslation();
-    const options: FilterType[] = ['ALL', 'UNREAD', 'READ'];
-
-    return (
-        <div className="grid min-w-0 gap-1.5">
-            <span className="flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                {icon}
-                {label}
-            </span>
-            <div className="relative min-w-0">
-                <select
-                    value={value}
-                    onChange={(e) => onChange(e.target.value as FilterType)}
-                    aria-label={label}
-                    className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white pl-4 pr-9 text-sm font-bold text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
-                >
-                    {options.map((opt) => (
-                        <option key={opt} value={opt}>
-                            {t(filterConfig[opt].labelKey, filterConfig[opt].labelDefault)} ({counts[opt]})
-                        </option>
-                    ))}
-                </select>
-                <ChevronDown size={15} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            </div>
-        </div>
-    );
-};
-
-const InboxWorkspace = ({
+};const InboxWorkspace = ({
     filter,
     messages,
     selectedMessage,
@@ -452,33 +387,6 @@ const InboxWorkspace = ({
         </section>
     );
 };
-
-const WorkspaceHeader = ({
-    title,
-    text,
-    badge
-}: {
-    title: string;
-    text: string;
-    badge: string;
-}) => {
-    return (
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-3 py-2.5 shadow-sm backdrop-blur sm:px-4 sm:py-3">
-            <div className="min-w-0">
-                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
-                    {title}
-                </p>
-                <p className="mt-1 text-sm font-bold leading-5 text-slate-700">
-                    {text}
-                </p>
-            </div>
-            <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
-                {badge}
-            </span>
-        </div>
-    );
-};
-
 const MessagePreviewCard = ({
     message,
     active,

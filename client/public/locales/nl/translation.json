@@ -784,6 +784,14 @@
       "salesTrendDetail": "Omzet geboekt in de afgelopen 7 dagen.",
       "srOnly": "Schermlezer",
       "viewPipeline": "Bekijk pipeline",
+      "quick": {
+        "reviewLeads": "Leads Beoordelen",
+        "reviewLeadsDesc": "Nieuwe cateringaanvragen goedkeuren of afwijzen.",
+        "manageMenu": "Menu Beheren",
+        "manageMenuDesc": "Gerechten, categorieën en prijzen bijwerken.",
+        "createPackage": "Pakket Aanmaken",
+        "createPackageDesc": "Voeg een nieuw cateringpakket toe."
+      },
       "days": [
         "Ma",
         "Di",

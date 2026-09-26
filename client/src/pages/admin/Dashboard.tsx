@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+ï»¿import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ArrowRight,
@@ -17,6 +17,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { getCateringOrders, getLeads } from '../../hooks/useApi';
 import { useTranslation } from 'react-i18next';
+import { MetricCard } from '../../components/AdminUI';
 
 type Lead = {
     _id: string;
@@ -179,13 +180,13 @@ export const Dashboard = () => {
 
         return {
             revenue: formatEuro(bookedValue),
-            revenueDetail: `${activeBookings} ${activeBookings === 1 ? t('admin.dashboard.bookingsOne') : t('admin.dashboard.bookingsOther')}`,
+            revenueDetail: activeBookings === 1 ? t('admin.dashboard.bookingsOne', { count: activeBookings }) : t('admin.dashboard.bookingsOther', { count: activeBookings }),
             newLeads: String(newLeads),
-            newLeadsDetail: `${inProgress} ${t('admin.dashboard.leadsInProgress')}`,
+            newLeadsDetail: t('admin.dashboard.leadsInProgress', { count: inProgress }),
             orders: String(totalOrders),
-            ordersDetail: `${reviewCount} ${t('admin.dashboard.needReview')}`,
+            ordersDetail: t('admin.dashboard.needReview', { count: reviewCount }),
             conversion: `${conversionRate}%`,
-            conversionDetail: `${completedLeads} of ${totalLeads} ${t('admin.dashboard.leadsCompleted')}`
+            conversionDetail: t('admin.dashboard.leadsCompleted', { count: `${completedLeads} of ${totalLeads}` as any })
         };
     }, [leads, orders, t]);
 
@@ -295,7 +296,7 @@ export const Dashboard = () => {
                 <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <MetricCard
                         label={t('admin.dashboard.metric.revenue')}
-                        value={loading ? '…' : loadError ? '-' : kpis.revenue}
+                        value={loading ? 'ï¿½' : loadError ? '-' : kpis.revenue}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.revenueDetail}
                         icon={Euro}
                         tone="brass"
@@ -303,7 +304,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.newLeads')}
-                        value={loading ? '…' : loadError ? '-' : kpis.newLeads}
+                        value={loading ? 'ï¿½' : loadError ? '-' : kpis.newLeads}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.newLeadsDetail}
                         icon={Users}
                         tone="leaf"
@@ -311,7 +312,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.orders')}
-                        value={loading ? '…' : loadError ? '-' : kpis.orders}
+                        value={loading ? 'ï¿½' : loadError ? '-' : kpis.orders}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.ordersDetail}
                         icon={ClipboardList}
                         tone="spice"
@@ -319,7 +320,7 @@ export const Dashboard = () => {
                     />
                     <MetricCard
                         label={t('admin.dashboard.metric.conversion')}
-                        value={loading ? '…' : loadError ? '-' : kpis.conversion}
+                        value={loading ? 'ï¿½' : loadError ? '-' : kpis.conversion}
                         detail={loading || loadError ? t('admin.dashboard.liveFigures') : kpis.conversionDetail}
                         icon={TrendingUp}
                         tone="ink"
@@ -341,7 +342,7 @@ export const Dashboard = () => {
 
                             <span className="inline-flex w-fit items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700">
                                 <TrendingUp size={14} />
-                                {loading ? '…' : t('admin.dashboard.bookedWeek', { count: bookedThisWeek > 0 ? bookedThisWeek : 0 })}
+                                {loading ? 'ï¿½' : t('admin.dashboard.bookedWeek', { count: bookedThisWeek > 0 ? bookedThisWeek : 0 })}
                             </span>
                         </div>
 
@@ -392,7 +393,7 @@ export const Dashboard = () => {
                                 <OperationItem
                                     key={item.label}
                                     label={item.label}
-                                    value={loading ? '…' : loadError ? '-' : item.value}
+                                    value={loading ? 'ï¿½' : loadError ? '-' : item.value}
                                     detail={item.detail}
                                     icon={item.icon}
                                     to="/admin/catering-orders"
@@ -448,83 +449,7 @@ export const Dashboard = () => {
         </div>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    detail,
-    tone,
-    to,
-    icon: Icon
-}: {
-    label: string;
-    value: string;
-    detail: string;
-    tone: 'brass' | 'leaf' | 'spice' | 'ink';
-    to?: string;
-    icon: React.ComponentType<{ size?: number; className?: string }>;
-}) => {
-    const toneMap = {
-        brass: {
-            icon: 'bg-amber-50 text-amber-700',
-            line: 'from-(--brand-accent-strong) to-(--brand-primary)',
-            text: 'text-amber-700'
-        },
-        leaf: {
-            icon: 'bg-emerald-50 text-emerald-700',
-            line: 'from-(--brand-leaf) to-(--brand-accent)',
-            text: 'text-emerald-700'
-        },
-        spice: {
-            icon: 'bg-red-50 text-red-700',
-            line: 'from-(--brand-primary) to-(--brand-accent)',
-            text: 'text-red-700'
-        },
-        ink: {
-            icon: 'bg-stone-100 text-slate-900',
-            line: 'from-(--brand-text) to-(--brand-primary)',
-            text: 'text-slate-700'
-        }
-    }[tone];
-
-    const inner = (
-        <>
-            <div className={`absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r ${toneMap.line}`} />
-            <div className="flex items-start justify-between gap-3">
-                <div className={`grid h-11 w-11 place-items-center rounded-2xl ${toneMap.icon}`}>
-                    <Icon size={18} />
-                </div>
-                <span className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 bg-stone-50 text-slate-400 transition group-hover:bg-amber-50 group-hover:text-amber-800">
-                    <ArrowRight size={14} />
-                </span>
-            </div>
-
-            <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                {label}
-            </p>
-            <p className="mt-2 break-words text-2xl font-extrabold leading-tight tabular-nums text-slate-900 md:text-[30px]">
-                {value}
-            </p>
-            <p className={`mt-3 flex flex-wrap items-center gap-1.5 text-xs font-bold ${toneMap.text}`}>
-                <TrendingUp size={13} />
-                {detail}
-            </p>
-        </>
-    );
-
-    const cardClass =
-        'relative block overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition group hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-[0_16px_40px_color-mix(in srgb, var(--brand-text) 10%, transparent)] focus-visible:outline-2 focus-visible:outline-amber-500';
-
-    return to ? (
-        <Link to={to} className={cardClass}>
-            {inner}
-        </Link>
-    ) : (
-        <article className={cardClass}>{inner}</article>
-    );
-};
-
-const QuickAction = ({
+const QuickAction = ({
     label,
     description,
     path,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+﻿import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ import {
 import { useMenu, createCategory, updateCategory, deleteCategory } from '../../hooks/useApi';
 import { Button } from '../../components/ui/Button';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { MetricCard, WorkspaceHeader } from '../../components/AdminUI';
 
 type CategoryType = 'food' | 'beverage';
 type TypeFilter = 'ALL' | CategoryType;
@@ -348,29 +349,6 @@ export const ManageCategories = () => {
         </div>
     );
 };
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => {
-    return (
-        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-(--brand-stone)">
-                {icon}
-                <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">
-                    {label}
-                </p>
-            </div>
-            <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
-        </div>
-    );
-};
-
 const TypeTabs = ({
     value,
     counts,
@@ -664,33 +642,6 @@ const CategoryRow = ({
         </tr>
     );
 };
-
-const WorkspaceHeader = ({
-    title,
-    text,
-    badge
-}: {
-    title: string;
-    text: string;
-    badge: string;
-}) => {
-    return (
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-3xl border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur">
-            <div className="min-w-0">
-                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">
-                    {title}
-                </p>
-                <p className="mt-1 text-sm font-bold leading-5 text-slate-700">
-                    {text}
-                </p>
-            </div>
-            <span className="hidden shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-800 sm:inline-flex">
-                {badge}
-            </span>
-        </div>
-    );
-};
-
 const CategoryActions = ({
     category,
     onEdit,
@@ -983,3 +934,4 @@ const getDisplayName = (category: CategoryItem) => {
 const getCategoryType = (category: CategoryItem): CategoryType => {
     return category.type === 'beverage' ? 'beverage' : 'food';
 };
+

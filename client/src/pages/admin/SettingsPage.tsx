@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSettings, updateSettings } from '../../hooks/useApi';
 import { Spinner } from '../../components/ui/Spinner';
 import { toast } from 'react-hot-toast';
+import { MetricCard } from '../../components/AdminUI';
 import {
     AlertCircle,
     CheckCircle2,
@@ -189,12 +190,12 @@ export const SettingsPage = () => {
                             </p>
                         </div>
 
-                        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-(--brand-stone)">
+                        <div className="min-w-0 rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3">
+                            <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
                                 <SettingsIcon size={13} />
                                 {t('admin.settings.saveStatus', 'Save status')}
                             </p>
-                            <p className="mt-1 truncate text-sm font-extrabold text-white">
+                            <p className="mt-1 truncate text-sm font-extrabold text-slate-900">
                                 {mutation.isPending
                                     ? t('admin.settings.savingChanges', 'Saving changes')
                                     : isDirty
@@ -204,7 +205,7 @@ export const SettingsPage = () => {
                         </div>
                     </div>
 
-                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 sm:grid-cols-5">
+                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-slate-200 pt-5 sm:grid-cols-5">
                         <MetricCard label={t('admin.settings.metricBrand', 'Brand')} value={values.siteName ? t('admin.settings.valueSet', 'Set') : t('admin.settings.valueMissing', 'Missing')} icon={<Store size={15} />} />
                         <MetricCard label={t('admin.settings.metricContact', 'Contact')} value={`${completedContactFields}/4`} icon={<Phone size={15} />} />
                         <MetricCard label={t('admin.settings.metricHours', 'Hours')} value={`${filledHours}/7`} icon={<Clock3 size={15} />} />
@@ -417,25 +418,6 @@ const SettingsCard = ({
         <div className="mt-5">{children}</div>
     </section>
 );
-
-const MetricCard = ({
-    label,
-    value,
-    icon
-}: {
-    label: string;
-    value: string | number;
-    icon: ReactNode;
-}) => (
-    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-2 text-(--brand-stone)">
-            {icon}
-            <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em]">{label}</p>
-        </div>
-        <p className="mt-2 truncate text-2xl font-extrabold tabular-nums text-white">{value}</p>
-    </div>
-);
-
 const InputBlock = ({
     label,
     icon,

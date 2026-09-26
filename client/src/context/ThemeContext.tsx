@@ -13,6 +13,12 @@ const THEME_KEY = 'theme';
 const getInitialTheme = (): Theme => {
     const attr = document.documentElement.getAttribute('data-theme');
     if (attr === 'light' || attr === 'dark') return attr;
+    try {
+        const stored = localStorage.getItem(THEME_KEY);
+        if (stored === 'light' || stored === 'dark') return stored;
+    } catch {
+        /* storage unavailable */
+    }
     if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) return 'dark';
     return 'light';
 };

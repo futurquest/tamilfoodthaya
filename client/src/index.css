@@ -3242,41 +3242,31 @@ select:focus-visible {
 .admin-shell {
   max-width: 100%;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent), transparent 28rem),
-    linear-gradient(180deg, var(--brand-surface) 0%, var(--brand-surface-part-c) 100%);
+  background: var(--brand-surface-dim);
   color: var(--ink);
+}
+
+.admin-shell [class*="shadow-"] {
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-colored: 0 0 #0000 !important;
+  box-shadow: none !important;
 }
 
 .admin-sidebar-panel {
   position: relative;
   isolation: isolate;
-  border-right: 1px solid color-mix(in srgb, var(--brand-cream) 11%, transparent);
-  background:
-    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--brand-primary) 22%, transparent), transparent 18rem),
-    linear-gradient(180deg, var(--brand-outline) 0%, var(--brand-night-part) 48%, var(--brand-ink-soot) 100%);
-  color: color-mix(in srgb, var(--brand-cream) 74%, transparent);
-  box-shadow: 18px 0 60px color-mix(in srgb, var(--brand-text) 20%, transparent);
-}
-
-.admin-sidebar-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--brand-cream) 5.5%, transparent), transparent 14rem),
-    linear-gradient(90deg, transparent, color-mix(in srgb, var(--brand-cream) 3.5%, transparent));
-  pointer-events: none;
+  border-right: 1px solid var(--brand-outline);
+  background: var(--brand-surface-ivory);
+  color: var(--brand-text);
 }
 
 .admin-brand-block,
 .admin-user-block {
-  border-color: color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  border-color: var(--brand-outline);
 }
 
 .admin-brand-block {
-  border-bottom: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  border-bottom: 1px solid var(--brand-outline);
 }
 
 .admin-brand-link {
@@ -3284,10 +3274,9 @@ select:focus-visible {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 12%, transparent);
+  border: 1px solid var(--brand-outline);
   border-radius: 1rem;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 10.5%, transparent), color-mix(in srgb, var(--brand-cream) 3.5%, transparent));
+  background: transparent;
   padding: 0.5rem;
   text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
@@ -3296,8 +3285,7 @@ select:focus-visible {
 .admin-brand-link:hover {
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand-primary-soft) 28%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 14%, transparent), color-mix(in srgb, var(--brand-cream) 5.5%, transparent));
+  background: var(--brand-surface-dim);
 }
 
 .admin-brand-seal {
@@ -3306,10 +3294,9 @@ select:focus-visible {
   height: 3.5rem;
   place-items: center;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 14%, transparent);
+  border: 1px solid var(--brand-outline);
   border-radius: 1rem;
   background: var(--brand-white);
-  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-black) 20%, transparent);
 }
 
 .admin-brand-seal img {
@@ -3322,22 +3309,22 @@ select:focus-visible {
 }
 
 .admin-brand-arrow {
-  color: color-mix(in srgb, var(--brand-cream) 34%, transparent);
+  color: var(--brand-text-muted);
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .admin-brand-link:hover .admin-brand-arrow {
-  color: var(--brass-soft);
+  color: var(--brand-primary);
   transform: translateX(2px);
 }
 
 .admin-brand-block h2 {
-  color: var(--brand-cream);
+  color: var(--brand-text);
 }
 
 .admin-brand-block p,
 .admin-user-card p:last-child {
-  color: color-mix(in srgb, var(--brand-cream) 52%, transparent);
+  color: var(--brand-text-muted);
 }
 
 .admin-sidebar-status {
@@ -3346,15 +3333,15 @@ select:focus-visible {
   justify-content: space-between;
   gap: 0.8rem;
   margin-top: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  border: 1px solid var(--brand-outline);
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--brand-cream) 5.5%, transparent);
+  background: var(--brand-surface-dim);
   padding: 0.72rem 0.78rem;
 }
 
 .admin-sidebar-status span {
   display: block;
-  color: color-mix(in srgb, var(--brand-cream) 45%, transparent);
+  color: var(--brand-text-muted);
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -3364,7 +3351,7 @@ select:focus-visible {
 .admin-sidebar-status strong {
   display: block;
   margin-top: 0.12rem;
-  color: color-mix(in srgb, var(--brand-cream) 86%, transparent);
+  color: var(--brand-text);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -3376,13 +3363,13 @@ select:focus-visible {
   border: 1px solid color-mix(in srgb, var(--brand-leaf) 50%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--brand-leaf) 28%, transparent);
-  color: var(--brand-success-soft) !important;
+  color: var(--brand-success) !important;
   padding: 0.32rem 0.55rem;
   font-size: 0.68rem !important;
 }
 
 .admin-nav-label {
-  color: color-mix(in srgb, var(--brand-primary-soft) 62%, transparent);
+  color: var(--brand-primary);
 }
 
 .admin-nav-group-header {
@@ -3392,7 +3379,7 @@ select:focus-visible {
 }
 
 .admin-nav-group-header span {
-  color: color-mix(in srgb, var(--brand-cream) 36%, transparent);
+  color: var(--brand-text-muted);
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -3402,14 +3389,14 @@ select:focus-visible {
   border: 1px solid transparent;
   min-height: 2.8rem;
   min-width: 0;
-  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
+  color: var(--brand-text-muted);
   overflow: hidden;
 }
 
 .admin-nav-link:hover {
-  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent);
-  background: color-mix(in srgb, var(--brand-cream) 7.5%, transparent);
-  color: var(--brand-cream);
+  border-color: var(--brand-outline);
+  background: var(--brand-surface-dim);
+  color: var(--brand-text);
 }
 
 .admin-nav-icon {
@@ -3418,20 +3405,20 @@ select:focus-visible {
   height: 1.85rem;
   place-items: center;
   border-radius: 0.65rem;
-  background: color-mix(in srgb, var(--brand-cream) 6%, transparent);
-  color: color-mix(in srgb, var(--brand-cream) 62%, transparent);
+  background: var(--brand-surface-dim);
+  color: var(--brand-text-muted);
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .admin-nav-link:hover .admin-nav-icon {
-  background: color-mix(in srgb, var(--brand-cream) 10%, transparent);
-  color: var(--brass-soft);
+  background: var(--brand-surface-warm);
+  color: var(--brand-primary);
 }
 
 .admin-nav-chevron {
   margin-left: auto;
   flex-shrink: 0;
-  color: color-mix(in srgb, var(--brand-cream) 22%, transparent);
+  color: var(--brand-text-muted);
   opacity: 0;
   transform: translateX(-0.25rem);
   transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
@@ -3443,13 +3430,9 @@ select:focus-visible {
 }
 
 .admin-nav-link--active {
-  border-color: color-mix(in srgb, var(--brand-primary-soft) 28%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 22%, transparent), color-mix(in srgb, var(--brand-primary) 16%, transparent));
-  color: var(--brand-cream);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--brand-cream) 5.5%, transparent),
-    0 14px 28px color-mix(in srgb, var(--brand-black) 14%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 28%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  color: var(--brand-primary-deep);
 }
 
 .admin-nav-link--active::before {
@@ -3457,64 +3440,60 @@ select:focus-visible {
   position: absolute;
   inset: 0 auto 0 0;
   width: 3px;
-  background: linear-gradient(180deg, var(--brass), var(--spice));
+  background: linear-gradient(180deg, var(--brand-primary), var(--brand-primary-deep));
 }
 
 .admin-nav-link--active .admin-nav-icon {
-  background: color-mix(in srgb, var(--brand-cream) 15%, transparent);
-  color: var(--brass-soft);
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary);
 }
 
 .admin-nav-link--active .admin-nav-chevron {
   opacity: 1;
-  color: var(--brass-soft);
+  color: var(--brand-primary);
   transform: translateX(0);
 }
 
 .admin-user-block {
-  border-top: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
+  border-top: 1px solid var(--brand-outline);
 }
 
 .admin-user-card {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 10%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-cream) 9.5%, transparent), color-mix(in srgb, var(--brand-cream) 4.5%, transparent));
+  border: 1px solid var(--brand-outline);
+  background: var(--brand-surface-dim);
 }
 
 .admin-user-avatar {
-  background: linear-gradient(135deg, var(--brass), var(--spice));
-  color: var(--brand-cream);
-  box-shadow: 0 12px 24px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  background: var(--brand-primary);
+  color: var(--brand-white);
 }
 
 .admin-user-card p:first-child {
-  color: var(--brand-cream);
+  color: var(--brand-text);
 }
 
 .admin-user-shield {
-  color: color-mix(in srgb, var(--brand-primary-soft) 75%, transparent);
+  color: var(--brand-primary);
 }
 
 .admin-language-slot {
-  border: 1px solid color-mix(in srgb, var(--brand-cream) 8%, transparent);
+  border: 1px solid var(--brand-outline);
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand-cream) 4%, transparent);
+  background: var(--brand-surface-dim);
 }
 
 .admin-logout {
-  color: color-mix(in srgb, var(--brand-cream) 68%, transparent);
+  color: var(--brand-error);
 }
 
 .admin-logout:hover {
-  background: color-mix(in srgb, var(--brand-error) 16%, transparent);
-  color: var(--brand-error-soft);
+  background: color-mix(in srgb, var(--brand-error) 8%, transparent);
+  color: var(--brand-error-deep);
 }
 
 .admin-main {
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--brand-leaf) 12%, transparent), transparent 24rem),
-    transparent;
+  background: transparent;
 }
 
 .admin-main-inner {
@@ -3524,10 +3503,7 @@ select:focus-visible {
 .admin-page {
   min-height: 100%;
   padding: clamp(1rem, 2.6vw, 2rem);
-  background:
-    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 23rem),
-    radial-gradient(circle at 96% 14%, color-mix(in srgb, var(--brand-leaf) 10%, transparent), transparent 22rem),
-    transparent;
+  background: transparent;
 }
 
 .admin-page-container {
@@ -3551,26 +3527,19 @@ select:focus-visible {
   gap: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--brand-text) 8%, transparent);
   border-radius: 1rem;
-  background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 90%, transparent), color-mix(in srgb, var(--brand-cream) 76%, transparent)),
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 18rem);
-  box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 10%, transparent);
+  background: var(--brand-surface);
   color: var(--muted);
   font-weight: 700;
 }
 
-.admin-page-container>div:first-child {
+.admin-page-container>*:first-child {
   position: relative;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
   border-radius: 1rem !important;
-  background:
-    linear-gradient(105deg, color-mix(in srgb, var(--brand-surface) 94%, transparent), color-mix(in srgb, var(--brand-cream) 84%, transparent)),
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent), transparent 18rem) !important;
-  box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-shadow-warm) 12%, transparent) !important;
 }
 
-.admin-page-container>div:first-child::before {
+.admin-page-container>*:first-child::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
@@ -3578,32 +3547,12 @@ select:focus-visible {
   background: linear-gradient(90deg, var(--brass), var(--spice), var(--leaf));
 }
 
-.admin-page-container>div:first-child>div {
+.admin-page-container>*:first-child>div {
   position: relative;
   z-index: 1;
 }
 
-.admin-page-container>div:first-child h1 {
-  color: var(--ink) !important;
-  font-weight: 800 !important;
-  letter-spacing: 0 !important;
-}
-
-.admin-page-container>div:first-child svg {
-  color: var(--spice) !important;
-}
-
-.admin-page-container>div:first-child p {
-  color: var(--muted) !important;
-  font-weight: 600;
-}
-
-.admin-page-container>div:first-child p:first-child {
-  color: var(--brand-primary-deep) !important;
-  letter-spacing: 0.08em !important;
-}
-
-.admin-page-container>div:not(:first-child),
+.admin-page-container>*:not(:first-child),
 .admin-panel-font .card,
 .admin-panel-font [class*="rounded-"][class*="bg-white"] {
   backdrop-filter: saturate(1.05);
@@ -3612,9 +3561,7 @@ select:focus-visible {
 .admin-panel-font .grid>div.rounded-2xl.border.bg-white,
 .admin-panel-font .grid>div.rounded-2xl.border.border-slate-200.bg-white {
   border-color: color-mix(in srgb, var(--brand-text) 8%, transparent) !important;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--brand-surface) 96%, transparent), color-mix(in srgb, var(--brand-cream) 82%, transparent)) !important;
-  box-shadow: 0 14px 36px color-mix(in srgb, var(--brand-shadow-warm) 8%, transparent) !important;
+  background: var(--brand-surface) !important;
 }
 
 .admin-panel-font .overflow-x-auto {
@@ -3662,24 +3609,14 @@ select:focus-visible {
   background-color: transparent !important;
 }
 
-.admin-panel-font .bg-white {
-  background-color: color-mix(in srgb, var(--brand-surface) 90%, transparent) !important;
-}
+
 
 .admin-panel-font .admin-dropdown-menu {
   background-color: var(--brand-surface-soft) !important;
   backdrop-filter: none !important;
 }
 
-.admin-panel-font .admin-page-container .admin-tab-strip {
-  background-color: var(--brand-surface-part-b) !important;
-  backdrop-filter: none !important;
-}
 
-.admin-panel-font .admin-page-container .admin-tab-strip .bg-white {
-  background-color: color-mix(in srgb, var(--brand-surface-soft) 97%, transparent) !important;
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--brand-text) 12%, transparent) !important;
-}
 
 .admin-panel-font .admin-dropdown-menu .hover\:bg-amber-50:hover,
 .admin-panel-font .admin-dropdown-menu .hover\:bg-blue-50:hover,
@@ -3696,9 +3633,7 @@ select:focus-visible {
   background-color: color-mix(in srgb, var(--brand-text) 6%, transparent) !important;
 }
 
-.admin-panel-font .bg-slate-900 {
-  background-color: var(--ink) !important;
-}
+
 
 .admin-panel-font .border-slate-200,
 .admin-panel-font .border-stone-200 {
@@ -3796,16 +3731,16 @@ select:focus-visible {
 
 .admin-panel-font .bg-slate-900,
 .admin-panel-font .border-slate-900 {
-  border-color: color-mix(in srgb, var(--brand-primary-dark) 20%, transparent) !important;
-  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary-warm) 72%, var(--brand-primary)) !important;
-  color: var(--brand-surface) !important;
+  border-color: var(--brand-primary-deep) !important;
+  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary)) !important;
+  color: #ffffff !important;
   box-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 18%, transparent);
 }
 
 .admin-panel-font .hover\:bg-slate-800:hover,
 .admin-panel-font .hover\:bg-gray-900:hover {
-  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary)) !important;
-  color: var(--brand-surface) !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-deep)) !important;
+  color: #ffffff !important;
 }
 
 .admin-panel-font .hover\:bg-stone-50:hover,
@@ -4656,91 +4591,12 @@ select:focus-visible {
   will-change: transform;
 }
 
-/* Shared Packages-style command surface for operational admin pages. */
-.admin-panel-font .admin-command-hero {
-  position: relative;
-  overflow: hidden;
-  border-color: var(--brand-outline-dark) !important;
-  border-radius: 1.75rem !important;
-  background: var(--brand-night) !important;
-  color: var(--brand-cream);
-  box-shadow: 0 28px 80px color-mix(in srgb, var(--brand-text) 24%, transparent) !important;
-}
-
-.admin-panel-font .admin-command-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-primary-strong), var(--brand-primary), var(--brand-leaf));
-}
-
-.admin-panel-font .admin-command-hero h1,
-.admin-panel-font .admin-command-hero h2,
-.admin-panel-font .admin-command-hero .text-slate-900,
-.admin-panel-font .admin-command-hero .text-slate-950 {
-  color: var(--brand-cream) !important;
-}
-
-.admin-panel-font .admin-command-hero p,
-.admin-panel-font .admin-command-hero .text-slate-400,
-.admin-panel-font .admin-command-hero .text-slate-500,
-.admin-panel-font .admin-command-hero .text-slate-600,
-.admin-panel-font .admin-command-hero .text-slate-700 {
-  color: var(--brand-stone) !important;
-}
-
-.admin-panel-font .admin-command-hero [class*="border-slate-200"][class*="bg-white"],
-.admin-panel-font .admin-command-hero [class*="bg-white/70"] {
-  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent) !important;
-  background: color-mix(in srgb, var(--brand-cream) 8%, transparent) !important;
-  box-shadow: none !important;
-}
-
-.admin-panel-font .admin-command-hero [class*="bg-stone-50"],
-.admin-panel-font .admin-command-hero [class*="bg-stone-100"] {
-  background: color-mix(in srgb, var(--brand-black) 14%, transparent) !important;
-}
-
-.admin-panel-font .admin-command-hero [class*="bg-[var(--brand-surface-dim)]"] {
-  border-color: color-mix(in srgb, var(--brand-cream) 10%, transparent) !important;
-  background: color-mix(in srgb, var(--brand-cream) 8%, transparent) !important;
-}
-
-.admin-panel-font .admin-command-hero [class*="border-slate-200"] {
-  border-color: color-mix(in srgb, var(--brand-cream) 12%, transparent) !important;
-}
-
-.admin-panel-font .admin-command-hero button.bg-slate-900,
-.admin-panel-font .admin-command-hero button[class*="bg-[var(--brand-text)]"] {
-  border-color: var(--brand-primary-strong) !important;
-  background: linear-gradient(135deg, var(--brand-primary-strong), var(--brand-primary)) !important;
-  color: var(--brand-white) !important;
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 22%, transparent) !important;
-}
-
-.admin-panel-font .admin-command-hero a:hover,
-.admin-panel-font .admin-command-hero button:hover {
-  border-color: color-mix(in srgb, var(--brand-primary-strong) 48%, transparent);
-}
-
-@media (max-width: 560px) {
-  .admin-panel-font .admin-command-hero {
-    border-radius: 1.25rem !important;
-  }
-}
-
 /* Warm rice-paper remaps for the shared admin workspace layer. */
 .admin-panel-font [class*="bg-[var(--brand-surface-ivory)]"] {
   background-color: var(--brand-surface-part) !important;
 }
 
-.admin-panel-font .bg-white\/60,
-.admin-panel-font .bg-white\/70,
-.admin-panel-font .bg-white\/75,
-.admin-panel-font .bg-white\/80 {
-  background-color: color-mix(in srgb, var(--brand-surface) 62%, transparent) !important;
-}
+
 
 .admin-panel-font section[class*="135deg,var(--brand-surface-warm)_0%,var(--brand-white)_42%,var(--brand-slate-soft)_100%"] {
   background-image: linear-gradient(135deg, var(--brand-surface-warm) 0%, var(--brand-cream-warm) 42%, var(--brand-surface-part) 100%) !important;
@@ -5499,7 +5355,7 @@ select:focus-visible {
   border: 1px solid color-mix(in srgb, var(--brand-accent) 20%, var(--line));
 }
 
-.catering-invitation__grid > div {
+.catering-invitation__grid>div {
   width: 100%;
   min-width: 0;
 }
@@ -5674,7 +5530,7 @@ select:focus-visible {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .home-hero__photo img {
     aspect-ratio: 16 / 10;
   }
@@ -7767,4 +7623,297 @@ h3,
 
 .dish-modal__actions>* {
   flex: 1 1 180px;
+}
+
+/* Admin dark mode ---------------------------------------------------------
+   This layer is intentionally scoped to the operations console. It converts
+   legacy light utility classes into a quiet, high-contrast workspace while
+   keeping the public site and the established light admin theme untouched. */
+[data-theme='dark'] .admin-shell {
+  --admin-canvas: #100d10;
+  --admin-sidebar: #151116;
+  --admin-surface: #1b171c;
+  --admin-surface-raised: #221d23;
+  --admin-surface-muted: #29232a;
+  --admin-line: rgba(250, 241, 229, 0.1);
+  --admin-line-strong: rgba(250, 241, 229, 0.16);
+  --admin-text: #f8f1e8;
+  --admin-text-muted: #b9adb2;
+  --admin-text-subtle: #91858b;
+  --admin-accent: #d8a647;
+  --admin-accent-soft: rgba(216, 166, 71, 0.13);
+  --admin-success: #78bd8b;
+  --admin-warning: #e1b45e;
+  --admin-danger: #ef8877;
+  background: var(--admin-canvas);
+  color: var(--admin-text);
+}
+
+[data-theme='dark'] .admin-sidebar-panel {
+  border-color: var(--admin-line);
+  background: var(--admin-sidebar);
+  color: var(--admin-text);
+  box-shadow: 18px 0 50px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .admin-main {
+  background:
+    radial-gradient(circle at 88% 4%, rgba(216, 166, 71, 0.055), transparent 25rem),
+    var(--admin-canvas);
+}
+
+[data-theme='dark'] .admin-topbar {
+  border-color: var(--admin-line);
+  background: color-mix(in srgb, var(--admin-canvas) 92%, transparent);
+}
+
+[data-theme='dark'] .admin-brand-block,
+[data-theme='dark'] .admin-user-block,
+[data-theme='dark'] .admin-brand-link,
+[data-theme='dark'] .admin-sidebar-status,
+[data-theme='dark'] .admin-user-card,
+[data-theme='dark'] .admin-language-slot {
+  border-color: var(--admin-line);
+}
+
+[data-theme='dark'] .admin-brand-link,
+[data-theme='dark'] .admin-sidebar-status,
+[data-theme='dark'] .admin-user-card,
+[data-theme='dark'] .admin-language-slot {
+  background: var(--admin-surface);
+}
+
+[data-theme='dark'] .admin-brand-link:hover,
+[data-theme='dark'] .admin-nav-link:hover {
+  border-color: var(--admin-line-strong);
+  background: var(--admin-surface-raised);
+}
+
+[data-theme='dark'] .admin-brand-block h2,
+[data-theme='dark'] .admin-user-card p:first-child,
+[data-theme='dark'] .admin-sidebar-status strong,
+[data-theme='dark'] .admin-topbar-page {
+  color: var(--admin-text);
+}
+
+[data-theme='dark'] .admin-brand-block p,
+[data-theme='dark'] .admin-user-card p:last-child,
+[data-theme='dark'] .admin-sidebar-status span,
+[data-theme='dark'] .admin-nav-group-header span,
+[data-theme='dark'] .admin-nav-link,
+[data-theme='dark'] .admin-brand-arrow,
+[data-theme='dark'] .admin-nav-chevron {
+  color: var(--admin-text-muted);
+}
+
+[data-theme='dark'] .admin-nav-label {
+  color: var(--admin-accent);
+}
+
+[data-theme='dark'] .admin-nav-icon {
+  background: var(--admin-surface-raised);
+  color: var(--admin-text-muted);
+}
+
+[data-theme='dark'] .admin-nav-link--active {
+  border-color: rgba(216, 166, 71, 0.3);
+  background: var(--admin-accent-soft);
+  color: #f3d99f;
+}
+
+[data-theme='dark'] .admin-nav-link--active::before {
+  background: var(--admin-accent);
+}
+
+[data-theme='dark'] .admin-nav-link--active .admin-nav-icon {
+  background: rgba(216, 166, 71, 0.16);
+  color: #ecc66f;
+}
+
+[data-theme='dark'] .admin-nav-link--active .admin-nav-chevron,
+[data-theme='dark'] .admin-user-shield {
+  color: var(--admin-accent);
+}
+
+[data-theme='dark'] .admin-user-avatar {
+  background: #8f3d2d;
+  color: #fffaf4;
+}
+
+[data-theme='dark'] .admin-status-pill {
+  border-color: rgba(120, 189, 139, 0.28);
+  background: rgba(120, 189, 139, 0.1);
+  color: var(--admin-success) !important;
+}
+
+[data-theme='dark'] .admin-logout {
+  color: var(--admin-danger);
+}
+
+[data-theme='dark'] .admin-logout:hover {
+  background: rgba(239, 136, 119, 0.1);
+  color: #ffae9f;
+}
+
+[data-theme='dark'] .admin-sidebar-toggle {
+  border-color: var(--admin-line-strong);
+  background: var(--admin-surface-raised);
+  color: var(--admin-text);
+}
+
+[data-theme='dark'] .admin-sidebar-toggle:hover {
+  border-color: rgba(216, 166, 71, 0.38);
+  background: var(--admin-surface-muted);
+  color: var(--admin-accent);
+}
+
+[data-theme='dark'] .admin-panel-font .bg-white,
+[data-theme='dark'] .admin-panel-font [class*="bg-white/"] {
+  background-color: var(--admin-surface) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .bg-stone-50,
+[data-theme='dark'] .admin-panel-font .bg-stone-100,
+[data-theme='dark'] .admin-panel-font .bg-gray-50,
+[data-theme='dark'] .admin-panel-font .bg-slate-50 {
+  background-color: var(--admin-surface-raised) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .border-slate-100,
+[data-theme='dark'] .admin-panel-font .border-slate-200,
+[data-theme='dark'] .admin-panel-font .border-slate-300,
+[data-theme='dark'] .admin-panel-font .border-stone-200,
+[data-theme='dark'] .admin-panel-font .border-gray-200,
+[data-theme='dark'] .admin-panel-font .border-gray-300,
+[data-theme='dark'] .admin-panel-font .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+[data-theme='dark'] .admin-panel-font .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--admin-line) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-slate-950,
+[data-theme='dark'] .admin-panel-font .text-slate-900,
+[data-theme='dark'] .admin-panel-font .text-slate-800,
+[data-theme='dark'] .admin-panel-font .text-slate-700,
+[data-theme='dark'] .admin-panel-font h1,
+[data-theme='dark'] .admin-panel-font h2,
+[data-theme='dark'] .admin-panel-font h3,
+[data-theme='dark'] .admin-panel-font td,
+[data-theme='dark'] .admin-panel-font label {
+  color: var(--admin-text) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-slate-600,
+[data-theme='dark'] .admin-panel-font .text-slate-500,
+[data-theme='dark'] .admin-panel-font th {
+  color: var(--admin-text-muted) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-slate-400,
+[data-theme='dark'] .admin-panel-font .text-slate-300,
+[data-theme='dark'] .admin-panel-font ::placeholder {
+  color: var(--admin-text-subtle) !important;
+}
+
+[data-theme='dark'] .admin-panel-font input,
+[data-theme='dark'] .admin-panel-font textarea,
+[data-theme='dark'] .admin-panel-font select {
+  border-color: var(--admin-line-strong) !important;
+  background: var(--admin-surface-raised) !important;
+  color: var(--admin-text) !important;
+  color-scheme: dark;
+}
+
+[data-theme='dark'] .admin-panel-font input:focus,
+[data-theme='dark'] .admin-panel-font textarea:focus,
+[data-theme='dark'] .admin-panel-font select:focus {
+  border-color: rgba(216, 166, 71, 0.62) !important;
+  box-shadow: 0 0 0 3px rgba(216, 166, 71, 0.13) !important;
+}
+
+[data-theme='dark'] .admin-panel-font tr:hover {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .admin-dropdown-menu,
+[data-theme='dark'] .admin-panel-font [role='dialog'],
+[data-theme='dark'] .admin-panel-font .fixed .shadow-2xl {
+  border-color: var(--admin-line-strong) !important;
+  background: var(--admin-surface-raised) !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .bg-amber-50,
+[data-theme='dark'] .admin-panel-font .bg-amber-100,
+[data-theme='dark'] .admin-panel-font .bg-amber-200,
+[data-theme='dark'] .admin-panel-font .bg-orange-50,
+[data-theme='dark'] .admin-panel-font .bg-yellow-50 {
+  background-color: rgba(225, 180, 94, 0.12) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-amber-600,
+[data-theme='dark'] .admin-panel-font .text-amber-700,
+[data-theme='dark'] .admin-panel-font .text-amber-800,
+[data-theme='dark'] .admin-panel-font .text-yellow-800,
+[data-theme='dark'] .admin-panel-font .text-orange-600 {
+  color: var(--admin-warning) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .bg-emerald-50,
+[data-theme='dark'] .admin-panel-font .bg-green-50,
+[data-theme='dark'] .admin-panel-font .bg-blue-50 {
+  background-color: rgba(120, 189, 139, 0.1) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-emerald-600,
+[data-theme='dark'] .admin-panel-font .text-emerald-700,
+[data-theme='dark'] .admin-panel-font .text-emerald-800,
+[data-theme='dark'] .admin-panel-font .text-green-600,
+[data-theme='dark'] .admin-panel-font .text-green-700,
+[data-theme='dark'] .admin-panel-font .text-green-800,
+[data-theme='dark'] .admin-panel-font .text-blue-600,
+[data-theme='dark'] .admin-panel-font .text-blue-700 {
+  color: var(--admin-success) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .bg-red-50 {
+  background-color: rgba(239, 136, 119, 0.1) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .text-red-600,
+[data-theme='dark'] .admin-panel-font .text-red-700 {
+  color: var(--admin-danger) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .admin-command-hero {
+  border-color: var(--admin-line-strong) !important;
+  background:
+    linear-gradient(115deg, rgba(216, 166, 71, 0.07), transparent 42%),
+    var(--admin-surface) !important;
+}
+
+[data-theme='dark'] .admin-panel-font .admin-command-hero::before {
+  background: linear-gradient(90deg, var(--admin-accent), #a94c37, transparent 82%);
+}
+
+[data-theme='dark'] .admin-metric-card {
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+[data-theme='dark'] a:hover > .admin-metric-card {
+  transform: translateY(-2px);
+  border-color: var(--admin-line-strong) !important;
+  background: var(--admin-surface-muted) !important;
+}
+
+[data-theme='dark'] .admin-metric-card--brass > div { color: var(--admin-warning) !important; }
+[data-theme='dark'] .admin-metric-card--leaf > div { color: var(--admin-success) !important; }
+[data-theme='dark'] .admin-metric-card--spice > div { color: var(--admin-danger) !important; }
+
+[data-theme='dark'] .admin-panel-font ::selection {
+  background: rgba(216, 166, 71, 0.32);
+  color: #fffaf2;
+}
+
+[data-theme='dark'] .admin-panel-font :focus-visible {
+  outline-color: rgba(216, 166, 71, 0.72);
 }
