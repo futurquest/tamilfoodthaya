@@ -6,9 +6,9 @@ na_heuristics: 7,10
 p0_count: 0
 p1_count: 3
 p2_count: 2
-target_identity: "file:C:\\Users\\thanu\\Documents\\tamilfoodthaya\\client\\src\\pages\\HomePage.tsx"
+target_identity: "file:C:\\Users\\thanu\\Documents\\tamilfooddemo\\client\\src\\pages\\HomePage.tsx"
 target_fingerprint: "sha256:aad39bc0ca96a819453f08d8994d8b78dd32421a9059dddd2be81f57ccfea74e"
-target_path: "C:\\Users\\thanu\\Documents\\tamilfoodthaya\\client\\src\\pages\\HomePage.tsx"
+target_path: "C:\\Users\\thanu\\Documents\\tamilfooddemo\\client\\src\\pages\\HomePage.tsx"
 timestamp: 2026-09-14T07-17-11Z
 slug: client-src-pages-homepage-tsx
 ---

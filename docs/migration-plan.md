@@ -16,7 +16,7 @@ Status: **IN PROGRESS, module-by-module.** Reference pattern proven & committed
   JWT `sub`, Dashboard aggregate) stay **byte-identical** — no JWT, guard,
   controller-route, DTO-field or client changes. This is the hard invariant.
 - Server builds green (`npm run build`) at **every** commit.
-- A one-time replay script reads live Mongo `tamilfoodthaya-database-1` and
+- A one-time replay script reads live Mongo `tamilfooddemo-database-1` and
   writes the same docs into PG (24-hex `_id` varchar PKs, same jsonb columns),
   preserving all live admin products + orders.
 
@@ -58,7 +58,7 @@ Status: **IN PROGRESS, module-by-module.** Reference pattern proven & committed
 Written as `server/scripts/replay-mongo-to-pg.ts` (Node, run once, verbose):
 
 1. Connect to live Mongo via `mongoose` (existing `MONGODB_URI`) on
-   `tamilfoodthaya-database-1` (port 27017).
+   `tamilfooddemo-database-1` (port 27017).
 2. Connect the TypeORM DataSource to the sandbox PG (5433).
 3. Enumerate `User`, `Category`, `MenuItem`, `Order`, `CateringOrder`, `Coupon`,
    `Addon`, `Lead`, `Message`, `Settings`, `NotificationLog` collections.
@@ -79,7 +79,7 @@ compare JSON vs the old API → only then drop the Mongo readonly path.
 - **No client changes** — the API is the contract; the client is untouched.
 - **Keep Mongo writable during transition** — PG is the new source of truth for
   converted modules; the OLD overlap modules still write to Mongo until their
-  last converter commit. Do not tear down `tamilfoodthaya-database-1` until the
+  last converter commit. Do not tear down `tamilfooddemo-database-1` until the
   final module + replay pass.
 
 ## 6. Definition of done for this task

@@ -112,7 +112,7 @@ describe('OrderService', () => {
                 data: { object: { metadata: { orderId: '123' } } }
             });
 
-            mockMenuItemRepo.findOne.mockResolvedValue({ _id: '123', customerInfo: { email: 'test@t.com', phone: '1234567890', name: 'Test' }, items: [{ menuItemId: 'abc', quantity: 2 }] });
+            mockMenuItemRepo.findOne.mockResolvedValue({ _id: '123', customerInfo: { email: 'demo@example.com', phone: 'demo', name: 'demo' }, items: [{ menuItemId: 'abc', quantity: 2 }] });
 
             await service.handleWebhook('stripe', 'sig', {});
 

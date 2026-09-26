@@ -127,9 +127,9 @@ export class AuthService {
             const admin = this.userRepo.create({
                 _id: UserEntity.newId(),
                 username: 'admin',
-                email: 'admin@tamilfoodthaya.com',
+                email: 'demo@example.com',
                 name: 'System Admin',
-                phone: '+0000000000',
+                phone: 'demo',
                 password: hashedPassword,
                 role: UserRole.ADMIN,
             });

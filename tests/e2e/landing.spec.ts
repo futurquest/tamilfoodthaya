@@ -21,7 +21,7 @@ for (const width of [360, 768, 1440]) {
       await expect(page.locator('h1')).toHaveCount(1);
       await expect(page.locator('h1')).toBeVisible();
       await expect(page.locator('meta[name="description"]')).toHaveCount(1);
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://tamilfoodthaya.nl${path}`);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://demo.example${path}`);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index, follow/);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.getByRole('link', { name: 'Request a catering quote', exact: true }).last()).toBeVisible();
@@ -33,18 +33,18 @@ test('enquiry preserves details on failure and confirms success', async ({ page 
   await page.goto('/contact');
   await page.getByRole('button', { name: 'Request a catering quote' }).click();
   await expect(page.locator('#name-error')).toBeVisible();
-  await page.locator('input[name="name"]').fill('Test Host');
-  await page.locator('input[name="email"]').fill('host@example.com');
-  await page.locator('input[name="phone"]').fill('+31612345678');
+  await page.locator('input[name="name"]').fill('demo');
+  await page.locator('input[name="email"]').fill('demo@example.com');
+  await page.locator('input[name="phone"]').fill('demo');
   await page.locator('input[name="guests"]').fill('50');
-  await page.locator('input[name="location"]').fill('Rotterdam');
+  await page.locator('input[name="location"]').fill('demo');
   await page.locator('textarea[name="message"]').fill('Tamil vegetarian catering for a family celebration.');
   await page.route('**/api/v1/leads', route => route.fulfill({ status: 500, json: {} }));
   await page.getByRole('button', { name: 'Request a catering quote' }).click();
   await expect(page.locator('.form-result--error')).toBeVisible();
-  await expect(page.locator('input[name="name"]')).toHaveValue('Test Host');
+  await expect(page.locator('input[name="name"]')).toHaveValue('demo');
   await page.route('**/api/v1/leads', route => {
-    expect(route.request().postDataJSON()).toMatchObject({ guests: '50', location: 'Rotterdam' });
+    expect(route.request().postDataJSON()).toMatchObject({ guests: '50', location: 'demo' });
     return route.fulfill({ json: { ok: true } });
   });
   await page.getByRole('button', { name: 'Request a catering quote' }).click();

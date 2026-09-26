@@ -7,7 +7,7 @@ Implemented: responsive headings and content-sized sections; visible-by-default 
 ## Deployment
 
 - Run `npm run build --prefix client`. Deploy the entire `client/dist` directory, including route directories, `sitemap.xml` and `robots.txt`.
-- Set `VITE_SITE_URL` before building if the production origin differs from `https://tamilfoodthaya.nl`. Configure `VITE_API_BASE_URL` for the real backend.
+- Set `VITE_SITE_URL` before building for the deployment origin. Configure `VITE_API_BASE_URL` for the backend.
 - Serve existing route HTML before the SPA fallback, for example Nginx `try_files $uri $uri/index.html /index.html`. Rewriting every request to the root index discards page-specific social metadata.
 - Configure `X-Robots-Tag: noindex, follow` for `/admin/*`, `/dashboard`, `/login`, `/register`, `/verify-email`, `/checkout` and `/catering/checkout/*`. Fixed private routes also have generated noindex HTML; dynamic checkout routes receive client-side noindex and should receive this header too.
 - Verify the address, phone, email, hours and social links in admin settings. Confirm existing marketing claims and package availability against the real service.

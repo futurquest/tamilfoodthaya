@@ -163,7 +163,7 @@ describe('CateringService', () => {
                 guests: 5,
                 eventDate: '2026-08-01',
                 selections: [],
-                customerInfo: { name: 'T', email: 't@t.com', phone: '0612345678' },
+                customerInfo: { name: 'demo', email: 'demo@example.com', phone: 'demo' },
             })).rejects.toThrow(BadRequestException);
         });
 
@@ -175,7 +175,7 @@ describe('CateringService', () => {
                 selections: [
                     { categoryName: 'Main Course', selectedItems: [{ itemName: 'Biryani' }] },
                 ],
-                customerInfo: { name: 'T', email: 't@t.com', phone: '0612345678' },
+                customerInfo: { name: 'demo', email: 'demo@example.com', phone: 'demo' },
             })).rejects.toThrow(BadRequestException);
         });
 
@@ -188,7 +188,7 @@ describe('CateringService', () => {
                     { categoryName: 'Main Course', selectedItems: [{ itemName: 'NonExistentItem' }] },
                     { categoryName: 'Dessert', selectedItems: [{ itemName: 'Watalappam' }] },
                 ],
-                customerInfo: { name: 'T', email: 't@t.com', phone: '0612345678' },
+                customerInfo: { name: 'demo', email: 'demo@example.com', phone: 'demo' },
             })).rejects.toThrow(BadRequestException);
         });
 
@@ -201,7 +201,7 @@ describe('CateringService', () => {
                     { categoryName: 'Main Course', selectedItems: [{ itemName: 'Biryani', choiceName: 'Extra Spicy' }] },
                     { categoryName: 'Dessert', selectedItems: [{ itemName: 'Watalappam' }] },
                 ],
-                customerInfo: { name: 'Test', email: 'test@test.com', phone: '0612345678' },
+                customerInfo: { name: 'demo', email: 'demo@example.com', phone: 'demo' },
             };
 
             const saved = await service.createCateringOrder(orderData);

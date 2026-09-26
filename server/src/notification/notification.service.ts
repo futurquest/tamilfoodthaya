@@ -141,7 +141,7 @@ export class NotificationService {
 
         try {
             await this.transporter.sendMail({
-                from: this.configService.get<string>('SMTP_FROM', '"Tamil Food Thaya" <noreply@tamilfoodthaya.com>'),
+                from: this.configService.get<string>('SMTP_FROM', '"demo" <demo@example.com>'),
                 to,
                 subject,
                 text,

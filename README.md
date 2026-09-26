@@ -1,12 +1,12 @@
 # Tamil Food Thaya Platform
 
-A production-ready restaurant and catering web platform for a Netherlands-based Tamil / Sri Lankan cuisine business.
+A demo-ready restaurant and catering web platform for Tamil / Sri Lankan cuisine.
 
 ## 🚀 Key Features
 
 ### 🌍 Multilingual Support
 - **Dynamic Content**: Seamlessly switch between **English, Dutch, and Tamil** for all menu items, packages, and UI elements.
-- **Localized UX**: Addresses Dutch administrative standards while honoring Tamil cultural roots.
+- **Localized UX**: Demonstrates multilingual administrative workflows while honoring Tamil cultural roots.
 
 ### 🍱 Premium Catering system
 - **Package Selection**: Tiered packages (Silver, Gold, Platinum) with customizable item selections.
@@ -16,7 +16,7 @@ A production-ready restaurant and catering web platform for a Netherlands-based 
 ### 💳 Optimized Checkout
 - **Smart Pre-fill**: Automatically populates contact info for logged-in users.
 - **Override Flexibility**: Allows editing of phone/email during checkout for specific order needs.
-- **iDEAL Integration**: Specialized for the Netherlands market via Stripe.
+- **iDEAL Integration**: Demonstrates localized payment workflows via Stripe.
 
 ### 📊 Advanced User Dashboard
 - **Granular Status Tracking**: Color-coded badges for all order states (Quoted, Paid, Preparing, Ready, etc.).
@@ -31,7 +31,7 @@ A production-ready restaurant and catering web platform for a Netherlands-based 
 
 ## 📂 Project Structure
 ```text
-tamilfoodthaya/
+tamilfooddemo/
 ├── client/                 # React Frontend
 │   ├── src/
 │   │   ├── components/     # UI & Layout components
@@ -57,8 +57,8 @@ tamilfoodthaya/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/futurquest/tamilfoodthaya.git
-cd tamilfoodthaya
+git clone https://github.com/futurquest/tamilfooddemo.git
+cd tamilfooddemo
 ```
 
 ### 2. Prerequisites
@@ -126,7 +126,7 @@ npm run db:replay
 
 ### Creating a fresh DB
 ```bash
-docker run -d --name tamilfoodthaya-pg -p 5433:5432 \
+docker run -d --name tamilfooddemo-pg -p 5433:5432 \
   -e POSTGRES_USER=tft -e POSTGRES_DB=tftdb -e POSTGRES_PASSWORD=tft_dev_pw \
   postgres:16
 ```

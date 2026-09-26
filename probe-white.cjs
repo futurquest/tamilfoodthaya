@@ -1,4 +1,4 @@
-const { chromium } = require('C:/Users/thanu/Documents/tamilfoodthaya/node_modules/playwright');
+const { chromium } = require('C:/Users/thanu/Documents/tamilfooddemo/node_modules/playwright');
 
 (async () => {
   const browser = await chromium.launch({ headless: true });

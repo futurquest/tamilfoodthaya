@@ -47,7 +47,7 @@ describe('AuthService', () => {
       username: 'admin',
       password: hashedPassword,
       _id: '1',
-      email: 'admin@tamilfoodthaya.com',
+      email: 'demo@example.com',
       name: 'Admin',
       phone: '123',
       role: 'admin',

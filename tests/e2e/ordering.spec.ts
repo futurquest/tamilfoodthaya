@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 const settings = {
-    address: 'Hofplein 20, Rotterdam',
-    phone: '+31 (0) 6 1234 5678',
-    email: 'info@tamilfoodthaya.nl',
+    address: 'demo',
+    phone: 'demo',
+    email: 'demo@example.com',
     businessHours: {
         monday: '12:00 - 22:00',
         tuesday: '12:00 - 22:00',
@@ -61,9 +61,9 @@ test.describe('Ordering Flow', () => {
         await page.getByRole('button', { name: 'Afrekenen' }).click();
         await expect(page).toHaveURL(/.*checkout/);
 
-        await page.fill('input[name="name"]', 'Test User');
-        await page.fill('input[name="email"]', 'test@example.com');
-        await page.fill('input[name="phone"]', '0612345678');
+        await page.fill('input[name="name"]', 'demo');
+        await page.fill('input[name="email"]', 'demo@example.com');
+        await page.fill('input[name="phone"]', 'demo');
         await page.fill('input[name="pickupTime"]', '2026-12-25T18:00');
 
         await expect(page.getByRole('button', { name: /doorgaan naar betalen/i })).toBeVisible();
@@ -74,13 +74,13 @@ test.describe('Catering Flow', () => {
     test('allows a user to request a catering quote', async ({ page }) => {
         await page.goto('/catering');
 
-        await page.fill('input[name="name"]', 'Sarah Miller');
-        await page.fill('input[name="phone"]', '0612345678');
-        await page.fill('input[name="email"]', 'sarah@example.com');
+        await page.fill('input[name="name"]', 'demo');
+        await page.fill('input[name="phone"]', 'demo');
+        await page.fill('input[name="email"]', 'demo@example.com');
         await page.fill('input[name="eventDate"]', '2026-08-15');
         await page.fill('input[name="eventType"]', 'Wedding');
         await page.fill('input[name="guests"]', '150');
-        await page.fill('input[name="location"]', 'Rotterdam');
+        await page.fill('input[name="location"]', 'demo');
 
         await page.getByRole('button', { name: /offerte aanvragen|request quote/i }).last().click();
         await expect(page.getByRole('status').filter({ hasText: /binnen 24 uur|within 24 hours/i })).toBeVisible();

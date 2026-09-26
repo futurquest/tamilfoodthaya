@@ -77,7 +77,7 @@ const getBaseTemplate = (title: string, content: string) => `
         </div>
         <div style="${FOOTER_STYLE}">
             <p style="margin: 0;">&copy; ${new Date().getFullYear()} Tamil Food Thaya Catering. All rights reserved.</p>
-            <p style="margin: 8px 0 0;">Spaklerweg 14, 1096 BA Amsterdam, Netherlands</p>
+            <p style="margin: 8px 0 0;">demo</p>
         </div>
     </div>
 </body>

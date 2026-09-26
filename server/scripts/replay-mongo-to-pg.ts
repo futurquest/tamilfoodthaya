@@ -9,7 +9,7 @@ import { DataSource } from 'typeorm';
  *
  *   npm run db:replay
  *
- * Reads every legacy collection from `MONGODB_URI` (tamilfoodthaya-database-1)
+ * Reads every legacy collection from `MONGODB_URI` (tamilfooddemo-database-1)
  * and cold-copies the docs into the TypeORM/Postgres tables created from the
  * new entities (24-hex `_id` varchar PKs, jsonb columns). `_id` is preserved
  * verbatim so existing JWT `sub`s / order / user references stay valid.

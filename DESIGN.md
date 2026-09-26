@@ -6,7 +6,7 @@ Tamil Food Thaya should feel like a professional traditional Tamil kitchen for p
 
 ## Audience
 
-Traditional food lovers, Tamil and Sri Lankan families in the Netherlands, office hosts, wedding planners, and customers looking for trustworthy takeaway or catering.
+Traditional food lovers, families, office hosts, wedding planners, and customers looking for trustworthy takeaway or catering in a demo market.
 
 ## Page Strategy
 
