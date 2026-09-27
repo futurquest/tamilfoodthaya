@@ -52,7 +52,12 @@ import { postgresSslConfig } from './database/postgres-ssl';
           // current behavior unless TYPEORM_SYNCHRONIZE=false is configured.
           synchronize: process.env.NODE_ENV !== 'production'
             && configService.get<string>('TYPEORM_SYNCHRONIZE', 'true') === 'true',
-          ssl: postgresSslConfig(process.env),
+          ssl: process.env.NODE_ENV === 'production'
+          ? {
+              ca: process.env.SUPABASE_DB_CERT, // Reads straight from Vercel's environment variables
+              rejectUnauthorized: true,         // Explicitly ensures full MITM security protection
+            }
+          : postgresSslConfig(process.env),
           extra: {
             max: poolMax,
             idleTimeoutMillis: 30000,
