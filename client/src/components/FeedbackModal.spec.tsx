@@ -22,8 +22,10 @@ describe('FeedbackModal', () => {
     trigger.focus();
     fireEvent.click(trigger);
     const dialog = screen.getByRole('alertdialog');
+    expect(dialog).toHaveClass('feedback-modal--success');
     expect(dialog).toHaveTextContent('All set');
     expect(dialog).toHaveTextContent('Your message was sent.');
+    expect(screen.getByRole('button', { name: 'Continue' })).toHaveClass('btn-primary');
     const close = screen.getByRole('button', { name: 'Close notification' });
     expect(close).toHaveFocus();
     fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
@@ -36,6 +38,7 @@ describe('FeedbackModal', () => {
   it('shows an error and closes with Escape', () => {
     render(<FeedbackProvider><Controls /></FeedbackProvider>);
     fireEvent.click(screen.getByRole('button', { name: 'Fail' }));
+    expect(screen.getByRole('alertdialog')).toHaveClass('feedback-modal--error');
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Try again.');
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Something went wrong');
     fireEvent.keyDown(document, { key: 'Escape' });

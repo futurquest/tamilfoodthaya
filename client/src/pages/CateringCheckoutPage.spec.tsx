@@ -73,6 +73,7 @@ async function reachReview() {
 
 describe('catering order submission', () => {
     beforeEach(() => {
+        Element.prototype.scrollIntoView = vi.fn();
         mocks.createCateringOrder.mockReset();
         mocks.getCateringPackage.mockResolvedValue({
             _id: 'package-1', name: 'Family feast', description: 'Catering',
@@ -82,6 +83,29 @@ describe('catering order submission', () => {
     });
 
     afterEach(() => vi.useRealTimers());
+
+    it('keeps an untouched optional category neutral until an item is selected', async () => {
+        mocks.getCateringPackage.mockResolvedValueOnce({
+            _id: 'package-1', name: 'Family feast', description: 'Catering',
+            basePrice: 10, minGuests: 10,
+            categories: [
+                { name: 'Mains', minSelect: 1, maxSelect: 1, items: [] },
+                { name: 'Dessert', minSelect: 0, maxSelect: 1, items: [{
+                    menuItem: { _id: 'dessert-1', name: 'Payasam', description: '', price: 0, choices: [] },
+                }] },
+            ],
+        });
+        renderCheckout();
+
+        const dessert = (await screen.findByText('Dessert')).closest('button')!;
+        expect(dessert).not.toHaveClass('is-complete');
+        fireEvent.click(dessert);
+        fireEvent.click(screen.getByText('Payasam'));
+        expect(dessert).toHaveTextContent('1/1');
+        expect(dessert).toHaveClass('is-active');
+        fireEvent.click((screen.getByText('Mains')).closest('button')!);
+        expect(dessert).toHaveClass('is-complete');
+    });
 
     it('requires all eight items when the package category minimum is eight', async () => {
         mocks.getCateringPackage.mockResolvedValueOnce({

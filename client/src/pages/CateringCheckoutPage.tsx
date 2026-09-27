@@ -552,11 +552,11 @@ setDishPreview({
                         {step === 0 && activeCategory && (
                             <div className="space-y-4">
                                 <div className="space-y-4">
-                                    <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
+                                    <Card className="catering-checkout__category-panel rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                         <CardContent className="p-4">
                                             <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                                                 <div>
-                                                    <h2 className="text-lg font-semibold" style={{ color: 'var(--brand-text)' }}>
+                                                    <h2 className="catering-checkout__categories-heading text-lg font-semibold" style={{ color: 'var(--brand-text)' }}>
                                                         {t('cateringCheckout.categoriesTitle')}
                                                     </h2>
                                                     <p className="text-sm" style={{ color: 'var(--brand-text-muted)' }}>
@@ -568,42 +568,27 @@ setDishPreview({
                                                 </span>
                                             </div>
 
-                                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                                            <div className="catering-checkout__category-nav" aria-label={t('cateringCheckout.categoriesTitle')}>
                                                 {pkg.categories.map((cat, idx) => {
                                                     const count = (selections[cat.name] || []).length;
-                                                    const isValid = count >= cat.minSelect;
+                                                    const isComplete = count > 0 && count >= cat.minSelect;
+                                                    const isActive = activeCatIdx === idx;
 
                                                     return (
                                                         <button
                                                             key={idx}
                                                             type="button"
                                                             onClick={() => goToCategory(idx)}
-                                                            aria-current={
-                                                                activeCatIdx === idx ? 'step' : undefined
-                                                            }
-                                                            className="flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition"
-                                                            style={activeCatIdx === idx
-                                                                ? { borderColor: 'var(--brand-primary)', background: 'var(--brand-primary)', color: 'var(--brand-cream)' }
-: isValid
-                                                                        ? { borderColor: 'var(--leaf)', background: 'color-mix(in srgb, var(--brand-leaf) 10%, transparent)', color: 'var(--leaf)' }
-                                                                    : { borderColor: 'var(--brand-outline)', background: 'var(--brand-surface-ivory)', color: 'var(--brand-text)' }
-                                                            }
+                                                            aria-current={isActive ? 'step' : undefined}
+                                                            className={`catering-checkout__category-button${isActive ? ' is-active' : isComplete ? ' is-complete' : ''}`}
                                                         >
-                                                            <span>
+                                                            <span className="catering-checkout__category-name">
                                                                 {getLabel(
                                                                     (cat as any).nameTranslations,
                                                                     cat.name
                                                                 )}
                                                             </span>
-                                                            <span
-                                                                className="rounded-full px-2 py-1 text-xs"
-                                                                style={activeCatIdx === idx
-                                                                    ? { background: 'rgba(255,255,255,0.15)', color: 'var(--brand-cream)' }
-                                                                    : isValid
-                                                                        ? { background: '#dcfce7', color: '#166534' }
-                                                                        : { background: 'var(--brand-surface-dim)', color: 'var(--brand-text-muted)' }
-                                                                }
-                                                            >
+                                                            <span className="catering-checkout__category-count">
                                                                 {count}/{cat.maxSelect}
                                                             </span>
                                                         </button>
@@ -619,7 +604,7 @@ setDishPreview({
                                             <div>
                                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                                                     <div>
-                                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
+                                                        <h2 className="catering-checkout__selection-heading text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                                             {getLabel(
                                                                 (activeCategory as any).nameTranslations,
                                                                 activeCategory.name
@@ -874,7 +859,7 @@ setDishPreview({
                             <div className="space-y-4">
                                 <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                     <CardContent className="p-6">
-                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
+                                        <h2 className="catering-checkout__step-heading text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             {t('cateringCheckout.optionalAddons')}
                                         </h2>
                                         <p className="mt-2 text-sm" style={{ color: 'var(--brand-text-muted)' }}>
@@ -985,7 +970,7 @@ setDishPreview({
                             <div className="space-y-4">
                                 <Card className="rounded-2xl shadow-none" style={{ border: '1px solid var(--brand-outline)', background: 'var(--brand-surface-ivory)' }}>
                                     <CardContent className="space-y-5 p-6">
-                                        <h2 className="text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
+                                        <h2 className="catering-checkout__step-heading text-2xl font-semibold" style={{ color: 'var(--brand-text)' }}>
                                             Event & Contact Details
                                         </h2>
 
@@ -1473,11 +1458,11 @@ setDishPreview({
                         }}
                         style={{
                             borderColor: 'var(--brand-outline)',
-                            borderTopColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
-                            borderTopWidth: 4,
+                            borderTopColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--brand-accent)',
+                            borderTopWidth: 3,
                             background: 'var(--brand-surface-ivory)',
                             color: 'var(--brand-text)',
-                            outlineColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                            outlineColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--brand-accent)',
                         }}
                     >
                         <div className="p-5 sm:p-7">
@@ -1494,7 +1479,7 @@ setDishPreview({
                                         : <CheckCircle size={24} aria-hidden="true" />}
                                 </div>
                                 <div className="min-w-0 flex-1 pt-0.5">
-                                    <h2 id="catering-order-notice-title" className="font-display text-xl font-semibold leading-tight">
+                                    <h2 id="catering-order-notice-title" className="catering-checkout__notice-heading font-display text-xl font-semibold leading-tight">
                                         {t(orderNotice.titleKey || (orderNotice.type === 'error' ? 'cateringCheckout.orderErrorTitle' : 'cateringCheckout.orderSuccessTitle'))}
                                     </h2>
                                 </div>
@@ -1512,9 +1497,11 @@ setDishPreview({
                             <div
                                 id="catering-order-notice-message"
                                 role={orderNotice.type === 'success' ? 'status' : undefined}
-                                className="mt-5 space-y-1 rounded-xl border-l-4 px-4 py-3.5 text-sm leading-6"
+                                className="mt-5 space-y-1 rounded-xl border px-4 py-3.5 text-sm leading-6"
                                 style={{
-                                    borderLeftColor: orderNotice.type === 'error' ? 'var(--brand-error)' : 'var(--catering-success)',
+                                    borderColor: orderNotice.type === 'error'
+                                        ? 'color-mix(in srgb, var(--brand-error) 24%, transparent)'
+                                        : 'color-mix(in srgb, var(--catering-success) 24%, transparent)',
                                     background: orderNotice.type === 'error'
                                         ? 'color-mix(in srgb, var(--brand-error) 7%, var(--brand-surface-ivory))'
                                         : 'color-mix(in srgb, var(--catering-success) 9%, var(--brand-surface-ivory))',

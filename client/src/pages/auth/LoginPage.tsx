@@ -38,7 +38,15 @@ export const LoginPage = () => {
       <SEO title="Log in" description="Log in to your Tamil Food Thaya account." />
       <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
       <div className="auth-card surface">
-        <div className="auth-copy">
+        <div className="auth-copy auth-copy--login">
+          <img
+            className="auth-copy__photo"
+            src="/hero-catering.jpg"
+            alt="A buffet of Tamil dishes ready to share"
+            width="1536"
+            height="1024"
+            decoding="async"
+          />
           <Logo />
           <h1>Welcome back to the kitchen.</h1>
           <p>Sign in to reorder favourites, track requests, and keep catering details in one place.</p>
