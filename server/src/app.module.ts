@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+// TypeORM loads the PostgreSQL driver dynamically. Keep an explicit import so
+// Vercel's dependency tracer includes pg in the serverless function bundle.
+import 'pg';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
