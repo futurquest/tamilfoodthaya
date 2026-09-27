@@ -53,7 +53,7 @@ export class CateringOrderEntity {
     @Column({ type: 'varchar' })
     packageName: string;
 
-    @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
+    @Column({ type: 'jsonb', default: [] })
     selections: CategorySelection[];
 
     @Column({ type: 'integer' })

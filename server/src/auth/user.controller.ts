@@ -4,6 +4,8 @@ import { UserService } from './user.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from './entities/user.entity';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -16,7 +18,7 @@ export class UserController {
     }
 
     @Patch('profile')
-    async updateProfile(@Req() req: any, @Body() body: any) {
+    async updateProfile(@Req() req: any, @Body() body: UpdateProfileDto) {
         return this.userService.updateProfile(req.user._id, body);
     }
 
@@ -33,7 +35,7 @@ export class UserController {
 
     @Patch(':id')
     @Roles(UserRole.ADMIN)
-    async adminUpdateUser(@Param('id') id: string, @Body() updateData: any) {
+    async adminUpdateUser(@Param('id') id: string, @Body() updateData: AdminUpdateUserDto) {
         return this.userService.adminUpdateUser(id, updateData);
     }
 

@@ -117,8 +117,4 @@ export class CreateCateringOrderDto {
     @Type(() => CateringAddonDto)
     addons?: CateringAddonDto[];
 
-    // Always overwritten server-side from the authenticated session when present.
-    @IsOptional()
-    @IsString()
-    userId?: string;
 }

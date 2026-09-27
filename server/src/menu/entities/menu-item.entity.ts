@@ -63,7 +63,7 @@ export class MenuItemEntity {
     @Column({ name: 'isActive', type: 'boolean', default: true })
     isActive: boolean;
 
-    @Column({ name: 'choices', type: 'jsonb', default: () => "'[]'::jsonb" })
+    @Column({ name: 'choices', type: 'jsonb', default: [] })
     choices: MenuChoice[];
 
     @Column({ name: 'createdAt', type: 'timestamptz' })

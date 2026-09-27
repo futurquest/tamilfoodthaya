@@ -93,6 +93,9 @@ STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_webhook_secret
 CLIENT_URL=http://localhost:5173
 
+# Only needed before creating the first admin account; use a unique value (8+ characters).
+INITIAL_ADMIN_PASSWORD=replace_with_a_private_unique_password
+
 # Email (SMTP)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
@@ -103,12 +106,22 @@ SMTP_FROM="Tamil Food Thaya <your-address@gmail.com>"
 
 For Gmail, enable 2-Step Verification and create a Google App Password. Add the SMTP lines from [server/.env.gmail.example](server/.env.gmail.example) to your existing `server/.env` (do not replace its database or payment settings), then restart the backend. Use the same Gmail address in `SMTP_USER` and `SMTP_FROM`; put the App Password in `SMTP_PASS`, not your normal Google password. Keep `server/.env` private. Email delivery is not guaranteed by a successful API response until SMTP send errors are surfaced by the backend.
 
+Password-reset tokens and verification PINs are sent by email and are never printed to the server console. Configure working SMTP before using these flows; mock email mode does not deliver messages. To create the first admin account, set `INITIAL_ADMIN_PASSWORD` privately to a strong, unique value of at least eight characters before enabling and calling the admin seeding endpoint. The password is never logged.
+
 ### Frontend (.env)
 ```env
 VITE_API_BASE_URL=http://localhost:3000
 ```
 
 ## 🗄️ Database Operations
+
+PostgreSQL migration setup and guarded deployment commands are documented in [server/MIGRATIONS.md](server/MIGRATIONS.md). Do not run production migrations until backup and restore verification is complete.
+
+The private, persistent PostgreSQL Compose service is documented in [docs/POSTGRES_DOCKER.md](docs/POSTGRES_DOCKER.md). It does not replace or migrate the existing development database automatically.
+
+Encrypted PostgreSQL backup and restore commands are documented in [server/BACKUPS.md](server/BACKUPS.md).
+
+Production HTTPS/proxy requirements and untested infrastructure steps are documented in [server/PRODUCTION_HTTP.md](server/PRODUCTION_HTTP.md).
 
 The server runs on **PostgreSQL** via TypeORM. Entities live next to their modules in `server/src/*/entities/` and the schema is kept in sync with `synchronize: true` during development.
 

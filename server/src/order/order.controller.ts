@@ -14,9 +14,7 @@ export class OrderController {
     @Post('checkout')
     @UseGuards(OptionalJwtAuthGuard)
     async checkout(@Req() req: any, @Body() orderData: any) {
-        if (req.user) {
-            orderData.userId = req.user._id;
-        }
+        orderData.userId = req.user?._id ?? null;
         return this.orderService.createCheckoutSession(orderData);
     }
 

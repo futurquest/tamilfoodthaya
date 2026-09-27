@@ -5,6 +5,8 @@ import { UserEntity } from './entities/user.entity';
 import { OrderEntity } from '../order/entities/order.entity';
 import { CateringOrderEntity } from '../catering/entities/catering-order.entity';
 import { NotificationLogEntity } from '../notification/entities/notification-log.entity';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -24,19 +26,16 @@ export class UserService {
         return safe as UserEntity;
     }
 
-    async updateProfile(userId: string, updateData: any): Promise<UserEntity> {
-        delete updateData.password;
-        delete updateData.role;
-        delete updateData.isVerified;
-        delete updateData.email;
-        delete updateData.username;
-
+    async updateProfile(userId: string, updateData: UpdateProfileDto): Promise<UserEntity> {
         const user = await this.userRepo.findOne({ where: { _id: userId } });
         if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        Object.assign(user, updateData);
+        if (updateData.name !== undefined) user.name = updateData.name;
+        if (updateData.phone !== undefined) user.phone = updateData.phone;
+        if (updateData.address !== undefined) user.address = updateData.address;
+        if (updateData.eventPreferences !== undefined) user.eventPreferences = updateData.eventPreferences;
         const saved = await this.userRepo.save(user);
 
         const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = saved;
@@ -46,10 +45,11 @@ export class UserService {
 
     async getDashboardData(userId: string) {
         const user = await this.userRepo.findOne({ where: { _id: userId } });
+        if (!user) throw new NotFoundException('User not found');
         const email = user?.email;
 
         let cateringOrders: CateringOrderEntity[];
-        if (user && email) {
+        if (user.isVerified && email) {
             cateringOrders = await this.cateringOrderRepo
                 .createQueryBuilder('corder')
                 .where('("corder"."userId" = :userId OR "corder"."customerInfo"->>\'email\' = :email)', {
@@ -59,11 +59,11 @@ export class UserService {
                 .orderBy('"corder"."createdAt"', 'DESC')
                 .getMany();
         } else {
-            cateringOrders = await this.cateringOrderRepo.find({ order: { createdAt: 'DESC' } });
+            cateringOrders = await this.cateringOrderRepo.find({ where: { userId }, order: { createdAt: 'DESC' } });
         }
 
         let regularOrders: OrderEntity[];
-        if (user && email) {
+        if (user.isVerified && email) {
             regularOrders = await this.orderRepo
                 .createQueryBuilder('order')
                 .where('("order"."userId" = :userId OR "order"."customerInfo"->>\'email\' = :email)', {
@@ -73,7 +73,7 @@ export class UserService {
                 .orderBy('"order"."createdAt"', 'DESC')
                 .getMany();
         } else {
-            regularOrders = await this.orderRepo.find({ order: { createdAt: 'DESC' } });
+            regularOrders = await this.orderRepo.find({ where: { userId }, order: { createdAt: 'DESC' } });
         }
 
         const notifications = await this.notificationRepo.find({
@@ -113,13 +113,16 @@ export class UserService {
         });
     }
 
-    async adminUpdateUser(userId: string, updateData: any): Promise<UserEntity> {
+    async adminUpdateUser(userId: string, updateData: AdminUpdateUserDto): Promise<UserEntity> {
         const user = await this.userRepo.findOne({ where: { _id: userId } });
         if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        Object.assign(user, updateData);
+        if (updateData.name !== undefined) user.name = updateData.name;
+        if (updateData.phone !== undefined) user.phone = updateData.phone;
+        if (updateData.role !== undefined) user.role = updateData.role;
+        if (updateData.isVerified !== undefined) user.isVerified = updateData.isVerified;
         const saved = await this.userRepo.save(user);
 
         const { password, verificationPin, verificationPinExpires, resetPasswordToken, resetPasswordExpires, ...safe } = saved;

@@ -31,17 +31,31 @@ import { NotificationModule } from './notification/notification.module';
     }]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('POSTGRES_HOST'),
-        port: configService.get<number>('POSTGRES_PORT'),
-        username: configService.get<string>('POSTGRES_USER'),
-        password: configService.get<string>('POSTGRES_PASSWORD'),
-        database: configService.get<string>('POSTGRES_DB'),
-        autoLoadEntities: true,
-        synchronize: true, // dev/sandbox only; replaced by migrations before prod
-        ssl: false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const poolMax = Number(configService.get<string>('POSTGRES_POOL_MAX', '10'));
+        if (!Number.isInteger(poolMax) || poolMax < 1 || poolMax > 50) {
+          throw new Error('POSTGRES_POOL_MAX must be an integer from 1 to 50');
+        }
+        return {
+          type: 'postgres',
+          host: configService.get<string>('POSTGRES_HOST'),
+          port: configService.get<number>('POSTGRES_PORT'),
+          username: configService.get<string>('POSTGRES_USER'),
+          password: configService.get<string>('POSTGRES_PASSWORD'),
+          database: configService.get<string>('POSTGRES_DB'),
+          autoLoadEntities: true,
+          // Never let production change schema implicitly. Development keeps its
+          // current behavior unless TYPEORM_SYNCHRONIZE=false is configured.
+          synchronize: process.env.NODE_ENV !== 'production'
+            && configService.get<string>('TYPEORM_SYNCHRONIZE', 'true') === 'true',
+          ssl: false,
+          extra: {
+            max: poolMax,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     HealthModule,

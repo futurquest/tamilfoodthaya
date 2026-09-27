@@ -81,7 +81,7 @@ describe('OrderService', () => {
 
     describe('createCheckoutSession', () => {
         it('should throw BadRequestException if stock is insufficient', async () => {
-            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 1, name: 'Dosa' });
+            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 1, name: 'Dosa', isActive: true, available: true, dailyAvailability: true, price: 5 });
 
             const orderData = { items: [{ menuItemId: '1', quantity: 5 }] };
             await expect(service.createCheckoutSession(orderData)).rejects.toThrow(BadRequestException);
@@ -89,7 +89,7 @@ describe('OrderService', () => {
         });
 
         it('should correctly process order with transactions and return payment URL', async () => {
-            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 10, name: 'Dosa', price: 5 });
+            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 10, name: 'Dosa', price: 5, isActive: true, available: true, dailyAvailability: true });
 
             const mockSavedOrder = { _id: '123', save: jest.fn() };
             mockMenuOrderManagerCreate.mockReturnValue(mockSavedOrder);
@@ -102,6 +102,16 @@ describe('OrderService', () => {
             expect(mockGateway.createCheckoutSession).toHaveBeenCalled();
             expect(mockMenuOrderManagerSave).toHaveBeenCalled();
             expect(mockDataSource.transaction).toHaveBeenCalled();
+        });
+
+        it('ignores a client-supplied total and uses current menu prices', async () => {
+            mockMenuItemRepo.findOne.mockResolvedValue({ stockCount: 10, name: 'Dosa', price: 5, isActive: true, available: true, dailyAvailability: true });
+            mockMenuOrderManagerCreate.mockImplementation((_: unknown, data: any) => data);
+            const orderData = { items: [{ menuItemId: '1', quantity: 2, price: 0.01, name: 'spoofed' }], total: 0.02, pickupTime: new Date(), customerInfo: {} };
+            await service.createCheckoutSession(orderData);
+            expect(orderData.total).toBe(10);
+            expect(orderData.items[0]).toEqual(expect.objectContaining({ price: 5, name: 'Dosa' }));
+            expect(mockMenuOrderManagerCreate).toHaveBeenCalledWith(OrderEntity, expect.objectContaining({ total: 10 }));
         });
     });
 

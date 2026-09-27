@@ -2,7 +2,7 @@ import { Controller, Post, Body, UnauthorizedException, ForbiddenException } fro
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +19,7 @@ export class AuthController {
 
     @Throttle({ default: { limit: 15, ttl: 60000 } })
     @Post('verify')
-    async verify(@Body() body: { email: string; pin: string }) {
+    async verify(@Body() body: VerifyEmailDto) {
         return this.authService.verifyEmail(body.email, body.pin);
     }
 
@@ -47,7 +47,7 @@ export class AuthController {
 
     @Post('init-admin')
     async initAdmin() {
-        if (this.configService.get<string>('ALLOW_ADMIN_SEED', 'false') !== 'true') {
+        if (process.env.NODE_ENV === 'production' || this.configService.get<string>('ALLOW_ADMIN_SEED', 'false') !== 'true') {
             throw new ForbiddenException('Admin seeding is disabled');
         }
         await this.authService.createInitialAdmin();

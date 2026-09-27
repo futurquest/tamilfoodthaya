@@ -68,10 +68,7 @@ export class CateringController {
     @Post('orders')
     @UseGuards(OptionalJwtAuthGuard)
     async createCateringOrder(@Req() req: any, @Body() body: CreateCateringOrderDto) {
-        if (req.user) {
-            body.userId = req.user._id;
-        }
-        return this.cateringService.createCateringOrder(body);
+        return this.cateringService.createCateringOrder({ ...body, userId: req.user?._id ?? null });
     }
 
     @Get('orders/:id')

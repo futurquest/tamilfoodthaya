@@ -1,18 +1,22 @@
 ﻿import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes, randomInt } from 'crypto';
+import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 import { UserEntity, UserRole } from './entities/user.entity';
 import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
     constructor(
         @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
         private jwtService: JwtService,
         private notificationService: NotificationService,
+        private configService: ConfigService,
     ) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -50,7 +54,7 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const pin = Math.floor(100000 + Math.random() * 900000).toString();
+        const pin = randomInt(100000, 1000000).toString();
         const pinExpires = new Date(Date.now() + 3600000);
 
         const user = this.userRepo.create({
@@ -96,25 +100,28 @@ export class AuthService {
             return { message: 'If this email exists, a reset link has been sent.' };
         }
 
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        user.resetPasswordToken = token;
+        const token = randomBytes(32).toString('hex');
+        user.resetPasswordToken = `sha256:${createHash('sha256').update(token).digest('hex')}`;
         user.resetPasswordExpires = new Date(Date.now() + 3600000);
         await this.userRepo.save(user);
-        console.log(`Reset Token for ${email}: ${token}`);
+        await this.notificationService.sendPasswordResetToken(email, token);
 
-        return { message: 'Reset email sent (check console for token)' };
+        return { message: 'If this email exists, a reset link has been sent.' };
     }
 
     async resetPassword(token: string, newPassword: string) {
-        const user = await this.userRepo.findOne({ where: { resetPasswordToken: token } });
-        if (!user || !user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
+        const hashedToken = `sha256:${createHash('sha256').update(token).digest('hex')}`;
+        const user = await this.userRepo.findOne({ where: [{ resetPasswordToken: hashedToken }, { resetPasswordToken: token }] });
+        if (!user || !user.resetPasswordToken || !user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
             throw new UnauthorizedException('Invalid or expired token');
         }
 
-        user.password = await bcrypt.hash(newPassword, 10);
-        user.resetPasswordToken = null;
-        user.resetPasswordExpires = null;
-        await this.userRepo.save(user);
+        const password = await bcrypt.hash(newPassword, 10);
+        const updated = await this.userRepo.update(
+            { _id: user._id, resetPasswordToken: user.resetPasswordToken, resetPasswordExpires: MoreThan(new Date()) },
+            { password, resetPasswordToken: null, resetPasswordExpires: null },
+        );
+        if (updated.affected !== 1) throw new UnauthorizedException('Invalid or expired token');
 
         return { message: 'Password reset successful' };
     }
@@ -122,7 +129,11 @@ export class AuthService {
     async createInitialAdmin() {
         const adminExists = await this.userRepo.findOne({ where: { role: UserRole.ADMIN } });
         if (!adminExists) {
-            const plainPassword = randomBytes(12).toString('base64url');
+            const plainPassword = this.configService.get<string>('INITIAL_ADMIN_PASSWORD');
+            if (!plainPassword || plainPassword.length < 8) {
+                this.logger.warn('Initial admin was not created: configure INITIAL_ADMIN_PASSWORD with at least 8 characters.');
+                return;
+            }
             const hashedPassword = await bcrypt.hash(plainPassword, 10);
             const admin = this.userRepo.create({
                 _id: UserEntity.newId(),
@@ -134,7 +145,7 @@ export class AuthService {
                 role: UserRole.ADMIN,
             });
             await this.userRepo.save(admin);
-            console.log(`[INIT ADMIN] Temporary admin credentials - username: admin, password: ${plainPassword}`);
+            this.logger.log('Initial admin account created.');
         }
     }
 }

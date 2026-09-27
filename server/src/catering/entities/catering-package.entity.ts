@@ -59,7 +59,7 @@ export class CateringPackageEntity {
     @Column({ type: 'integer', nullable: true })
     maxGuests?: number | null;
 
-    @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
+    @Column({ type: 'jsonb', default: [] })
     categories: CateringCategoryRef[];
 
     @Column({ type: 'varchar', nullable: true })

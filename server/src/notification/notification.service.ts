@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -31,13 +31,13 @@ export class NotificationService {
             host: this.configService.get<string>('SMTP_HOST', 'smtp.ethereal.email'),
             port: this.configService.get<number>('SMTP_PORT', 587),
             secure: false,
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 15000,
             auth: {
                 user: this.configService.get<string>('SMTP_USER', 'mock_user'),
                 pass: this.configService.get<string>('SMTP_PASS', 'mock_pass'),
             },
-            tls: {
-                rejectUnauthorized: false
-            }
         });
     }
 
@@ -120,11 +120,11 @@ export class NotificationService {
             log.status = NotificationStatus.SENT;
             await this.notificationRepo.save(log);
             this.logger.log(`Notification ${type} for event ${eventId} SENT successfully.`);
-        } catch (error) {
-            this.logger.error(`Failed to send ${type} notification for event ${eventId}`, error);
+        } catch {
+            this.logger.error(`Failed to send ${type} notification for event ${eventId}.`);
             await this.notificationRepo.update(
                 { eventId, type },
-                { status: NotificationStatus.FAILED, errorMessage: (error as Error).message }
+                { status: NotificationStatus.FAILED, errorMessage: 'Notification delivery failed' }
             );
         }
     }
@@ -133,9 +133,11 @@ export class NotificationService {
         const smtpUser = this.configService.get<string>('SMTP_USER');
 
         if (!smtpUser || smtpUser === 'mock_user' || smtpUser === 'your_email@gmail.com') {
-            this.logger.debug(`[MOCK EMAIL] To: ${to}, Subject: ${subject}`);
-            this.logger.debug(`Text: ${text}`);
-            if (html) this.logger.debug(`HTML Content length: ${html.length}`);
+            if (process.env.NODE_ENV === 'production') {
+                this.logger.error('SMTP is not configured.');
+                throw new ServiceUnavailableException('Email delivery is temporarily unavailable');
+            }
+            this.logger.debug('[MOCK EMAIL] Message not delivered.');
             return;
         }
 
@@ -147,8 +149,9 @@ export class NotificationService {
                 text,
                 html,
             });
-        } catch (error) {
-            this.logger.error(`Failed to send email to ${to}: ${(error as Error).message}`);
+        } catch {
+            this.logger.error('SMTP email delivery failed.');
+            throw new ServiceUnavailableException('Email delivery is temporarily unavailable');
         }
     }
 
@@ -159,6 +162,14 @@ export class NotificationService {
             'Verify your Tamil Food Thaya Account',
             `Welcome! Your verification PIN is: ${pin}. This PIN expires in 1 hour.`,
             html
+        );
+    }
+
+    async sendPasswordResetToken(email: string, token: string) {
+        await this.sendEmail(
+            email,
+            'Reset your Tamil Food Thaya password',
+            `Your password reset token is: ${token}. It expires in 1 hour. If you did not request this, you can ignore this email.`,
         );
     }
 

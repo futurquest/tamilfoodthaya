@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Tamil Food Thaya PostgreSQL backup
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+Unit=tft-postgres-backup.service
+
+[Install]
+WantedBy=timers.target

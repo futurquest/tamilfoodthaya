@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, UseInterceptors, UploadedFile, Req, BadRequestException } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { randomBytes } from 'crypto';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -19,14 +21,30 @@ const IMAGE_EXTENSIONS: Record<string, string> = {
     'image/webp': '.webp',
 };
 
+export function hasImageSignature(mime: string, bytes: Buffer): boolean {
+    if (mime === 'image/jpeg') return bytes.length >= 3 && bytes.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]));
+    if (mime === 'image/png') return bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    if (mime === 'image/webp') return bytes.length >= 12 && bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
+    return false;
+}
+
+async function uploadedImageUrl(file: Express.Multer.File, req: any): Promise<{ url: string; path: string }> {
+    if (!hasImageSignature(file.mimetype, file.buffer)) throw new BadRequestException('Invalid image content');
+    const configured = process.env.PUBLIC_API_URL;
+    if (process.env.NODE_ENV === 'production' && (!configured || !configured.startsWith('https://'))) {
+        throw new BadRequestException('Image upload is not configured');
+    }
+    const base = configured || `${req.protocol}://${req.get('host')}`;
+    const directory = join(process.cwd(), 'uploads', 'menu');
+    const filename = `${randomBytes(16).toString('hex')}${IMAGE_EXTENSIONS[file.mimetype]}`;
+    await fs.mkdir(directory, { recursive: true });
+    const path = join(directory, filename);
+    await fs.writeFile(path, file.buffer, { flag: 'wx', mode: 0o600 });
+    return { url: `${base.replace(/\/$/, '')}/uploads/menu/${filename}`, path };
+}
+
 const imageUploadOptions = {
-    storage: diskStorage({
-        destination: './uploads/menu',
-        filename: (_req, file, cb) => {
-            const randomName = randomBytes(16).toString('hex');
-            cb(null, `${randomName}${IMAGE_EXTENSIONS[file.mimetype] || ''}`);
-        },
-    }),
+    storage: memoryStorage(),
     fileFilter: (_req: any, file: Express.Multer.File, cb: (error: Error | null, accept: boolean) => void) => {
         if (ALLOWED_IMAGE_MIMES.includes(file.mimetype)) {
             cb(null, true);
@@ -34,7 +52,7 @@ const imageUploadOptions = {
             cb(new BadRequestException('Only image files are allowed (JPEG, PNG, WebP)'), false);
         }
     },
-    limits: { fileSize: MAX_IMAGE_SIZE },
+    limits: { fileSize: MAX_IMAGE_SIZE, files: 1, fields: 20, fieldSize: 64 * 1024, parts: 21 },
 };
 
 @Controller('menu')
@@ -92,13 +110,14 @@ export class MenuController {
         if (itemData.descriptionTranslations && typeof itemData.descriptionTranslations === 'string') {
             try { itemData.descriptionTranslations = JSON.parse(itemData.descriptionTranslations); } catch (e) { }
         }
-        if (file) {
-            // Construct the full URL
-            const protocol = req.protocol;
-            const host = req.get('host');
-            itemData.image = `${protocol}://${host}/uploads/menu/${file.filename}`;
+        const uploaded = file ? await uploadedImageUrl(file, req) : null;
+        if (uploaded) itemData.image = uploaded.url;
+        try {
+            return await this.menuService.createMenuItem(itemData as Partial<MenuItemEntity>);
+        } catch (error) {
+            if (uploaded) await fs.rm(uploaded.path, { force: true });
+            throw error;
         }
-        return this.menuService.createMenuItem(itemData as Partial<MenuItemEntity>);
     }
 
     @Patch('items/:id')
@@ -116,12 +135,14 @@ export class MenuController {
         if (itemData.descriptionTranslations && typeof itemData.descriptionTranslations === 'string') {
             try { itemData.descriptionTranslations = JSON.parse(itemData.descriptionTranslations); } catch (e) { }
         }
-        if (file) {
-            const protocol = req.protocol;
-            const host = req.get('host');
-            itemData.image = `${protocol}://${host}/uploads/menu/${file.filename}`;
+        const uploaded = file ? await uploadedImageUrl(file, req) : null;
+        if (uploaded) itemData.image = uploaded.url;
+        try {
+            return await this.menuService.updateMenuItem(id, itemData as Partial<MenuItemEntity>);
+        } catch (error) {
+            if (uploaded) await fs.rm(uploaded.path, { force: true });
+            throw error;
         }
-        return this.menuService.updateMenuItem(id, itemData as Partial<MenuItemEntity>);
     }
 
     @Delete('items/:id')

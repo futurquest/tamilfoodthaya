@@ -19,11 +19,15 @@ export class OrderService {
     ) { }
 
     async createCheckoutSession(orderData: any) {
+        if (!Array.isArray(orderData?.items) || orderData.items.length === 0 || orderData.items.length > 50) {
+            throw new BadRequestException('Order must contain 1–50 items');
+        }
         return this.dataSource.transaction(async (manager) => {
             // 0. Validate Stock & re-derive prices from the DB (never trust client prices/names)
             for (const item of orderData.items) {
+                if (!item || typeof item.menuItemId !== 'string') throw new BadRequestException('Invalid order item');
                 const menuItem = await manager.findOne(MenuItemEntity, { where: { _id: item.menuItemId } });
-                if (!menuItem) {
+                if (!menuItem || !menuItem.isActive || !menuItem.available || !menuItem.dailyAvailability) {
                     throw new NotFoundException(`Menu item not found: ${item.menuItemId}`);
                 }
                 const quantity = Number(item.quantity);
@@ -33,10 +37,12 @@ export class OrderService {
                 if (menuItem.stockCount < quantity) {
                     throw new BadRequestException(`Not enough stock for ${menuItem.name}. Available: ${menuItem.stockCount}`);
                 }
+                if (!Number.isFinite(menuItem.price) || menuItem.price < 0) throw new BadRequestException('Invalid menu price');
                 item.quantity = quantity;
                 item.price = menuItem.price;
                 item.name = menuItem.name;
             }
+            orderData.total = Math.round(orderData.items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) * 100) / 100;
 
             // 1. Create a pending order in DB
             const savedOrder = await manager.save(manager.create(OrderEntity, {

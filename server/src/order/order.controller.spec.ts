@@ -28,6 +28,12 @@ describe('OrderController', () => {
         expect(controller).toBeDefined();
     });
 
+    it('does not trust a guest-supplied userId', async () => {
+        const data = { userId: 'victim', items: [] };
+        await controller.checkout({ user: null }, data);
+        expect(service.createCheckoutSession).toHaveBeenCalledWith(expect.objectContaining({ userId: null }));
+    });
+
     it('should correctly pass the method parameter from URL to webhook handler', async () => {
         const rawBody = Buffer.from('{"id":"evt_test"}');
         await controller.webhook('paypal', undefined, 'my-sig', { rawBody });

@@ -1,0 +1,24 @@
+# Example for a host deployment. Set SITE_DOMAIN in Caddy's environment.
+# Keep the Nest process on loopback port 3000; expose only Caddy ports 80/443.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+	}
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:3000
+	}
+	handle /uploads/* {
+		reverse_proxy 127.0.0.1:3000
+	}
+	handle {
+		root * /srv/tamilfoodthaya/client/dist
+		try_files {path} /index.html
+		file_server
+	}
+}

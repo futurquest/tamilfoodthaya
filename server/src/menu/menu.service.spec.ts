@@ -59,4 +59,12 @@ describe('MenuService', () => {
     expect(result).toEqual([mockMenuItem]);
     expect(menuItemRepo.find).toHaveBeenCalled();
   });
+
+  it('sets the required timestamps for new menu items', async () => {
+    menuItemRepo.create.mockImplementation((value: unknown) => value);
+    menuItemRepo.save.mockImplementation((value: unknown) => value);
+    const saved = await service.createMenuItem({ name: 'Probe', price: 1 });
+    expect(saved.createdAt).toBeInstanceOf(Date);
+    expect(saved.updatedAt).toBeInstanceOf(Date);
+  });
 });

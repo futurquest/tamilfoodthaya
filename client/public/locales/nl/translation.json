@@ -140,7 +140,7 @@
       "emailRequired": "E-mailadres is verplicht",
       "validEmail": "Voer een geldig e-mailadres in",
       "passwordRequired": "Wachtwoord is verplicht",
-      "minPassword": "Gebruik minimaal 6 tekens",
+      "minPassword": "Gebruik minimaal 8 tekens",
       "registerSuccess": "Registratie geslaagd. Controleer uw e-mail voor de pincode.",
       "registerError": "Registratie mislukt. Probeer het opnieuw."
     },

@@ -59,12 +59,13 @@ export class MenuService {
     }
 
     async createMenuItem(data: Partial<MenuItemEntity>): Promise<MenuItemEntity> {
-        const entity = this.menuItemRepo.create({ _id: newObjectIdLike(), ...data });
+        const now = new Date();
+        const entity = this.menuItemRepo.create({ _id: newObjectIdLike(), ...data, createdAt: now, updatedAt: now });
         return this.menuItemRepo.save(entity);
     }
 
     async updateMenuItem(id: string, data: Partial<MenuItemEntity>): Promise<MenuItemEntity> {
-        await this.menuItemRepo.update({ _id: id }, data);
+        await this.menuItemRepo.update({ _id: id }, { ...data, updatedAt: new Date() });
         const item = await this.menuItemRepo.findOne({ where: { _id: id } });
         if (!item || !item.isActive) throw new NotFoundException('Menu item not found');
         return item;

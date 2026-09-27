@@ -1,4 +1,4 @@
-import { IsString, MinLength, IsOptional, IsEmail } from 'class-validator';
+import { IsString, MinLength, IsOptional, IsEmail, Matches } from 'class-validator';
 
 export class RegisterDto {
     @IsString()
@@ -15,7 +15,7 @@ export class RegisterDto {
     email: string;
 
     @IsString()
-    @MinLength(6)
+    @MinLength(8)
     password: string;
 
     @IsString()
@@ -39,11 +39,20 @@ export class ForgotPasswordDto {
     email: string;
 }
 
+export class VerifyEmailDto {
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    @Matches(/^\d{6}$/)
+    pin: string;
+}
+
 export class ResetPasswordDto {
     @IsString()
     token: string;
 
     @IsString()
-    @MinLength(6)
+    @MinLength(8)
     newPassword: string;
 }

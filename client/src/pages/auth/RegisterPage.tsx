@@ -52,7 +52,7 @@ export const RegisterPage = () => {
             Password
             <span>
               <Lock size={17} />
-              <input type={showPw ? 'text' : 'password'} {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Use at least 6 characters' } })} placeholder={t('auth.login.password', 'Password')} autoComplete="new-password" />
+              <input type={showPw ? 'text' : 'password'} {...register('password', { required: t('auth.register.passwordRequired'), minLength: { value: 8, message: t('auth.register.minPassword') } })} placeholder={t('auth.login.password', 'Password')} autoComplete="new-password" />
               <button type="button" onClick={() => setShowPw((value) => !value)} aria-label="Toggle password visibility">
                 {showPw ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
