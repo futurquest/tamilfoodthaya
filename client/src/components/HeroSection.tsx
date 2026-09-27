@@ -24,7 +24,7 @@ export default function HeroSection({ data }: { data?: HeroSectionData }) {
       />
       <section className="home-hero home-hero--photographic">
         <picture className="home-hero__backdrop" aria-hidden="true">
-          <img src="/home-hero.png" alt="" width="1678" height="937" fetchPriority="high" decoding="async" />
+          <img src="/home-hero.webp" alt="" width="1678" height="937" fetchPriority="high" decoding="async" />
         </picture>
         <span className="fx-aura" data-para="24" data-cur="12" aria-hidden="true" />
         <FluidBackground intensity={0.4} parallaxStrength={7} deepParallax={12} />

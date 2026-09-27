@@ -2554,7 +2554,7 @@ select:focus-visible {
   background:
     radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-primary) 30%, transparent), transparent 26rem),
     linear-gradient(90deg, color-mix(in srgb, var(--paper) 100%, transparent) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 50%, color-mix(in srgb, var(--paper) 20%, transparent) 100%),
-    url('/contact-hero-bg.png') right center/cover no-repeat;
+    url('/contact-hero-bg.webp') right center/cover no-repeat;
   color: var(--ink);
 }
 
@@ -5732,7 +5732,7 @@ select:focus-visible {
   background:
     radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-primary) 30%, transparent), transparent 26rem),
     linear-gradient(90deg, color-mix(in srgb, var(--paper) 100%, transparent) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 50%, color-mix(in srgb, var(--paper) 20%, transparent) 100%),
-    url('/menu-bg.png') center/cover no-repeat;
+    url('/menu-bg.webp') center/cover no-repeat;
   color: var(--ink);
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }
@@ -5744,7 +5744,7 @@ select:focus-visible {
   background:
     radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-primary) 30%, transparent), transparent 26rem),
     linear-gradient(90deg, color-mix(in srgb, var(--paper) 100%, transparent) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 50%, color-mix(in srgb, var(--paper) 20%, transparent) 100%),
-    url('/contact-hero-bg.png') center/cover no-repeat;
+    url('/contact-hero-bg.webp') center/cover no-repeat;
   color: var(--ink);
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }
@@ -5756,7 +5756,7 @@ select:focus-visible {
   background:
     radial-gradient(circle at 82% 4%, color-mix(in srgb, var(--brand-primary) 30%, transparent), transparent 26rem),
     linear-gradient(90deg, color-mix(in srgb, var(--paper) 100%, transparent) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 50%, color-mix(in srgb, var(--paper) 20%, transparent) 100%),
-    url('/catering-hero-bg.png') right center/cover no-repeat;
+    url('/catering-hero-bg.webp') right center/cover no-repeat;
   color: var(--ink);
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }

@@ -13,35 +13,35 @@ export default function EventTypesSection() {
       icon: <HeartHandshake size={28} />, 
       title: t('story.events.1.0'), // Weddings & anniversaries
       copy: t('story.events.1.1'),
-      image: '/events/event-05.png',
+      image: '/events/event-05.webp',
       tag: t('eventGallery.badge', 'Weddings & Galas'),
     },
     { 
       icon: <UsersRound size={24} />, 
       title: t('story.events.0.0'), // Family dinners
       copy: t('story.events.0.1'),
-      image: '/events/event-01.png',
+      image: '/events/event-01.webp',
       tag: 'Family Feasts',
     },
     { 
       icon: <Briefcase size={24} />, 
       title: t('story.events.2.0'), // Corporate events
       copy: t('story.events.2.1'),
-      image: '/events/event-04.png',
+      image: '/events/event-04.webp',
       tag: 'Corporate & Executive',
     },
     { 
       icon: <PartyPopper size={24} />, 
       title: t('story.events.3.0'), // Parties & celebrations
       copy: t('story.events.3.1'),
-      image: '/events/event-06.png',
+      image: '/events/event-06.webp',
       tag: 'Celebrations',
     },
     { 
       icon: <Home size={24} />, 
       title: t('story.events.4.0'), // Home meals
       copy: t('story.events.4.1'),
-      image: '/events/event-10.png',
+      image: '/events/event-10.webp',
       tag: 'Comfort Dinners',
     },
   ];

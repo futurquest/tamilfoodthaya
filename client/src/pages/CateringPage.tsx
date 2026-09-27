@@ -22,7 +22,7 @@ interface CateringPackageData {
   available: boolean;
 }
 
-const PLACEHOLDER_IMG = '/hero-catering2.jpg';
+const PLACEHOLDER_IMG = '/hero-catering2.webp';
 
 function getLabel(val: string | { nl?: string; en: string; ta?: string } | undefined, lang: string, fallback = '') {
   if (!val) return fallback;

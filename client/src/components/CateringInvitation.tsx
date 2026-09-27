@@ -7,7 +7,7 @@ export function CateringInvitation({ contact = false }: { contact?: boolean }) {
   return (
     <section className="catering-invitation" aria-labelledby="catering-invitation-title">
       <div className="container catering-invitation__grid">
-        <img src="/catering_invitation_bg.png" alt={t('conversion.imageAlt')} width="600" height="400" loading="lazy" />
+        <img src="/catering_invitation_bg.webp" alt={t('conversion.imageAlt')} width="600" height="400" loading="lazy" />
         <div>
           <h2 id="catering-invitation-title">{t('conversion.title')}</h2>
           <p>{t('conversion.description')}</p>

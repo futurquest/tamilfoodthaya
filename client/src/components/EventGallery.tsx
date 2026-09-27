@@ -14,7 +14,7 @@ const SEAM_RESUME = 60;
 // ratio so object-fit cover never crops or distorts the composition.
 
 const slideSrc = (index: number) =>
-  `/events/event-${String((index % IMAGE_COUNT) + 1).padStart(2, '0')}.png`;
+  `/events/event-${String((index % IMAGE_COUNT) + 1).padStart(2, '0')}.webp`;
 
 // How many photos fit on one slide at each screen size.
 const perPageFor = (vw: number) => (vw >= 1180 ? 3 : vw >= 720 ? 2 : 1);
@@ -103,13 +103,6 @@ export default function EventGallery() {
   useEffect(() => {
     posRef.current = pos;
   }, [pos]);
-
-  useEffect(() => {
-    [(pos + 1) % IMAGE_COUNT, (pos + perPage) % IMAGE_COUNT].forEach(index => {
-      const img = new Image();
-      img.src = slideSrc(index);
-    });
-  }, [pos, perPage]);
 
   // Responsive items-per-slide + viewport fit: pick how many photos the row
   // shows, then size the stage width so the row never grows past the screen.
@@ -244,7 +237,7 @@ export default function EventGallery() {
                       <img
                         src={slideSrc(imageIndex)}
                         alt={cardImage}
-                        loading={imageIndex === 0 ? 'eager' : 'lazy'}
+                        loading="lazy"
                         decoding="async"
                         draggable={false}
                       />

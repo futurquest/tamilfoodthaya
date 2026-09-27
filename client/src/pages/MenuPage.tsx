@@ -280,11 +280,11 @@ export const MenuPage = () => {
                         <article className="package-card">
                           <div className="package-card__image">
                             <img
-                              src={item.image || '/hero-catering2.jpg'}
+                              src={item.image || '/hero-catering2.webp'}
                               alt={itemName}
                               loading="lazy"
                               onError={(event) => {
-                                event.currentTarget.src = '/hero-catering2.jpg';
+                                event.currentTarget.src = '/hero-catering2.webp';
                               }}
                             />
                             <span>{item.categoryName}</span>
@@ -364,10 +364,10 @@ export const MenuPage = () => {
           >
             <div className="dish-modal__media">
               <img
-                src={selectedItem.image || '/hero-catering2.jpg'}
+                src={selectedItem.image || '/hero-catering2.webp'}
                 alt={getLabel((selectedItem as any).nameTranslations, selectedItem.name, currentLang)}
                 onError={(event) => {
-                  event.currentTarget.src = '/hero-catering2.jpg';
+                  event.currentTarget.src = '/hero-catering2.webp';
                 }}
               />
               <button

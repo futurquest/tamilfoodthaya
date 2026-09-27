@@ -39,7 +39,7 @@ export const FALLBACK_CATEGORIES: Category[] = [
   {
     _id: 'mains',
     name: 'Rice meals and curries',
-    image: '/hero-catering2.jpg',
+    image: '/hero-catering2.webp',
     description: 'Hearty lunch and dinner plates built around rice, rasam, sambar, and curry.',
     items: [
       { _id: 'thali', name: 'Tamil meals', description: 'Rice, sambar, rasam, poriyal, kootu, appalam, and pickle.', isVeg: true },

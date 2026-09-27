@@ -35,7 +35,7 @@ export default function OurStorySection() {
             <div className="about-image-halo" aria-hidden="true" />
             <figure className="about-portrait-card">
               <img
-                src="/thayapaalan.png"
+                src="/thayapaalan.webp"
                 alt={t('about.imageAlt')}
                 loading="lazy"
               />

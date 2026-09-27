@@ -7,6 +7,7 @@ import { registerUser } from '../../hooks/useApi';
 import { SEO } from '../../components/SEO';
 import FluidBackground from '../../components/FluidBackground';
 import { useFeedback } from '../../context/FeedbackContext';
+import { Logo } from '../../components/Logo';
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
@@ -30,8 +31,9 @@ export const RegisterPage = () => {
       <SEO title="Create account" description="Create a Tamil Food Thaya account for orders and catering requests." />
       <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
       <div className="auth-card auth-card--wide surface">
-        <div className="auth-copy">
-          <span className="brand-mark__seal">T</span>
+        <div className="auth-copy auth-copy--login">
+          <img className="auth-copy__photo" src="/hero-catering.jpg" alt="A buffet of Tamil dishes ready to share" width="1536" height="1024" decoding="async" />
+          <Logo />
           <h1>Create your Tamil Food Thaya account.</h1>
           <p>Save contact details, manage catering inquiries, and return to the dishes you already know you love.</p>
         </div>
