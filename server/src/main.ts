@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { productionHttpConfig } from './production-http-config';
+import { isSecureProductionRequest, productionHttpConfig } from './production-http-config';
 
 async function bootstrap() {
   // bodyParser is disabled so we can capture the raw request body required
@@ -17,11 +17,11 @@ async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
   const productionConfig = isProduction ? productionHttpConfig(process.env) : null;
   if (productionConfig) {
-    app.getHttpAdapter().getInstance().set('trust proxy', productionConfig.trustedProxies);
+    if (process.env.VERCEL !== '1') app.getHttpAdapter().getInstance().set('trust proxy', productionConfig.trustedProxies);
     app.use((req: any, res: any, next: () => void) => {
-      const localHealth = req.path === '/api/v1/health'
-        && ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
-      if (req.secure || localHealth) return next();
+      // Vercel overwrites X-Forwarded-Proto at ingress; self-hosting instead
+      // uses Express's narrowly configured proxy trust.
+      if (isSecureProductionRequest(process.env, req)) return next();
       res.status(426).json({ statusCode: 426, message: 'HTTPS is required' });
     });
   }
@@ -31,9 +31,9 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '100kb' }));
 
   // Serve Static Files
-  app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads/',
-  });
+  if (process.env.VERCEL !== '1') {
+    app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
+  }
 
   // API headers; the HTTPS reverse proxy must also protect the frontend.
   app.use(helmet({
@@ -103,6 +103,6 @@ async function bootstrap() {
   });
 
   app.enableShutdownHooks();
-  await app.listen(process.env.PORT || 3000, isProduction ? (process.env.APP_BIND_HOST || '127.0.0.1') : '0.0.0.0');
+  await app.listen(process.env.PORT || 3000, isProduction && process.env.VERCEL !== '1' ? (process.env.APP_BIND_HOST || '127.0.0.1') : '0.0.0.0');
 }
 bootstrap();

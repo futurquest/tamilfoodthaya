@@ -19,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
 import { AddonModule } from './addon/addon.module';
 import { CouponModule } from './coupon/coupon.module';
 import { NotificationModule } from './notification/notification.module';
+import { postgresSslConfig } from './database/postgres-ssl';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { NotificationModule } from './notification/notification.module';
           // current behavior unless TYPEORM_SYNCHRONIZE=false is configured.
           synchronize: process.env.NODE_ENV !== 'production'
             && configService.get<string>('TYPEORM_SYNCHRONIZE', 'true') === 'true',
-          ssl: false,
+          ssl: postgresSslConfig(process.env),
           extra: {
             max: poolMax,
             idleTimeoutMillis: 30000,

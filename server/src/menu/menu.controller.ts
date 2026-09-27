@@ -5,6 +5,8 @@ import { memoryStorage } from 'multer';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
+import { put, del } from '@vercel/blob';
+import { ServiceUnavailableException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -28,19 +30,36 @@ export function hasImageSignature(mime: string, bytes: Buffer): boolean {
     return false;
 }
 
-async function uploadedImageUrl(file: Express.Multer.File, req: any): Promise<{ url: string; path: string }> {
+export function imageStorageMode(env: NodeJS.ProcessEnv): 'local' | 'blob' {
+    const mode = env.UPLOAD_STORAGE || (env.VERCEL === '1' ? 'blob' : 'local');
+    if (mode !== 'local' && mode !== 'blob') throw new Error('UPLOAD_STORAGE must be local or blob');
+    if (env.VERCEL === '1' && mode !== 'blob') throw new Error('Vercel requires persistent blob upload storage');
+    return mode;
+}
+
+export async function uploadedImageUrl(file: Express.Multer.File, req: any): Promise<{ url: string; cleanup: () => Promise<void> }> {
     if (!hasImageSignature(file.mimetype, file.buffer)) throw new BadRequestException('Invalid image content');
+    const filename = `${randomBytes(16).toString('hex')}${IMAGE_EXTENSIONS[file.mimetype]}`;
+    if (imageStorageMode(process.env) === 'blob') {
+        try {
+            const blob = await put(`menu/${filename}`, file.buffer, {
+                access: 'public', contentType: file.mimetype, addRandomSuffix: false,
+            });
+            return { url: blob.url, cleanup: () => del(blob.url) };
+        } catch {
+            throw new ServiceUnavailableException('Image storage is unavailable');
+        }
+    }
     const configured = process.env.PUBLIC_API_URL;
     if (process.env.NODE_ENV === 'production' && (!configured || !configured.startsWith('https://'))) {
         throw new BadRequestException('Image upload is not configured');
     }
     const base = configured || `${req.protocol}://${req.get('host')}`;
     const directory = join(process.cwd(), 'uploads', 'menu');
-    const filename = `${randomBytes(16).toString('hex')}${IMAGE_EXTENSIONS[file.mimetype]}`;
     await fs.mkdir(directory, { recursive: true });
     const path = join(directory, filename);
     await fs.writeFile(path, file.buffer, { flag: 'wx', mode: 0o600 });
-    return { url: `${base.replace(/\/$/, '')}/uploads/menu/${filename}`, path };
+    return { url: `${base.replace(/\/$/, '')}/uploads/menu/${filename}`, cleanup: () => fs.rm(path, { force: true }) };
 }
 
 const imageUploadOptions = {
@@ -115,7 +134,7 @@ export class MenuController {
         try {
             return await this.menuService.createMenuItem(itemData as Partial<MenuItemEntity>);
         } catch (error) {
-            if (uploaded) await fs.rm(uploaded.path, { force: true });
+            if (uploaded) await uploaded.cleanup().catch(() => undefined);
             throw error;
         }
     }
@@ -140,7 +159,7 @@ export class MenuController {
         try {
             return await this.menuService.updateMenuItem(id, itemData as Partial<MenuItemEntity>);
         } catch (error) {
-            if (uploaded) await fs.rm(uploaded.path, { force: true });
+            if (uploaded) await uploaded.cleanup().catch(() => undefined);
             throw error;
         }
     }

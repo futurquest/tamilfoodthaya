@@ -16,6 +16,7 @@ import { MessageEntity } from '../message/entities/message.entity';
 import { NotificationLogEntity } from '../notification/entities/notification-log.entity';
 import { OrderEntity } from '../order/entities/order.entity';
 import { SettingsEntity } from '../settings/entities/settings.entity';
+import { postgresSslConfig } from './postgres-ssl';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -24,6 +25,7 @@ export const AppDataSource = new DataSource({
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
+  ssl: postgresSslConfig(process.env),
   entities: [
     AddonEntity, UserEntity, CateringOrderEntity, CateringPackageEntity,
     CateringQuoteEntity, ChangeRequestEntity, CouponEntity, LeadEntity,

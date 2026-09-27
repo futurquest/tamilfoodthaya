@@ -1,0 +1,11 @@
+# Vercel backend preparation
+
+This repository can run the Nest API as a Vercel Function, but **no production deployment or database migration has been performed**. Use an isolated preview database and Blob store first. Enable Vercel system environment variables so `VERCEL=1` is available at runtime.
+
+- Create a **public** Vercel Blob store linked to the API project. Menu images are public assets. Vercel supplies Blob credentials through the linked store; do not commit tokens. `UPLOAD_STORAGE=blob` is optional on Vercel (the default there). Local/self-hosted deployments retain `UPLOAD_STORAGE=local` and `/uploads/menu/*` URLs.
+- Set `POSTGRES_SSL_MODE=require` for a TLS-enabled managed PostgreSQL connection. On Vercel this is the default; `POSTGRES_SSL_CA` can supply a provider CA certificate, with newline characters encoded as `\n`. Certificate verification remains enabled. Local/self-hosted deployments default to `disable` to preserve their existing behavior. Configure the same variables for the migration CLI.
+- Configure `CLIENT_URL` and `PUBLIC_API_URL` as HTTPS origins. On Vercel, the API checks the platform's forwarded protocol rather than a fixed proxy CIDR. Self-hosted production still requires `TRUST_PROXY_CIDRS` and binds to loopback by default. Vercel logs go to console; self-hosted file rotation is unchanged.
+- Existing images under `server/uploads/` are **not automatically transferred**. Migrate those files to persistent storage and update their saved URLs, or continue serving the old URLs from the existing host, before retiring it. Do not delete the old upload directory until image references have been verified.
+- Run `npm run build` and `npm test -- --runInBand` from `server/`. In a preview deployment, verify `/api/v1/health`, an authenticated admin image upload, and a signed Stripe test webhook at `/api/v1/orders/webhook/stripe`. Confirm both HTTPS and webhook raw-body handling; unit tests cannot prove the Vercel ingress behavior.
+
+The app's in-memory request throttler is per Function instance; use a shared/external rate limiter before accepting production traffic. Backups, restore verification, and production migrations remain separate approval-gated steps.
