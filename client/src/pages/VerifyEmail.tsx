@@ -6,6 +6,7 @@ import { SEO } from '../components/SEO';
 import { ShieldCheck, Mail } from 'lucide-react';
 import FluidBackground from '../components/FluidBackground';
 import { useFeedback } from '../context/FeedbackContext';
+import { Logo } from '../components/Logo';
 
 export const VerifyEmail = () => {
     const [pin, setPin] = useState('');
@@ -41,8 +42,9 @@ export const VerifyEmail = () => {
             <SEO title="Verify Email" description="Verify your Tamil Food Thaya email address." />
             <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
             <div className="auth-card surface">
-                <div className="auth-copy">
-                    <span className="brand-mark__seal">T</span>
+                <div className="auth-copy auth-copy--login">
+                    <img className="auth-copy__photo" src="/hero-catering.jpg" alt="A buffet of Tamil dishes ready to share" width="1536" height="1024" decoding="async" />
+                    <Logo />
                     <h1>Nothing to verify.</h1>
                     <p>No email address was provided. Head back to registration to create your account.</p>
                 </div>
@@ -63,8 +65,9 @@ export const VerifyEmail = () => {
             <SEO title="Verify Email" description="Verify your Tamil Food Thaya email address." />
             <FluidBackground intensity={0.5} parallaxStrength={6} deepParallax={10} />
             <div className="auth-card auth-card--wide surface">
-                <div className="auth-copy">
-                    <span className="brand-mark__seal">T</span>
+                <div className="auth-copy auth-copy--login">
+                    <img className="auth-copy__photo" src="/hero-catering.jpg" alt="A buffet of Tamil dishes ready to share" width="1536" height="1024" decoding="async" />
+                    <Logo />
                     <h1>Check your inbox.</h1>
                     <p>We sent a 6-digit PIN to confirm your email. Enter it below to unlock the kitchen.</p>
 

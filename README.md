@@ -25,8 +25,8 @@ A demo-ready restaurant and catering web platform for Tamil / Sri Lankan cuisine
 
 ## 🛠 Tech Stack
 - **Frontend**: React (TypeScript), Tailwind CSS, React Query, Vite, Framer Motion, i18next.
-- **Backend**: NestJS (TypeScript), Mongoose, JWT Authentication, Passport, Nodemailer.
-- **Database**: MongoDB (Atlas).
+- **Backend**: NestJS (TypeScript), TypeORM, JWT Authentication, Passport, Nodemailer.
+- **Database**: PostgreSQL (local Docker or managed Supabase).
 - **Payments**: Stripe (iDEAL integration).
 
 ## 📂 Project Structure
@@ -63,7 +63,7 @@ cd tamilfooddemo
 
 ### 2. Prerequisites
 - Node.js (v18+)
-- MongoDB Atlas account
+- PostgreSQL 16 or a compatible managed PostgreSQL database
 - Stripe account (Secret key & Webhook secret)
 
 ### Backend (Server)
@@ -87,7 +87,11 @@ cd tamilfooddemo
 ### Backend (.env)
 ```env
 PORT=3000
-MONGODB_URI=your_mongodb_connection_string
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5433
+POSTGRES_USER=your_postgres_user
+POSTGRES_PASSWORD=your_private_database_password
+POSTGRES_DB=tftdb
 JWT_SECRET=your_jwt_secret
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_webhook_secret
@@ -120,6 +124,29 @@ PostgreSQL migration setup and guarded deployment commands are documented in [se
 The private, persistent PostgreSQL Compose service is documented in [docs/POSTGRES_DOCKER.md](docs/POSTGRES_DOCKER.md). It does not replace or migrate the existing development database automatically.
 
 Encrypted PostgreSQL backup and restore commands are documented in [server/BACKUPS.md](server/BACKUPS.md).
+
+### Move the local Docker database to Supabase
+
+This one-time procedure copies the 14 application tables and their records from the local `tamilfoodthaya-pg` container (`tftdb` on host port 5433) into an **empty** Supabase `public` schema. It does not change or remove the local database. If Preview and Production use the same Supabase project, treat every write below as a production operation. Obtain approval and schedule a quiet period first. Never run the import against a database that already has application records.
+
+1. **Back up and prove recovery.** From `server/`, set `POSTGRES_*` to the local Docker database. Set `BACKUP_ENCRYPTION_KEY` to a privately stored base64-encoded 32-byte key, and use PostgreSQL client tools (`pg_dump`/`pg_restore`) or `PG_TOOLS_DOCKER_IMAGE=postgres:16` with `PG_TOOLS_DOCKER_HOST=host.docker.internal`. Run:
+
+   ```powershell
+   npm run db:backup -- --local-only
+   $backupFile = Get-ChildItem .\backups\tft-*.tftbak | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+   $env:RESTORE_TEST_DB = "tft_restore_test_$(Get-Date -Format yyyyMMddHHmmss)"
+   npm run db:restore:verify -- $backupFile.FullName
+   ```
+
+   Continue only after `RESTORE VERIFIED`. Keep the encryption key outside Git; the encrypted backup is unusable without it. See [server/BACKUPS.md](server/BACKUPS.md) for off-server storage requirements.
+
+2. **Connect to the correct Supabase project.** In Supabase **Connect**, select the **Session pooler** (port 5432), not the direct or transaction connection. In the same private PowerShell session, set `POSTGRES_HOST` to the pooler hostname, `POSTGRES_USER` to `postgres.<project-ref>`, `POSTGRES_PORT=5432`, `POSTGRES_DB=postgres`, and `POSTGRES_PASSWORD` to that project's database password. Download its CA certificate from **Settings → Database → SSL Configuration**, then set `POSTGRES_SSL_MODE=require` and `POSTGRES_SSL_CA` to the certificate contents. Do not paste credentials into logs, chat, or committed `.env` files. Run `node scripts/check-supabase-target.cjs`; it must report `public_tables=0`.
+
+3. **Create and secure the schema.** After the restore test, set `NODE_ENV=production`, `CONFIRM_MIGRATION_DATABASE=postgres`, and `RESTORE_TEST_VERIFIED=true`, then run `npm run db:migrate:prod`. The versioned migrations create the tables and revoke Supabase Data API access to application tables. Run `node scripts/check-supabase-target.cjs --after-migration` to confirm the 14 application tables exist. Do not use `synchronize:true` in production.
+
+4. **Check, then copy the records.** Run `node scripts/import-local-to-supabase.cjs` for a read-only dry run. It requires matching columns, an empty target, the migration record, and no `anon`/`authenticated` grants. Only when it reports `Transfer preflight passed`, run `node scripts/import-local-to-supabase.cjs --execute`. The import uses one transaction, checks row counts and menu/category relationships, and refuses a populated target. If it fails, stop and inspect the error; do not blindly rerun it.
+
+5. **Verify before using the app.** The import must report `IMPORT VERIFIED`. Re-run `node scripts/check-supabase-target.cjs --after-migration` and compare Supabase table counts with the local source. Then check the deployed API's `/api/v1/health`, `/api/v1/settings`, and `/api/v1/menu/items`. Do not delete the Docker database or backup, and do not deploy automatically. Menu image URLs may also need migration if they point to local `server/uploads/` files.
 
 Production HTTPS/proxy requirements and untested infrastructure steps are documented in [server/PRODUCTION_HTTP.md](server/PRODUCTION_HTTP.md).
 

@@ -460,23 +460,19 @@ const ToggleCard = ({
     inputProps: UseFormRegisterReturn;
 }) => (
     <label
-        className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 text-left transition focus-within:ring-4 focus-within:ring-amber-100 ${
-            checked
-                ? 'border-(--brand-text) bg-(--brand-text) text-white'
-                : 'border-slate-200 bg-(--brand-surface-dim) text-slate-700 hover:bg-amber-50'
-        }`}
+        className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl bg-(--brand-surface-dim) p-4 text-left transition hover:bg-amber-50 focus-within:ring-4 focus-within:ring-amber-100"
     >
         <div className="min-w-0">
-            <p className="text-sm font-extrabold">{title}</p>
-            <p className={`mt-1 text-xs font-semibold leading-5 ${checked ? 'text-stone-200' : 'text-slate-500'}`}>
+            <p className="text-sm font-bold text-slate-800">{title}</p>
+            <p className="mt-1 text-xs font-medium leading-5 text-slate-500">
                 {description}
             </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center">
             <input type="checkbox" className="sr-only" {...inputProps} />
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${checked ? 'bg-white text-slate-900' : 'bg-white text-slate-500'}`}>
-                <Power size={16} />
+            <span aria-hidden="true" className={`flex h-7 w-12 items-center rounded-full p-1 transition-colors ${checked ? 'bg-emerald-700' : 'bg-slate-400'}`}>
+                <span className={`h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? 'translate-x-5' : ''}`} />
             </span>
         </div>
     </label>
